@@ -58,7 +58,7 @@ server.config.update(
     MAIL_PORT=config_mail_port,
     MAIL_USERNAME=config_mail_username,
     MAIL_PASSWORD=config_mail_password,
-    MAIL_DEFAULT_SENDER=config_mail_username,
+    MAIL_DEFAULT_SENDER=config_mail_sender,
     MAIL_USE_TLS=False,
     MAIL_USE_SSL=True,
 )

@@ -25,6 +25,7 @@ config_mail_server = os.environ.get("MAIL_SERVER")
 config_mail_port = os.environ.get("MAIL_PORT")
 config_mail_username = os.environ.get("MAIL_USERNAME")
 config_mail_password = os.environ.get("MAIL_PASSWORD")
+config_mail_sender = (config_app_name, config_mail_username)
 
 # define src of images
 config_src_login = "assets/illustrations/login.png"
