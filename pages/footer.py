@@ -4,12 +4,11 @@
 footer of page
 """
 
-import logging
-
 import dash_bootstrap_components as dbc
 from dash import html
 
 from config import config_app_name
+
 from .consts import *
 
 
@@ -17,9 +16,6 @@ def layout_footer(pathname, search):
     """
     layout of footer
     """
-    logging.warning("pathname=%s, search=%s", pathname, search)
-    assert (pathname in PATH_SET_INDEX) or (pathname in PATH_SET_SYSTEM)
-
     # define variables
     mail_href = "mailto:service@databai.com"
     mail_service = "Email:service@databai.com"

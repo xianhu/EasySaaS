@@ -29,8 +29,6 @@ def layout(pathname, search):
     """
     layout of page
     """
-    assert pathname in {PATH_REGISTER_EMAIL_PWD, PATH_RESET_EMAIL_PWD}
-
     # check data
     try:
         _id, _token = search.split("&&")
@@ -43,6 +41,10 @@ def layout(pathname, search):
     text_hd = "Set password"
     text_sub = "Set the password of email."
     image = html.Img(src=config_src_pwd, className="img-fluid")
+
+    # define components
+    others = [COMP_A_LOGIN, COMP_A_REGISTER]
+    button = dbc.Button(text_hd, id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
 
     # define components
     form = dbc.Form(children=[
@@ -62,10 +64,9 @@ def layout(pathname, search):
         dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
         ADDRESS,
     ])
-    button = dbc.Button(text_hd, id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
 
     # define column main
-    col_main = layout_form(text_hd, text_sub, form, button, [None, None])
+    col_main = layout_form(text_hd, text_sub, form, button, others)
     return layout_two(item_left=image, width_left=(10, 5, 5), item_right=col_main)
 
 
@@ -103,8 +104,11 @@ def _button_click(n_clicks, email, pwd, pwd1, pathname):
     # delete cache
     app_redis.delete(_id)
 
-    # return result
-    path_result = PATH_REGISTER_EMAIL_PWD_RESULT
-    if pathname == PATH_RESET_EMAIL_PWD:
+    # define variables
+    if pathname == PATH_REGISTER_EMAIL_PWD:
+        path_result = PATH_REGISTER_EMAIL_PWD_RESULT
+    else:
         path_result = PATH_RESET_EMAIL_PWD_RESULT
+
+    # return result
     return None, True, path_result

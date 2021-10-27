@@ -4,8 +4,6 @@
 navbar of page
 """
 
-import logging
-
 import flask_login
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
@@ -21,9 +19,6 @@ def layout_navbar(pathname, search):
     """
     layout of navbar
     """
-    logging.warning("pathname=%s, search=%s", pathname, search)
-    assert (pathname in PATH_SET_INDEX) or (pathname in PATH_SET_SYSTEM)
-
     # define class
     class_brand = "fw-bold mx-0 text-primary fs-5"
     class_icon = "fw-bold mx-0 text-secondary fs-5 text-hover-primary"

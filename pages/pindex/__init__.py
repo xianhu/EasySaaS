@@ -17,11 +17,9 @@ def layout(pathname, search):
     content = None
     if pathname == PATH_INDEX or pathname == PATH_INTROS:
         content = pintros.layout(pathname, search)
-
-    if pathname == PATH_PRICING:
+    elif pathname == PATH_PRICING:
         content = ppricing.layout(pathname, search)
-
-    if pathname == PATH_ABOUT:
+    elif pathname == PATH_ABOUT:
         content = pabout.layout(pathname, search)
 
     # return result

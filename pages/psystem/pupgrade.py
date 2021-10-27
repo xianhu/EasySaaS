@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-layout of upgrade
+page of upgrade
 """
 
 import dash_bootstrap_components as dbc

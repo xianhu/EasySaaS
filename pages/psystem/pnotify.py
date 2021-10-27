@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-layout of notify
+page of notify
 """
 
 import dash_bootstrap_components as dbc

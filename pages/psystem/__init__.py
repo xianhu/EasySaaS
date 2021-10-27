@@ -17,14 +17,11 @@ def layout(pathname, search):
     content = None
     if pathname == PATH_SYSTEM or pathname == PATH_ANALYSIS:
         content = panalysis.layout(pathname, search)
-
-    if pathname == PATH_NOTIFY:
+    elif pathname == PATH_NOTIFY:
         content = pnotify.layout(pathname, search)
-
-    if pathname == PATH_UPGRADE:
+    elif pathname == PATH_UPGRADE:
         content = pupgrade.layout(pathname, search)
-
-    if pathname == PATH_PROFILE:
+    elif pathname == PATH_PROFILE:
         content = pprofile.layout(pathname, search)
 
     # return result

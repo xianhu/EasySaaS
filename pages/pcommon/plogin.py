@@ -34,6 +34,9 @@ def layout(pathname, search):
     image = html.Img(src=config_src_login, className="img-fluid")
 
     # define components
+    others = [COMP_A_REGISTER, COMP_A_RESET]
+    button = dbc.Button(text_hd, id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
+
     form = dbc.Form(children=[
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email"),
@@ -46,10 +49,9 @@ def layout(pathname, search):
         dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLAS_LABEL_ERROR),
         ADDRESS,
     ])
-    button = dbc.Button(text_hd, id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
 
     # define column main
-    col_main = layout_form(text_hd, text_sub, form, button, [COMP_A_REGISTER, COMP_A_RESET])
+    col_main = layout_form(text_hd, text_sub, form, button, others)
     return layout_two(item_left=image, width_left=(10, 5, 5), item_right=col_main)
 
 
@@ -79,4 +81,6 @@ def _button_click(n_clicks, email, pwd):
 
     # login user
     flask_login.login_user(user)
+
+    # return result
     return None, True, PATH_SYSTEM

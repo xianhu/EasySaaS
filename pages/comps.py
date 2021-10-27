@@ -8,6 +8,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 
 from layouts import adaptive
+
 from .consts import *
 
 # define args of components
