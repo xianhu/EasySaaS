@@ -1,0 +1,107 @@
+# _*_ coding: utf-8 _*_
+
+"""
+page of email
+"""
+
+import hashlib
+import json
+import uuid
+
+import flask
+import flask_mail
+import dash_bootstrap_components as dbc
+from dash import Input, Output, State, dcc, html
+
+from app import User, app, app_mail, app_redis
+from config import (config_app_domain, config_app_name, config_src_register,
+                    config_src_reset)
+from layouts.adaptive import layout_two
+from layouts.address import AddressAIO
+from utility.consts import RE_EMAIL
+
+from ..comps import *
+from ..consts import *
+
+TAG = "email"
+ADDRESS = AddressAIO(f"id-{TAG}-address")
+
+
+def layout(pathname, search):
+    """
+    layout of page
+    """
+    assert pathname in {PATH_REGISTER_EMAIL, PATH_RESET_EMAIL}
+
+    # define text
+    if pathname == PATH_REGISTER_EMAIL:
+        text_hd = "Sign up"
+        text_sub = "Register an account through an email."
+        image = html.Img(src=config_src_register, className="img-fluid")
+    else:
+        text_hd = "Forget password?"
+        text_sub = "Find back the password through email."
+        image = html.Img(src=config_src_reset, className="img-fluid")
+
+    # define components
+    form = dbc.Form(children=[
+        dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-email", type="email"),
+            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+        ]),
+        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLAS_LABEL_ERROR),
+        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+        ADDRESS,
+    ])
+    button = dbc.Button("Verify the email", id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
+
+    # define column main
+    col_main = layout_form(text_hd, text_sub, form, button, [COMP_A_LOGIN, None])
+    return layout_two(item_left=image, width_left=(10, 5, 5), item_right=col_main)
+
+
+@app.callback([
+    Output(f"id-{TAG}-label", "children"),
+    Output(f"id-{TAG}-label", "hidden"),
+    Output(f"id-{TAG}-address", "href"),
+], [
+    Input(f"id-{TAG}-button", "n_clicks"),
+    State(f"id-{TAG}-email", "value"),
+    State(f"id-{TAG}-pathname", "data"),
+], prevent_initial_call=True)
+def _button_click(n_clicks, email, pathname):
+    # check data
+    email = (email or "").strip()
+    if not RE_EMAIL.match(email):
+        return "Email is invalid", False, None
+    _id = hashlib.md5(email.encode()).hexdigest()
+
+    # check user
+    user = User.query.get(_id)
+    if pathname == PATH_REGISTER_EMAIL and user:
+        return "Email is registered", False, None
+    if pathname == PATH_RESET_EMAIL and (not user):
+        return "Email doesn't exist", False, None
+
+    # set session
+    flask.session["email"] = email
+
+    # define variables
+    token = str(uuid.uuid4())
+    if pathname == PATH_REGISTER_EMAIL:
+        path_result = PATH_REGISTER_EMAIL_RESULT
+        path_pwd = f"{PATH_REGISTER_EMAIL_PWD}?{_id}&&{token}"
+        subject = f"Registration of {config_app_name}"
+    else:
+        path_result = PATH_RESET_EMAIL_RESULT
+        path_pwd = f"{PATH_RESET_EMAIL_PWD}?{_id}&&{token}"
+        subject = f"Resetting password of {config_app_name}"
+
+    # send email and cache
+    if not app_redis.get(_id):
+        body = f"please click link in 10 minutes: {config_app_domain}{path_pwd}"
+        app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
+        app_redis.set(_id, json.dumps([token, email]), ex=600)
+
+    # return result
+    return None, True, path_result
