@@ -6,8 +6,8 @@ page of result
 
 import flask
 
-from ..comps import *
 from ..consts import *
+from .comps import *
 
 
 def layout_email(pathname, search):

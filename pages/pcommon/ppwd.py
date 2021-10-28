@@ -18,8 +18,8 @@ from layouts.address import AddressAIO
 from utility.consts import RE_PWD
 
 from . import palert
-from ..comps import *
 from ..consts import *
+from .comps import *
 
 TAG = "pwd"
 ADDRESS = AddressAIO(f"id-{TAG}-address")

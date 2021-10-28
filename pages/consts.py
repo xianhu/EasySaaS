@@ -29,21 +29,19 @@ PATH_SET_COMMON.update({
 })
 
 # =============================================================================
-PATH_SYSTEM = "/system"
-PATH_ANALYSIS = "/analysis"
-
-PATH_NOTIFY = "/notify"
-PATH_UPGRADE = "/upgrade"
-PATH_PROFILE = "/profile"
-
-PATH_SET_SYSTEM = {
-    PATH_SYSTEM, PATH_ANALYSIS,
-    PATH_NOTIFY, PATH_UPGRADE, PATH_PROFILE,
-}
-
-# =============================================================================
 PATH_INDEX = "/"
 PATH_INTROS = "/intros"
 PATH_PRICING = "/pricing"
 PATH_ABOUT = "/about"
 PATH_SET_INDEX = {PATH_INDEX, PATH_INTROS, PATH_PRICING, PATH_ABOUT}
+
+# =============================================================================
+PATH_SYSTEM = "/system"
+PATH_ANALYSIS = "/analysis"
+PATH_SET_SYSTEM = {PATH_SYSTEM, PATH_ANALYSIS}
+
+# =============================================================================
+PATH_NOTIFY = "/notify"
+PATH_UPGRADE = "/upgrade"
+PATH_PROFILE = "/profile"
+PATH_SET_MINE = {PATH_NOTIFY, PATH_UPGRADE, PATH_PROFILE}

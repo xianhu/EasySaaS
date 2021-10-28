@@ -12,7 +12,7 @@ def layout_catalog():
     """
     layout of catalog
     """
-    class_li = "cursor-pt text-hover-primary mt-2"
+    class_li = "cursor-pt hover-primary mt-2"
     return html.Div(children=[
         dbc.Button("Add File", className="w-100"),
         html.Div("GETTING STARTED", className="h6 mt-4"),

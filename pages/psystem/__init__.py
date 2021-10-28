@@ -5,9 +5,8 @@ page of system
 """
 
 from ..consts import *
-from ..footer import layout_footer
 from ..navbar import layout_navbar
-from . import panalysis, pnotify, pprofile, pupgrade
+from . import panalysis
 
 
 def layout(pathname, search):
@@ -17,12 +16,6 @@ def layout(pathname, search):
     content = None
     if pathname == PATH_SYSTEM or pathname == PATH_ANALYSIS:
         content = panalysis.layout(pathname, search)
-    elif pathname == PATH_NOTIFY:
-        content = pnotify.layout(pathname, search)
-    elif pathname == PATH_UPGRADE:
-        content = pupgrade.layout(pathname, search)
-    elif pathname == PATH_PROFILE:
-        content = pprofile.layout(pathname, search)
 
     # return result
-    return [layout_navbar(pathname, search), content, layout_footer(pathname, search)]
+    return [layout_navbar(pathname, search), content]

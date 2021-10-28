@@ -4,8 +4,8 @@
 page of alert
 """
 
-from ..comps import layout_salert
 from ..consts import PATH_INDEX
+from .comps import layout_salert
 
 
 def layout_404(pathname, search):

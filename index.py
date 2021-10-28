@@ -12,7 +12,7 @@ from dash import Input, Output, State, dcc
 
 from app import app, server
 from config import config_app_name
-from pages import pcommon, pindex, psystem
+from pages import pcommon, pindex, pmine, psystem
 from pages.consts import *
 from pages.pcommon import palert
 
@@ -21,7 +21,7 @@ app.title = config_app_name
 app.layout = dbc.Container(children=[
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
-    dbc.Container(id="id-content", class_name="vh-100 d-flex flex-column"),
+    dbc.Container(id="id-content", class_name="vh-100"),
 ])
 
 # complete layout
@@ -56,6 +56,12 @@ def _init_page(pathname, search, session):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, pcommon.layout(pathname, search)
+
+    # =====================================================
+    if pathname in PATH_SET_MINE:
+        if not flask_login.current_user.is_authenticated:
+            return pathname, pcommon.layout(PATH_LOGIN, search)
+        return pathname, pmine.layout(pathname, search)
 
     # =====================================================
     if pathname in PATH_SET_SYSTEM:

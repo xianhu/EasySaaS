@@ -11,7 +11,6 @@ from dash import Input, Output, State, html
 from app import app
 from config import config_app_name
 
-from .comps import *
 from .consts import *
 
 
@@ -21,8 +20,8 @@ def layout_navbar(pathname, search):
     """
     # define class
     class_brand = "fw-bold mx-0 text-primary fs-5"
-    class_icon = "fw-bold mx-0 text-secondary fs-5 text-hover-primary"
-    class_navlink = "fw-bold mx-auto mx-md-4 mx-lg-4 text-hover-primary"
+    class_icon = "fw-bold mx-0 text-secondary fs-5 hover-primary"
+    class_navlink = "fw-bold mx-auto mx-md-4 mx-lg-4 hover-primary"
     class_navitem = "fw-bold mx-auto mx-md-0 mx-lg-0 d-flex align-items-center"
 
     # define components

@@ -17,8 +17,8 @@ from layouts.adaptive import layout_two
 from layouts.address import AddressAIO
 from utility.consts import RE_EMAIL
 
-from ..comps import *
 from ..consts import *
+from .comps import *
 
 TAG = "login"
 ADDRESS = AddressAIO(f"id-{TAG}-address")

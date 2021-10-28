@@ -5,7 +5,6 @@ page of index
 """
 
 from ..consts import *
-from ..footer import layout_footer
 from ..navbar import layout_navbar
 from . import pabout, pintros, ppricing
 
@@ -23,4 +22,4 @@ def layout(pathname, search):
         content = pabout.layout(pathname, search)
 
     # return result
-    return [layout_navbar(pathname, search), content, layout_footer(pathname, search)]
+    return [layout_navbar(pathname, search), content]

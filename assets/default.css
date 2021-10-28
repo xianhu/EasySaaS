@@ -10,29 +10,24 @@
     cursor: pointer !important;
 }
 
-.table-fixed {
-    table-layout: fixed !important;
-}
-
-.text-ellipsis {
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-}
-
-.text-hover-primary:hover {
+.hover-primary:hover {
     color: #0d6efd !important;
 }
 
 
 /* 
  * stylesheets of dbc
- */
+*/
 
 .container {
     padding: 0 !important;
     max-width: 100% !important;
 }
+
+
+/*
+ * stylesheets of media
+*/
 
 @media (min-width: 576px) {
     .side-class {

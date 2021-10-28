@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-components of page
+components
 """
 
 from dash import html
@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 
 from layouts import adaptive
 
-from .consts import *
+from ..consts import *
 
 # define args of components
 ARGS_BUTTON_SUBMIT = {"size": "lg", "class_name": "w-100"}
