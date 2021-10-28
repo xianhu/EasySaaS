@@ -19,10 +19,10 @@ from pages.pcommon import palert
 # app layout
 app.title = config_app_name
 app.layout = dbc.Container(children=[
-    dbc.Container(id="id-content", class_name=None),
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
-], class_name="min-vh-100")
+    dbc.Container(id="id-content", class_name="vh-100 d-flex flex-column"),
+])
 
 # complete layout
 app.validation_layout = dbc.Container([])
