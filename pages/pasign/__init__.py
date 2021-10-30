@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 
 """
-common page
+page of register / login
 """
 
-from ..consts import *
 from . import pemail, plogin, ppwd, presult
+from .consts import *
 
 
 def layout(pathname, search):

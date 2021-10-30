@@ -17,8 +17,9 @@ from layouts.adaptive import layout_two
 from layouts.address import AddressAIO
 from utility.consts import RE_EMAIL
 
-from ..consts import *
-from .comps import *
+from ..common import *
+from .consts import *
+from ..psys_analysis.consts import PATH_SYS_ANALYSIS
 
 TAG = "login"
 ADDRESS = AddressAIO(f"id-{TAG}-address")
@@ -83,4 +84,4 @@ def _button_click(n_clicks, email, pwd):
     flask_login.login_user(user)
 
     # return result
-    return None, True, PATH_SYSTEM
+    return None, True, PATH_SYS_ANALYSIS

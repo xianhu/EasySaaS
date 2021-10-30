@@ -6,9 +6,9 @@ page of result
 
 import flask
 
-from ..consts import *
-from .comps import *
-
+from ..common import *
+from .consts import *
+from ..pindex.consts import PATH_INDEX
 
 def layout_email(pathname, search):
     """

@@ -4,9 +4,9 @@
 page of mine
 """
 
-from ..consts import *
 from ..navbar import layout_navbar
 from . import pnotify, pprofile, pupgrade
+from .consts import *
 
 
 def layout(pathname, search):

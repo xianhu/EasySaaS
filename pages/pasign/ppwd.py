@@ -17,9 +17,9 @@ from layouts.adaptive import layout_two
 from layouts.address import AddressAIO
 from utility.consts import RE_PWD
 
-from . import palert
-from ..consts import *
-from .comps import *
+from ..common import *
+from ..palert import *
+from .consts import *
 
 TAG = "pwd"
 ADDRESS = AddressAIO(f"id-{TAG}-address")
@@ -35,7 +35,7 @@ def layout(pathname, search):
         token, email = json.loads(app_redis.get(_id))
         assert _token == token
     except:
-        return palert.layout_expire(pathname, search)
+        return layout_expire(pathname, search)
 
     # define text
     text_hd = "Set password"

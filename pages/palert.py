@@ -4,23 +4,22 @@
 page of alert
 """
 
-from ..consts import PATH_INDEX
-from .comps import layout_salert
+from .common import layout_salert
 
 
-def layout_404(pathname, search):
+def layout_404(pathname, search, return_href="/"):
     """
     layout of page
     """
     text_hd = "Page not found"
     text_sub = "This page is not found, click button to safe page."
-    return layout_salert(text_hd, text_sub, "Back to safety", href=PATH_INDEX)
+    return layout_salert(text_hd, text_sub, "Back to safety", href=return_href)
 
 
-def layout_expire(pathname, search):
+def layout_expire(pathname, search, return_href="/"):
     """
     layout of page
     """
     text_hd = "Link expired"
     text_sub = "The link has already expired, click button to safe page."
-    return layout_salert(text_hd, text_sub, "Back to safety", href=PATH_INDEX)
+    return layout_salert(text_hd, text_sub, "Back to safety", href=return_href)

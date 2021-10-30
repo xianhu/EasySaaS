@@ -11,7 +11,10 @@ from dash import Input, Output, State, html
 from app import app
 from config import config_app_name
 
-from .consts import *
+from .pasign.consts import *
+from .pindex.consts import *
+from .pmine.consts import *
+from .psys_analysis.consts import *
 
 
 def layout_navbar(pathname, search):
@@ -40,7 +43,7 @@ def layout_navbar(pathname, search):
         ], class_name=class_navitem)
 
     # return result
-    href_brand = PATH_INDEX if pathname in PATH_SET_INDEX else PATH_SYSTEM
+    href_brand = PATH_INDEX if pathname in PATH_SET_INDEX else PATH_SYS_ANALYSIS
     return dbc.Navbar(dbc.Container(children=[
         dbc.NavbarBrand(config_app_name, href=href_brand, class_name=class_brand),
         dbc.NavbarToggler(id="id-toggler"),
@@ -49,7 +52,7 @@ def layout_navbar(pathname, search):
                 dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_navlink),
                 dbc.NavLink("Pricing", href=PATH_PRICING, class_name=class_navlink),
                 dbc.NavLink("About", href=PATH_ABOUT, class_name=class_navlink),
-                dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_navlink),
+                dbc.NavLink("Analysis", href=PATH_SYS_ANALYSIS, class_name=class_navlink),
             ], navbar=True, class_name="mx-auto"),
             dbc.Nav(nav_item_children, navbar=True, class_name=None),
         ], id="id-collapse", is_open=False, navbar=True),

@@ -1,26 +1,17 @@
 # _*_ coding: utf-8 _*_
 
 """
-components
+common variable / layout
 """
 
-from dash import html
 import dash_bootstrap_components as dbc
-
 from layouts import adaptive
-
-from ..consts import *
 
 # define args of components
 ARGS_BUTTON_SUBMIT = {"size": "lg", "class_name": "w-100"}
 
 # define class of components
 CLAS_LABEL_ERROR = "text-danger text-center w-100 mx-auto my-0"
-
-# define components
-COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
-COMP_A_REGISTER = html.A("Sign up", href=PATH_REGISTER_EMAIL)
-COMP_A_RESET = html.A("Forget password?", href=PATH_RESET_EMAIL)
 
 
 def layout_form(text_hd, text_sub, form, button, others):

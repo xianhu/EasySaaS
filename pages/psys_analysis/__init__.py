@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 
 """
-page of system
+page of sys-analysis
 """
 
-from ..consts import *
 from ..navbar import layout_navbar
-from . import panalysis
+from . import pdemo
+from .consts import *
 
 
 def layout(pathname, search):
@@ -14,8 +14,8 @@ def layout(pathname, search):
     layout of page
     """
     content = None
-    if pathname == PATH_SYSTEM or pathname == PATH_ANALYSIS:
-        content = panalysis.layout(pathname, search)
+    if pathname == PATH_SYS_ANALYSIS or pathname == PATH_SYS_ANALYSIS_DEMO:
+        content = pdemo.layout(pathname, search)
 
     # return result
     return [layout_navbar(pathname, search), content]

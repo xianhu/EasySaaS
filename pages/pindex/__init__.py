@@ -4,9 +4,9 @@
 page of index
 """
 
-from ..consts import *
 from ..navbar import layout_navbar
 from . import pabout, pintros, ppricing
+from .consts import *
 
 
 def layout(pathname, search):
