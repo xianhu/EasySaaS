@@ -6,6 +6,7 @@ page of mine
 
 import dash_bootstrap_components as dbc
 
+from ..common import CLASS_CONTAINER_CONTENT
 from ..navbar import layout_navbar
 from ..paths import *
 from . import pnotify, pprofile, pupgrade
@@ -20,7 +21,7 @@ def layout(pathname, search):
     top_navbar = layout_navbar(pathname, search)
     left_catalog = layout_catalog(pathname, search)
 
-    # define content
+    # content
     content = None
     if pathname == PATH_MINE or pathname == PATH_MINE_PROFILE:
         content = pprofile.layout(pathname, search)
@@ -30,5 +31,4 @@ def layout(pathname, search):
         content = pupgrade.layout(pathname, search)
 
     # return result
-    class_ct = "d-flex flex-column flex-md-row h-100 overflow-scroll gx-0"
-    return [top_navbar, dbc.Container([left_catalog, content], class_name=class_ct)]
+    return [top_navbar, dbc.Container([left_catalog, content], class_name=CLASS_CONTAINER_CONTENT)]

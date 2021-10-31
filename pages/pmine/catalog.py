@@ -45,7 +45,7 @@ def layout_catalog(pathname, search):
             dbc.Col(cat_toggler, width="auto", class_name=None),
         ], align="center", justify="between", class_name="d-md-none"),
         dbc.Collapse(cat_list, id=f"id-{TAG}-collapse", class_name="d-md-block")
-    ], className="side-class bg-light h-100 overflow-scroll border-bottom px-3 py-2")
+    ], className=CLASS_DIV_CATALOG)
 
 
 @app.callback(

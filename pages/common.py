@@ -16,6 +16,8 @@ ARGS_BUTTON_SUBMIT = {"size": "lg", "class_name": "w-100"}
 
 # define class of components
 CLASS_LABEL_ERROR = "text-danger text-center w-100 mx-auto my-0"
+CLASS_DIV_CATALOG = "side-class bg-light h-100 overflow-scroll border-bottom px-3 py-2"
+CLASS_CONTAINER_CONTENT = "d-flex flex-column flex-md-row h-100 overflow-scroll gx-0"
 
 # define components
 COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
