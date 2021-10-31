@@ -7,8 +7,8 @@ page of result
 import flask
 
 from ..common import *
-from .consts import *
-from ..pindex.consts import PATH_INDEX
+from ..paths import *
+
 
 def layout_email(pathname, search):
     """
@@ -17,7 +17,7 @@ def layout_email(pathname, search):
     email = flask.session.get("email", "")
     text_hd = "Sending success"
     text_sub = f"An email has sent to [{email}], go mailbox to verify it."
-    return layout_salert(text_hd, text_sub, "Back to home", href=PATH_INDEX)
+    return layout_salert(text_hd, text_sub, "Back to home", PATH_INDEX)
 
 
 def layout_pwd(pathname, search):
@@ -26,4 +26,4 @@ def layout_pwd(pathname, search):
     """
     text_hd = "Setting success"
     text_sub = "The password was set successfully."
-    return layout_salert(text_hd, text_sub, "Go to login", href=PATH_LOGIN)
+    return layout_salert(text_hd, text_sub, "Go to login", PATH_LOGIN)

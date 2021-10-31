@@ -4,9 +4,10 @@
 page of profile
 """
 
-from app import app
 import dash_bootstrap_components as dbc
 from dash import html, Output, Input, State
+
+from app import app
 
 TAG = "profile"
 

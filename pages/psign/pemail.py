@@ -21,7 +21,7 @@ from layouts.address import AddressAIO
 from utility.consts import RE_EMAIL
 
 from ..common import *
-from .consts import *
+from ..paths import *
 
 TAG = "email"
 ADDRESS = AddressAIO(f"id-{TAG}-address")
@@ -32,11 +32,11 @@ def layout(pathname, search):
     layout of page
     """
     # define text
-    if pathname == PATH_REGISTER_EMAIL:
+    if pathname == PATH_EMAIL_REGISTER:
         text_hd = "Sign up"
         text_sub = "Register an account through an email."
         image = html.Img(src=config_src_register, className="img-fluid")
-        others = [COMP_A_LOGIN, COMP_A_RESET]
+        others = [COMP_A_LOGIN, COMP_A_RESETPWD]
     else:
         text_hd = "Forget password?"
         text_sub = "Find back the password through email."
@@ -50,7 +50,7 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-email", type="email"),
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
         ]),
-        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLAS_LABEL_ERROR),
+        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLASS_LABEL_ERROR),
         dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
         ADDRESS,
     ])
@@ -78,30 +78,30 @@ def _button_click(n_clicks, email, pathname):
 
     # check user
     user = User.query.get(_id)
-    if pathname == PATH_REGISTER_EMAIL and user:
+    if pathname == PATH_EMAIL_REGISTER and user:
         return "Email is registered", False, None
-    if pathname == PATH_RESET_EMAIL and (not user):
+    if pathname == PATH_EMAIL_RESETPWD and (not user):
         return "Email doesn't exist", False, None
-
-    # set session
-    flask.session["email"] = email
 
     # define variables
     token = str(uuid.uuid4())
-    if pathname == PATH_REGISTER_EMAIL:
-        path_result = PATH_REGISTER_EMAIL_RESULT
-        path_pwd = f"{PATH_REGISTER_EMAIL_PWD}?{_id}&&{token}"
+    if pathname == PATH_EMAIL_REGISTER:
+        path_result = PATH_EMAIL_REGISTER_RESULT
+        path_pwd = f"{PATH_EMAIL_REGISTER_PWD}?{_id}&&{token}"
         subject = f"Registration of {config_app_name}"
     else:
-        path_result = PATH_RESET_EMAIL_RESULT
-        path_pwd = f"{PATH_RESET_EMAIL_PWD}?{_id}&&{token}"
+        path_result = PATH_EMAIL_RESETPWD
+        path_pwd = f"{PATH_EMAIL_RESETPWD_PWD}?{_id}&&{token}"
         subject = f"Resetting password of {config_app_name}"
 
     # send email and cache
     if not app_redis.get(_id):
         body = f"please click link in 10 minutes: {config_app_domain}{path_pwd}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
-        app_redis.set(_id, json.dumps([token, email]), ex=600)
+        app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
+
+    # set session
+    flask.session["email"] = email
 
     # return result
     return None, True, path_result

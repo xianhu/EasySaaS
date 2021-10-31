@@ -5,8 +5,8 @@ page of mine
 """
 
 from ..navbar import layout_navbar
+from ..paths import *
 from . import pnotify, pprofile, pupgrade
-from .consts import *
 
 
 def layout(pathname, search):
@@ -14,12 +14,12 @@ def layout(pathname, search):
     layout of page
     """
     content = None
-    if pathname == PATH_NOTIFY:
-        content = pnotify.layout(pathname, search)
-    elif pathname == PATH_UPGRADE:
-        content = pupgrade.layout(pathname, search)
-    elif pathname == PATH_PROFILE:
+    if pathname == PATH_MINE or pathname == PATH_MINE_PROFILE:
         content = pprofile.layout(pathname, search)
+    elif pathname == PATH_MINE_NOTIFY:
+        content = pnotify.layout(pathname, search)
+    elif pathname == PATH_MINE_UPGRADE:
+        content = pupgrade.layout(pathname, search)
 
     # return result
     return [layout_navbar(pathname, search), content]

@@ -8,7 +8,7 @@ import hashlib
 
 import flask_login
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 from werkzeug import security
 
 from app import User, app
@@ -18,8 +18,7 @@ from layouts.address import AddressAIO
 from utility.consts import RE_EMAIL
 
 from ..common import *
-from .consts import *
-from ..psys_analysis.consts import PATH_SYS_ANALYSIS
+from ..paths import *
 
 TAG = "login"
 ADDRESS = AddressAIO(f"id-{TAG}-address")
@@ -35,9 +34,10 @@ def layout(pathname, search):
     image = html.Img(src=config_src_login, className="img-fluid")
 
     # define components
-    others = [COMP_A_REGISTER, COMP_A_RESET]
+    others = [COMP_A_REGISTER, COMP_A_RESETPWD]
     button = dbc.Button(text_hd, id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
 
+    # define components
     form = dbc.Form(children=[
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email"),
@@ -47,7 +47,8 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-pwd", type="password"),
             dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
-        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLAS_LABEL_ERROR),
+        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLASS_LABEL_ERROR),
+        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
         ADDRESS,
     ])
 
@@ -67,8 +68,7 @@ def layout(pathname, search):
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd):
     # check data
-    pwd = (pwd or "").strip()
-    email = (email or "").strip()
+    email, pwd = (email or "").strip(), (pwd or "").strip()
     if not RE_EMAIL.match(email):
         return "Email is invalid", False, None
     _id = hashlib.md5(email.encode()).hexdigest()
@@ -84,4 +84,4 @@ def _button_click(n_clicks, email, pwd):
     flask_login.login_user(user)
 
     # return result
-    return None, True, PATH_SYS_ANALYSIS
+    return None, True, PATH_ANALYSIS

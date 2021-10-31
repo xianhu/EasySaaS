@@ -5,8 +5,8 @@ page of index
 """
 
 from ..navbar import layout_navbar
+from ..paths import *
 from . import pabout, pintros, ppricing
-from .consts import *
 
 
 def layout(pathname, search):

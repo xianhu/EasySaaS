@@ -18,10 +18,10 @@ from layouts.address import AddressAIO
 from utility.consts import RE_PWD
 
 from ..common import *
-from ..palert import *
-from .consts import *
+from ..paths import *
+from ..palert import layout_expire
 
-TAG = "pwd"
+TAG = "password"
 ADDRESS = AddressAIO(f"id-{TAG}-address")
 
 
@@ -29,13 +29,13 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # check data
+    # check token is valid
     try:
-        _id, _token = search.split("&&")
+        _id, _token = search.strip().split("&&")
         token, email = json.loads(app_redis.get(_id))
         assert _token == token
     except:
-        return layout_expire(pathname, search)
+        return layout_expire(pathname, search, PATH_LOGIN)
 
     # define text
     text_hd = "Set password"
@@ -60,7 +60,7 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
             dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd1"),
         ], class_name="mt-4"),
-        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLAS_LABEL_ERROR),
+        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=CLASS_LABEL_ERROR),
         dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
         ADDRESS,
     ])
@@ -89,9 +89,9 @@ def _button_click(n_clicks, email, pwd, pwd1, pathname):
         return "Password must contain numbers and letters", False, None
     if (not pwd1) or (pwd1 != pwd):
         return "Passwords are inconsistent", False, None
+    _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
     user = User.query.filter_by(id=_id).first()
     if not user:
         user = User(id=_id, email=email)
@@ -105,10 +105,10 @@ def _button_click(n_clicks, email, pwd, pwd1, pathname):
     app_redis.delete(_id)
 
     # define variables
-    if pathname == PATH_REGISTER_EMAIL_PWD:
-        path_result = PATH_REGISTER_EMAIL_PWD_RESULT
+    if pathname == PATH_EMAIL_REGISTER_PWD:
+        path_result = PATH_EMAIL_REGISTER_PWD_RESULT
     else:
-        path_result = PATH_RESET_EMAIL_PWD_RESULT
+        path_result = PATH_EMAIL_RESETPWD_PWD_RESULT
 
     # return result
     return None, True, path_result

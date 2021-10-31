@@ -1,17 +1,26 @@
 # _*_ coding: utf-8 _*_
 
 """
-common variable / layout
+common variable / layout of page
 """
 
 import dash_bootstrap_components as dbc
+from dash import html
+
 from layouts import adaptive
+
+from .paths import *
 
 # define args of components
 ARGS_BUTTON_SUBMIT = {"size": "lg", "class_name": "w-100"}
 
 # define class of components
-CLAS_LABEL_ERROR = "text-danger text-center w-100 mx-auto my-0"
+CLASS_LABEL_ERROR = "text-danger text-center w-100 mx-auto my-0"
+
+# define components
+COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
+COMP_A_REGISTER = html.A("Sign up", href=PATH_EMAIL_REGISTER)
+COMP_A_RESETPWD = html.A("Forget password?", href=PATH_EMAIL_RESETPWD)
 
 
 def layout_form(text_hd, text_sub, form, button, others):
@@ -32,10 +41,10 @@ def layout_form(text_hd, text_sub, form, button, others):
     ]
 
 
-def layout_salert(text_hd, text_sub, text_button, href="/"):
+def layout_salert(text_hd, text_sub, text_button, return_href):
     """
     simple alert layout, only text and no image
     """
-    button = dbc.Button(text_button, href=href, **ARGS_BUTTON_SUBMIT)
+    button = dbc.Button(text_button, href=return_href, **ARGS_BUTTON_SUBMIT)
     form = layout_form(text_hd, text_sub, None, button, [None, None])
     return adaptive.layout_two(item_left=form, width_left=(10, 3, 3))
