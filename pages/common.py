@@ -22,6 +22,9 @@ COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
 COMP_A_REGISTER = html.A("Sign up", href=PATH_EMAIL_REGISTER)
 COMP_A_RESETPWD = html.A("Forget password?", href=PATH_EMAIL_RESETPWD)
 
+# define components
+COMP_I_LIST = html.A(html.I(className="bi bi-list fs-1"))
+
 
 def layout_form(text_hd, text_sub, form, button, others):
     """

@@ -90,7 +90,7 @@ def _button_click(n_clicks, email, pathname):
         path_pwd = f"{PATH_EMAIL_REGISTER_PWD}?{_id}&&{token}"
         subject = f"Registration of {config_app_name}"
     else:
-        path_result = PATH_EMAIL_RESETPWD
+        path_result = PATH_EMAIL_RESETPWD_RESULT
         path_pwd = f"{PATH_EMAIL_RESETPWD_PWD}?{_id}&&{token}"
         subject = f"Resetting password of {config_app_name}"
 
