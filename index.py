@@ -37,8 +37,14 @@ app.validation_layout = dbc.Container([])
     State("id-session", "data"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, session):
-    search = (search or "").strip("?")
     logging.warning("pathname=%s, search=%s, session=%s", pathname, search, session)
+    search = (search or "").strip("?")
+    if pathname == "/":
+        pathname = PATH_INTROS
+
+    # =====================================================
+    if pathname in PATH_INDEX_SET:
+        return pathname, pindex.layout(pathname, search)
 
     # =====================================================
     if pathname == PATH_LOGIN:
@@ -69,12 +75,8 @@ def _init_page(pathname, search, session):
             return PATH_LOGIN, psign.layout(PATH_LOGIN, search)
         return pathname, panalysis.layout(pathname, search)
 
-    # =====================================================
-    if pathname in PATH_INDEX_SET:
-        return pathname, pindex.layout(pathname, search)
-
     # return 404 ==========================================
-    return pathname, layout_404(pathname, search, PATH_INDEX)
+    return pathname, layout_404(pathname, search, PATH_INTROS)
 
 
 if __name__ == "__main__":

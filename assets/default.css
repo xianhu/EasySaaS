@@ -29,14 +29,25 @@
  * stylesheets of media
 */
 
+.side-class {
+    width: 100%;
+    max-height: 75%;
+    overflow: scroll;
+}
+
 @media (min-width: 576px) {
     .side-class {
         width: 100%;
+        max-height: 75%;
+        overflow: scroll;
     }
 }
 
 @media (min-width: 768px) {
     .side-class {
         width: 20%;
+        height: 100%;
+        max-height: 100%;
+        overflow: scroll;
     }
 }

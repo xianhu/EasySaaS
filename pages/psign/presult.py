@@ -17,7 +17,7 @@ def layout_email(pathname, search):
     email = flask.session.get("email", "")
     text_hd = "Sending success"
     text_sub = f"An email has sent to [{email}], go mailbox to verify it."
-    return layout_salert(text_hd, text_sub, "Back to home", PATH_INDEX)
+    return layout_salert(text_hd, text_sub, "Back to home", PATH_INTROS)
 
 
 def layout_pwd(pathname, search):

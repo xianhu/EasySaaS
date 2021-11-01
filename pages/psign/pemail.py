@@ -14,8 +14,8 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 
 from app import User, app, app_mail, app_redis
-from config import (config_app_domain, config_app_name, config_src_register,
-                    config_src_reset)
+from config import config_app_domain, config_app_name
+from config import config_src_register, config_src_resetpwd
 from layouts.adaptive import layout_two
 from layouts.address import AddressAIO
 from utility.consts import RE_EMAIL
@@ -40,7 +40,7 @@ def layout(pathname, search):
     else:
         text_hd = "Forget password?"
         text_sub = "Find back the password through email."
-        image = html.Img(src=config_src_reset, className="img-fluid")
+        image = html.Img(src=config_src_resetpwd, className="img-fluid")
         others = [COMP_A_LOGIN, COMP_A_REGISTER]
     button = dbc.Button("Verify the email", id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
 

@@ -92,21 +92,13 @@ def test_db():
         email = "aaaa@qq.com"
         _id = hashlib.md5(email.encode()).hexdigest()
         pwd = security.generate_password_hash(email)
-        user1 = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
-        session.add(user1)
+        user = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
+        session.add(user)
         session.commit()
         print(session.query(User).get(_id))
 
-        email = "bbbb@qq.com"
-        _id = hashlib.md5(email.encode()).hexdigest()
-        pwd = security.generate_password_hash(email)
-        user2 = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
-        session.merge(user2)
-        session.commit()
-        print(session.query(User).get(_id))
-
-        user2.name = "user2"
-        session.merge(user2)
+        user.name = "user"
+        session.merge(user)
         session.commit()
         print(session.query(User).get(_id))
 

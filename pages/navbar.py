@@ -40,7 +40,7 @@ def layout_navbar(pathname, search):
         ], class_name=class_navitem)
 
     # return result
-    href_brand = PATH_INDEX if pathname in PATH_INDEX_SET else PATH_ANALYSIS
+    href_brand = PATH_INTROS if pathname in PATH_INDEX_SET else PATH_ANALYSIS
     return dbc.Navbar(dbc.Container(children=[
         dbc.NavbarBrand(config_app_name, href=href_brand, class_name=class_brand),
         dbc.NavbarToggler(id="id-toggler"),

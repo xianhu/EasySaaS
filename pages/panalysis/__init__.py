@@ -4,9 +4,9 @@
 page of analysis
 """
 
-import dash_bootstrap_components as dbc
+from dash import html
 
-from ..common import CLASS_CONTAINER_CONTENT
+from ..common import CLASS_DIV_CONTENT
 from ..navbar import layout_navbar
 from ..paths import *
 from . import pdemo
@@ -25,4 +25,4 @@ def layout(pathname, search):
         content = pdemo.layout(pathname, search)
 
     # return result
-    return [top_navbar, dbc.Container([content, ], class_name=CLASS_CONTAINER_CONTENT)]
+    return [top_navbar, html.Div([content, ], className=CLASS_DIV_CONTENT)]

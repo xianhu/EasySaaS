@@ -35,7 +35,7 @@ def layout(pathname, search):
         token, email = json.loads(app_redis.get(_id))
         assert _token == token
     except:
-        return layout_expire(pathname, search, PATH_INDEX)
+        return layout_expire(pathname, search, PATH_INTROS)
 
     # define text
     text_hd = "Set password"

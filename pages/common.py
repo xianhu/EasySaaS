@@ -16,8 +16,8 @@ ARGS_BUTTON_SUBMIT = {"size": "lg", "class_name": "w-100"}
 
 # define class of components
 CLASS_LABEL_ERROR = "text-danger text-center w-100 mx-auto my-0"
-CLASS_DIV_CATALOG = "side-class bg-light h-100 overflow-scroll border-bottom px-3 py-2"
-CLASS_CONTAINER_CONTENT = "d-flex flex-column flex-md-row h-100 overflow-scroll gx-0"
+CLASS_DIV_CATALOG = "side-class bg-light border-bottom px-3 py-2"
+CLASS_DIV_CONTENT = "d-flex flex-column flex-md-row h-100 overflow-scroll gx-0"
 
 # define components
 COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
@@ -35,10 +35,10 @@ def layout_form(text_hd, text_sub, form, button, others):
     class_tmp = "" if form else "mt-2"
     class_sub = f"text-center text-muted {class_tmp}"
     return [
-        dbc.Container(text_hd, class_name="text-center fs-1"),
-        dbc.Container(text_sub, class_name=class_sub),
-        dbc.Container(form, class_name="mt-4"),
-        dbc.Container(button, class_name="mt-4"),
+        html.Div(text_hd, className="text-center fs-1"),
+        html.Div(text_sub, className=class_sub),
+        html.Div(form, className="mt-4"),
+        html.Div(button, className="mt-4"),
         dbc.Row(children=[
             dbc.Col(others[0], width="auto"),
             dbc.Col(others[1], width="auto"),

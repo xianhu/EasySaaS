@@ -24,15 +24,18 @@ def layout_catalog(pathname, search):
     """
     layout of catalog
     """
+    # define class
+    class_navlink0 = "fw-bold hover-primary text-muted"
+    class_navlink1 = "fw-bold hover-primary"
+
     # define text
     cat_title, cat_list = "", []
     for title, path in CATALOG_LIST:
-        class_navlink = "fw-bold hover-primary"
         if path != pathname:
-            class_navlink += " text-muted"
+            cat_list.append(dbc.NavLink(title, href=path, class_name=class_navlink0))
         else:
+            cat_list.append(dbc.NavLink(title, href=path, class_name=class_navlink1))
             cat_title = title
-        cat_list.append(dbc.NavLink(title, href=path, class_name=class_navlink))
     cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-100 mt-2"))
 
     # define component

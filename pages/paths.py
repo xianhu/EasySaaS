@@ -5,6 +5,12 @@ paths of page
 """
 
 # =============================================================================
+PATH_INTROS = "/intros"
+PATH_PRICING = "/pricing"
+PATH_ABOUT = "/about"
+PATH_INDEX_SET = {PATH_INTROS, PATH_PRICING, PATH_ABOUT}
+
+# =============================================================================
 PATH_LOGIN = "/login"
 PATH_LOGOUT = "/logout"
 
@@ -29,18 +35,6 @@ PATH_EMAIL_SET.update({
 })
 
 # =============================================================================
-PATH_INDEX = "/"
-PATH_INTROS = "/intros"
-PATH_PRICING = "/pricing"
-PATH_ABOUT = "/about"
-PATH_INDEX_SET = {PATH_INDEX, PATH_INTROS, PATH_PRICING, PATH_ABOUT}
-
-# =============================================================================
-PATH_ANALYSIS = "/analysis"
-PATH_ANALYSIS_DEMO = f"{PATH_ANALYSIS}/demo"
-PATH_ANALYSIS_SET = {PATH_ANALYSIS, PATH_ANALYSIS_DEMO}
-
-# =============================================================================
 PATH_MINE = "/mine"
 PATH_MINE_NOTIFY = f"{PATH_MINE}/notify"
 PATH_MINE_PROFILE = f"{PATH_MINE}/profile"
@@ -49,3 +43,8 @@ PATH_MINE_SET = {
     PATH_MINE, PATH_MINE_NOTIFY,
     PATH_MINE_PROFILE, PATH_MINE_UPGRADE,
 }
+
+# =============================================================================
+PATH_ANALYSIS = "/analysis"
+PATH_ANALYSIS_DEMO = f"{PATH_ANALYSIS}/demo"
+PATH_ANALYSIS_SET = {PATH_ANALYSIS, PATH_ANALYSIS_DEMO}

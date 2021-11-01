@@ -30,7 +30,7 @@ config_mail_sender = (config_app_name, config_mail_username)
 # define src of images
 config_src_login = "assets/illustrations/login.png"
 config_src_register = "assets/illustrations/register.png"
-config_src_reset = "assets/illustrations/reset.png"
+config_src_resetpwd = "assets/illustrations/resetpwd.png"
 config_src_pwd = "assets/illustrations/pwd.png"
 
 # define logging format
