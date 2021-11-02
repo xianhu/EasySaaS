@@ -2,14 +2,6 @@
  * external stylesheets
 */
 
-.border-solid {
-    border: 1px solid #343a40 !important;
-}
-
-.cursor-pt {
-    cursor: pointer !important;
-}
-
 .hover-primary:hover {
     color: #0d6efd !important;
 }

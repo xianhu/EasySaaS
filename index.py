@@ -12,7 +12,7 @@ from dash import Input, Output, State, dcc
 
 from app import app, server
 from config import config_app_name
-from pages import panalysis, pindex, pmine, psign
+from pages import panalysis, pintros, pmine, psign
 from pages.palert import layout_404
 from pages.paths import *
 
@@ -43,8 +43,8 @@ def _init_page(pathname, search, session):
         pathname = PATH_INTROS
 
     # =====================================================
-    if pathname in PATH_INDEX_SET:
-        return pathname, pindex.layout(pathname, search)
+    if pathname == PATH_INTROS:
+        return pathname, pintros.layout(pathname, search)
 
     # =====================================================
     if pathname == PATH_LOGIN:

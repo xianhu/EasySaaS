@@ -6,9 +6,6 @@ paths of page
 
 # =============================================================================
 PATH_INTROS = "/intros"
-PATH_PRICING = "/pricing"
-PATH_ABOUT = "/about"
-PATH_INDEX_SET = {PATH_INTROS, PATH_PRICING, PATH_ABOUT}
 
 # =============================================================================
 PATH_LOGIN = "/login"
