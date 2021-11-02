@@ -16,6 +16,8 @@ ARGS_BUTTON_SUBMIT = {"size": "lg", "class_name": "w-100"}
 
 # define class of components
 CLASS_LABEL_ERROR = "text-danger text-center w-100 mx-auto my-0"
+
+# define class of components
 CLASS_DIV_CATALOG = "side-class bg-light border-bottom px-3 py-2"
 CLASS_DIV_CONTENT = "d-flex flex-column flex-md-row h-100 overflow-scroll gx-0"
 
@@ -51,5 +53,4 @@ def layout_salert(text_hd, text_sub, text_button, return_href):
     simple alert layout, only text and no image
     """
     button = dbc.Button(text_button, href=return_href, **ARGS_BUTTON_SUBMIT)
-    form = layout_form(text_hd, text_sub, None, button, [None, None])
-    return adaptive.layout_two(item_left=form, width_left=(10, 3, 3))
+    return adaptive.layout_two(layout_form(text_hd, text_sub, None, button, [None, None]))
