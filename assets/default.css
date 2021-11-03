@@ -16,10 +16,6 @@
     max-width: 100% !important;
 }
 
-.row {
-    --bs-gutter-x: 0 !important;
-}
-
 
 /*
  * stylesheets of media
