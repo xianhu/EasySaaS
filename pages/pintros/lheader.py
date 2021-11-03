@@ -17,6 +17,6 @@ This project will create an easy way to build a SaaS application using Python an
 
 def layout(pathname, search):
     return html.Div(children=[
-        dbc.Row(dbc.Col(HEADER, class_name="fs-1 fw-bold text-center"), justify="center"),
-        dbc.Row(dbc.Col(DESC, width=10, md=6, class_name="text-center"), justify="center"),
+        dbc.Row(dbc.Col(HEADER, class_name="fs-1 fw-bold text-center"), justify="center", class_name="w-100"),
+        dbc.Row(dbc.Col(DESC, width=10, md=6, class_name="text-center"), justify="center", class_name="w-100"),
     ], className="bg-primary bg-opacity-25 py-5")

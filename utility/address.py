@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-html.A which can be clicked automatically
+html.A clicked automatically
 """
 
 from dash import Input, Output, clientside_callback, html
@@ -9,13 +9,10 @@ from dash import Input, Output, clientside_callback, html
 
 class AddressAIO(html.A):
     """
-    html.A which can be clicked automatically
+    html.A clicked automatically
     """
 
     def __init__(self, aio_id, children=None, target=None):
-        """
-        construct function
-        """
         clientside_callback(
             """
             function(href) {

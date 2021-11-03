@@ -8,20 +8,20 @@ import logging
 
 import flask_login
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc
+from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
-from pages import panalysis, pintros, pmine, psign
+from pages import pintros
 from pages.palert import layout_404
 from pages.paths import *
 
 # app layout
 app.title = config_app_name
-app.layout = dbc.Container(children=[
+app.layout = html.Div(children=[
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
-    dbc.Container(id="id-content", class_name="vh-100 d-flex flex-column"),
+    html.Div(id="id-content", className="bg-light min-vh-100"),
 ])
 
 # complete layout
@@ -45,35 +45,6 @@ def _init_page(pathname, search, session):
     # =====================================================
     if pathname == PATH_INTROS:
         return pathname, pintros.layout(pathname, search)
-
-    # =====================================================
-    if pathname == PATH_LOGIN:
-        if flask_login.current_user.is_authenticated:
-            return PATH_ANALYSIS, panalysis.layout(PATH_ANALYSIS, search)
-        return pathname, psign.layout(pathname, search)
-
-    if pathname == PATH_LOGOUT:
-        if flask_login.current_user.is_authenticated:
-            flask_login.logout_user()
-        return pathname, psign.layout(pathname, search)
-
-    # =====================================================
-    if pathname in PATH_EMAIL_SET:
-        if flask_login.current_user.is_authenticated:
-            flask_login.logout_user()
-        return pathname, psign.layout(pathname, search)
-
-    # =====================================================
-    if pathname in PATH_MINE_SET:
-        if not flask_login.current_user.is_authenticated:
-            return PATH_LOGIN, psign.layout(PATH_LOGIN, search)
-        return pathname, pmine.layout(pathname, search)
-
-    # =====================================================
-    if pathname in PATH_ANALYSIS_SET:
-        if not flask_login.current_user.is_authenticated:
-            return PATH_LOGIN, psign.layout(PATH_LOGIN, search)
-        return pathname, panalysis.layout(pathname, search)
 
     # return 404 ==========================================
     return pathname, layout_404(pathname, search, PATH_INTROS)

@@ -6,10 +6,9 @@ page of intros
 
 from dash import html
 
-from ..navbar import layout_navbar
-from ..footer import layout_footer
+from ..comps import cnavbar, cfooter, cpricing
 from ..paths import *
-from . import lheader, lpricing
+from . import lheader
 
 
 def layout(pathname, search):
@@ -17,13 +16,13 @@ def layout(pathname, search):
     layout of page
     """
     # define components
-    navbar = layout_navbar(pathname, search)
-    footer = layout_footer(pathname, search)
+    navbar = cnavbar.layout(pathname, search)
+    footer = cfooter.layout(pathname, search)
 
     # define page layout
     content = html.Div(children=[
         lheader.layout(pathname, search),
-        lpricing.layout(pathname, search),
+        cpricing.layout(pathname, search),
     ], className="")
 
     # return result

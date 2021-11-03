@@ -11,12 +11,12 @@ from dash import Input, Output, State, html
 from app import app
 from config import config_app_name
 
-from .paths import *
+from ..paths import *
 
 
-def layout_navbar(pathname, search):
+def layout(pathname, search):
     """
-    layout of navbar
+    layout of components
     """
     # define class
     class_brand = "fw-bold mx-0 text-primary fs-5"
@@ -34,9 +34,8 @@ def layout_navbar(pathname, search):
     else:
         user_name = flask_login.current_user.email
         nav_item_children = dbc.NavItem([
-            html.A(html.I(className="bi bi-bell " + class_icon), href=PATH_MINE_NOTIFY, className=None),
-            html.A(html.I(className="bi bi-arrow-up-circle " + class_icon), href=PATH_MINE_UPGRADE, className="ms-3"),
-            html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_MINE_PROFILE, title=user_name, className="ms-3"),
+            html.A(html.I(className="bi bi-bell " + class_icon), className=None),
+            html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
         ], class_name=class_navitem)
 
     # return result
@@ -50,7 +49,7 @@ def layout_navbar(pathname, search):
             ], navbar=True, class_name="mx-auto"),
             dbc.Nav(nav_item_children, navbar=True, class_name=None),
         ], id="id-collapse", is_open=False, navbar=True),
-    ]), class_name="border-bottom px-3 py-2")
+    ]), class_name="border-bottom")
 
 
 @app.callback(

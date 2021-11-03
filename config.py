@@ -13,7 +13,7 @@ config_app_secret_key = os.environ.get("APP_SECRET_KEY")
 
 # define uri of database
 config_database_uri = "sqlite:///.data/main.db?charset=utf8"
-# config_database_uri = "mysql+pymysql://user:pwd@localhost:3306/main?charset=utf8"
+# "mysql+pymysql://user:pwd@localhost:3306/main?charset=utf8"
 
 # define uri of redis
 config_redis_uri = "redis://localhost:6379/0"
