@@ -16,8 +16,8 @@ def layout(pathname, search, fluid=None):
     """
     addr = html.A(config_app_name, href="/")
     mail_href = "mailto:service@databai.com"
-    mail_service = "Email:service@databai.com"
-    return dbc.Container(children=[
+    mail_service = "Email: service@databai.com"
+    return html.Footer(dbc.Container(children=[
         html.Div(["Powered by ©2021 ", addr, ". All rights reserved."]),
         html.A(mail_service, href=mail_href, className="text-decoration-none")
-    ], fluid=fluid, class_name="text-center small border-top p-2")
+    ], fluid=fluid), className="text-center small border-top py-4")

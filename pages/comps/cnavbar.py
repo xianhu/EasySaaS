@@ -24,15 +24,21 @@ def layout(pathname, search, fluid=None):
     class_navitem = "fw-bold mx-auto mx-md-0 d-flex align-items-center"
 
     # define components
+    nav_links = [
+        dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_navlink),
+        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_navlink),
+    ]
+
+    # define components
     if not flask_login.current_user.is_authenticated:
         args_button = {"outline": True, "color": "primary"}
-        nav_item_children = dbc.NavItem([
+        nav_item = dbc.NavItem([
             html.A("Sign up", href=PATH_REGISTER_E, className=None),
             dbc.Button("Sign in", href=PATH_LOGIN, **args_button, className="fw-bold ms-3"),
         ], class_name=class_navitem)
     else:
         class_icon = "fw-bold mx-0 text-secondary hover-primary"
-        nav_item_children = dbc.NavItem([
+        nav_item = dbc.NavItem([
             html.A(html.I(className="bi bi-bell fs-5 " + class_icon), href=f"{PATH_USER}/notify"),
             html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
         ], class_name=class_navitem)
@@ -42,13 +48,10 @@ def layout(pathname, search, fluid=None):
         dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name=class_brand),
         dbc.NavbarToggler(id="id-toggler"),
         dbc.Collapse(children=[
-            dbc.Nav(children=[
-                dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_navlink),
-                dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_navlink),
-            ], navbar=True, class_name="mx-auto"),
-            dbc.Nav(nav_item_children, navbar=True, class_name=None),
+            dbc.Nav(nav_links, navbar=True, class_name="mx-auto"),
+            dbc.Nav(nav_item, navbar=True, class_name=None),
         ], id="id-collapse", is_open=False, navbar=True),
-    ], fluid=fluid), class_name="border-bottom")
+    ], fluid=fluid), class_name="border-bottom py-2")
 
 
 @app.callback(

@@ -12,8 +12,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
-from pages import pintros
-from pages.palert import layout_404
+from pages import palert, pintros
 from pages.paths import *
 
 # app layout
@@ -47,7 +46,7 @@ def _init_page(pathname, search, session):
         return pathname, pintros.layout(pathname, search)
 
     # return 404 ==========================================
-    return pathname, layout_404(pathname, search, PATH_INTROS)
+    return pathname, palert.layout_404(pathname, search, PATH_INTROS)
 
 
 if __name__ == "__main__":
