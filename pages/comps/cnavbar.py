@@ -14,13 +14,12 @@ from config import config_app_name
 from ..paths import *
 
 
-def layout(pathname, search):
+def layout(pathname, search, fluid=None):
     """
     layout of components
     """
     # define class
     class_brand = "fw-bold mx-0 text-primary fs-5"
-    class_icon = "fw-bold mx-0 text-secondary fs-5 hover-primary"
     class_navlink = "fw-bold mx-auto mx-md-4 hover-primary"
     class_navitem = "fw-bold mx-auto mx-md-0 d-flex align-items-center"
 
@@ -28,13 +27,13 @@ def layout(pathname, search):
     if not flask_login.current_user.is_authenticated:
         args_button = {"outline": True, "color": "primary"}
         nav_item_children = dbc.NavItem([
-            html.A("Sign up", href=PATH_EMAIL_REGISTER, className=None),
+            html.A("Sign up", href=PATH_REGISTER_E, className=None),
             dbc.Button("Sign in", href=PATH_LOGIN, **args_button, className="fw-bold ms-3"),
         ], class_name=class_navitem)
     else:
-        user_name = flask_login.current_user.email
+        class_icon = "fw-bold mx-0 text-secondary hover-primary"
         nav_item_children = dbc.NavItem([
-            html.A(html.I(className="bi bi-bell " + class_icon), className=None),
+            html.A(html.I(className="bi bi-bell fs-5 " + class_icon), href=f"{PATH_USER}/notify"),
             html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
         ], class_name=class_navitem)
 
@@ -49,7 +48,7 @@ def layout(pathname, search):
             ], navbar=True, class_name="mx-auto"),
             dbc.Nav(nav_item_children, navbar=True, class_name=None),
         ], id="id-collapse", is_open=False, navbar=True),
-    ]), class_name="border-bottom")
+    ], fluid=fluid), class_name="border-bottom")
 
 
 @app.callback(

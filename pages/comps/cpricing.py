@@ -45,5 +45,5 @@ def layout(pathname, search):
             html.Div(plan["price"], className="fs-6 fw-bold"),
             html.Div([html.Li(desc) for desc in plan["descs"]], className=None),
             dbc.Button("Buy it", class_name="w-50 mt-4"),
-        ], width=12, md=3, class_name="border rounded text-center p-4 mt-2 mt-md-0"))
-    return html.Div(dbc.Row(col_list, justify="around", class_name="m-4"))
+        ], width=12, md=3, class_name="border rounded text-center p-4 mx-auto mt-2 mt-md-0"))
+    return dbc.Row(col_list, justify="around", class_name="w-100 mx-auto my-4")
