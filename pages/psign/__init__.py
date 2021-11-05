@@ -17,14 +17,14 @@ def layout(pathname, search):
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         content = plogin.layout(pathname, search)
 
-    elif pathname == PATH_REGISTER_E or pathname == PATH_RESETPWD_E:
+    elif pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         content = pemail.layout(pathname, search)
-    elif pathname == f"{PATH_REGISTER_E}/result" or pathname == f"{PATH_RESETPWD_E}/result":
+    elif pathname == f"{PATH_REGISTERE}-result" or pathname == f"{PATH_RESETPWDE}-result":
         content = palert.layout_email(pathname, search, PATH_INTROS)
 
-    elif pathname == f"{PATH_REGISTER_E}/pwd" or pathname == f"{PATH_RESETPWD_E}/pwd":
+    elif pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         content = ppwd.layout(pathname, search)
-    elif pathname == f"{PATH_REGISTER_E}/pwd/result" or pathname == f"{PATH_RESETPWD_E}/pwd/result":
+    elif pathname == f"{PATH_REGISTERE}-pwd-result" or pathname == f"{PATH_RESETPWDE}-pwd-result":
         content = palert.layout_password(pathname, search, PATH_LOGIN)
 
     # return result

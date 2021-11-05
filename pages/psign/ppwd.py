@@ -12,7 +12,6 @@ from dash import Input, Output, State, dcc, html
 from werkzeug import security
 
 from app import User, app, app_db, app_redis
-from config import config_src_pwd
 from utility.address import AddressAIO
 from utility.consts import RE_PWD
 
@@ -24,8 +23,8 @@ ADDRESS = AddressAIO(f"id-{TAG}-address")
 
 # define components
 COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
-COMP_A_REGISTER = html.A("Sign up", href=PATH_REGISTER_E)
-COMP_A_RESETPWD = html.A("Forget password?", href=PATH_RESETPWD_E)
+COMP_A_REGISTER = html.A("Sign up", href=PATH_REGISTERE)
+COMP_A_RESETPWD = html.A("Forget password?", href=PATH_RESETPWDE)
 
 
 def layout(pathname, search):
@@ -43,7 +42,7 @@ def layout(pathname, search):
     # define text
     text_hd = "Set password"
     text_sub = "Set the password of email."
-    image = html.Img(src=config_src_pwd, className="img-fluid")
+    image = html.Img(src="assets/illustrations/password.svg", className="img-fluid")
 
     # define components
     others = [COMP_A_LOGIN, COMP_A_REGISTER]
@@ -119,10 +118,10 @@ def _button_click(n_clicks, email, pwd, pwd1, pathname):
     app_redis.delete(_id)
 
     # define variables
-    if pathname == f"{PATH_REGISTER_E}/pwd":
-        path_result = f"{PATH_REGISTER_E}/pwd/result"
+    if pathname == f"{PATH_REGISTERE}-pwd":
+        path_result = f"{PATH_REGISTERE}-pwd-result"
     else:
-        path_result = f"{PATH_RESETPWD_E}/pwd/result"
+        path_result = f"{PATH_RESETPWDE}-pwd-result"
 
     # return result
     return None, True, path_result

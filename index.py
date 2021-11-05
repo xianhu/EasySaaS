@@ -58,12 +58,12 @@ def _init_page(pathname, search, session):
         return pathname, psign.layout(pathname, search)
 
     # =====================================================
-    if pathname.startswith(PATH_REGISTER_E):
+    if pathname.startswith(PATH_REGISTERE):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, psign.layout(pathname, search)
 
-    if pathname.startswith(PATH_RESETPWD_E):
+    if pathname.startswith(PATH_RESETPWDE):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, psign.layout(pathname, search)

@@ -11,7 +11,6 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 
 from app import User, app
-from config import config_src_login
 from utility.address import AddressAIO
 from utility.consts import RE_EMAIL
 from werkzeug import security
@@ -27,7 +26,7 @@ def layout(pathname, search):
     layout of page
     """
     # define components
-    image = html.Img(src=config_src_login, className="img-fluid")
+    image = html.Img(src="assets/illustrations/login.png", className="img-fluid")
 
     # define components
     col_main = [
@@ -52,8 +51,8 @@ def layout(pathname, search):
         dbc.Button("Sign in", id=f"id-{TAG}-button", size="lg", class_name="w-100 mt-4"),
 
         html.Div(children=[
-            html.A("Sign up", href=PATH_REGISTER_E),
-            html.A("Forget password?", href=PATH_RESETPWD_E),
+            html.A("Sign up", href=PATH_REGISTERE),
+            html.A("Forget password?", href=PATH_RESETPWDE),
         ], className="d-flex justify-content-between"),
     ]
 

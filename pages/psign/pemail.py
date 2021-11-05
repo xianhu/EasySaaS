@@ -15,7 +15,6 @@ from dash import Input, Output, State, dcc, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from config import config_src_register, config_src_resetpwd
 from utility.address import AddressAIO
 from utility.consts import RE_EMAIL
 
@@ -36,8 +35,8 @@ CLASS_DIV_CONTENT = "d-flex flex-column flex-md-row h-100 overflow-scroll gx-0"
 
 # define components
 COMP_A_LOGIN = html.A("Sign in", href=PATH_LOGIN)
-COMP_A_REGISTER = html.A("Sign up", href=PATH_REGISTER_E)
-COMP_A_RESETPWD = html.A("Forget password?", href=PATH_RESETPWD_E)
+COMP_A_REGISTER = html.A("Sign up", href=PATH_REGISTERE)
+COMP_A_RESETPWD = html.A("Forget password?", href=PATH_RESETPWDE)
 
 
 def layout(pathname, search):
@@ -45,17 +44,16 @@ def layout(pathname, search):
     layout of page
     """
     # define text
-    if pathname == PATH_REGISTER_E:
+    if pathname == PATH_REGISTERE:
         text_hd = "Sign up"
         text_sub = "Register an account through an email."
-        image = html.Img(src=config_src_register, className="img-fluid")
+        image = html.Img(src="assets/illustrations/register.png", className="img-fluid")
         others = [COMP_A_LOGIN, COMP_A_RESETPWD]
     else:
         text_hd = "Forget password?"
         text_sub = "Find back the password through email."
-        image = html.Img(src=config_src_resetpwd, className="img-fluid")
+        image = html.Img(src="assets/illustrations/resetpwd.png", className="img-fluid")
         others = [COMP_A_LOGIN, COMP_A_REGISTER]
-    button = dbc.Button("Verify the email", id=f"id-{TAG}-button", **ARGS_BUTTON_SUBMIT)
 
     # define components
     col_main = [
@@ -101,20 +99,20 @@ def _button_click(n_clicks, email, pathname):
 
     # check user
     user = User.query.get(_id)
-    if pathname == PATH_REGISTER_E and user:
+    if pathname == PATH_REGISTERE and user:
         return "Email is registered", False, None
-    if pathname == PATH_RESETPWD_E and (not user):
+    if pathname == PATH_RESETPWDE and (not user):
         return "Email doesn't exist", False, None
 
     # define variables
     token = str(uuid.uuid4())
-    if pathname == PATH_REGISTER_E:
-        path_result = f"{PATH_REGISTER_E}/result"
-        path_pwd = f"{PATH_REGISTER_E}/pwd?{_id}&&{token}"
+    if pathname == PATH_REGISTERE:
+        path_result = f"{PATH_REGISTERE}-result"
+        path_pwd = f"{PATH_REGISTERE}-pwd?{_id}&&{token}"
         subject = f"Registration of {config_app_name}"
     else:
-        path_result = f"{PATH_RESETPWD_E}/result"
-        path_pwd = f"{PATH_RESETPWD_E}/pwd?{_id}&&{token}"
+        path_result = f"{PATH_RESETPWDE}-result"
+        path_pwd = f"{PATH_RESETPWDE}-pwd?{_id}&&{token}"
         subject = f"Resetting password of {config_app_name}"
 
     # send email and cache

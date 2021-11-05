@@ -7,8 +7,8 @@ paths of page
 PATH_LOGIN = "/login"
 PATH_LOGOUT = "/logout"
 
-PATH_REGISTER_E = "/register-e"
-PATH_RESETPWD_E = "/resetpwd-e"
+PATH_REGISTERE = "/registere"
+PATH_RESETPWDE = "/resetpwde"
 
 PATH_USER = "/user"
 PATH_INTROS = "/intros"
