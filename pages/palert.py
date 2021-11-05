@@ -4,6 +4,8 @@
 alert page
 """
 
+import flask
+
 import dash_bootstrap_components as dbc
 from dash import html
 
@@ -35,3 +37,22 @@ def layout_expire(pathname, search, return_href):
     text_hd = "Link expired"
     text_sub = "The link has already expired, click button to safe page."
     return _simple_alert(text_hd, text_sub, "Back to safety", return_href)
+
+
+def layout_email(pathname, search, return_href):
+    """
+    layout of page
+    """
+    email = flask.session.get("email", "")
+    text_hd = "Sending success"
+    text_sub = f"An email has sent to [{email}], go mailbox to verify it."
+    return _simple_alert(text_hd, text_sub, "Back to home", return_href)
+
+
+def layout_password(pathname, search, return_href):
+    """
+    layout of page
+    """
+    text_hd = "Setting success"
+    text_sub = "The password was set successfully."
+    return _simple_alert(text_hd, text_sub, "Go to login", return_href)

@@ -12,7 +12,8 @@ from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
-from pages import palert, pintros
+from pages import palert, psign
+from pages import panalysis, pintros, puser
 from pages.paths import *
 
 # app layout
@@ -44,6 +45,40 @@ def _init_page(pathname, search, session):
     # =====================================================
     if pathname == PATH_INTROS:
         return pathname, pintros.layout(pathname, search)
+
+    # =====================================================
+    if pathname == PATH_LOGIN:
+        if flask_login.current_user.is_authenticated:
+            return PATH_ANALYSIS, panalysis.layout(PATH_ANALYSIS, search)
+        return pathname, psign.layout(pathname, search)
+
+    if pathname == PATH_LOGOUT:
+        if flask_login.current_user.is_authenticated:
+            flask_login.logout_user()
+        return pathname, psign.layout(pathname, search)
+
+    # =====================================================
+    if pathname.startswith(PATH_REGISTER_E):
+        if flask_login.current_user.is_authenticated:
+            flask_login.logout_user()
+        return pathname, psign.layout(pathname, search)
+
+    if pathname.startswith(PATH_RESETPWD_E):
+        if flask_login.current_user.is_authenticated:
+            flask_login.logout_user()
+        return pathname, psign.layout(pathname, search)
+
+    # =====================================================
+    if pathname.startswith(PATH_USER):
+        if not flask_login.current_user.is_authenticated:
+            return PATH_LOGIN, psign.layout(PATH_LOGIN, search)
+        return pathname, puser.layout(pathname, search)
+
+    # =====================================================
+    if pathname.startswith(PATH_ANALYSIS):
+        if not flask_login.current_user.is_authenticated:
+            return PATH_LOGIN, psign.layout(PATH_LOGIN, search)
+        return pathname, panalysis.layout(pathname, search)
 
     # return 404 ==========================================
     return pathname, palert.layout_404(pathname, search, PATH_INTROS)
