@@ -18,6 +18,5 @@ def layout(pathname, search):
     navbar = cnavbar.layout(pathname, search, fluid=fluid)
     footer = cfooter.layout(pathname, search, fluid=fluid)
 
-
     # return result
     return [navbar, "user", footer]

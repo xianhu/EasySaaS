@@ -7,8 +7,6 @@ intros page
 import dash_bootstrap_components as dbc
 from dash import html
 
-from config import config_src_intros
-
 from .comps import cfooter, cnavbar
 from .paths import *
 
@@ -58,17 +56,21 @@ def layout(pathname, search):
     """
     layout of page
     """
+    # define class
     fluid = None
+    class_col = "mt-4 mt-md-0"
+    class_row = "w-100 mx-auto my-5"
 
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=fluid)
     footer = cfooter.layout(pathname, search, fluid=fluid)
 
     # define components
-    image = html.Img(src=config_src_intros, className="img-fluid")
+    image_src = "assets/illustrations/intros.svg"
+    image = html.Img(src=image_src, className="img-fluid")
     intros = [
         html.Div(HEADER, className="fs-1 mb-2"),
-        html.Div(HEADERSUB, className="fs-5 text-muted lead"),
+        html.P(HEADERSUB, className="fs-5 text-muted lead"),
     ]
 
     # define components
@@ -92,11 +94,7 @@ def layout(pathname, search):
         ])
 
     # define components
-    class_col = "mt-4 mt-md-0"
-    class_row = "w-100 mx-auto my-5"
-    class_col_price = f"{class_col} bg-white border rounded-3 py-4"
-
-    # define components
+    class_col_price = f"{class_col} border rounded-3 py-4"
     content = dbc.Container(children=[
         dbc.Row(children=[
             dbc.Col(image, width=10, md={"size": 5, "order": 2}, class_name=None),

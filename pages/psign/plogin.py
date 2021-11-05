@@ -9,11 +9,11 @@ import hashlib
 import flask_login
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
+from werkzeug import security
 
 from app import User, app
 from utility.address import AddressAIO
 from utility.consts import RE_EMAIL
-from werkzeug import security
 
 from ..paths import *
 
@@ -25,41 +25,48 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define components
-    image = html.Img(src="assets/illustrations/login.png", className="img-fluid")
+    # define text
+    text_hd, text_button = "Sign in", "Sign in"
+    text_sub = "Login the system with your account."
 
     # define components
-    col_main = [
-        ADDRESS,
-        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+    image_src = "assets/illustrations/login.svg"
+    image = html.Img(src=image_src, className="img-fluid")
 
-        html.Div("Sign in", className="text-center fs-1"),
-        html.Div("Login the system with your account.", className="text-center text-muted"),
-
-        dbc.Form(children=[
-            dbc.FormFloating(children=[
-                dbc.Input(id=f"id-{TAG}-email", type="email"),
-                dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-            ]),
-            dbc.FormFloating(children=[
-                dbc.Input(id=f"id-{TAG}-pwd", type="password"),
-                dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
-            ], class_name="mt-4"),
+    # define components
+    form_children = [
+        dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-email", type="email"),
+            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+        ]),
+        dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-pwd", type="password"),
+            dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
-
-        dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name="text-danger text-center w-100 mx-auto my-0"),
-        dbc.Button("Sign in", id=f"id-{TAG}-button", size="lg", class_name="w-100 mt-4"),
-
-        html.Div(children=[
-            html.A("Sign up", href=PATH_REGISTERE),
-            html.A("Forget password?", href=PATH_RESETPWDE),
-        ], className="d-flex justify-content-between"),
     ]
 
-    # define column main
+    # define components
+    other_addresses = [
+        html.A("Sign up", href=PATH_REGISTERE),
+        html.A("Forget password?", href=PATH_RESETPWDE),
+    ]
+
+    # return result
+    class_label = "text-center text-danger w-100 my-0"
     return dbc.Row(children=[
         dbc.Col(image, width=10, md=4, class_name="mt-auto mt-md-0"),
-        dbc.Col(col_main, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
+        dbc.Col(children=[
+            ADDRESS, dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+
+            html.Div(text_hd, className="text-center fs-1"),
+            html.Div(text_sub, className="text-center text-muted"),
+
+            dbc.Form(form_children, class_name="mt-4"),
+            dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
+
+            dbc.Button(text_button, id=f"id-{TAG}-button", size="lg", class_name="w-100 mt-4"),
+            html.Div(other_addresses, className="d-flex justify-content-between"),
+        ], width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
     ], align="center", justify="center", class_name="vh-100 w-100 mx-auto")
 
 
