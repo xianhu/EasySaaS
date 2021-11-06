@@ -15,7 +15,7 @@ from app import User, app, app_db, app_redis
 from utility.address import AddressAIO
 from utility.consts import RE_PWD
 
-from ..palert import layout_expire
+from ..palert import *
 from ..paths import *
 
 TAG = "password"
@@ -32,7 +32,9 @@ def layout(pathname, search):
         token, email = json.loads(app_redis.get(_id))
         assert _token == token
     except:
-        return layout_expire(pathname, search, PATH_INTROS)
+        text_hd = "Link expired"
+        text_sub = "The link has already expired, click button to safe page."
+        return layout_simple(text_hd, text_sub, "Back to safety", PATH_INTROS)
 
     # define text
     text_hd, text_button = "Set password", "Set password"

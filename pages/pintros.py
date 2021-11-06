@@ -56,15 +56,6 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define class
-    fluid = None
-    class_col = "mt-4 mt-md-0"
-    class_row = "w-100 mx-auto my-5"
-
-    # define components
-    navbar = cnavbar.layout(pathname, search, fluid=fluid)
-    footer = cfooter.layout(pathname, search, fluid=fluid)
-
     # define components
     image_src = "assets/illustrations/intros.svg"
     image = html.Img(src=image_src, className="img-fluid")
@@ -93,8 +84,13 @@ def layout(pathname, search):
             dbc.Button("Buy it now", class_name="w-75 mt-4"),
         ])
 
-    # define components
+    # define
+    fluid = None
+    class_col = "mt-4 mt-md-0"
+    class_row = "w-100 mx-auto my-5"
     class_col_price = f"{class_col} border rounded-3 py-4"
+
+    # define components
     content = dbc.Container(children=[
         dbc.Row(children=[
             dbc.Col(image, width=10, md={"size": 5, "order": 2}, class_name=None),
@@ -111,6 +107,10 @@ def layout(pathname, search):
             dbc.Col(plan_list[2], width=10, md=3, class_name=class_col_price),
         ], align="center", justify="around", class_name=f"{class_row} text-center"),
     ], fluid=fluid)
+
+    # define components
+    navbar = cnavbar.layout(pathname, search, fluid=fluid)
+    footer = cfooter.layout(pathname, search, fluid=fluid)
 
     # return result
     return [navbar, content, footer]

@@ -4,7 +4,9 @@
 sign page
 """
 
-from .. import palert
+import flask
+
+from ..palert import *
 from ..paths import *
 from . import pemail, plogin, ppwd
 
@@ -13,19 +15,23 @@ def layout(pathname, search):
     """
     layout of page
     """
-    content = None
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
-        content = plogin.layout(pathname, search)
+        return plogin.layout(pathname, search)
 
-    elif pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
-        content = pemail.layout(pathname, search)
-    elif pathname == f"{PATH_REGISTERE}-result" or pathname == f"{PATH_RESETPWDE}-result":
-        content = palert.layout_email(pathname, search, PATH_INTROS)
+    if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
+        return pemail.layout(pathname, search)
+    if pathname == f"{PATH_REGISTERE}-result" or pathname == f"{PATH_RESETPWDE}-result":
+        email = flask.session.get("email", "")
+        text_hd = "Sending success"
+        text_sub = f"An email has sent to [{email}], go mailbox to verify it."
+        return layout_simple(text_hd, text_sub, "Back to home", PATH_INTROS)
 
-    elif pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
-        content = ppwd.layout(pathname, search)
-    elif pathname == f"{PATH_REGISTERE}-pwd-result" or pathname == f"{PATH_RESETPWDE}-pwd-result":
-        content = palert.layout_password(pathname, search, PATH_LOGIN)
+    if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
+        return ppwd.layout(pathname, search)
+    if pathname == f"{PATH_REGISTERE}-pwd-result" or pathname == f"{PATH_RESETPWDE}-pwd-result":
+        text_hd = "Setting success"
+        text_sub = "The password was set successfully."
+        return layout_simple(text_hd, text_sub, "Go to login", PATH_LOGIN)
 
     # return result
-    return [content, ]
+    return layout_404(pathname, search)
