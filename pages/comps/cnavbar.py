@@ -19,29 +19,29 @@ def layout(pathname, search, fluid=None):
     layout of components
     """
     # define components
-    class_navlink = "fw-bold mx-auto mx-md-4 hover-primary"
+    class_navlink = "fw-bold hover-primary mx-auto mx-md-4"
     nav_link_list = [
         dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_navlink),
         dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_navlink),
     ]
 
     # define components
-    class_navitem = "fw-bold mx-auto mx-md-0 d-flex align-items-center"
+    class_navitem = "fw-bold d-flex align-items-center mx-auto mx-md-0"
     if not flask_login.current_user.is_authenticated:
         args_button = {"outline": True, "color": "primary"}
         nav_item_list = dbc.NavItem([
             html.A("Sign up", href=PATH_REGISTERE, className="fw-bold"),
-            dbc.Button("Sign in", href=PATH_LOGIN, **args_button, className="fw-bold ms-3"),
+            dbc.Button("Sign in", href=PATH_LOGIN, **args_button, class_name="fw-bold ms-3"),
         ], class_name=class_navitem)
     else:
-        class_icon = "fw-bold mx-0 text-secondary hover-primary"
+        class_icon = "fw-bold text-secondary hover-primary mx-0"
         nav_item_list = dbc.NavItem([
             html.A(html.I(className="bi bi-bell fs-5 " + class_icon), href=f"{PATH_USER}-notify"),
             html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
         ], class_name=class_navitem)
 
     # return result
-    class_brand = "fw-bold mx-0 text-primary fs-5"
+    class_brand = "fw-bold text-primary fs-5 mx-0"
     return dbc.Navbar(dbc.Container(children=[
         dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name=class_brand),
         dbc.NavbarToggler(id="id-toggler"),

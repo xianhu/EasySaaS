@@ -22,16 +22,14 @@ def layout(pathname, search):
         return pemail.layout(pathname, search)
     if pathname == f"{PATH_REGISTERE}-result" or pathname == f"{PATH_RESETPWDE}-result":
         email = flask.session.get("email", "")
-        text_hd = "Sending success"
         text_sub = f"An email has sent to [{email}], go mailbox to verify it."
-        return layout_simple(text_hd, text_sub, "Back to home", PATH_INTROS)
+        return layout_simple("Sending success", text_sub, "Back to home", PATH_INTROS)
 
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         return ppwd.layout(pathname, search)
     if pathname == f"{PATH_REGISTERE}-pwd-result" or pathname == f"{PATH_RESETPWDE}-pwd-result":
-        text_hd = "Setting success"
         text_sub = "The password was set successfully."
-        return layout_simple(text_hd, text_sub, "Go to login", PATH_LOGIN)
+        return layout_simple("Setting success", text_sub, "Go to login", PATH_LOGIN)
 
     # return result
     return layout_404(pathname, search)

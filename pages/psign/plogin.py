@@ -81,7 +81,7 @@ def layout(pathname, search):
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd):
     # check data
-    email, pwd = (email or "").strip(), (pwd or "").strip()
+    email = (email or "").strip()
     if not RE_EMAIL.match(email):
         return "Email is invalid", False, None
     _id = hashlib.md5(email.encode()).hexdigest()
@@ -90,7 +90,9 @@ def _button_click(n_clicks, email, pwd):
     user = User.query.get(_id)
     if not user:
         return "Email doesn't exist", False, None
-    if not security.check_password_hash(user.pwd, pwd):
+
+    # check password
+    if not security.check_password_hash(user.pwd, pwd or ""):
         return "Password is incorrect", False, None
 
     # login user

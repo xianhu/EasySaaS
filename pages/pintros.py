@@ -87,8 +87,8 @@ def layout(pathname, search):
     # define
     fluid = None
     class_col = "mt-4 mt-md-0"
-    class_row = "w-100 mx-auto my-5"
-    class_col_price = f"{class_col} border rounded-3 py-4"
+    class_row = "w-100 mx-auto"
+    class_col_price = "border rounded-3 py-4"
 
     # define components
     content = dbc.Container(children=[
@@ -97,16 +97,16 @@ def layout(pathname, search):
             dbc.Col(intros, width=10, md={"size": 5, "order": 1}, class_name=class_col),
         ], align="center", justify="around", class_name=f"{class_row} text-center"),
         dbc.Row(children=[
-            dbc.Col(intros_list[0], width=10, md=3, class_name=class_col),
+            dbc.Col(intros_list[0], width=10, md=3, class_name=None),
             dbc.Col(intros_list[1], width=10, md=3, class_name=class_col),
             dbc.Col(intros_list[2], width=10, md=3, class_name=class_col),
-        ], align="start", justify="around", class_name=f"{class_row} py-4"),
+        ], align="start", justify="around", class_name=f"{class_row} mt-5"),
         dbc.Row(children=[
             dbc.Col(plan_list[0], width=10, md=3, class_name=class_col_price),
-            dbc.Col(plan_list[1], width=10, md=3, class_name=class_col_price),
-            dbc.Col(plan_list[2], width=10, md=3, class_name=class_col_price),
-        ], align="center", justify="around", class_name=f"{class_row} text-center"),
-    ], fluid=fluid)
+            dbc.Col(plan_list[1], width=10, md=3, class_name=f"{class_col_price} {class_col}"),
+            dbc.Col(plan_list[2], width=10, md=3, class_name=f"{class_col_price} {class_col}"),
+        ], align="center", justify="around", class_name=f"{class_row} text-center mt-5"),
+    ], fluid=fluid, class_name="my-5")
 
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=fluid)

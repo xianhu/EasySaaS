@@ -38,7 +38,7 @@ def layout(pathname, search):
 
     # define text
     text_hd, text_button = "Set password", "Set password"
-    text_sub = "Set the password of this email."
+    text_sub = "Set the password of this email please."
 
     # define components
     image_src = "assets/illustrations/password.svg"
@@ -51,12 +51,12 @@ def layout(pathname, search):
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
         ]),
         dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-pwd", type="password"),
-            dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
+            dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
+            dbc.Label("Password:", html_for=f"id-{TAG}-pwd1"),
         ], class_name="mt-4"),
         dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
-            dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd1"),
+            dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
+            dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
     ]
 
@@ -92,17 +92,17 @@ def layout(pathname, search):
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd", "value"),
     State(f"id-{TAG}-pwd1", "value"),
+    State(f"id-{TAG}-pwd2", "value"),
     State(f"id-{TAG}-pathname", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, pwd1, pathname):
+def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # check data
-    if (not pwd) or (len(pwd) < 6):
+    if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", False, None
-    if not RE_PWD.match(pwd):
+    if not RE_PWD.match(pwd1):
         return "Password must contain numbers and letters", False, None
-    if (not pwd1) or (pwd1 != pwd):
+    if (not pwd2) or (pwd2 != pwd1):
         return "Passwords are inconsistent", False, None
     _id = hashlib.md5(email.encode()).hexdigest()
 
@@ -110,7 +110,7 @@ def _button_click(n_clicks, email, pwd, pwd1, pathname):
     user = User.query.filter_by(id=_id).first()
     if not user:
         user = User(id=_id, email=email)
-    user.pwd = security.generate_password_hash(pwd)
+    user.pwd = security.generate_password_hash(pwd1)
 
     # commit user data
     app_db.session.merge(user)

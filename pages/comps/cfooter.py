@@ -20,4 +20,4 @@ def layout(pathname, search, fluid=None):
     return html.Footer(dbc.Container(children=[
         html.Div(["Powered by ©2021 ", addr, ". All rights reserved."]),
         html.A(mail_service, href=mail_href, className="text-decoration-none")
-    ], fluid=fluid), className="text-center small border-top py-4")
+    ], fluid=fluid, class_name="text-center small"), className="border-top py-2")
