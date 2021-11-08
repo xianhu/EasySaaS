@@ -33,5 +33,5 @@ def layout_500(pathname, search, return_href="/"):
     layout of page
     """
     text_hd = "An error occurred"
-    text_sub = "A server-side error has occurred, click button to safe page."
+    text_sub = "A server error has occurred, click button to safe page."
     return layout_simple(text_hd, text_sub, "Back to safety", return_href)

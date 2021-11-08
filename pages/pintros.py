@@ -10,6 +10,8 @@ from dash import html
 from .comps import cfooter, cnavbar
 from .paths import *
 
+TAG = "intros"
+
 HEADER = "Welcome to EasySaaS demo"
 HEADERSUB = """
 This project will be attempt to make a great starting point 
@@ -51,27 +53,39 @@ PLAN_LIST = [{
     ]
 }]
 
+CONTACT_HEADER = "Let us hear from you directly!"
+CONTACT_HEADERSUB = "We always want to hear from you! Let us know how we can best help you and we'll do our very best."
+
 
 def layout(pathname, search):
     """
     layout of page
     """
-    # define components
-    image_src = "assets/illustrations/intros.svg"
-    image = html.Img(src=image_src, className="img-fluid")
-    intros = [
-        html.Div(HEADER, className="fs-1 mb-2"),
-        html.P(HEADERSUB, className="fs-5 text-muted lead"),
-    ]
+    # define class
+    class_col = "mt-4 mt-md-0"
+    class_row = "w-100 mx-auto"
 
     # define components
-    intros_list = []
-    for item in INTROS_LIST:
-        intros_list.append([
-            html.I(className=f"{item[0]} fs-4 text-primary"),
-            html.Div(item[1], className="fs-5 my-1"),
-            html.P(item[2], className="text-muted"),
-        ])
+    image = html.Img(src="assets/illustrations/intros.svg", className="img-fluid")
+    content1 = dbc.Row(children=[
+        dbc.Col(image, width=10, md={"size": 5, "order": 2}),
+        dbc.Col(children=[
+            html.Div(HEADER, className="fs-1 text-center mb-2"),
+            html.P(HEADERSUB, className="fs-5 text-center text-muted lead"),
+        ], width=10, md={"size": 5, "order": 1}, class_name=class_col),
+    ], align="center", justify="around", class_name=class_row)
+
+    # define components
+    intros_list = [[
+        html.I(className=f"{item[0]} fs-4 text-primary"),
+        html.Div(item[1], className="fs-5 my-1"),
+        html.P(item[2], className="text-muted"),
+    ] for item in INTROS_LIST]
+    content2 = dbc.Row(children=[
+        dbc.Col(intros_list[0], width=10, md=3, class_name=None),
+        dbc.Col(intros_list[1], width=10, md=3, class_name=class_col),
+        dbc.Col(intros_list[2], width=10, md=3, class_name=class_col),
+    ], align="start", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
     plan_list = []
@@ -83,34 +97,46 @@ def layout(pathname, search):
             html.Div(desc_list, className="lh-lg"),
             dbc.Button("Buy it now", class_name="w-75 mt-4"),
         ])
-
-    # define
-    fluid = None
-    class_col = "mt-4 mt-md-0"
-    class_row = "w-100 mx-auto"
-    class_col_price = "border rounded-3 py-4"
-
-    # define components
-    content = dbc.Container(children=[
-        dbc.Row(children=[
-            dbc.Col(image, width=10, md={"size": 5, "order": 2}, class_name=None),
-            dbc.Col(intros, width=10, md={"size": 5, "order": 1}, class_name=class_col),
-        ], align="center", justify="around", class_name=f"{class_row} text-center"),
-        dbc.Row(children=[
-            dbc.Col(intros_list[0], width=10, md=3, class_name=None),
-            dbc.Col(intros_list[1], width=10, md=3, class_name=class_col),
-            dbc.Col(intros_list[2], width=10, md=3, class_name=class_col),
-        ], align="start", justify="around", class_name=f"{class_row} mt-5"),
-        dbc.Row(children=[
-            dbc.Col(plan_list[0], width=10, md=3, class_name=class_col_price),
-            dbc.Col(plan_list[1], width=10, md=3, class_name=f"{class_col_price} {class_col}"),
-            dbc.Col(plan_list[2], width=10, md=3, class_name=f"{class_col_price} {class_col}"),
-        ], align="center", justify="around", class_name=f"{class_row} text-center mt-5"),
-    ], fluid=fluid, class_name="my-5")
+    class_plan = "text-center border rounded-3 py-4"
+    content3 = dbc.Row(children=[
+        dbc.Col(plan_list[0], width=10, md=3, class_name=class_plan),
+        dbc.Col(plan_list[1], width=10, md=3, class_name=f"{class_col} {class_plan}"),
+        dbc.Col(plan_list[2], width=10, md=3, class_name=f"{class_col} {class_plan}"),
+    ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    navbar = cnavbar.layout(pathname, search, fluid=fluid)
-    footer = cfooter.layout(pathname, search, fluid=fluid)
+    content4 = dbc.Row(children=[
+        dbc.Col(children=[
+            html.Div(CONTACT_HEADER, className="fs-2 text-center"),
+            html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
+        ], width=12, md=6),
+    ], align="center", justify="center", class_name=f"{class_row} mt-5")
+
+    # define components
+    content5 = dbc.Row(children=[
+        dbc.Col(dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-email", type="email"),
+            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+        ]), width=12, md=4, class_name=None),
+        dbc.Col(dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-name", type="text"),
+            dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
+        ]), width=12, md=4, class_name=class_col),
+        dbc.Col(children=[
+            dbc.Textarea(
+                id=f"id-{TAG}-content", rows=4,
+                placeholder="Tell us what we can help you with!",
+            ),
+        ], width=12, md=8, class_name=f"{class_col} mt-md-4"),
+        dbc.Col(children=[
+            dbc.Button("Send message", id=f"id-{TAG}-button"),
+        ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
+    ], align="center", justify="center", class_name=f"{class_row} mt-2")
+
+    # define components
+    navbar = cnavbar.layout(pathname, search, fluid=None)
+    footer = cfooter.layout(pathname, search, fluid=None)
+    content = [content1, content2, content3, content4, content5]
 
     # return result
-    return [navbar, content, footer]
+    return [navbar, dbc.Container(content, class_name="py-5"), footer]
