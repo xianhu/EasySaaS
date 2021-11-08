@@ -26,19 +26,17 @@ def layout(pathname, search, fluid=None):
     ]
 
     # define components
-    class_navitem = "fw-bold d-flex align-items-center mx-auto mx-md-0"
     if not flask_login.current_user.is_authenticated:
         args_button = {"outline": True, "color": "primary"}
         nav_item_list = dbc.NavItem([
             html.A("Sign up", href=PATH_REGISTERE, className="fw-bold"),
             dbc.Button("Sign in", href=PATH_LOGIN, **args_button, class_name="fw-bold ms-3"),
-        ], class_name=class_navitem)
+        ], class_name="d-flex align-items-center mx-auto mx-md-0")
     else:
-        class_icon = "fw-bold text-secondary hover-primary mx-0"
         nav_item_list = dbc.NavItem([
-            html.A(html.I(className="bi bi-bell fs-5 " + class_icon), href=f"{PATH_USER}-notify"),
+            html.A(html.I(className="bi bi-bell fs-5 text-secondary hover-primary"), href=PATH_USER),
             html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
-        ], class_name=class_navitem)
+        ], class_name="d-flex align-items-center mx-auto mx-md-0")
 
     # return result
     class_brand = "fw-bold text-primary fs-5 mx-0"
