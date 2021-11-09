@@ -12,7 +12,8 @@ from app import app
 from ..comps import cfooter, cnavbar
 from ..palert import *
 from ..paths import *
-from . import paccount, pbilling
+from .cards1 import cbasic, cnofity, cpwd
+from .cards2 import cinvoice, cplan
 
 TAG = "user"
 
@@ -34,48 +35,58 @@ def layout(pathname, search):
     """
     # define components
     if pathname == PATH_USER or pathname == f"{PATH_USER}-account":
-        content = paccount.layout(pathname, search)
+        content = [
+            cbasic.layout(pathname, search),
+            cpwd.layout(pathname, search),
+            cnofity.layout(pathname, search),
+        ]
+        cat_title = "User > ACCOUNT"
     elif pathname == f"{PATH_USER}-billing":
-        content = pbilling.layout(pathname, search)
+        content = [
+            cplan.layout(pathname, search),
+            cinvoice.layout(pathname, search),
+        ]
+        cat_title = "User > BILLING"
     else:
         return layout_404(pathname, search, PATH_USER)
 
     # define components
-    cat_title, cat_list = "User > General", []
+    cat_list = []
     for title, path in CATALOG_LIST:
         if not path:
-            cat_list.append(html.Div(title, className=f"small text-muted {'mt-4' if cat_list else ''}"))
+            class_cat = f"small text-muted {'mt-4' if cat_list else ''}"
+            cat_list.append(html.Div(title, className=class_cat))
         else:
-            cat_list.append(html.A(title, href=path, className="small text-black text-decoration-none, mt-2"))
-        if path == pathname:
-            cat_title = f"User > {title}"
+            class_cat = "small text-black hover-primary text-decoration-none mt-2"
+            cat_list.append(html.A(title, href=path, className=class_cat))
     cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-100 mt-4"))
 
     # define components
-    cat_toggler = dbc.NavbarToggler(html.A(html.I(className="bi bi-list fs-1")), id=f"id-{TAG}-toggler", class_name="border")
-    cat_collapse = dbc.Collapse(dbc.Card(cat_list, className="p-4"), id=f"id-{TAG}-collapse", class_name="d-md-block")
+    cat_toggler = dbc.NavbarToggler(children=[
+        html.A(html.I(className="bi bi-list fs-1")),
+    ], id=f"id-{TAG}-toggler", class_name="border")
+    cat_collapse = dbc.Collapse(children=[
+        dbc.Card(cat_list, className="p-4"),
+    ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
-    fluid = None
-    content1 = dbc.Container(children=[
-        dbc.Row(children=[
-            dbc.Col(cat_title, width="auto", class_name="fw-bold text-primary"),
-            dbc.Col(cat_toggler, width="auto", class_name=None),
-        ], align="center", justify="between", class_name="w-100 mx-auto"),
-    ], fluid=fluid, class_name="d-md-none border-bottom py-2")
-    content2 = dbc.Container(children=[
-        dbc.Row(children=[
-            dbc.Col(cat_collapse, width=12, md=2, class_name=None),
-            dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-0"),
-        ], align="start", justify="center", class_name="w-100 mx-auto"),
-    ], fluid=fluid, class_name="mt-0 mt-md-4")
+    content1 = dbc.Row(children=[
+        dbc.Col(cat_title, width="auto", class_name="text-primary"),
+        dbc.Col(cat_toggler, width="auto", class_name=None),
+    ], align="center", justify="between", class_name="w-100 mx-auto d-md-none border-bottom py-2")
 
     # define components
-    navbar = cnavbar.layout(pathname, search, fluid=fluid)
-    footer = cfooter.layout(pathname, search, fluid=fluid)
+    content2 = dbc.Row(children=[
+        dbc.Col(cat_collapse, width=12, md=2, class_name=None),
+        dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-0"),
+    ], align="start", justify="center", class_name="w-100 mx-auto mt-0 mt-md-4")
+
+    # define components
+    navbar = cnavbar.layout(pathname, search, fluid=None)
+    footer = cfooter.layout(pathname, search, fluid=None)
 
     # return result
-    return [navbar, content1, content2, footer]
+    return [navbar, dbc.Container([content1, content2]), footer]
 
 
 @app.callback(
