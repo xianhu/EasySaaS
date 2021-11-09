@@ -6,6 +6,7 @@ page of password
 
 import hashlib
 import json
+import logging
 
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
@@ -30,11 +31,11 @@ def layout(pathname, search):
     try:
         _id, _token = search.strip().split("&&")
         token, email = json.loads(app_redis.get(_id))
-        assert _token == token
-    except:
-        text_hd = "Link expired"
+        assert _token == token, (_token, token)
+    except Exception as excep:
+        logging.error("token expired or error: %s", excep)
         text_sub = "The link has already expired, click button to safe page."
-        return layout_simple(text_hd, text_sub, "Back to safety", PATH_INTROS)
+        return layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
 
     # define text
     text_hd, text_button = "Set password", "Set password"
@@ -68,6 +69,7 @@ def layout(pathname, search):
 
     # return result
     class_label = "text-center text-danger w-100 my-0"
+    args_button = {"size": "lg", "class_name": "w-100 mt-4"}
     return dbc.Row(children=[
         dbc.Col(image, width=10, md=4, class_name="mt-auto mt-md-0"),
         dbc.Col(children=[
@@ -79,7 +81,7 @@ def layout(pathname, search):
             dbc.Form(form_children, class_name="mt-4"),
             dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
 
-            dbc.Button(text_button, id=f"id-{TAG}-button", size="lg", class_name="w-100 mt-4"),
+            dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
             html.Div(other_addresses, className="d-flex justify-content-between"),
         ], width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
     ], align="center", justify="center", class_name="vh-100 w-100 mx-auto")
