@@ -95,14 +95,9 @@ def test_db():
         user = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
         session.add(user)
         session.commit()
-        print(session.query(User).get(_id))
-
-        user.name = "user"
-        session.merge(user)
-        session.commit()
-        print(session.query(User).get(_id))
 
         print(plan.users)
+        print(session.query(User).get(_id))
     return
 
 

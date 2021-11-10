@@ -85,7 +85,7 @@ def layout(pathname, search):
         dbc.Col(intros_list[0], width=10, md=3, class_name=None),
         dbc.Col(intros_list[1], width=10, md=3, class_name=class_col),
         dbc.Col(intros_list[2], width=10, md=3, class_name=class_col),
-    ], align="start", justify="around", class_name=f"{class_row} mt-5")
+    ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
     plan_list = []
@@ -105,12 +105,10 @@ def layout(pathname, search):
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    content4 = dbc.Row(children=[
-        dbc.Col(children=[
-            html.Div(CONTACT_HEADER, className="fs-2 text-center"),
-            html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
-        ], width=12, md=6),
-    ], align="center", justify="center", class_name=f"{class_row} mt-5")
+    content4 = dbc.Row(dbc.Col(children=[
+        html.Div(CONTACT_HEADER, className="fs-2 text-center"),
+        html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
+    ], width=12, md=6), align="center", justify="center", class_name=f"{class_row} mt-5")
 
     # define components
     content5 = dbc.Row(children=[
@@ -122,12 +120,10 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-name", type="text"),
             dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
         ]), width=12, md=4, class_name=class_col),
-        dbc.Col(children=[
-            dbc.Textarea(
-                id=f"id-{TAG}-content", rows=4,
-                placeholder="Tell us what we can help you with!",
-            ),
-        ], width=12, md=8, class_name=f"{class_col} mt-md-4"),
+        dbc.Col(dbc.Textarea(
+            id=f"id-{TAG}-content", rows=4,
+            placeholder="Tell us what we can help you with!",
+        ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
         dbc.Col(children=[
             dbc.Button("Send message", id=f"id-{TAG}-button"),
         ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
