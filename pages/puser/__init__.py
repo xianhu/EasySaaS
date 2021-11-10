@@ -35,18 +35,18 @@ def layout(pathname, search):
     """
     # define components
     if pathname == PATH_USER or pathname == f"{PATH_USER}-account":
-        content = [
+        cat_title = "User > ACCOUNT"
+        content_main = [
             cbasic.layout(pathname, search),
             cpwd.layout(pathname, search),
             cnofity.layout(pathname, search),
         ]
-        cat_title = "User > ACCOUNT"
     elif pathname == f"{PATH_USER}-billing":
-        content = [
+        cat_title = "User > BILLING"
+        content_main = [
             cplan.layout(pathname, search),
             cinvoice.layout(pathname, search),
         ]
-        cat_title = "User > BILLING"
     else:
         return layout_404(pathname, search, PATH_USER)
 
@@ -54,31 +54,28 @@ def layout(pathname, search):
     cat_list = []
     for title, path in CATALOG_LIST:
         if not path:
-            class_cat = f"small text-muted {'mt-4' if cat_list else ''}"
+            class_cat = "small text-muted mt-4 px-4"
             cat_list.append(html.Div(title, className=class_cat))
         else:
-            class_cat = "small text-black hover-primary text-decoration-none mt-2"
+            class_cat = "small text-black hover-primary text-decoration-none mt-2 px-4"
             cat_list.append(html.A(title, href=path, className=class_cat))
-    cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-100 mt-4"))
+    cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
 
     # define components
-    cat_toggler = dbc.NavbarToggler(children=[
-        html.A(html.I(className="bi bi-list fs-1")),
-    ], id=f"id-{TAG}-toggler", class_name="border")
-    cat_collapse = dbc.Collapse(children=[
-        dbc.Card(cat_list, className="p-4"),
-    ], id=f"id-{TAG}-collapse", class_name="d-md-block")
+    cat_icon = html.I(className="bi bi-list fs-1")
+    cat_toggler = dbc.NavbarToggler(html.A(cat_icon), id=f"id-{TAG}-toggler", class_name="border")
+    cat_collapse = dbc.Collapse(dbc.Card(cat_list), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
     content1 = dbc.Row(children=[
         dbc.Col(cat_title, width="auto", class_name="text-primary"),
         dbc.Col(cat_toggler, width="auto", class_name=None),
-    ], align="center", justify="between", class_name="w-100 mx-auto d-md-none border-bottom py-2")
+    ], align="center", justify="between", class_name="d-md-none w-100 mx-auto border-bottom py-2")
 
     # define components
     content2 = dbc.Row(children=[
         dbc.Col(cat_collapse, width=12, md=2, class_name=None),
-        dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-0"),
+        dbc.Col(content_main, width=12, md=8, class_name="mt-4 mt-md-0"),
     ], align="start", justify="center", class_name="w-100 mx-auto mt-0 mt-md-4")
 
     # define components

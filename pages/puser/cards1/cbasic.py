@@ -36,12 +36,13 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name=None),
             dbc.Col(dbc.FormFloating(children=[
                 dbc.Input(id=f"id-{TAG}-name", type="text", value=name),
-                dbc.Label("NickName:", html_for=f"id-{TAG}-name"),
+                dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(dbc.FormFloating(children=[
                 dbc.Input(id=f"id-{TAG}-phone", type="tel", value=phone),
                 dbc.Label("Phone:", html_for=f"id-{TAG}-phone"),
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
+            # change line
             dbc.Col(children=[
                 dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
@@ -52,6 +53,7 @@ def layout(pathname, search):
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully"),
+            # dbc.ModalFooter(dbc.Button("OK", href=PATH_USER, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
     ], class_name="mb-4")
 
@@ -76,7 +78,7 @@ def _button_click(n_clicks, name, phone):
     user.name = name or ""
     user.phone = phone or ""
 
-    # commit user data
+    # commit data
     app_db.session.merge(user)
     app_db.session.commit()
 

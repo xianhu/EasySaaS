@@ -37,6 +37,7 @@ def layout(pathname, search):
                 dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
                 dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
+            # change line
             dbc.Col(children=[
                 dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
@@ -47,7 +48,7 @@ def layout(pathname, search):
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The password was updated successfully"),
-            dbc.ModalFooter(dbc.Button("Go back to login", href=PATH_LOGOUT, class_name="ms-auto")),
+            dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
     ], class_name="mb-4")
 
@@ -77,10 +78,10 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     if (not pwd2) or (pwd2 != pwd1):
         return "Passwords are inconsistent", False, False
 
-    # update user's password
+    # update password
     user.pwd = security.generate_password_hash(pwd1)
 
-    # commit user data
+    # commit data
     app_db.session.merge(user)
     app_db.session.commit()
 

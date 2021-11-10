@@ -26,6 +26,6 @@ def layout(pathname, search):
         dbc.Row(children=[
             dbc.Col("Notifications:", width="auto"),
             dbc.Col(dbc.Switch(id=f"id-{TAG}-switch"), width="auto"),
-        ], align="center", justify="between", class_name="border-bottom gx-0 p-4"),
+        ], align="center", justify="between", class_name="gx-0 border-bottom p-4"),
         html.Div(html.Ul(notifications), className="p-4"),
     ], class_name="mb-4")
