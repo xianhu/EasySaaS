@@ -6,6 +6,26 @@
     color: #0d6efd !important;
 }
 
+.accordion-button:focus,
+.accordion-button:active:focus,
+.accordion-button.active:focus,
+.accordion-button.focus,
+.accordion-button:active.focus,
+.accordion-button.active.focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: white;
+    box-shadow: none;
+}
+
+.accordion-item {
+    border: 0;
+}
+
 .side-class {
     width: 100%;
     max-height: 75%;
