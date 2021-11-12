@@ -12,7 +12,7 @@ from app import app
 from ..comps import cfooter, cnavbar
 from ..palert import *
 from ..paths import *
-from .config_cat import CATALOG_LIST
+from . import cat_layout
 
 TAG = "analysis"
 
@@ -32,34 +32,9 @@ def layout(pathname, search):
         return layout_404(pathname, search, PATH_USER)
 
     # define components
-    cat_list = []
-    for first_title, first_item in CATALOG_LIST:
-        cat_list.append(html.Div(first_title, className="small text-muted mt-4 px-4"))
-
-        for second_title, second_info in first_item:
-            if second_info["href"]:
-                cat_list.append(html.A(children=[
-                    html.I(className=second_info["icon"]),
-                    html.Div(second_title, className="ml-2")
-                ]))
-                print(first_title, second_title, second_info["href"])
-                continue
-
-            for third_title, third_path in second_info["items"]:
-                cat_list.append(dbc.Accordion(children=[]))
-                print(first_title, second_title, third_title, third_path)
-        # if not path:
-        #     class_cat = "small text-muted mt-4 px-4"
-        #     cat_list.append(html.Div(title, className=class_cat))
-        # else:
-        #     class_cat = "small text-black hover-primary text-decoration-none mt-2 px-4"
-        #     cat_list.append(html.A(title, href=path, className=class_cat))
-    cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
-
-    # define components
     cat_icon = html.I(className="bi bi-list fs-1")
     cat_toggler = dbc.NavbarToggler(html.A(cat_icon), id=f"id-{TAG}-toggler", class_name="border")
-    cat_collapse = dbc.Collapse(dbc.Card(cat_list), id=f"id-{TAG}-collapse", class_name="d-md-block")
+    cat_collapse = dbc.Collapse(dbc.Card(cat_layout.layout(pathname, search)), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
     content1 = dbc.Row(children=[

@@ -6,6 +6,16 @@
     color: #0d6efd !important;
 }
 
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+    outline: none;
+    box-shadow: none;
+}
+
 .accordion-button:focus,
 .accordion-button:active:focus,
 .accordion-button.active:focus,
@@ -17,6 +27,12 @@
     box-shadow: none;
 }
 
+.accordion-none::after {
+    content: none;
+}
+
+
+/* 
 .accordion-button:not(.collapsed) {
     background-color: white;
     box-shadow: none;
@@ -24,7 +40,7 @@
 
 .accordion-item {
     border: 0;
-}
+} */
 
 .side-class {
     width: 100%;
