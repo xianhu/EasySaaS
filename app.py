@@ -31,13 +31,11 @@ app = dash.Dash(
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
+    external_scripts=[],
     external_stylesheets=[
         "default.css",
         dbc.icons.BOOTSTRAP,
         dbc.themes.BOOTSTRAP,
-    ],
-    external_scripts=[
-        "bootstrap.min.js",
     ],
     meta_tags=[{
         "charset": "utf-8",
