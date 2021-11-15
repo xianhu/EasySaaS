@@ -12,7 +12,7 @@ from app import app
 from ..comps import cfooter, cnavbar
 from ..palert import *
 from ..paths import *
-from . import cat_layout
+from . import catalog
 
 TAG = "analysis"
 
@@ -22,19 +22,19 @@ def layout(pathname, search):
     layout of page
     """
     # define components
-    if pathname == PATH_ANALYSIS or pathname == f"{PATH_USER}-account":
-        cat_title = "User > ACCOUNT"
-        content_main = None
-    elif pathname == f"{PATH_USER}-billing":
-        cat_title = "User > BILLING"
-        content_main = None
+    if pathname == PATH_ANALYSIS:
+        cat_title = "Analysis"
+        content_main = ""
+    elif pathname == f"{PATH_ANALYSIS}-db-analytics":
+        cat_title = "-db-analytics"
+        content_main = "-db-analytics"
     else:
         return layout_404(pathname, search, PATH_USER)
 
     # define components
     cat_icon = html.I(className="bi bi-list fs-1")
     cat_toggler = dbc.NavbarToggler(html.A(cat_icon), id=f"id-{TAG}-toggler", class_name="border")
-    cat_collapse = dbc.Collapse(dbc.Card(cat_layout.layout(pathname, search)), id=f"id-{TAG}-collapse", class_name="d-md-block")
+    cat_collapse = dbc.Collapse(html.Div(catalog.layout(pathname, search)), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
     content1 = dbc.Row(children=[
@@ -44,16 +44,16 @@ def layout(pathname, search):
 
     # define components
     content2 = dbc.Row(children=[
-        dbc.Col(cat_collapse, width=12, md=2, class_name=None),
-        dbc.Col(content_main, width=12, md=8, class_name="mt-4 mt-md-0"),
-    ], align="start", justify="center", class_name="w-100 mx-auto mt-0 mt-md-4")
+        dbc.Col(cat_collapse, width=12, md=2, class_name="h-100 overflow-scroll bg-dark1 text-white p-0"),
+        dbc.Col(content_main, width=12, md=10, class_name="mt-4 mt-md-0"),
+    ], align="start", justify="center", class_name="w-100 mx-auto p-0 mt-0 h-100")
 
     # define components
-    navbar = cnavbar.layout(pathname, search, fluid=None)
-    footer = cfooter.layout(pathname, search, fluid=None)
+    navbar = cnavbar.layout(pathname, search, fluid=True)
+    footer = cfooter.layout(pathname, search, fluid=True)
 
     # return result
-    return [navbar, dbc.Container([content1, content2]), footer]
+    return html.Div([navbar, dbc.Container([content2], fluid=True, class_name="p-0 h-100 overflow-scroll")], className="vh-100 overflow-scroll d-flex flex-column")
 
 
 @app.callback(

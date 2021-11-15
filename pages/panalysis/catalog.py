@@ -1,8 +1,11 @@
 # _*_ coding: utf-8 _*_
 
 """
-catalog config of page
+catalog of page
 """
+
+import dash_bootstrap_components as dbc
+from dash import html
 
 from ..paths import PATH_ANALYSIS
 
@@ -52,4 +55,38 @@ CATALOG_LIST = [
         ("Horizontal", f"{PATH_ANALYSIS}-ly-horizontal"),
         ("Detached", f"{PATH_ANALYSIS}-ly-detached"),
     ]}],
+    ["Pages", {"icon": "bi bi-file-break", "items": [
+        ("Profile", f"{PATH_ANALYSIS}-pg-profile"),
+        ("Invoice", f"{PATH_ANALYSIS}-pg-invoice"),
+        ("Pricing", f"{PATH_ANALYSIS}-pg-pricing"),
+        ("Maintenance", f"{PATH_ANALYSIS}-pg-maintenance"),
+        ("Starter Page", f"{PATH_ANALYSIS}-pg-starter"),
+        ("With Preloader", f"{PATH_ANALYSIS}-pg-preloader"),
+        ("Timeline", f"{PATH_ANALYSIS}-pg-timeline"),
+    ]}],
+    ["Layouts", {"icon": "bi bi-columns-gap", "items": [
+        ("Horizontal", f"{PATH_ANALYSIS}-ly-horizontal"),
+        ("Detached", f"{PATH_ANALYSIS}-ly-detached"),
+    ]}],
 ]
+
+
+def layout(pathname, search):
+    """
+    layout of catalog
+    """
+    # define components
+    accord_item_list = []
+    for title, info in CATALOG_LIST:
+        item_children = []
+        for title_2, path in info["items"]:
+            item_children.append(html.Div(html.A(title_2, href=path)))
+
+        accord_item_list.append(dbc.AccordionItem(children=item_children, title=title, className="bg-dark1 text-white"))
+
+    return [
+        html.Div("Home", className="aaaa", style={"padding": "1rem 1.25rem"}),
+        dbc.Accordion(accord_item_list, flush=True, className="bg-dark1 text-white"),
+        html.Div(),
+        html.Div(),
+    ]

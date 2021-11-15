@@ -29,7 +29,7 @@ def layout(pathname, search, fluid=None):
     if not flask_login.current_user.is_authenticated:
         args_button = {"outline": True, "color": "primary"}
         nav_item_list = dbc.NavItem([
-            html.A("Sign up", href=PATH_REGISTERE, className="fw-bold"),
+            html.A("Sign up", href=PATH_REGISTERE, className="text-white"),
             dbc.Button("Sign in", href=PATH_LOGIN, **args_button, class_name="fw-bold ms-3"),
         ], class_name="d-flex align-items-center mx-auto mx-md-0")
     else:
@@ -39,7 +39,7 @@ def layout(pathname, search, fluid=None):
         ], class_name="d-flex align-items-center mx-auto mx-md-0")
 
     # return result
-    class_brand = "fw-bold text-primary fs-5 mx-0"
+    class_brand = "fw-bold text-white fs-5 mx-0"
     return dbc.Navbar(dbc.Container(children=[
         dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name=class_brand),
         dbc.NavbarToggler(id="id-toggler"),
@@ -47,7 +47,7 @@ def layout(pathname, search, fluid=None):
             dbc.Nav(nav_link_list, navbar=True, class_name="mx-auto"),
             dbc.Nav(nav_item_list, navbar=True, class_name=None),
         ], id="id-collapse", is_open=False, navbar=True),
-    ], fluid=fluid), class_name="border-bottom py-2")
+    ], fluid=fluid, className="gx-0"), class_name="aaaa py-2", style={"padding": "1rem 1.25rem"})
 
 
 @app.callback(

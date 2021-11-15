@@ -83,7 +83,7 @@ def layout(pathname, search):
     footer = cfooter.layout(pathname, search, fluid=None)
 
     # return result
-    return [navbar, dbc.Container([content1, content2]), footer]
+    return html.Div([navbar, dbc.Container([content1, content2]), footer], className="")
 
 
 @app.callback(

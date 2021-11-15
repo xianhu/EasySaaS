@@ -21,7 +21,7 @@ app.title = config_app_name
 app.layout = html.Div(children=[
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
-    html.Div(id="id-content", className="bg-light min-vh-100"),
+    html.Div(id="id-content", className=""),
 ])
 
 # complete layout
