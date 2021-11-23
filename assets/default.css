@@ -2,6 +2,8 @@
  * external stylesheets
 */
 
+/* ----------------------------------------------------- */
+
 :root {
     --cs-primary-color: #42C7AB;
 }
@@ -44,18 +46,6 @@
     background-color: #42C7AB !important;
 }
 
-
-/* ----------------------------------------------------- */
-
-.hover-white:hover {
-    color: white !important;
-}
-
-.hover-main:hover {
-    color: var(--cs-primary-color) !important;
-}
-
-
 /* ----------------------------------------------------- */
 
 .accordion-shadow {
@@ -68,8 +58,8 @@
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #42C7AB;
     color: white;
+    background-color: var(--cs-primary-color);
 }
 
 .accordion-button::after {

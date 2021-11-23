@@ -19,9 +19,9 @@ from pages.paths import *
 # app layout
 app.title = config_app_name
 app.layout = html.Div(children=[
+    html.Div(id="id-content", className=None),
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
-    html.Div(id="id-content", className=""),
 ])
 
 # complete layout
