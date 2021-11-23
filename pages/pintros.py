@@ -126,6 +126,9 @@ def layout(pathname, search):
         ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
         dbc.Col(children=[
             dbc.Button("Send message", id=f"id-{TAG}-button"),
+            dbc.Button("Send message", id=f"id-{TAG}-button", disabled=True),
+            dbc.Button("Pay Now", size="sm", outline=True, color="primary"),
+            dbc.Button("Pay Now", size="sm", outline=True, color="primary",disabled=True),
         ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
     ], align="center", justify="center", class_name=f"{class_row} mt-2")
 

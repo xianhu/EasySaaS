@@ -33,6 +33,7 @@ app = dash.Dash(
     suppress_callback_exceptions=True,
     external_scripts=[],
     external_stylesheets=[
+        "custom.css",
         "default.css",
         dbc.icons.BOOTSTRAP,
         dbc.themes.BOOTSTRAP,
