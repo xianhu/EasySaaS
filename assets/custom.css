@@ -15,18 +15,12 @@ a {
     color: var(--cs-primary-color) !important;
 }
 
-/* ----------------------------------------------------- */
-
-.hover-white:hover {
-    color: white !important;
-}
-
-.hover-primary:hover {
-    color: var(--cs-primary-color) !important;
-}
-
 .text-primary {
     color: var(--cs-primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--cs-primary-color) !important;
 }
 
 /* ----------------------------------------------------- */
@@ -67,11 +61,6 @@ a {
     border-color: var(--cs-primary-color) !important;
 }
 
-.btn-outline-primary:hover {
-    color: white !important;
-    background-color: var(--cs-primary-color) !important;
-}
-
 .btn-check:focus+.btn-outline-primary,
 .btn-outline-primary:focus {
     box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
@@ -93,6 +82,18 @@ a {
 .btn-outline-primary.active:focus,
 .btn-outline-primary.dropdown-toggle.show:focus {
     box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
+}
+
+/* ----------------------------------------------------- */
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover,
+.btn-outline-light:hover {
+    background-color: inherit !important;
 }
 
 /* ----------------------------------------------------- */

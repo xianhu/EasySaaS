@@ -13,8 +13,7 @@ from .paths import *
 TAG = "intros"
 
 HEADER = "Welcome to EasySaaS demo"
-HEADERSUB = """
-This project will be attempt to make a great starting point 
+HEADERSUB = """This project will be attempt to make a great starting point 
 for your next big business as easy and efficent as possible. 
 This project will create an easy way to build a SaaS application using Python and Dash.
 """
@@ -38,20 +37,18 @@ PLAN_LIST = [{
         "project count: 1",
         "member count: 3 / project",
         "analysis count: 100 / day",
-    ]
-}, {
+    ]}, {
     "name": "Standard", "price": "$30/M", "descs": [
         "project count: 5",
         "member count: 20 / project",
         "analysis count: 1000 / day",
-    ]
-}, {
+    ]}, {
     "name": "Enhanced", "price": "$100/M", "descs": [
         "project count: no limit",
         "member count: 100 / project",
         "analysis count: 5000 / day",
-    ]
-}]
+    ]}
+]
 
 CONTACT_HEADER = "Let us hear from you directly!"
 CONTACT_HEADERSUB = "We always want to hear from you! Let us know how we can best help you and we'll do our very best."
@@ -88,15 +85,12 @@ def layout(pathname, search):
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    plan_list = []
-    for plan in PLAN_LIST:
-        desc_list = [html.Li(desc) for desc in plan["descs"]]
-        plan_list.append([
-            html.Div(plan["name"], className="fs-2"),
-            html.Div(plan["price"], className="text-primary"),
-            html.Div(desc_list, className="lh-lg"),
-            dbc.Button("Buy it now", class_name="w-75 mt-4"),
-        ])
+    plan_list = [[
+        html.Div(plan["name"], className="fs-2"),
+        html.Div(plan["price"], className="text-primary"),
+        html.Div([html.Li(desc) for desc in plan["descs"]], className="lh-lg"),
+        dbc.Button("Buy it now", id=f"id-{TAG}-{plan['name']}", class_name="w-75 mt-4"),
+    ] for plan in PLAN_LIST]
     class_plan = "text-center border rounded-3 py-4"
     content3 = dbc.Row(children=[
         dbc.Col(plan_list[0], width=10, md=3, class_name=class_plan),
@@ -126,16 +120,13 @@ def layout(pathname, search):
         ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
         dbc.Col(children=[
             dbc.Button("Send message", id=f"id-{TAG}-button"),
-            dbc.Button("Send message", id=f"id-{TAG}-button", disabled=True),
-            dbc.Button("Pay Now", size="sm", outline=True, color="primary"),
-            dbc.Button("Pay Now", size="sm", outline=True, color="primary",disabled=True),
         ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
     ], align="center", justify="center", class_name=f"{class_row} mt-2")
 
     # define components
-    navbar = cnavbar.layout(pathname, search, fluid=None)
-    footer = cfooter.layout(pathname, search, fluid=None)
+    navbar = cnavbar.layout(pathname, search, fluid=None, class_container="gx-md-0")
+    footer = cfooter.layout(pathname, search, fluid=None, class_container="gx-md-0")
     content = [content1, content2, content3, content4, content5]
 
     # return result
-    return [navbar, dbc.Container(content, class_name="py-5"), footer]
+    return html.Div([navbar, dbc.Container(content, class_name="py-5"), footer], className=None)
