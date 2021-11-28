@@ -27,4 +27,4 @@ class AddressAIO(html.A):
             Input(aio_id, "href"),
             prevent_initial_call=True,
         )
-        return super().__init__(children, id=aio_id, target=target)
+        super().__init__(children, id=aio_id, target=target)

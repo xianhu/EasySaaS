@@ -8,7 +8,6 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from .comps import cfooter, cnavbar
-from .paths import *
 
 TAG = "intros"
 

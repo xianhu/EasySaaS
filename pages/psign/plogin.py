@@ -11,7 +11,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 from werkzeug import security
 
-from app import User, app
+from app import UserLogin, app
 from utility.address import AddressAIO
 from utility.consts import RE_EMAIL
 
@@ -88,7 +88,7 @@ def _button_click(n_clicks, email, pwd):
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
-    user = User.query.get(_id)
+    user = UserLogin.query.get(_id)
     if not user:
         return "Email doesn't exist", False, None
 

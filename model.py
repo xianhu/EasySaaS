@@ -5,16 +5,14 @@ Model Defination
 """
 
 import hashlib
-
 from werkzeug import security
-from flask_login import UserMixin
-from flask_sqlalchemy import SQLAlchemy, sqlalchemy
+from flask_sqlalchemy import SQLAlchemy, sqlalchemy, orm
 
 # create SQLAlchemy
 app_db = SQLAlchemy(app=None)
 
 
-class User(app_db.Model, UserMixin):
+class User(app_db.Model):
     __tablename__ = "users"
 
     id = sqlalchemy.Column(sqlalchemy.String(50), primary_key=True)
@@ -36,7 +34,7 @@ class User(app_db.Model, UserMixin):
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
 
     # foreign key and relationship
-    plan = sqlalchemy.orm.relationship("Plan", backref=sqlalchemy.orm.backref("users"))
+    plan = orm.relationship("Plan", backref=orm.backref("users"))
 
     # print format
     def __repr__(self) -> str:
@@ -79,12 +77,11 @@ def test_db():
     """
     test database
     """
-    # create Session class
+    # create engine class
     engine = sqlalchemy.create_engine(config_database_uri)
-    DBSessinon = sqlalchemy.orm.sessionmaker(engine)
 
     # basic opration with session
-    with DBSessinon() as session:
+    with orm.sessionmaker(engine)() as session:
         plan = Plan(name="Free", content="for test")
         session.add(plan)
         session.commit()
@@ -92,6 +89,7 @@ def test_db():
         email = "aaaa@qq.com"
         _id = hashlib.md5(email.encode()).hexdigest()
         pwd = security.generate_password_hash(email)
+
         user = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
         session.add(user)
         session.commit()
@@ -103,5 +101,6 @@ def test_db():
 
 if __name__ == "__main__":
     from config import config_database_uri
+
     init_db()
     test_db()

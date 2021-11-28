@@ -4,8 +4,8 @@
 page of password
 """
 
-import hashlib
 import json
+import hashlib
 import logging
 
 import dash_bootstrap_components as dbc
@@ -16,7 +16,7 @@ from app import User, app, app_db, app_redis
 from utility.address import AddressAIO
 from utility.consts import RE_PWD
 
-from ..palert import *
+from ..palert import layout_simple
 from ..paths import *
 
 TAG = "password"

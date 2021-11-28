@@ -8,9 +8,9 @@ import logging
 
 import dash
 import dash_bootstrap_components as dbc
-from flask_login import LoginManager
 from flask_mail import Mail
 from flask_redis import FlaskRedis
+from flask_login import LoginManager, UserMixin
 
 from config import *
 from model import User, app_db
@@ -78,7 +78,12 @@ app_redis = FlaskRedis(server)
 login_manager = LoginManager(server)
 
 
+# define LoginUser class
+class UserLogin(User, UserMixin):
+    pass
+
+
 # overwirte user_loader
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return UserLogin.query.get(user_id)

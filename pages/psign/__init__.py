@@ -6,8 +6,8 @@ sign page
 
 import flask
 
-from ..palert import *
 from ..paths import *
+from ..palert import layout_simple, layout_404
 from . import pemail, plogin, ppwd
 
 
