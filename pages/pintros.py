@@ -123,9 +123,31 @@ def layout(pathname, search):
     ], align="center", justify="center", class_name=f"{class_row} mt-2")
 
     # define components
+    content6 = dbc.Row(children=[
+        # dbc.Col(dbc.Select(options=[
+        #     {"label": "Option 1", "value": "1"},
+        #     {"label": "Option 2", "value": "2"},
+        #     {"label": "Disabled option", "value": "3", "disabled": True},
+        # ], value=1)),
+        # dbc.Col(dbc.RadioItems(options=[
+        #     {"label": "Option 1", "value": 1},
+        #     {"label": "Option 2", "value": 2},
+        #     {"label": "Disabled Option", "value": 3, "disabled": True},
+        # ], value=1)),
+        # dbc.Col(dbc.Checklist(options=[
+        #     {"label": "Option 1", "value": 1},
+        #     {"label": "Option 2", "value": 2},
+        #     {"label": "Disabled Option", "value": 3, "disabled": True},
+        # ], value=[1])),
+        # dbc.Col(dbc.Checkbox(label="Checkbox", value=True)),
+        # dbc.Col(dbc.Switch(label="Toggle switch", value=True)),
+        # dbc.Col(dbc.RadioButton(label="Radio button", value=True)),
+    ], align="center", justify="center", className=f"{class_row} mt-5")
+
+    # define components
     navbar = cnavbar.layout(pathname, search, fluid=None, class_container="gx-md-0")
     footer = cfooter.layout(pathname, search, fluid=None, class_container="gx-md-0")
-    content = [content1, content2, content3, content4, content5]
+    content = [content1, content2, content3, content4, content5, content6]
 
     # return result
     return html.Div([navbar, dbc.Container(content, class_name="py-5"), footer], className=None)

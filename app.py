@@ -78,7 +78,7 @@ app_redis = FlaskRedis(server)
 login_manager = LoginManager(server)
 
 
-# define LoginUser class
+# define UserLogin class
 class UserLogin(User, UserMixin):
     pass
 

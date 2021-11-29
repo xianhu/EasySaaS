@@ -25,32 +25,24 @@ a {
 
 /* ----------------------------------------------------- */
 
-.btn-primary {
-    color: white !important;
-    border-color: var(--cs-primary-color) !important;
-    background-color: var(--cs-primary-color) !important;
-}
-
-.btn-check:focus+.btn-primary,
-.btn-primary:focus {
-    box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
-}
-
-.btn-check:checked+.btn-primary,
-.btn-check:active+.btn-primary,
+.btn-primary,
 .btn-primary:active,
 .btn-primary.active,
-.show>.btn-primary.dropdown-toggle {
+.btn-check:checked + .btn-primary,
+.btn-check:active + .btn-primary,
+.show > .btn-primary.dropdown-toggle {
     color: white !important;
     border-color: var(--cs-primary-color) !important;
     background-color: var(--cs-primary-color) !important;
 }
 
-.btn-check:checked+.btn-primary:focus,
-.btn-check:active+.btn-primary:focus,
+.btn-primary:focus,
 .btn-primary:active:focus,
 .btn-primary.active:focus,
-.show>.btn-primary.dropdown-toggle:focus {
+.btn-check:focus + .btn-primary,
+.btn-check:checked + .btn-primary:focus,
+.btn-check:active + .btn-primary:focus,
+.show > .btn-primary.dropdown-toggle:focus {
     box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
 }
 
@@ -61,13 +53,8 @@ a {
     border-color: var(--cs-primary-color) !important;
 }
 
-.btn-check:focus+.btn-outline-primary,
-.btn-outline-primary:focus {
-    box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
-}
-
-.btn-check:checked+.btn-outline-primary,
-.btn-check:active+.btn-outline-primary,
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary,
 .btn-outline-primary:active,
 .btn-outline-primary.active,
 .btn-outline-primary.dropdown-toggle.show {
@@ -76,15 +63,15 @@ a {
     background-color: var(--cs-primary-color) !important;
 }
 
-.btn-check:checked+.btn-outline-primary:focus,
-.btn-check:active+.btn-outline-primary:focus,
+.btn-outline-primary:focus,
 .btn-outline-primary:active:focus,
 .btn-outline-primary.active:focus,
+.btn-check:focus + .btn-outline-primary,
+.btn-check:checked + .btn-outline-primary:focus,
+.btn-check:active + .btn-outline-primary:focus,
 .btn-outline-primary.dropdown-toggle.show:focus {
     box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
 }
-
-/* ----------------------------------------------------- */
 
 .btn-outline-primary:hover,
 .btn-outline-secondary:hover,
@@ -94,6 +81,19 @@ a {
 .btn-outline-danger:hover,
 .btn-outline-light:hover {
     background-color: inherit !important;
+}
+
+/* ----------------------------------------------------- */
+
+.form-check-input:checked {
+    border-color: var(--cs-primary-color) !important;
+    background-color: var(--cs-primary-color) !important;
+}
+
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--cs-primary-color-bd) !important;
+    box-shadow: 0 0 0 0.15rem var(--cs-primary-color-bd) !important;
 }
 
 /* ----------------------------------------------------- */

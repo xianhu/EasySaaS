@@ -5,6 +5,7 @@ Model Defination
 """
 
 import hashlib
+
 from werkzeug import security
 from flask_sqlalchemy import SQLAlchemy, sqlalchemy, orm
 
