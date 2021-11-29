@@ -29,13 +29,13 @@ def layout(pathname, search):
     layout of page
     """
     # define text
-    text_button = "Verify the email"
+
     if pathname == PATH_REGISTERE:
-        text_hd = "Sign up"
+        text_hd, text_button = "Sign up", "Verify the email"
         text_sub = "Register an account through an email."
         image_src = "assets/illustrations/register.svg"
     else:
-        text_hd = "Forget password?"
+        text_hd, text_button = "Forget password?", "Verify the email"
         text_sub = "Find back the password through email."
         image_src = "assets/illustrations/resetpwd.svg"
 
@@ -120,4 +120,4 @@ def _button_click(n_clicks, email, pathname):
     flask.session["email"] = email
 
     # return result
-    return None, True, f"{pathname}-result"
+    return None, True, f"{pathname}/result"

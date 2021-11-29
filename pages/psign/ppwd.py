@@ -122,4 +122,4 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     app_redis.delete(_id)
 
     # return result
-    return None, True, f"{pathname}-result"
+    return None, True, f"{pathname}/result"

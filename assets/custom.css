@@ -91,6 +91,7 @@ a {
 }
 
 .form-select:focus,
+.form-control:focus,
 .form-check-input:focus {
     border-color: var(--cs-primary-color-bd) !important;
     box-shadow: 0 0 0 0.15rem var(--cs-primary-color-bd) !important;
