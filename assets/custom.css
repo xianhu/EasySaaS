@@ -15,7 +15,8 @@ a {
     color: var(--cs-primary-color) !important;
 }
 
-.text-primary {
+.text-primary,
+.hover-primary:hover {
     color: var(--cs-primary-color) !important;
 }
 
@@ -53,10 +54,10 @@ a {
     border-color: var(--cs-primary-color) !important;
 }
 
-.btn-check:checked + .btn-outline-primary,
-.btn-check:active + .btn-outline-primary,
 .btn-outline-primary:active,
 .btn-outline-primary.active,
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary,
 .btn-outline-primary.dropdown-toggle.show {
     color: white !important;
     border-color: var(--cs-primary-color) !important;
@@ -72,6 +73,8 @@ a {
 .btn-outline-primary.dropdown-toggle.show:focus {
     box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
 }
+
+/* ----------------------------------------------------- */
 
 .btn-outline-primary:hover,
 .btn-outline-secondary:hover,
@@ -94,6 +97,10 @@ a {
 .form-control:focus,
 .form-check-input:focus {
     border-color: var(--cs-primary-color-bd) !important;
+    box-shadow: 0 0 0 0.15rem var(--cs-primary-color-bd) !important;
+}
+
+.navbar-toggler:focus {
     box-shadow: 0 0 0 0.15rem var(--cs-primary-color-bd) !important;
 }
 

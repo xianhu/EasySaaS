@@ -145,8 +145,8 @@ def layout(pathname, search):
     ], align="center", justify="center", className=f"{class_row} mt-5")
 
     # define components
-    navbar = cnavbar.layout(pathname, search, fluid=None, class_container="gx-md-0")
-    footer = cfooter.layout(pathname, search, fluid=None, class_container="gx-md-0")
+    navbar = cnavbar.layout(pathname, search, fluid=None)
+    footer = cfooter.layout(pathname, search, fluid=None)
     content = [content1, content2, content3, content4, content5, content6]
 
     # return result
