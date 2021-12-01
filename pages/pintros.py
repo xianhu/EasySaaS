@@ -12,10 +12,10 @@ from .comps import cfooter, cnavbar
 TAG = "intros"
 
 HEADER = "Welcome to EasySaaS demo"
-HEADERSUB = """This project will be attempt to make a great starting point 
-for your next big business as easy and efficent as possible. 
+HEADERSUB = """
+This project will be attempted to make a great starting point for your next big business as easy and efficent as possible. 
 This project will create an easy way to build a SaaS application using Python and Dash.
-"""
+""".strip()
 
 INTROS_LIST = [[
     "bi bi-code-slash",
@@ -98,32 +98,32 @@ def layout(pathname, search):
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    content4 = dbc.Row(dbc.Col(children=[
-        html.Div(CONTACT_HEADER, className="fs-2 text-center"),
-        html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
-    ], width=12, md=6), align="center", justify="center", class_name=f"{class_row} mt-5")
+    content4 = html.Div(children=[
+        dbc.Row(dbc.Col(children=[
+            html.Div(CONTACT_HEADER, className="fs-2 text-center"),
+            html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
+        ], width=12, md=6), align="center", justify="center", class_name=class_row),
+        dbc.Row(children=[
+            dbc.Col(dbc.FormFloating(children=[
+                dbc.Input(id=f"id-{TAG}-email", type="email"),
+                dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+            ]), width=12, md=4, class_name=None),
+            dbc.Col(dbc.FormFloating(children=[
+                dbc.Input(id=f"id-{TAG}-name", type="text"),
+                dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
+            ]), width=12, md=4, class_name=class_col),
+            dbc.Col(dbc.Textarea(
+                id=f"id-{TAG}-content", rows=4,
+                placeholder="Tell us what we can help you with!",
+            ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
+            dbc.Col(children=[
+                dbc.Button("Send message", id=f"id-{TAG}-button"),
+            ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
+        ], align="center", justify="center", class_name=f"{class_row} mt-2"),
+    ], className="mt-5")
 
     # define components
-    content5 = dbc.Row(children=[
-        dbc.Col(dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email"),
-            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-        ]), width=12, md=4, class_name=None),
-        dbc.Col(dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-name", type="text"),
-            dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
-        ]), width=12, md=4, class_name=class_col),
-        dbc.Col(dbc.Textarea(
-            id=f"id-{TAG}-content", rows=4,
-            placeholder="Tell us what we can help you with!",
-        ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
-        dbc.Col(children=[
-            dbc.Button("Send message", id=f"id-{TAG}-button"),
-        ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
-    ], align="center", justify="center", class_name=f"{class_row} mt-2")
-
-    # define components
-    content6 = dbc.Row(children=[
+    contentt = dbc.Row(children=[
         # dbc.Col(dbc.Select(options=[
         #     {"label": "Option 1", "value": "1"},
         #     {"label": "Option 2", "value": "2"},
@@ -147,7 +147,7 @@ def layout(pathname, search):
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=None)
     footer = cfooter.layout(pathname, search, fluid=None)
-    content = [content1, content2, content3, content4, content5, content6]
+    content = [content1, content2, content3, content4, contentt]
 
     # return result
     return html.Div([navbar, dbc.Container(content, class_name="py-5"), footer], className=None)

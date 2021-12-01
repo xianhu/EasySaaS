@@ -12,8 +12,8 @@ from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
-from pages import palert, psign
-from pages import panalysis, pintros, puser
+from pages import palert, pintros
+from pages import panalysis, psign, puser
 from pages.paths import *
 
 # app layout
