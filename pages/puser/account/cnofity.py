@@ -21,11 +21,12 @@ def layout(pathname, search):
     """
     layout of card
     """
-    notifications = [html.Li(notify, className="my-2") for notify in NOTIFICATIONS]
     return dbc.Card(children=[
         dbc.Row(children=[
             dbc.Col("Notifications:", width="auto"),
-            dbc.Col(dbc.Switch(id=f"id-{TAG}-switch"), width="auto"),
-        ], align="center", justify="between", class_name="gx-0 border-bottom p-4"),
-        html.Div(html.Ul(notifications), className="p-4"),
+            dbc.Col(dbc.Switch(id=f"id-{TAG}-switch", value=True), width="auto"),
+        ], align="center", justify="between", class_name="border-bottom gx-0 p-4"),
+        html.Div(html.Ul(children=[
+            html.Li(notify, className="my-2") for notify in NOTIFICATIONS
+        ]), className="p-4"),
     ], class_name="mb-4")

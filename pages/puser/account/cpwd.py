@@ -12,7 +12,7 @@ from werkzeug import security
 from app import app, app_db
 from utility.consts import RE_PWD
 
-from ...paths import *
+from ...paths import PATH_LOGOUT
 
 TAG = "user-password"
 
@@ -21,7 +21,6 @@ def layout(pathname, search):
     """
     layout of card
     """
-    class_label = "text-center text-danger w-100 my-0"
     return dbc.Card(children=[
         html.Div("Change Password:", className="border-bottom p-4"),
         dbc.Row(children=[
@@ -39,7 +38,7 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             # change line
             dbc.Col(children=[
-                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
+                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name="w-100 text-center text-danger my-0"),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(children=[
                 dbc.Button("Update Password", id=f"id-{TAG}-button", class_name="w-100"),
@@ -68,7 +67,7 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
 
     # check data
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return "current password is wrong", False, False
+        return "Current password is wrong", False, False
 
     # check data
     if (not pwd1) or (len(pwd1) < 6):

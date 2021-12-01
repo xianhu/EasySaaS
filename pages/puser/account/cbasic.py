@@ -11,8 +11,6 @@ from dash import Input, Output, State, html
 from app import app, app_db
 from utility.consts import RE_PHONE
 
-from ...paths import *
-
 TAG = "user-basic"
 
 
@@ -26,7 +24,6 @@ def layout(pathname, search):
     phone = flask_login.current_user.phone
 
     # return result
-    class_label = "text-center text-danger w-100 my-0"
     return dbc.Card(children=[
         html.Div("Basic Information:", className="border-bottom p-4"),
         dbc.Row(children=[
@@ -44,7 +41,7 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             # change line
             dbc.Col(children=[
-                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
+                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name="w-100 text-center text-danger my-0"),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(children=[
                 dbc.Button("Update Information", id=f"id-{TAG}-button", class_name="w-100"),
@@ -53,7 +50,6 @@ def layout(pathname, search):
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully"),
-            # dbc.ModalFooter(dbc.Button("OK", href=PATH_USER, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
     ], class_name="mb-4")
 
@@ -73,6 +69,11 @@ def _button_click(n_clicks, name, phone):
     # check data
     if phone and (not RE_PHONE.match(phone)):
         return "Phone format is error", False, False
+
+    # check data
+    if ((not name) or (name == user.name)) and \
+            ((not phone) or (phone == user.phone)):
+        return "No change has happened", False, False
 
     # update information
     user.name = name or ""

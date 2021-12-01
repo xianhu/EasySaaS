@@ -19,14 +19,15 @@ from .billing import cinvoice, cplan
 TAG = "user"
 
 CATALOG_LIST = [
-    ("ACCOUNT", None, None),
-    ("General", f"{PATH_USER}-general", "ACCOUNT"),
-    ("Security", f"{PATH_USER}-security", "ACCOUNT"),
-    ("Notifications", f"{PATH_USER}-notifications", "ACCOUNT"),
-
-    ("BILLING", None, None),
-    ("Plan", f"{PATH_USER}-plan", "BILLING"),
-    ("Payments", f"{PATH_USER}-payments", "BILLING"),
+    ["ACCOUNT", None, [
+        ("General", f"{PATH_USER}-general"),
+        ("Security", f"{PATH_USER}-security"),
+        ("Notifications", f"{PATH_USER}-notifications"),
+    ]],
+    ["BILLING", None, [
+        ("Plan", f"{PATH_USER}-plan"),
+        ("Payments", f"{PATH_USER}-payments"),
+    ]],
 ]
 
 
@@ -38,36 +39,33 @@ def layout(pathname, search):
         pathname = f"{PATH_USER}-general"
 
     # define components
-    cat_list = []
-    cat_title, content = None, None
-    for title, path, parent in CATALOG_LIST:
-        if not path:
-            class_cat = "small text-muted mt-4 mb-2 px-4"
-            cat_list.append(html.Div(title, className=class_cat))
-            continue
+    cat_title, cat_list, cat_content = None, [], None
+    for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
+        _class = "small text-muted mt-4 mb-2 px-4"
+        cat_list.append(html.Div(first_cat_title, className=_class))
 
-        # define catlog
-        if path == pathname:
-            class_cat = "small text-white bg-primary text-decoration-none px-4 py-2"
-        else:
-            class_cat = "small text-black hover-primary text-decoration-none px-4 py-2"
-        cat_list.append(html.A(title, href=path, className=class_cat))
+        # define catlog list
+        for title, path in second_cat_list:
+            _class = "small text-decoration-none px-4 py-2"
+            if path == pathname:
+                _class += " text-white bg-primary"
+            else:
+                _class += " text-black hover-primary"
+            cat_list.append(html.A(title, href=path, className=_class))
 
-        # define content
-        if path == pathname:
-            cat_title = " > ".join([parent, title])
-            content = [
-                cbasic.layout(pathname, search),
-                cpwd.layout(pathname, search),
-                cnofity.layout(pathname, search),
-            ] if parent == "ACCOUNT" else [
-                cplan.layout(pathname, search),
-                cinvoice.layout(pathname, search),
-            ]
+            # define content
+            if path == pathname:
+                cat_title = " > ".join([first_cat_title, title])
+                cat_content = [
+                    cbasic.layout(pathname, search),
+                    cpwd.layout(pathname, search),
+                    cnofity.layout(pathname, search),
+                ] if first_cat_title == "ACCOUNT" else [
+                    cplan.layout(pathname, search),
+                    cinvoice.layout(pathname, search),
+                ]
     cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
-
-    # check and filter
-    if (not cat_title) or (not content):
+    if (not cat_title) or (not cat_content):
         return layout_404(pathname, search, PATH_USER)
 
     # define components
@@ -79,20 +77,21 @@ def layout(pathname, search):
     content1 = dbc.Row(children=[
         dbc.Col(cat_title, width="auto", class_name="text-primary"),
         dbc.Col(cat_toggler, width="auto", class_name=None),
-    ], align="center", justify="between", class_name="d-md-none w-100 border-bottom mx-auto py-2")
+    ], align="center", justify="between", class_name="d-md-none border-bottom w-100 mx-auto py-2")
 
     # define components
     content2 = dbc.Row(children=[
         dbc.Col(cat_collapse, width=12, md=2, class_name=None),
-        dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-0"),
+        dbc.Col(cat_content, width=12, md=8, class_name="mt-4 mt-md-0"),
     ], align="start", justify="center", class_name="w-100 mx-auto mt-0 mt-md-4")
 
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=None)
     footer = cfooter.layout(pathname, search, fluid=None)
+    content = dbc.Container([content1, content2], class_name=None)
 
     # return result
-    return html.Div([navbar, dbc.Container([content1, content2], class_name=None), footer], className=None)
+    return html.Div([navbar, content, footer], className=None)
 
 
 @app.callback(

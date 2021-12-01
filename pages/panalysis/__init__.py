@@ -10,9 +10,9 @@ from dash import Input, Output, State, html
 from app import app
 
 from ..comps import cfooter, cnavbar
-from ..palert import *
+from ..palert import layout_404
 from ..paths import *
-from . import catalog
+from .catalog import CATALOG_LIST
 
 TAG = "analysis"
 
@@ -30,6 +30,21 @@ def layout(pathname, search):
         content_main = "-db-analytics"
     else:
         return layout_404(pathname, search, PATH_USER)
+    # define components
+    accord_item_list = []
+    for title, info in CATALOG_LIST:
+        item_children = []
+        for title_2, path in info["items"]:
+            item_children.append(html.Div(html.A(title_2, href=path)))
+
+        accord_item_list.append(dbc.AccordionItem(children=item_children, title=title, className="bg-dark1 text-white"))
+
+    return [
+        html.Div("Home", className="aaaa", style={"padding": "1rem 1.25rem"}),
+        dbc.Accordion(accord_item_list, flush=True, className="bg-dark1 text-white"),
+        html.Div(),
+        html.Div(),
+    ]
 
     # define components
     cat_icon = html.I(className="bi bi-list fs-1")
