@@ -45,12 +45,12 @@ def layout(pathname, search):
         cat_list.append(html.Div(first_cat_title, className=_class))
 
         # define catlog list
+        _class_0 = "small text-decoration-none px-4 py-2"
         for title, path in second_cat_list:
-            _class = "small text-decoration-none px-4 py-2"
             if path == pathname:
-                _class += " text-white bg-primary"
+                _class = f"{_class_0} text-white bg-primary"
             else:
-                _class += " text-black hover-primary"
+                _class = f"{_class_0} text-black hover-primary"
             cat_list.append(html.A(title, href=path, className=_class))
 
             # define content
