@@ -30,6 +30,7 @@ def layout(pathname, search):
             button = dbc.Button("Pay Now", size="sm", outline=True, color="primary")
         else:
             button = dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
+
         invoice_row_list.append(dbc.Row(children=[
             dbc.Col(children=[
                 html.A(f"Invoice #{_id}", href="#"),

@@ -11,7 +11,7 @@ from app import app
 
 from ..comps import cfooter, cnavbar
 from ..palert import layout_404
-from ..paths import *
+from ..paths import PATH_USER, PATH_LOGOUT
 
 from .account import cbasic, cnofity, cpwd
 from .billing import cinvoice, cplan
@@ -35,23 +35,22 @@ def layout(pathname, search):
     """
     layout of page
     """
+    # change pathname
     if pathname == PATH_USER:
         pathname = f"{PATH_USER}-general"
 
     # define components
     cat_title, cat_list, cat_content = None, [], None
+    cat_class_first = "small text-muted mt-4 mb-2 px-4"
+    cat_class_second = "small text-decoration-none px-4 py-2"
     for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
-        _class = "small text-muted mt-4 mb-2 px-4"
-        cat_list.append(html.Div(first_cat_title, className=_class))
+        # define catlog list
+        cat_list.append(html.Div(first_cat_title, className=cat_class_first))
 
         # define catlog list
-        _class_0 = "small text-decoration-none px-4 py-2"
         for title, path in second_cat_list:
-            if path == pathname:
-                _class = f"{_class_0} text-white bg-primary"
-            else:
-                _class = f"{_class_0} text-black hover-primary"
-            cat_list.append(html.A(title, href=path, className=_class))
+            _class = "text-black hover-primary" if path != pathname else "text-white bg-primary"
+            cat_list.append(html.A(title, href=path, className=f"{cat_class_second} {_class}"))
 
             # define content
             if path == pathname:
@@ -81,17 +80,17 @@ def layout(pathname, search):
 
     # define components
     content2 = dbc.Row(children=[
-        dbc.Col(cat_collapse, width=12, md=2, class_name=None),
-        dbc.Col(cat_content, width=12, md=8, class_name="mt-4 mt-md-0"),
-    ], align="start", justify="center", class_name="w-100 mx-auto mt-0 mt-md-4")
+        dbc.Col(cat_collapse, width=12, md=2, class_name="mt-0 mt-md-4"),
+        dbc.Col(cat_content, width=12, md=8, class_name="mt-4 mt-md-4"),
+    ], align="start", justify="center", class_name="w-100 mx-auto")
 
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=None)
     footer = cfooter.layout(pathname, search, fluid=None)
-    content = dbc.Container([content1, content2], class_name=None)
+    content = dbc.Container([content1, content2], fluid=None, class_name=None)
 
     # return result
-    return html.Div([navbar, content, footer], className=None)
+    return html.Div(children=[navbar, content, footer], className=None)
 
 
 @app.callback(
