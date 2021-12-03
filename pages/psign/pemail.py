@@ -29,7 +29,6 @@ def layout(pathname, search):
     layout of page
     """
     # define text
-
     if pathname == PATH_REGISTERE:
         text_hd, text_button = "Sign up", "Verify the email"
         text_sub = "Register an account through an email."

@@ -31,11 +31,11 @@ def layout(pathname, search):
     cat_title, cat_list, cat_content = None, [], None
     cat_class_second = "text-white text-decoration-none px-5 py-2"
     for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
-        a_children = []
+        ad_children = []
         for title, path in second_cat_list:
             # define catlog list
             _class = "accordion-bg-0" if path != pathname else "accordion-bg-1"
-            a_children.append(html.A(title, href=path, className=f"{cat_class_second} {_class}"))
+            ad_children.append(html.A(title, href=path, className=f"{cat_class_second} {_class}"))
 
             # define content
             if path == pathname:
@@ -44,23 +44,19 @@ def layout(pathname, search):
                 cat_content = " > ".join([first_cat_title, title])
 
         # define catlog list
-        item_id = f"id-{TAG}-{first_cat_title}"
-        cat_list.append(dbc.AccordionItem(a_children, item_id=item_id, title=first_cat_title))
+        cat_list.append(dbc.AccordionItem(ad_children, item_id=f"id-{TAG}-{first_cat_title}", title=first_cat_title))
     if (not cat_title) or (not cat_content):
-        return layout_404(pathname, search, PATH_ANALYSIS)
+        return layout_404(pathname, search, return_href=PATH_ANALYSIS)
+    collapse_item = dbc.Accordion(cat_list, flush=True, active_item=cat_active_item, id=f"id-{TAG}-accordion")
 
     # define components
     cat_icon = html.I(className="bi bi-list fs-1")
     cat_toggler = dbc.NavbarToggler(html.A(cat_icon), id=f"id-{TAG}-toggler", class_name="border")
-
-    # define components
-    collapse_item = dbc.Accordion(cat_list, flush=True, active_item=cat_active_item)
     cat_collapse = dbc.Collapse(collapse_item, id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
-    cat_footer = html.Div(children=[
-        "Powered by ©2021. All rights reserved."
-    ], className="small small-hidden text-white text-center mt-auto")
+    class_footer = "small-hidden text-white text-center mt-auto py-2"
+    cat_footer = html.Div("All rights reserved.", className=class_footer)
 
     # define components
     content1 = dbc.Row(children=[

@@ -65,7 +65,7 @@ def layout(pathname, search):
                 ]
     cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
     if (not cat_title) or (not cat_content):
-        return layout_404(pathname, search, PATH_USER)
+        return layout_404(pathname, search, return_href=PATH_USER)
 
     # define components
     cat_icon = html.I(className="bi bi-list fs-1")

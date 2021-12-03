@@ -33,8 +33,6 @@ app = dash.Dash(
     suppress_callback_exceptions=True,
     external_scripts=[],
     external_stylesheets=[
-        "custom.css",
-        "default.css",
         dbc.icons.BOOTSTRAP,
         dbc.themes.BOOTSTRAP,
     ],
@@ -51,8 +49,8 @@ server = app.server
 server.config.update(
     SECRET_KEY=config_app_secret_key,
 
-    SQLALCHEMY_DATABASE_URI=config_database_uri,
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    SQLALCHEMY_DATABASE_URI=config_database_uri,
 
     REDIS_URL=config_redis_uri,
 

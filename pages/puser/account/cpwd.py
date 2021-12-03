@@ -21,6 +21,7 @@ def layout(pathname, search):
     """
     layout of card
     """
+    class_label = "text-center text-danger w-100 my-0"
     return dbc.Card(children=[
         html.Div("Change Password:", className="border-bottom p-4"),
         dbc.Row(children=[
@@ -38,7 +39,7 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             # change line
             dbc.Col(children=[
-                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name="w-100 text-center text-danger my-0"),
+                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(children=[
                 dbc.Button("Update Password", id=f"id-{TAG}-button", class_name="w-100"),

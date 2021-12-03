@@ -32,4 +32,4 @@ def layout(pathname, search):
         return layout_simple("Setting success", text_sub, "Go to login", PATH_LOGIN)
 
     # return result
-    return layout_404(pathname, search)
+    return layout_404(pathname, search, return_href=PATH_INTROS)

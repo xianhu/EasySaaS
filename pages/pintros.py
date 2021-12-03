@@ -120,7 +120,7 @@ def layout(pathname, search):
                 dbc.Button("Send message", id=f"id-{TAG}-button"),
             ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
         ], align="center", justify="center", class_name=f"{class_row} mt-2"),
-    ], className="mt-5")
+    ], className=f"{class_row} mt-5")
 
     # define components
     contentt = dbc.Row(children=[

@@ -1,0 +1,28 @@
+/*
+ * external stylesheets
+*/
+
+/* ----------------------------------------------------- */
+
+.small-hidden {
+}
+
+@media (max-width: 768px) {
+    .small-hidden {
+        display: none !important;
+    }
+}
+
+/* ----------------------------------------------------- */
+
+.h-100-scroll {
+}
+
+@media (min-width: 768px) {
+    .h-100-scroll {
+        height: 100% !important;
+        overflow-y: scroll !important;
+    }
+}
+
+/* ----------------------------------------------------- */

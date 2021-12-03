@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
 
 """
-components of page
+components module
 """

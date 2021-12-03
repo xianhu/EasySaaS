@@ -27,10 +27,9 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
 
     # define components
     if not flask_login.current_user.is_authenticated:
-        class_button = "fw-bold text-white ms-3"
         nav_item_list = dbc.NavItem([
             html.A("Sign up", href=PATH_REGISTERE, className="text-white"),
-            dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="light", class_name=class_button),
+            dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="light", class_name="fw-bold text-white ms-3"),
         ], class_name="d-flex align-items-center mx-auto mx-md-0 mt-2 mt-md-0")
     else:
         nav_item_list = dbc.NavItem([
@@ -39,10 +38,9 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
         ], class_name="d-flex align-items-center mx-auto mx-md-0 mt-2 mt-md-0")
 
     # return result
-    class_brand = "fs-5 fw-bold text-white mx-0"
     class_navbar = class_navbar or "bg-primary border-bottom py-2"
     return dbc.Navbar(dbc.Container(children=[
-        dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name=class_brand),
+        dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name="fs-5 fw-bold text-white mx-0"),
         dbc.NavbarToggler(id="id-toggler"),
         dbc.Collapse(children=[
             dbc.Nav(nav_link_list, navbar=True, class_name="mx-auto"),
