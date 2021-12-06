@@ -4,19 +4,7 @@
 
 /* ----------------------------------------------------- */
 
-:root {
-    --cs-primary-color: #42C7AB;
-    --cs-primary-color-bd: #6DF1D4;
-}
-
-/* ----------------------------------------------------- */
-
-a {
-    color: var(--cs-primary-color) !important;
-}
-
-.text-primary,
-.hover-primary:hover {
+a, .text-primary {
     color: var(--cs-primary-color) !important;
 }
 
@@ -44,7 +32,7 @@ a {
 .btn-check:checked + .btn-primary:focus,
 .btn-check:active + .btn-primary:focus,
 .show > .btn-primary.dropdown-toggle:focus {
-    box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
+    box-shadow: 0 0 0 0.25rem var(--cs-primary-color-up) !important;
 }
 
 /* ----------------------------------------------------- */
@@ -71,7 +59,7 @@ a {
 .btn-check:checked + .btn-outline-primary:focus,
 .btn-check:active + .btn-outline-primary:focus,
 .btn-outline-primary.dropdown-toggle.show:focus {
-    box-shadow: 0 0 0 0.25rem var(--cs-primary-color-bd) !important;
+    box-shadow: 0 0 0 0.25rem var(--cs-primary-color-up) !important;
 }
 
 /* ----------------------------------------------------- */
@@ -96,12 +84,12 @@ a {
 .form-select:focus,
 .form-control:focus,
 .form-check-input:focus {
-    border-color: var(--cs-primary-color-bd) !important;
-    box-shadow: 0 0 0 0.15rem var(--cs-primary-color-bd) !important;
+    border-color: var(--cs-primary-color-up) !important;
+    box-shadow: 0 0 0 0.15rem var(--cs-primary-color-up) !important;
 }
 
 .navbar-toggler:focus {
-    box-shadow: 0 0 0 0.15rem var(--cs-primary-color-bd) !important;
+    box-shadow: 0 0 0 0.15rem var(--cs-primary-color-up) !important;
 }
 
 /* ----------------------------------------------------- */

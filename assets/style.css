@@ -4,6 +4,32 @@
 
 /* ----------------------------------------------------- */
 
+:root {
+    --cs-primary-color: #42C7AB;
+    --cs-primary-color-up: #5ED2B5;
+    --cs-primary-color-down: #2AA891;
+}
+
+/* ----------------------------------------------------- */
+
+.hover-primary:hover {
+    color: var(--cs-primary-color) !important;
+}
+
+.bg-primary-up {
+    background-color: var(--cs-primary-color-up) !important;
+}
+
+.bg-primary-down {
+    background-color: var(--cs-primary-color-down) !important;
+}
+
+.bg-primary-down-hover:hover {
+    background-color: var(--cs-primary-color-down) !important;
+}
+
+/* ----------------------------------------------------- */
+
 .small-hidden {
 }
 

@@ -19,7 +19,11 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     layout of components
     """
     # define components
-    class_navlink = "fw-bold text-white border-bottom mx-auto mx-md-4"
+    brand_icon = html.Img(src="assets/favicon.png", style={"width": "25px", "height": "25px"})
+    brand_name = dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name="fs-5 fw-bold text-white")
+
+    # define components
+    class_navlink = "fw-bold text-white border-bottom mx-auto mx-md-4 nav-link-hover py-md-3"
     nav_link_list = [
         dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_navlink),
         dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_navlink),
@@ -38,9 +42,12 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
         ], class_name="d-flex align-items-center mx-auto mx-md-0 mt-2 mt-md-0")
 
     # return result
-    class_navbar = class_navbar or "bg-primary border-bottom py-2"
+    class_navbar = class_navbar or "bg-primary border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
-        dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name="fs-5 fw-bold text-white mx-0"),
+        dbc.Row(children=[
+            dbc.Col(brand_icon, width="auto"),
+            dbc.Col(brand_name, width="auto", class_name="ms-1"),
+        ], align="center", class_name="gx-0"),
         dbc.NavbarToggler(id="id-toggler"),
         dbc.Collapse(children=[
             dbc.Nav(nav_link_list, navbar=True, class_name="mx-auto"),
