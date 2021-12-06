@@ -31,8 +31,8 @@ class User(app_db.Model):
     session = sqlalchemy.Column(sqlalchemy.String(500), doc="session value")
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
 
-    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
+    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
 
     # foreign key and relationship
     plan = orm.relationship("Plan", backref=orm.backref("users"))
@@ -47,18 +47,19 @@ class Plan(app_db.Model):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String(50), nullable=False)
+
     content = sqlalchemy.Column(sqlalchemy.Text, doc="plan content")
+    price = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="plan price")
+
+    pindex = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="plan index")
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
 
-    price = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="plan price")
-    pindex = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="plan index")
-
-    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
+    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
 
     # print format
     def __repr__(self) -> str:
-        return f"User <{self.id} - {self.name} - {self.status} - {self.price}>"
+        return f"Plan <{self.id} - {self.name} - {self.price} - {self.pindex} - {self.status}>"
 
 
 def init_db():
@@ -95,6 +96,7 @@ def test_db():
         session.add(user)
         session.commit()
 
+        print(plan)
         print(plan.users)
         print(session.query(User).get(_id))
     return
