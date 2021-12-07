@@ -25,13 +25,10 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define text
+    # define text and components
     text_hd, text_button = "Sign in", "Sign in"
     text_sub = "Login the system with your account."
-
-    # define components
-    image_src = "assets/illustrations/login.svg"
-    image = html.Img(src=image_src, className="img-fluid")
+    image = html.Img(src="assets/illustrations/login.svg", className="img-fluid")
 
     # define components
     form_children = [

@@ -29,7 +29,7 @@ def layout(pathname, search):
     """
     # check token is valid
     try:
-        _id, _token = search.strip().split("&&")
+        _id, _token = [item.strip() for item in search.strip().split("&&")]
         token, email = json.loads(app_redis.get(_id))
         assert _token == token, (_token, token)
     except Exception as excep:
@@ -37,13 +37,10 @@ def layout(pathname, search):
         text_sub = "The link has already expired, click button to safe page."
         return layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
 
-    # define text
+    # define text and components
     text_hd, text_button = "Set password", "Set password"
     text_sub = "Set the password of this email please."
-
-    # define components
-    image_src = "assets/illustrations/password.svg"
-    image = html.Img(src=image_src, className="img-fluid")
+    image = html.Img(src="assets/illustrations/password.svg", className="img-fluid")
 
     # define components
     form_children = [
@@ -114,7 +111,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
         user = User(id=_id, email=email)
     user.pwd = security.generate_password_hash(pwd1)
 
-    # commit user data
+    # commit user
     app_db.session.merge(user)
     app_db.session.commit()
 

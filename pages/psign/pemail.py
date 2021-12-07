@@ -28,18 +28,15 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define text
+    # define text and components
     if pathname == PATH_REGISTERE:
         text_hd, text_button = "Sign up", "Verify the email"
         text_sub = "Register an account through an email."
-        image_src = "assets/illustrations/register.svg"
+        image = html.Img(src="assets/illustrations/register.svg", className="img-fluid")
     else:
         text_hd, text_button = "Forget password?", "Verify the email"
         text_sub = "Find back the password through email."
-        image_src = "assets/illustrations/resetpwd.svg"
-
-    # define components
-    image = html.Img(src=image_src, className="img-fluid")
+        image = html.Img(src="assets/illustrations/resetpwd.svg", className="img-fluid")
 
     # define components
     form_children = [
@@ -113,6 +110,7 @@ def _button_click(n_clicks, email, pathname):
         body = f"please click link in 10 minutes: {config_app_domain}{path_pwd}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
 
+        # cache data
         app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
 
     # set session
