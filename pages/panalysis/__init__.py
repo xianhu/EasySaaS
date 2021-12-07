@@ -47,12 +47,18 @@ def layout(pathname, search):
         cat_list.append(dbc.AccordionItem(ad_children, item_id=f"id-{TAG}-{first_cat_title}", title=first_cat_title))
     if (not cat_title) or (not cat_content):
         return layout_404(pathname, search, return_href=PATH_ANALYSIS)
-    collapse_item = dbc.Accordion(cat_list, flush=True, active_item=cat_active_item, id=f"id-{TAG}-accordion")
 
     # define components
     cat_icon = html.I(className="bi bi-list fs-1")
     cat_toggler = dbc.NavbarToggler(html.A(cat_icon), id=f"id-{TAG}-toggler", class_name="border")
-    cat_collapse = dbc.Collapse(collapse_item, id=f"id-{TAG}-collapse", class_name="d-md-block")
+    cat_collapse = dbc.Collapse(children=[
+        html.Div(children=[
+            dbc.Button("Upload Data", id=f"id-{TAG}-upload", size="sm", class_name="w-75"),
+            html.Div(html.A("upload data documents", href="#", className="small text-muted")),
+            html.Div(className="bg-white mt-3", style={"height": "4px"})
+        ], className="text-center"),
+        dbc.Accordion(cat_list, flush=True, active_item=cat_active_item, id=f"id-{TAG}-accordion"),
+    ], id=f"id-{TAG}-collapse", class_name="d-md-block my-4")
 
     # define components
     class_footer = "small-hidden text-white text-center mt-auto py-2"
