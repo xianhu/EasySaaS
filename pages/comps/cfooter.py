@@ -20,7 +20,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_footer=None
     mail_service = "Email: service@databai.com"
 
     # return result
-    class_footer = class_footer or "small text-center border-top py-2 mt-auto"
+    class_footer = class_footer or "small text-center border-top mt-auto py-2"
     return html.Footer(dbc.Container(dbc.Row(children=[
         dbc.Col(["Powered by ©2021 ", addr, ". All rights reserved."], width=12, md=6),
         dbc.Col(html.A(mail_service, href=mail_href, className="text-decoration-none"), width=12, md=6),

@@ -23,23 +23,23 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     brand_name = dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name="fs-5 fw-bold text-white")
 
     # define components
-    class_navlink = "fw-bold text-white border-bottom mx-auto mx-md-4 nav-link-hover py-md-3"
+    class_navlink = "fw-bold text-white text-center border-bottom mx-md-1 px-md-4 py-md-3"
+    class_intros = "bg-primary-down" if pathname == PATH_INTROS else "bg-primary-down-hover"
+    class_analysis = "bg-primary-down" if pathname.startswith(PATH_ANALYSIS) else "bg-primary-down-hover"
     nav_link_list = [
-        dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_navlink),
-        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_navlink),
+        dbc.NavLink("Intros", href=PATH_INTROS, class_name=f"{class_navlink} {class_intros}"),
+        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=f"{class_navlink} {class_analysis}"),
     ]
 
     # define components
-    if not flask_login.current_user.is_authenticated:
-        nav_item_list = dbc.NavItem([
-            html.A("Sign up", href=PATH_REGISTERE, className="text-white"),
-            dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="light", class_name="fw-bold text-white ms-3"),
-        ], class_name="d-flex align-items-center mx-auto mx-md-0 mt-2 mt-md-0")
-    else:
-        nav_item_list = dbc.NavItem([
-            html.A(html.I(className="bi bi-bell fs-5 text-white"), href=PATH_USER),
-            html.A(html.I(className="bi bi-person-circle fs-4 text-white"), href=PATH_USER, className="ms-3"),
-        ], class_name="d-flex align-items-center mx-auto mx-md-0 mt-2 mt-md-0")
+    children_right = [
+        html.A("Sign up", href=PATH_REGISTERE, className="text-white"),
+        dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="light", class_name="fw-bold text-white ms-3"),
+    ] if not flask_login.current_user.is_authenticated else [
+        html.A(html.I(className="bi bi-bell fs-5 text-white"), href=PATH_USER),
+        html.A(html.I(className="bi bi-person-circle fs-4 text-white"), href=PATH_USER, className="ms-3"),
+    ]
+    nav_item_list = dbc.NavItem(children_right, class_name="d-flex align-items-center mx-auto mx-md-0 my-1")
 
     # return result
     class_navbar = class_navbar or "bg-primary border-bottom py-0"
@@ -48,7 +48,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
             dbc.Col(brand_icon, width="auto"),
             dbc.Col(brand_name, width="auto", class_name="ms-1"),
         ], align="center", class_name="gx-0"),
-        dbc.NavbarToggler(id="id-toggler"),
+        dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse(children=[
             dbc.Nav(nav_link_list, navbar=True, class_name="mx-auto"),
             dbc.Nav(nav_item_list, navbar=True, class_name=None),
