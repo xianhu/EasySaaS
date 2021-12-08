@@ -7,6 +7,13 @@ catalog of page
 from ..paths import PATH_ANALYSIS
 
 CATALOG_LIST = [
+    ["Plotly", "bi bi-charts", [
+        ("Basic", f"{PATH_ANALYSIS}-pl-basic"),
+        ("Statistical", f"{PATH_ANALYSIS}-pl-statistical"),
+        ("Scientific", f"{PATH_ANALYSIS}-pl-scientific"),
+        ("Financial", f"{PATH_ANALYSIS}-pl-financial"),
+        ("AL And ML", f"{PATH_ANALYSIS}-pl-alandml"),
+    ]],
     ["Dashboards", "bi bi-house-door", [
         ("Analytics", f"{PATH_ANALYSIS}-db-analytics"),
         ("CustomRM", f"{PATH_ANALYSIS}-db-cumtomrm"),

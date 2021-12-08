@@ -10,9 +10,7 @@ from dash import Input, Output, State, html
 from app import app
 
 from ..comps import cnavbar
-from ..palert import layout_404
 from ..paths import PATH_ANALYSIS
-
 from .catalog import CATALOG_LIST
 
 TAG = "analysis"
@@ -22,64 +20,58 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # change pathname
-    if pathname == PATH_ANALYSIS:
-        pathname = f"{PATH_ANALYSIS}-db-analytics"
+    # define components
+    toggler_icon = html.A(html.I(className="bi bi-list fs-1"))
+    white_gap = html.Div(style={"height": "4px"}, className="bg-white")
 
     # define components
-    cat_active_item = None
-    cat_title, cat_list, cat_content = None, [], None
+    cat_title, cat_list, cat_active_id = "Upload Data", [], None
     cat_class_second = "text-white text-decoration-none px-5 py-2"
     for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
+        item_id = f"id-{TAG}-{first_cat_title}"
+
         ad_children = []
         for title, path in second_cat_list:
-            # define catlog list
+            # define catalog list
             _class = "accordion-bg-0" if path != pathname else "accordion-bg-1"
             ad_children.append(html.A(title, href=path, className=f"{cat_class_second} {_class}"))
 
-            # define content
+            # define title
             if path == pathname:
-                cat_active_item = f"id-{TAG}-{first_cat_title}"
+                cat_active_id = item_id
                 cat_title = " > ".join([first_cat_title, title])
-                cat_content = " > ".join([first_cat_title, title])
 
-        # define catlog list
-        cat_list.append(dbc.AccordionItem(ad_children, item_id=f"id-{TAG}-{first_cat_title}", title=first_cat_title))
-    if (not cat_title) or (not cat_content):
-        return layout_404(pathname, search, return_href=PATH_ANALYSIS)
+        # define catalog list
+        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=first_cat_title))
+    cat_accordion = dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", flush=True, active_item=cat_active_id)
 
     # define components
-    cat_icon = html.I(className="bi bi-list fs-1")
-    cat_toggler = dbc.NavbarToggler(html.A(cat_icon), id=f"id-{TAG}-toggler", class_name="border")
-    cat_collapse = dbc.Collapse(children=[
-        html.Div(children=[
-            dbc.Button("Upload Data", id=f"id-{TAG}-upload", size="sm", class_name="w-75"),
-            html.Div(html.A("upload data documents", href="#", className="small text-muted")),
-            html.Div(className="bg-white mt-3", style={"height": "4px"})
-        ], className="text-center"),
-        dbc.Accordion(cat_list, flush=True, active_item=cat_active_item, id=f"id-{TAG}-accordion"),
-    ], id=f"id-{TAG}-collapse", class_name="d-md-block my-4")
-
-    # define components
-    class_footer = "small-hidden text-white text-center mt-auto py-2"
-    cat_footer = html.Div("All rights reserved.", className=class_footer)
-
-    # define components
-    content1 = dbc.Row(children=[
+    small_display = dbc.Row(children=[
         dbc.Col(cat_title, width="auto", class_name="text-primary"),
-        dbc.Col(cat_toggler, width="auto", class_name=None),
+        dbc.Col(dbc.NavbarToggler(toggler_icon, id=f"id-{TAG}-toggler", class_name="border"), width="auto"),
     ], align="center", justify="between", class_name="d-md-none border-bottom w-100 mx-auto py-2")
 
     # define components
-    class_catlog = "d-flex flex-column accordion-bg h-100-scroll p-0"
-    content2 = dbc.Row(children=[
-        dbc.Col([cat_collapse, cat_footer], width=12, md=2, class_name=class_catlog),
-        dbc.Col(cat_content, width=12, md=10, class_name="mt-2 mt-md-2"),
-    ], align="start", justify="center", class_name="h-100-scroll w-100 mx-auto")
+    upload_div = html.Div(children=[
+        dbc.Button("Upload Data", href=f"{PATH_ANALYSIS}-upload", class_name="w-75"),
+        html.Div(html.A("upload data documents", href="#", className="small text-muted")),
+    ], className="text-center my-4")
+
+    # define components
+    content = dbc.Row(children=[
+        dbc.Col(children=[
+            dbc.Collapse([upload_div, white_gap, cat_accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
+            html.Div("All rights reserved.", className="small-hidden text-muted text-center mt-auto py-2"),
+        ], width=12, md=2, class_name="d-flex flex-column accordion-bg h-100-scroll p-0"),
+        dbc.Col(children=[
+            html.Div(cat_title, className="text-muted my-2"),
+            html.Div(cat_title, className="bg-white border", style={"min-height": "80%"})
+        ], width=12, md=10, class_name="bg-light h-100 overflow-scroll px-4"),
+    ], align="start", justify="center", class_name="h-100 overflow-scroll w-100 mx-auto")
 
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=True)
-    content = dbc.Container([content1, content2], fluid=True, class_name="h-100-scroll p-0")
+    content = dbc.Container([small_display, content], fluid=True, class_name="h-100 overflow-scroll p-0")
 
     # return result
     return html.Div(children=[navbar, content], className="d-flex flex-column vh-100 overflow-scroll")
