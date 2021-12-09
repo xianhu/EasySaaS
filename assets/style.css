@@ -42,10 +42,15 @@
 /* ----------------------------------------------------- */
 
 .h-100-scroll {
+    height: 100% !important;
+    overflow-y: scroll !important;
+}
+
+.h-100-scroll-md {
 }
 
 @media (min-width: 768px) {
-    .h-100-scroll {
+    .h-100-scroll-md {
         height: 100% !important;
         overflow-y: scroll !important;
     }
