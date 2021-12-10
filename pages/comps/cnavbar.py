@@ -19,7 +19,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     layout of components
     """
     # define components
-    brand_icon = html.Img(src="assets/favicon.png", style={"width": "25px", "height": "25px"})
+    brand_icon = html.Img(src="assets/favicon0.png", style={"width": "25px", "height": "25px"})
     brand_name = dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name="fs-5 fw-bold text-white")
 
     # define components
