@@ -38,4 +38,4 @@ def layout(pathname, search):
         ], align="center", justify="between", class_name="p-4"))
 
     # return result
-    return dbc.Card(children=invoice_row_list, class_name="mb-4")
+    return dbc.Card(invoice_row_list, class_name="mb-4")

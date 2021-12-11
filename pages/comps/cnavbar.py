@@ -19,10 +19,6 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     layout of components
     """
     # define components
-    brand_icon = html.Img(src="assets/favicon0.png", style={"width": "25px", "height": "25px"})
-    brand_name = dbc.NavbarBrand(config_app_name, href=PATH_INTROS, class_name="fs-5 fw-bold text-white")
-
-    # define components
     class_navlink = "fw-bold text-white text-center border-bottom mx-md-1 px-md-4 py-md-3"
     class_intros = "bg-primary-down" if pathname == PATH_INTROS else "bg-primary-down-hover"
     class_analysis = "bg-primary-down" if pathname.startswith(PATH_ANALYSIS) else "bg-primary-down-hover"
@@ -36,7 +32,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
         html.A("Sign up", href=PATH_REGISTERE, className="text-white"),
         dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="light", class_name="fw-bold text-white ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
-        html.A(html.I(className="bi bi-bell fs-5 text-white"), href=PATH_USER),
+        html.A(html.I(className="bi bi-bell fs-5 text-white"), href=PATH_USER, className=None),
         html.A(html.I(className="bi bi-person-circle fs-4 text-white"), href=PATH_USER, className="ms-3"),
     ]
     nav_item_list = dbc.NavItem(children_right, class_name="d-flex align-items-center mx-auto mx-md-0 my-1")
@@ -44,10 +40,10 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     # return result
     class_navbar = class_navbar or "bg-primary border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
-        dbc.Row(children=[
-            dbc.Col(brand_icon, width="auto"),
-            dbc.Col(brand_name, width="auto", class_name="ms-1"),
-        ], align="center", class_name="gx-0"),
+        dbc.NavbarBrand(children=[
+            html.Img(src="assets/favicon0.png", style={"width": "1.5rem"}),
+            html.Span(config_app_name, className="fs-5 fw-bold text-white align-middle ms-1"),
+        ], href=PATH_INTROS),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse(children=[
             dbc.Nav(nav_link_list, navbar=True, class_name="mx-auto"),

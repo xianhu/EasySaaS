@@ -4,9 +4,9 @@
 page of email
 """
 
-import hashlib
 import json
 import uuid
+import hashlib
 
 import flask
 import flask_mail
@@ -39,12 +39,10 @@ def layout(pathname, search):
         image = html.Img(src="assets/illustrations/resetpwd.svg", className="img-fluid")
 
     # define components
-    form_children = [
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email"),
-            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-        ]),
-    ]
+    form_children = dbc.FormFloating(children=[
+        dbc.Input(id=f"id-{TAG}-email", type="email"),
+        dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+    ])
 
     # define components
     other_addresses = [
@@ -56,10 +54,11 @@ def layout(pathname, search):
     ]
 
     # return result
-    class_label = "text-center text-danger w-100 my-0"
+    class_label = "text-danger text-center w-100 my-0"
     args_button = {"size": "lg", "class_name": "w-100 mt-4"}
     return html.Div(children=[
         ADDRESS, dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+
         html.A(children=[
             html.Img(src="assets/favicon.png", style={"width": "1.25rem"}),
             html.Span(config_app_name, className="fs-5 text-primary align-middle"),
@@ -72,7 +71,7 @@ def layout(pathname, search):
                 html.Div(text_sub, className="text-center text-muted"),
 
                 dbc.Form(form_children, class_name="mt-4"),
-                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
+                dbc.Label(id=f"id-{TAG}-label", class_name=class_label),
 
                 dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
                 html.Div(other_addresses, className="d-flex justify-content-between"),
@@ -83,7 +82,6 @@ def layout(pathname, search):
 
 @app.callback([
     Output(f"id-{TAG}-label", "children"),
-    Output(f"id-{TAG}-label", "hidden"),
     Output(f"id-{TAG}-address", "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
@@ -94,15 +92,15 @@ def _button_click(n_clicks, email, pathname):
     # check data
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return "Email is invalid", False, None
+        return "Email is invalid", None
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = User.query.get(_id)
     if pathname == PATH_REGISTERE and user:
-        return "Email is registered", False, None
+        return "Email is registered", None
     if pathname == PATH_RESETPWDE and (not user):
-        return "Email doesn't exist", False, None
+        return "Email doesn't exist", None
 
     # send email and cache
     if not app_redis.get(_id):
@@ -123,4 +121,4 @@ def _button_click(n_clicks, email, pathname):
     flask.session["email"] = email
 
     # return result
-    return None, True, f"{pathname}/result"
+    return None, f"{pathname}/result"

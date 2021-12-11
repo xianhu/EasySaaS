@@ -63,12 +63,13 @@ def layout(pathname, search):
 
     # define components
     image = html.Img(src="assets/illustrations/intros.svg", className="img-fluid")
+    intros = [
+        html.Div(HEADER, className="fs-1 text-center mb-2"),
+        html.P(HEADERSUB, className="fs-5 text-center text-muted lead"),
+    ]
     content1 = dbc.Row(children=[
-        dbc.Col(image, width=10, md={"size": 5, "order": 2}),
-        dbc.Col(children=[
-            html.Div(HEADER, className="fs-1 text-center mb-2"),
-            html.P(HEADERSUB, className="fs-5 text-center text-muted lead"),
-        ], width=10, md={"size": 5, "order": 1}, class_name=class_col),
+        dbc.Col(image, width=10, md={"size": 5, "order": 2}, class_name=None),
+        dbc.Col(intros, width=10, md={"size": 5, "order": 1}, class_name=class_col),
     ], align="center", justify="around", class_name=class_row)
 
     # define components

@@ -23,7 +23,7 @@ def layout(pathname, search):
             dbc.Col(children=[
                 html.Div("Basic Plan", className=None),
                 html.Div("Next payment: 10/12/2022", className="text-muted"),
-            ], width=9),
+            ], width=9, class_name=None),
             dbc.Col(children=[
                 html.Div("$29/m", className="fw-bold"),
             ], width=3, class_name="text-end"),
