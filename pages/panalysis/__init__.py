@@ -75,8 +75,8 @@ def layout(pathname, search):
     # return result
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=True),
-        dbc.Container([small_div, content], fluid=True, class_name="h-100-scroll p-0"),
-    ], className="d-flex flex-column bg-light vh-100 overflow-scroll")
+        dbc.Container([small_div, content], fluid=True, class_name="bg-light h-100-scroll p-0"),
+    ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
 @app.callback(

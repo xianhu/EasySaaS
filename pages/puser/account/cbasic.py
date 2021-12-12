@@ -42,7 +42,7 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             # change line
             dbc.Col(children=[
-                dbc.Label(id=f"id-{TAG}-label", class_name=class_label),
+                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(children=[
                 dbc.Button("Update Information", id=f"id-{TAG}-button", class_name="w-100"),
@@ -57,6 +57,7 @@ def layout(pathname, search):
 
 @app.callback([
     Output(f"id-{TAG}-label", "children"),
+    Output(f"id-{TAG}-label", "hidden"),
     Output(f"id-{TAG}-modal", "is_open"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
@@ -68,11 +69,11 @@ def _button_click(n_clicks, name, phone):
 
     # check data
     if phone and (not RE_PHONE.match(phone)):
-        return "Phone format is error", False
+        return "Phone format is error", False, False
 
     # check data
     if (name == user.name) and (phone == user.phone):
-        return "No change has happened", False
+        return "No change has happened", False, False
 
     # update user
     user.name = name or ""
@@ -83,4 +84,4 @@ def _button_click(n_clicks, name, phone):
     app_db.session.commit()
 
     # return result
-    return None, True
+    return None, True, True

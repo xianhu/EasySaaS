@@ -77,9 +77,9 @@ def layout(pathname, search):
     # return result
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=None),
-        dbc.Container([small_div, content], class_name="p-0"),
-        cfooter.layout(pathname, search, fluid=None),
-    ], className="bg-light")
+        dbc.Container([small_div, content], class_name="bg-light p-0"),
+        cfooter.layout(pathname, search, fluid=None, class_footer=None),
+    ])
 
 
 @app.callback(
