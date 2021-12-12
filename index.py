@@ -80,7 +80,7 @@ def _init_page(pathname, search, session):
         return pathname, panalysis.layout(pathname, search)
 
     # return 404 ==========================================
-    return pathname, palert.layout_404(pathname, search, PATH_INTROS)
+    return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS)
 
 
 if __name__ == "__main__":
