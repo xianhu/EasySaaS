@@ -83,7 +83,7 @@ def layout(pathname, search):
                 html.Div(text_sub, className="text-center text-muted"),
 
                 dbc.Form(form_children, class_name="mt-4"),
-                dbc.Label(id=f"id-{TAG}-label", class_name=class_label),
+                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
 
                 dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
                 html.Div(other_addresses, className="d-flex justify-content-between"),
@@ -94,6 +94,7 @@ def layout(pathname, search):
 
 @app.callback([
     Output(f"id-{TAG}-label", "children"),
+    Output(f"id-{TAG}-label", "hidden"),
     Output(f"id-{TAG}-address", "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
@@ -105,11 +106,11 @@ def layout(pathname, search):
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # check data
     if (not pwd1) or (len(pwd1) < 6):
-        return "Password is too short", None
+        return "Password is too short", False, None
     if not RE_PWD.match(pwd1):
-        return "Password must contain numbers and letters", None
+        return "Password must contain numbers and letters", False, None
     if (not pwd2) or (pwd2 != pwd1):
-        return "Passwords are inconsistent", None
+        return "Passwords are inconsistent", False, None
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
@@ -126,4 +127,4 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     app_redis.delete(_id)
 
     # return result
-    return None, f"{pathname}/result"
+    return None, True, f"{pathname}/result"
