@@ -24,17 +24,17 @@
     background-color: var(--cs-primary-color-down) !important;
 }
 
-.bg-primary-down-hover:hover {
+.bg-primary-hover:hover {
     background-color: var(--cs-primary-color-down) !important;
 }
 
 /* ----------------------------------------------------- */
 
-.small-hidden {
+.hidden-sm {
 }
 
 @media (max-width: 768px) {
-    .small-hidden {
+    .hidden-sm {
         display: none !important;
     }
 }

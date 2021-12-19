@@ -58,7 +58,7 @@ def layout(pathname, search):
     content = dbc.Row(children=[
         dbc.Col(children=[
             dbc.Collapse([upload_div, white_gap, accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
-            html.Div("All rights reserved.", className="small-hidden text-muted text-center mt-auto py-2"),
+            html.Div("All rights reserved.", className="hidden-sm text-muted text-center mt-auto py-2"),
         ], width=12, md=2, class_name="d-flex flex-column accordion-bg h-100-scroll-md p-0"),
         dbc.Col(children=[
             html.Div(cat_title, className="d-none d-md-block text-muted mt-2"),
