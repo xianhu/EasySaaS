@@ -9,12 +9,12 @@ application using Python and Dash.
 
 ```
 vim .bash_profile
-# export MAIL_SERVER=smtp.feishu.cn
-# export MAIL_PORT=465
-# export MAIL_USERNAME=noreply@databai.com
-# export MAIL_PASSWORD=xxxxxxxxxxxxx
-# export APP_DOMAIN=http://0.0.0.0:8088
-# export APP_SECRET_KEY=fejiadhjfehuhad
+# export ES_MAIL_SERVER=smtp.feishu.cn
+# export ES_MAIL_PORT=465
+# export ES_MAIL_USERNAME=noreply@databai.com
+# export ES_MAIL_PASSWORD=xxxxxxxxxxxxx
+# export ES_APP_DOMAIN=http://0.0.0.0:8088
+# export ES_APP_SECRET_KEY=fejiadhjfehuhad
 source .bash_profile
 ```
 
