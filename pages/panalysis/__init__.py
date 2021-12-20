@@ -12,6 +12,7 @@ from app import app
 from ..comps import cnavbar
 from ..paths import PATH_ANALYSIS
 from .catalog import CATALOG_LIST
+from . import pupload
 
 TAG = "analysis"
 
@@ -47,6 +48,9 @@ def layout(pathname, search):
         cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=first_cat_title))
     accordion = dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", flush=True, active_item=cat_active_id)
 
+    if cat_title == "Upload Data":
+        cat_content = pupload.layout(pathname, search)
+
     # define components
     upload_div = html.Div(children=[
         dbc.Button("Upload Data", href=f"{PATH_ANALYSIS}-upload", class_name="w-75"),
@@ -54,15 +58,23 @@ def layout(pathname, search):
     ], className="d-flex flex-column align-items-center my-4")
     white_gap = html.Div(style={"height": "4px"}, className="bg-light")
 
+    # define
+    a = html.Div(children=[
+        html.Div(children=[
+            html.H2(html.Button("Table", className="accordion-button collapsed accordion-bg text-white"), className="accordion-header my-0")
+        ], className="accordion-item"),
+    ], id=f"id-{TAG}-accordion0", className="accordion accordion-flush")
+
     # define components
     content = dbc.Row(children=[
         dbc.Col(children=[
-            dbc.Collapse([upload_div, white_gap, accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
+            dbc.Collapse([upload_div, white_gap, a, accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
             html.Div("All rights reserved.", className="hidden-sm text-muted text-center mt-auto py-2"),
         ], width=12, md=2, class_name="d-flex flex-column accordion-bg h-100-scroll-md p-0"),
         dbc.Col(children=[
-            html.Div(cat_title, className="d-none d-md-block text-muted mt-2"),
-            html.Div(cat_content, className="bg-white border rounded mt-2", style={"min-height": "75%"}),
+            html.Div(cat_title, className="d-none d-md-block text-muted my-2"),
+            cat_content,
+            # html.Div(cat_content, className="bg-white h-75 border rounded mt-2"),
         ], width=12, md=10, class_name="h-100-scroll px-md-4"),
     ], justify="center", class_name="h-100-scroll w-100 mx-auto")
 

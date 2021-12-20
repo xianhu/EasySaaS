@@ -28,6 +28,21 @@
     flex-direction: column !important;
 }
 
+.accordion-item:last-of-type {
+    border-bottom-right-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+}
+
+.accordion-item:last-of-type .accordion-button.collapsed {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.accordion-item:last-of-type .accordion-collapse {
+    border-bottom-right-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+}
+
 /* ----------------------------------------------------- */
 
 #id-analysis-accordion .accordion-item {
@@ -49,3 +64,15 @@
 }
 
 /* ----------------------------------------------------- */
+
+#id-analysis-accordion0 .accordion-header {
+    border-bottom: thin solid rgba(0, 0, 0, 0.5) !important;
+}
+
+#id-analysis-accordion0 .accordion-button::after {
+    background-image: None !important;
+}
+
+#id-analysis-accordion0 .accordion-button:not(.collapsed)::after {
+    background-image: None !important;
+}
