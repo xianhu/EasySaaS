@@ -5,7 +5,7 @@ analysis page
 """
 
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 
@@ -53,9 +53,11 @@ def layout(pathname, search):
 
     # define components
     upload_div = html.Div(children=[
-        dbc.Button("Upload Data", href=f"{PATH_ANALYSIS}-upload", class_name="w-75"),
-        html.A("upload data documents", href="#", className="small text-muted"),
-    ], className="d-flex flex-column align-items-center my-4")
+        dcc.Upload(children=[
+            dbc.Button("Upload Data", class_name="w-75"),
+        ], id=f"id-{TAG}-upload", accept=".csv,.xlsx", className="w-100 text-center"),
+        html.Div(html.A("upload data documents", href="#", className="small text-muted"), className="text-center"),
+    ], className="my-4")
     white_gap = html.Div(style={"height": "4px"}, className="bg-light")
 
     # define
@@ -69,7 +71,7 @@ def layout(pathname, search):
     content = dbc.Row(children=[
         dbc.Col(children=[
             dbc.Collapse([upload_div, white_gap, a, accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
-            html.Div("All rights reserved.", className="hidden-sm text-muted text-center mt-auto py-2"),
+            html.Div("All rights reserved.", className="d-none d-md-block text-muted text-center mt-auto py-2"),
         ], width=12, md=2, class_name="d-flex flex-column accordion-bg h-100-scroll-md p-0"),
         dbc.Col(children=[
             html.Div(cat_title, className="d-none d-md-block text-muted my-2"),
@@ -88,6 +90,7 @@ def layout(pathname, search):
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=True),
         dbc.Container([small_div, content], fluid=True, class_name="bg-light h-100-scroll p-0"),
+        dcc.Store(id=f"id-{TAG}-filename"),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
@@ -100,3 +103,14 @@ def _toggle_catalog(n_clicks, is_open):
     if n_clicks:
         return not is_open
     return is_open
+
+
+@app.callback([
+    Output(f"id-{TAG}-filename", "data"),
+], [
+    Input(f"id-{TAG}-upload", "filename"),
+    State(f"id-{TAG}-upload", "contents"),
+], prevent_initial_call=True)
+def _button_click(filename, contents):
+    print(filename)
+    return filename,

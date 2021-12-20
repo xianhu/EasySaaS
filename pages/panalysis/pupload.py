@@ -21,7 +21,7 @@ def layout(pathname, search):
     return html.Div(children=[
         dbc.Row(children=[
             dbc.Col("Unknown file data", id=f"id-{TAG}-title", width="auto"),
-            dbc.Col(dcc.Upload(dbc.Button("Upload Data", size="sm"), id=f"id-{TAG}-upload0", accept=".csv,.xlsx", className="m-0"), width="auto"),
+            # dbc.Col(dcc.Upload(dbc.Button("Upload Data", size="sm"), id=f"id-{TAG}-upload0", accept=".csv,.xlsx", className="m-0"), width="auto"),
         ], align="center", justify="between", class_name="border-bottom mx-auto py-3"),
         # dbc.Row(dbc.Col(children=[
         #     # html.Img(src="assets/illustrations/upload.svg", className="img-fluid"),

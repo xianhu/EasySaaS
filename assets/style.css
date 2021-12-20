@@ -30,17 +30,6 @@
 
 /* ----------------------------------------------------- */
 
-.hidden-sm {
-}
-
-@media (max-width: 768px) {
-    .hidden-sm {
-        display: none !important;
-    }
-}
-
-/* ----------------------------------------------------- */
-
 .h-100-scroll {
     height: 100% !important;
     overflow-y: scroll !important;
