@@ -61,11 +61,13 @@ def layout(pathname, search):
     white_gap = html.Div(style={"height": "4px"}, className="bg-light")
 
     # define
-    a = html.Div(children=[
-        html.Div(children=[
-            html.H2(html.Button("Table", className="accordion-button collapsed accordion-bg text-white"), className="accordion-header my-0")
-        ], className="accordion-item"),
-    ], id=f"id-{TAG}-accordion0", className="accordion accordion-flush")
+    a = html.Div(html.Div(children=[
+        html.H2(children=[
+            html.Button(children=[
+                html.A("Table", href="/", className="text-white text-decoration-none"),
+            ], className="accordion-button collapsed accordion-bg button-after-none"),
+        ], className="accordion-header", style={"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}),
+    ], className="accordion-item"), className="accordion accordion-flush")
 
     # define components
     content = dbc.Row(children=[

@@ -64,15 +64,3 @@
 }
 
 /* ----------------------------------------------------- */
-
-#id-analysis-accordion0 .accordion-header {
-    border-bottom: thin solid rgba(0, 0, 0, 0.5) !important;
-}
-
-#id-analysis-accordion0 .accordion-button::after {
-    background-image: None !important;
-}
-
-#id-analysis-accordion0 .accordion-button:not(.collapsed)::after {
-    background-image: None !important;
-}
