@@ -9,7 +9,7 @@ from dash import Input, Output, State, html
 
 from app import app
 
-from ..comps import cfooter, cnavbar
+from ..comps import cfooter, cnavbar, csmallnav
 from ..palert import layout_404
 from ..paths import PATH_USER, PATH_LOGOUT
 
@@ -69,10 +69,7 @@ def layout(pathname, search):
     ], justify="center", class_name="w-100 mx-auto")
 
     # define components
-    small_div = dbc.Row(children=[
-        dbc.Col(cat_title, width="auto", class_name="text-primary"),
-        dbc.Col(dbc.NavbarToggler(toggler_icon, id=f"id-{TAG}-toggler", class_name="border"), width="auto"),
-    ], align="center", justify="between", class_name="d-md-none border-bottom w-100 mx-auto py-2")
+    small_div = csmallnav.layout(pathname, search, cat_title, f"id-{TAG}-toggler")
 
     # return result
     return html.Div(children=[

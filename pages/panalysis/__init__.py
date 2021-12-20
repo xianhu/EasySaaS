@@ -9,7 +9,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 
-from ..comps import cnavbar
+from ..comps import cnavbar, csinglead, csmallnav
 from ..paths import PATH_ANALYSIS
 from .catalog import CATALOG_LIST
 from . import pupload
@@ -60,19 +60,21 @@ def layout(pathname, search):
     ], className="my-4")
     white_gap = html.Div(style={"height": "4px"}, className="bg-light")
 
-    # define
-    a = html.Div(html.Div(children=[
-        html.H2(children=[
-            html.Button(children=[
-                html.A("Table", href="/", className="text-white text-decoration-none"),
-            ], className="accordion-button collapsed accordion-bg button-after-none"),
-        ], className="accordion-header", style={"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}),
-    ], className="accordion-item"), className="accordion accordion-flush")
+    # define components
+    _bc = html.A("Table", href="/", className="text-white text-decoration-none w-100")
+    table = csinglead.layout(pathname, search, _bc, "accordion-bg accordion-button-after-none", {"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}, flush=True)
+    # a = html.Div(html.Div(children=[
+    #     html.H2(children=[
+    #         html.Button(children=[
+    #             ,
+    #         ], className="accordion-button collapsed accordion-bg button-after-none"),
+    #     ], className="accordion-header", style={"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}),
+    # ], className="accordion-item"), className="accordion accordion-flush")
 
     # define components
     content = dbc.Row(children=[
         dbc.Col(children=[
-            dbc.Collapse([upload_div, white_gap, a, accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
+            dbc.Collapse([upload_div, white_gap, table, accordion], id=f"id-{TAG}-collapse", class_name="d-md-block"),
             html.Div("All rights reserved.", className="d-none d-md-block text-muted text-center mt-auto py-2"),
         ], width=12, md=2, class_name="d-flex flex-column accordion-bg h-100-scroll-md p-0"),
         dbc.Col(children=[
@@ -83,10 +85,7 @@ def layout(pathname, search):
     ], justify="center", class_name="h-100-scroll w-100 mx-auto")
 
     # define components
-    small_div = dbc.Row(children=[
-        dbc.Col(cat_title, width="auto", class_name="text-primary"),
-        dbc.Col(dbc.NavbarToggler(toggler_icon, id=f"id-{TAG}-toggler", class_name="border"), width="auto"),
-    ], align="center", justify="between", class_name="d-md-none border-bottom w-100 mx-auto py-2")
+    small_div = csmallnav.layout(pathname, search, cat_title, f"id-{TAG}-toggler")
 
     # return result
     return html.Div(children=[

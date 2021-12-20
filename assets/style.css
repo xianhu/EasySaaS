@@ -30,12 +30,6 @@
 
 /* ----------------------------------------------------- */
 
-.button-after-none::after {
-    background-image: None !important;
-}
-
-/* ----------------------------------------------------- */
-
 .h-100-scroll {
     height: 100% !important;
     overflow-y: scroll !important;
