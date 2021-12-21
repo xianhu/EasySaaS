@@ -31,7 +31,7 @@ config_mail_password = os.environ.get(f"{ENV_PREFIX}_MAIL_PASSWORD")
 config_mail_sender = (config_app_name, config_mail_username)
 
 # define directory to store data
-config_dir_store_data = ".data/storage"
+config_dir_store = ".data/storage"
 
 # define logging format
 config_log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"

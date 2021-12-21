@@ -3,7 +3,7 @@
 This project will be attempted to make a great starting point for your next big business as easy and efficent as possible. This project will create an easy way to build a SaaS
 application using Python and Dash.
 
-## Install for Development
+## Install For Development
 
 ### Update System Environs
 
@@ -40,10 +40,10 @@ docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \
                         -v /tmp/:/tmp/ -p 8088:8088 -p 8089:8089 -d nginx
 ```
 
-### Run uwsgi, Config File: aconfig/uwsgi_index.ini
+### Run uwsgi, Config File: aconfig/uwsgi.ini
 
 ```
-.venv/bin/uwsgi --ini aconfig/uwsgi_index.ini
+.venv/bin/uwsgi --ini aconfig/uwsgi.ini
 .venv/bin/uwsgi --reload index.pid
 .venv/bin/uwsgi --stop index.pid
 ```
