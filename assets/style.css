@@ -28,6 +28,10 @@
     background-color: var(--cs-primary-color-down) !important;
 }
 
+.bg-image-after-none::after {
+    background-image: none !important;
+}
+
 /* ----------------------------------------------------- */
 
 .h-100-scroll {

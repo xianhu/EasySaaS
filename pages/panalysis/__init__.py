@@ -62,7 +62,7 @@ def layout(pathname, search):
 
     # define components
     _bc = html.A("Table", href="/", className="text-white text-decoration-none w-100")
-    table = csinglead.layout(pathname, search, _bc, "accordion-bg accordion-button-after-none", {"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}, flush=True)
+    table = csinglead.layout(pathname, search, _bc, "accordion-bg bg-image-after-none", {"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}, flush=True)
     # a = html.Div(html.Div(children=[
     #     html.H2(children=[
     #         html.Button(children=[
