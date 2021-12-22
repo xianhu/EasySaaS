@@ -69,7 +69,7 @@ def layout(pathname, search):
     ], justify="center", class_name="w-100 mx-auto")
 
     # define components
-    small_div = csmallnav.layout(pathname, search, cat_title, f"id-{TAG}-toggler")
+    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", cat_title)
 
     # return result
     return html.Div(children=[

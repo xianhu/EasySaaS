@@ -62,7 +62,7 @@ def layout(pathname, search):
 
     # define components
     _bc = html.A("Table", href="/", className="text-white text-decoration-none w-100")
-    table = csinglead.layout(pathname, search, _bc, "accordion-bg bg-image-after-none", {"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"}, flush=True)
+    table = csinglead.layout(pathname, search, _bc, "accordion-bg bg-image-after-none", flush=True)
     # a = html.Div(html.Div(children=[
     #     html.H2(children=[
     #         html.Button(children=[
@@ -85,7 +85,7 @@ def layout(pathname, search):
     ], justify="center", class_name="h-100-scroll w-100 mx-auto")
 
     # define components
-    small_div = csmallnav.layout(pathname, search, cat_title, f"id-{TAG}-toggler")
+    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", cat_title)
 
     # return result
     return html.Div(children=[

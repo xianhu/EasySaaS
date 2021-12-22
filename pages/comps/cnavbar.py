@@ -19,7 +19,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     layout of components
     """
     # define components
-    class_navlink = "fw-bold text-white text-center border-bottom mx-md-1 px-md-4 py-md-3"
+    class_navlink = "fw-bold text-white text-center border-bottom mx-md-1 p-md-3"
     class_intros = "bg-primary-down" if pathname == PATH_INTROS else "bg-primary-hover"
     class_analysis = "bg-primary-down" if pathname.startswith(PATH_ANALYSIS) else "bg-primary-hover"
     nav_link_list = [

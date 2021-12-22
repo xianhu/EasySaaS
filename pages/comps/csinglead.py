@@ -7,11 +7,11 @@ single accordion of page
 from dash import html
 
 
-def layout(pathname, search, button_children, button_class, header_style, flush=False):
+def layout(pathname, search, button_children, button_class, flush=False):
     """
     layout of components
     """
+    # define components: style of header according to style-bs-accordion.css
     button = html.Button(button_children, className=f"accordion-button collapsed {button_class}")
-    header = html.H2(button, className="accordion-header", style=header_style)
-    item = html.Div(header, className="accordion-item")
-    return html.Div(item, className=f"accordion {'accordion-flush' if flush else ''}")
+    header = html.H2(button, className="accordion-header", style={"border-bottom": "thin solid rgba(0, 0, 0, 0.5)"})
+    return html.Div(html.Div(header, className="accordion-item"), className=f"accordion {'accordion-flush' if flush else ''}")
