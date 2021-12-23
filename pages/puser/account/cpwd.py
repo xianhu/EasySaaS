@@ -21,7 +21,7 @@ def layout(pathname, search):
     """
     layout of card
     """
-    class_label = "text-danger text-center w-100 my-0"
+    class_fd = "text-danger text-center w-100 my-0"
     return dbc.Card(children=[
         html.Div("Change Password:", className="border-bottom p-4"),
         dbc.Row(children=[
@@ -39,7 +39,7 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             # change line
             dbc.Col(children=[
-                dbc.Label(id=f"id-{TAG}-label", hidden=True, class_name=class_label),
+                html.Div(id=f"id-{TAG}-feedback", className=class_fd),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(children=[
                 dbc.Button("Update Password", id=f"id-{TAG}-button", class_name="w-100"),
@@ -54,8 +54,7 @@ def layout(pathname, search):
 
 
 @app.callback([
-    Output(f"id-{TAG}-label", "children"),
-    Output(f"id-{TAG}-label", "hidden"),
+    Output(f"id-{TAG}-feedback", "children"),
     Output(f"id-{TAG}-modal", "is_open"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
@@ -68,15 +67,15 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
 
     # check data
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return "Current password is wrong", False, False
+        return "Current password is wrong", False
 
     # check data
     if (not pwd1) or (len(pwd1) < 6):
-        return "Password is too short", False, None
+        return "Password is too short", None
     if not RE_PWD.match(pwd1):
-        return "Password must contain numbers and letters", False, None
+        return "Must contain numbers and letters", None
     if (not pwd2) or (pwd2 != pwd1):
-        return "Passwords are inconsistent", False, None
+        return "Passwords are inconsistent", None
 
     # update password
     user.pwd = security.generate_password_hash(pwd1)
@@ -86,4 +85,4 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     app_db.session.commit()
 
     # return result
-    return None, True, True
+    return None, True

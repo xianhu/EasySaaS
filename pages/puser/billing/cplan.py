@@ -18,7 +18,7 @@ def layout(pathname, search):
         dbc.Row(children=[
             dbc.Col("Current Plan:", width="auto"),
             dbc.Col(dbc.Button("Change", id=f"id-{TAG}-change"), width="auto"),
-        ], align="center", justify="between", class_name="border-bottom gx-0 px-4 py-3"),
+        ], align="center", justify="between", class_name="gx-0 border-bottom px-4 py-3"),
         dbc.Row(children=[
             dbc.Col(children=[
                 html.Div("Basic Plan", className=None),
