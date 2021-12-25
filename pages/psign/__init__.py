@@ -6,8 +6,8 @@ sign page
 
 import flask
 
+from .. import palert
 from ..paths import *
-from ..palert import layout_simple, layout_404
 from . import pemail, plogin, ppwd
 
 
@@ -23,13 +23,13 @@ def layout(pathname, search):
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
         email = flask.session.get("email", "")
         text_sub = f"An email has sent to [{email}], go mailbox to verify it."
-        return layout_simple("Sending success", text_sub, "Back to home", PATH_INTROS)
+        return palert.layout_simple("Sending success", text_sub, "Back to home", PATH_INTROS)
 
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         return ppwd.layout(pathname, search)
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
         text_sub = "The password was set successfully."
-        return layout_simple("Setting success", text_sub, "Go to login", PATH_LOGIN)
+        return palert.layout_simple("Setting success", text_sub, "Go to login", PATH_LOGIN)
 
     # return result
-    return layout_404(pathname, search, return_href=PATH_INTROS)
+    return palert.layout_404(pathname, search, return_href=PATH_INTROS)

@@ -41,7 +41,7 @@ def layout(pathname, search):
             ]), width=12, md=4, class_name="mt-2 mt-md-0"),
             # change line
             dbc.Col(children=[
-                html.Div(id=f"id-{TAG}-fb", className="text-danger text-center w-100"),
+                html.Div(id=f"id-{TAG}-fb", className="text-danger text-center"),
             ], width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(children=[
                 dbc.Button("Update Information", id=f"id-{TAG}-button", class_name="w-100"),

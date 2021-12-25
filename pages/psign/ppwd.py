@@ -17,7 +17,7 @@ from config import config_app_name
 from utility.address import AddressAIO
 from utility.consts import RE_PWD
 
-from ..palert import layout_simple
+from .. import palert
 from ..paths import *
 
 TAG = "password"
@@ -28,7 +28,6 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # check token is valid
     try:
         _id, _token = [item.strip() for item in search.strip().split("&&")]
         token, email = json.loads(app_redis.get(_id))
@@ -36,7 +35,7 @@ def layout(pathname, search):
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         text_sub = "The link has already expired, click button to safe page."
-        return layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
+        return palert.layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
 
     # define text and components
     text_hd, text_button = "Set password", "Set password"
@@ -66,7 +65,6 @@ def layout(pathname, search):
     ]
 
     # return result
-    class_fd = "text-danger text-center w-100 my-0"
     args_button = {"size": "lg", "class_name": "w-100 mt-4"}
     return html.Div(children=[
         ADDRESS, dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
@@ -83,7 +81,7 @@ def layout(pathname, search):
                 html.Div(text_sub, className="text-center text-muted"),
 
                 dbc.Form(form_children, class_name="mt-4"),
-                html.Div(id=f"id-{TAG}-feedback", className=class_fd),
+                html.Div(id=f"id-{TAG}-fb", className="text-danger text-center"),
 
                 dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
                 html.Div(other_addresses, className="d-flex justify-content-between"),
@@ -93,7 +91,7 @@ def layout(pathname, search):
 
 
 @app.callback([
-    Output(f"id-{TAG}-feedback", "children"),
+    Output(f"id-{TAG}-fb", "children"),
     Output(f"id-{TAG}-address", "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),

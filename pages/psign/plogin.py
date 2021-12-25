@@ -50,7 +50,6 @@ def layout(pathname, search):
     ]
 
     # return result
-    class_fd = "text-danger text-center w-100 my-0"
     args_button = {"size": "lg", "class_name": "w-100 mt-4"}
     return html.Div(children=[
         ADDRESS, dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
@@ -67,7 +66,7 @@ def layout(pathname, search):
                 html.Div(text_sub, className="text-center text-muted"),
 
                 dbc.Form(form_children, class_name="mt-4"),
-                html.Div(id=f"id-{TAG}-feedback", className=class_fd),
+                html.Div(id=f"id-{TAG}-fb", className="text-danger text-center"),
 
                 dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
                 html.Div(other_addresses, className="d-flex justify-content-between"),
@@ -77,7 +76,7 @@ def layout(pathname, search):
 
 
 @app.callback([
-    Output(f"id-{TAG}-feedback", "children"),
+    Output(f"id-{TAG}-fb", "children"),
     Output(f"id-{TAG}-address", "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
