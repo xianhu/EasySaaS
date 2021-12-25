@@ -9,11 +9,10 @@ from dash import Input, Output, State, html
 
 from app import app
 
-from ..comps import cfooter, cnavbar, csmallnav
-from ..palert import layout_404
+from .. import palert
 from ..paths import PATH_USER, PATH_LOGOUT
-
-from . import account, billing
+from ..comps import cfooter, cnavbar, csmallnav
+from . import paccount, pbilling
 
 TAG = "user"
 CATALOG_LIST = [
@@ -33,36 +32,46 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define pathname and class
+    # define pathname
     pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
+
+    # define variables and class
+    cat_list, title, content = [], None, None
     class_cat_first = "small text-muted mt-4 mb-2 px-4"
     class_cat_second = "small text-decoration-none px-4 py-2"
 
     # define components
-    cat_title, cat_list, content = None, [], None
     for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
-        # define catlog list
+        # define catalog list
         cat_list.append(html.Div(first_cat_title, className=class_cat_first))
 
-        # define catlog list
-        for title, path in second_cat_list:
+        # define catalog list
+        for second_cat_title, path in second_cat_list:
             _class = "text-black hover-primary" if path != pathname else "text-white bg-primary"
-            cat_list.append(html.A(title, href=path, className=f"{class_cat_second} {_class}"))
-
-            # define content
-            if path == pathname:
-                cat_title = " > ".join([first_cat_title, title])
-                if first_cat_title == "ACCOUNT":
-                    content = account.layout(pathname, search)
-                if first_cat_title == "BILLING":
-                    content = billing.layout(pathname, search)
-    # define catlog list
+            cat_list.append(html.A(second_cat_title, href=path, className=f"{class_cat_second} {_class}"))
     cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
-    if (not cat_title) or (not content):
-        return layout_404(pathname, search, return_href=PATH_USER)
 
     # define components
-    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", cat_title)
+    if pathname == f"{PATH_USER}-general":
+        title = " > ".join(["ACCOUNT", "general"])
+        content = paccount.layout(pathname, search)
+    elif pathname == f"{PATH_USER}-security":
+        title = " > ".join(["ACCOUNT", "security"])
+        content = paccount.layout(pathname, search)
+    elif pathname == f"{PATH_USER}-notifications":
+        title = " > ".join(["ACCOUNT", "notifications"])
+        content = paccount.layout(pathname, search)
+    elif pathname == f"{PATH_USER}-plan":
+        title = " > ".join(["ACCOUNT", "plan"])
+        content = pbilling.layout(pathname, search)
+    elif pathname == f"{PATH_USER}-payments":
+        title = " > ".join(["ACCOUNT", "payments"])
+        content = pbilling.layout(pathname, search)
+    else:
+        return palert.layout_404(pathname, search, return_href=PATH_USER)
+
+    # define components
+    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title)
     catalog = dbc.Collapse(dbc.Card(cat_list), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
