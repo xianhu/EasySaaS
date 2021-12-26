@@ -16,7 +16,7 @@ from ..paths import *
 
 def layout(pathname, search, fluid=None, class_container=None, class_navbar=None):
     """
-    layout of components
+    layout of component
     """
     # define components
     class_navlink = "fw-bold text-white text-center border-bottom mx-md-1 p-md-3"
@@ -28,14 +28,13 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     ]
 
     # define components
-    children_right = [
+    nav_item_list = dbc.NavItem(children=[
         html.A("Sign up", href=PATH_REGISTERE, className="text-white"),
         dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="light", class_name="fw-bold text-white ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5 text-white"), href=PATH_USER, className="pt-md-1"),
         html.A(html.I(className="bi bi-person-circle fs-4 text-white"), href=PATH_USER, className="ms-3"),
-    ]
-    nav_item_list = dbc.NavItem(children_right, class_name="d-flex align-items-center mx-auto mx-md-0 py-1")
+    ], class_name="d-flex align-items-center justify-content-center py-1")
 
     # return result
     class_navbar = class_navbar or "bg-primary border-bottom py-0"

@@ -11,7 +11,7 @@ from app import app
 
 from .. import palert
 from ..paths import PATH_USER, PATH_LOGOUT
-from ..comps import cfooter, cnavbar, csmallnav
+from ..components import cfooter, cnavbar, csmallnav
 from . import paccount, pbilling
 
 TAG = "user"

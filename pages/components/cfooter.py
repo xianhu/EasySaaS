@@ -12,7 +12,7 @@ from config import config_app_name
 
 def layout(pathname, search, fluid=None, class_container=None, class_footer=None):
     """
-    layout of components
+    layout of component
     """
     # define components
     mhref = "mailto:service@databai.com"

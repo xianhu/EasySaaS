@@ -9,7 +9,7 @@ from dash import Input, Output, State, html
 
 from app import app
 
-from ..comps import cnavbar, csinglead, csmallnav
+from ..components import cnavbar, csinglead, csmallnav
 from ..paths import PATH_ANALYSIS
 from . import pdesc, cupload
 
@@ -62,7 +62,7 @@ def layout(pathname, search):
     # define components
     href = f"{PATH_ANALYSIS}-table"
     button_children = html.A("Table", href=href, className="text-white text-decoration-none w-100")
-    table = csinglead.layout(pathname, search, button_children, "accordion-bg bg-image-after-none", flush=True)
+    table = csinglead.layout(pathname, search, f"id-{TAG}-sad1", button_children, "accordion-bg bg-image-after-none", flush=True)
     if href == pathname:
         cat_title, content = "Table", "Table"
 
