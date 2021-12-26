@@ -11,6 +11,7 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from config import config_dir_store
 from utility.address import AddressAIO
+
 from ..paths import PATH_ANALYSIS, PATH_LOGIN
 
 TAG = "analysis-upload"
@@ -22,9 +23,9 @@ def layout(pathname, search):
     layout of component
     """
     # define components
-    class_upload = "position-static text-center"
+    _class = "position-static text-center"
     button = dbc.Button("Upload Data", class_name="w-75")
-    upload = dcc.Upload(button, id=f"id-{TAG}-upload", accept=".csv,.xlsx", className=class_upload)
+    upload = dcc.Upload(button, id=f"id-{TAG}-upload", accept=".csv,.xlsx", className=_class)
 
     # define components
     desc, href = "format description", f"{PATH_ANALYSIS}-upload-desc"
@@ -39,9 +40,15 @@ def layout(pathname, search):
     State(f"id-{TAG}-upload", "contents"),
 ], prevent_initial_call=True)
 def _button_click(filename, contents):
+    # check user
     user = flask_login.current_user
     if not user.is_authenticated:
         return PATH_LOGIN
-    with open(f"{config_dir_store}/{user.id}-{filename}", "w") as file_in:
+
+    # store data
+    file_name = f"{user.id}.{filename.split('.')[-1]}"
+    with open(f"{config_dir_store}/{file_name}", "w") as file_in:
         file_in.write(contents)
+
+    # return result
     return f"{PATH_ANALYSIS}-table"

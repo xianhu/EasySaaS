@@ -35,12 +35,10 @@ def layout(pathname, search):
     # define pathname
     pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
 
-    # define variables and class
-    cat_list, title, content = [], None, None
+    # define components
+    cat_list = []
     class_cat_first = "small text-muted mt-4 mb-2 px-4"
     class_cat_second = "small text-decoration-none px-4 py-2"
-
-    # define components
     for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
         # define catalog list
         cat_list.append(html.Div(first_cat_title, className=class_cat_first))

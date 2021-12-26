@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-desc page
+other page
 """
 
 import dash_bootstrap_components as dbc
@@ -22,8 +22,8 @@ def layout(pathname, search):
     # return result
     return html.Div(children=[
         dbc.Row(children=[
-            dbc.Col("Format description", width="auto", class_name="fw-bold"),
-            dbc.Col(dbc.Button("Download file", size="sm", color="primary", outline=True), width="auto"),
+            dbc.Col("Other page", width="auto", class_name="fw-bold"),
+            dbc.Col(dbc.Button("xxx", size="sm", class_name="invisible"), width="auto"),
         ], align="center", justify="between", class_name="border-bottom w-100 mx-auto px-3 py-2"),
         dbc.Row(dbc.Col(content, width="auto"), align="start", justify="start", class_name="w-100 mx-auto p-3"),
     ], style={"min-height": "600px"})
