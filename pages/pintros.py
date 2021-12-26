@@ -85,17 +85,16 @@ def layout(pathname, search):
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    plan_list = [[
+    plan_list = [dbc.Card(children=[
         html.Div(plan["name"], className="fs-2"),
         html.Div(plan["price"], className="text-primary"),
         html.Div([html.Li(desc) for desc in plan["descs"]], className="lh-lg"),
         dbc.Button("Buy it now", id=f"id-{TAG}-{plan['name']}", class_name="w-75 mt-4"),
-    ] for plan in PLAN_LIST]
-    class_plan = "text-center border rounded-3 py-4"
+    ], body=True, class_name="text-center p-3") for plan in PLAN_LIST]
     content3 = dbc.Row(children=[
-        dbc.Col(plan_list[0], width=10, md=3, class_name=class_plan),
-        dbc.Col(plan_list[1], width=10, md=3, class_name=f"{class_col} {class_plan}"),
-        dbc.Col(plan_list[2], width=10, md=3, class_name=f"{class_col} {class_plan}"),
+        dbc.Col(plan_list[0], width=10, md=3, class_name=None),
+        dbc.Col(plan_list[1], width=10, md=3, class_name=class_col),
+        dbc.Col(plan_list[2], width=10, md=3, class_name=class_col),
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
@@ -125,11 +124,11 @@ def layout(pathname, search):
 
     # define components
     contentt = dbc.Row(children=[
-        dbc.Col(dbc.Select(options=[
-            {"label": "Option 1", "value": "1"},
-            {"label": "Option 2", "value": "2"},
-            {"label": "Disabled option", "value": "3", "disabled": True},
-        ], value=1), width=10, md=3, class_name=None),
+        dbc.Col(children=[
+            dbc.Checkbox(label="Checkbox", value=True),
+            dbc.Switch(label="Toggle switch", value=True),
+            dbc.RadioButton(label="Radio button", value=True),
+        ], width=10, md=3, class_name=None),
         dbc.Col(dbc.RadioItems(options=[
             {"label": "Option 1", "value": 1},
             {"label": "Option 2", "value": 2},
@@ -140,11 +139,11 @@ def layout(pathname, search):
             {"label": "Option 2", "value": 2},
             {"label": "Disabled Option", "value": 3, "disabled": True},
         ], value=[1]), width=10, md=3, class_name=class_col),
-        dbc.Col(children=[
-            dbc.Checkbox(label="Checkbox", value=True),
-            dbc.Switch(label="Toggle switch", value=True),
-            dbc.RadioButton(label="Radio button", value=True),
-        ], width=10, md=3, class_name=class_col),
+        dbc.Col(dbc.Select(options=[
+            {"label": "Option 1", "value": "1"},
+            {"label": "Option 2", "value": "2"},
+            {"label": "Disabled option", "value": "3", "disabled": True},
+        ], value=1), width=10, md=3, class_name=class_col),
     ], align="center", justify="center", className=f"{class_row} mt-5")
 
     # define components

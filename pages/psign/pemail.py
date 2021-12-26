@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-page of email
+email page
 """
 
 import json
