@@ -49,18 +49,16 @@ server = app.server
 server.config.update(
     SECRET_KEY=config_app_secret_key,
 
-    SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    SQLALCHEMY_DATABASE_URI=config_database_uri,
-
-    REDIS_URL=config_redis_uri,
-
     MAIL_SERVER=config_mail_server,
     MAIL_PORT=config_mail_port,
     MAIL_USERNAME=config_mail_username,
     MAIL_PASSWORD=config_mail_password,
     MAIL_DEFAULT_SENDER=config_mail_sender,
-    MAIL_USE_TLS=False,
-    MAIL_USE_SSL=True,
+    MAIL_USE_TLS=False, MAIL_USE_SSL=True,
+
+    REDIS_URL=config_redis_uri,
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    SQLALCHEMY_DATABASE_URI=config_database_uri,
 )
 
 # initial db
