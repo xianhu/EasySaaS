@@ -23,10 +23,12 @@ autopep8
 multiprocess
 
 lxml
+chardet
 requests
 fake_useragent
 beautifulSoup4
 
 pandas
+openpyxl
 scikit-learn
 sklearn-pandas

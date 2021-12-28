@@ -31,6 +31,8 @@ class User(app_db.Model):
     session = sqlalchemy.Column(sqlalchemy.String(500), doc="session value")
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
 
+    filename = sqlalchemy.Column(sqlalchemy.String(500), doc="file name")
+
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
 
