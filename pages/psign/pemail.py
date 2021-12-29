@@ -59,7 +59,7 @@ def layout(pathname, search):
         ADDRESS, dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
 
         html.A(children=[
-            html.Img(src="assets/favicon.png", style={"width": "1.25rem"}),
+            html.Img(src="assets/favicon.svg", style={"width": "1.25rem"}),
             html.Span(config_app_name, className="fs-5 text-primary align-middle"),
         ], href="/", className="text-decoration-none position-absolute top-0 start-0"),
 
