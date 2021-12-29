@@ -67,7 +67,7 @@ def layout(pathname, search):
             active_id = item_id if path == pathname else active_id
 
             # define ad_children
-            _class = "accordion-bg-0" if path != pathname else "accordion-bg-1"
+            _class = "bg-light text-black" if path != pathname else "bg-light"
             ad_children.append(html.A(second_cat_title, href=path, className=f"{class_cat_second} {_class}"))
 
         # define catalog list
@@ -77,8 +77,7 @@ def layout(pathname, search):
     ad_id, ad_title, ad_href = f"id-{TAG}-sad1", "Table", f"{PATH_ANALYSIS}-table"
     collapse_children = [
         cupload.layout(pathname, search),
-        html.Div(className="bg-light", style={"height": "4px"}),
-        csinglead.layout(pathname, search, ad_id, ad_title, "after-bg-image-none", ad_href, flush=True),
+        csinglead.layout(pathname, search, ad_id, ad_title, "bg-light after-bg-image-none", ad_href, flush=True),
         dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
     ]
 
@@ -109,7 +108,7 @@ def layout(pathname, search):
                 dbc.Col(children=[
                     dbc.Collapse(collapse_children, id=f"id-{TAG}-collapse", class_name="d-md-block"),
                     html.Div(footer, className="d-none d-md-block text-muted text-center mt-auto py-2"),
-                ], width=12, md=2, class_name="d-flex flex-column accordion-bg h-100-scroll-md p-0"),
+                ], width=12, md=2, class_name="d-flex flex-column bg-light h-100-scroll-md p-0"),
                 dbc.Col([title_div, content], width=12, md=10, class_name="h-100-scroll px-md-4"),
             ], justify="center", class_name="h-100-scroll w-100 mx-auto"),
         ], fluid=True, class_name="h-100-scroll p-0"),

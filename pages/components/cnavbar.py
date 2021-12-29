@@ -4,11 +4,11 @@
 navbar of page
 """
 
+import dash
 import flask_login
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
-from app import app
 from config import config_app_name
 
 from ..paths import *
@@ -49,7 +49,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     ], fluid=fluid, class_name=class_container), class_name=class_navbar)
 
 
-@app.callback(
+@dash.callback(
     Output("id-collapse", "is_open"),
     Input("id-toggler", "n_clicks"),
     State("id-collapse", "is_open"),

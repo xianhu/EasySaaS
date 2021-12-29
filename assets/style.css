@@ -35,6 +35,10 @@
     box-shadow: none !important;
 }
 
+.accordion-item {
+    border-bottom: thin solid rgba(0, 0, 0, 0.1) !important;
+}
+
 .accordion-item:last-of-type,
 .accordion-item:last-of-type .accordion-collapse,
 .accordion-item:last-of-type .accordion-button.collapsed {
@@ -46,6 +50,11 @@
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
+}
+
+#id-analysis-accordion .accordion-button,
+#id-analysis-accordion .accordion-button:not(.collapsed) {
+    background-color: #f8f9fa !important;
 }
 
 /* ----------------------------------------------------- */
