@@ -67,11 +67,12 @@ def layout(pathname, search):
             active_id = item_id if path == pathname else active_id
 
             # define ad_children
-            _class = "bg-light text-black" if path != pathname else "bg-light"
+            _class = "text-black" if path != pathname else ""
             ad_children.append(html.A(second_cat_title, href=path, className=f"{class_cat_second} {_class}"))
 
         # define catalog list
-        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=first_cat_title))
+        _class = "border-bottom-solid" if index == len(CATALOG_LIST) - 1 else ""
+        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=first_cat_title, class_name=_class))
 
     # define components
     ad_id, ad_title, ad_href = f"id-{TAG}-sad1", "Table", f"{PATH_ANALYSIS}-table"

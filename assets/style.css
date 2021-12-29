@@ -4,12 +4,27 @@
 
 /* ----------------------------------------------------- */
 
+:root {
+    --color-primary: #0d6efd;
+    --color-light: #f8f9fa;
+}
+
+/* ----------------------------------------------------- */
+
 .hover-primary:hover {
-    color: #0d6efd !important;
+    color: var(--color-primary) !important;
 }
 
 .after-bg-image-none::after {
     background-image: none !important;
+}
+
+.border-top-solid {
+    border-top: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.border-bottom-solid {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
 }
 
 /* ----------------------------------------------------- */
@@ -31,30 +46,18 @@
 
 /* ----------------------------------------------------- */
 
-.accordion-button:focus {
+.accordion-button,
+.accordion-button:not(.collapsed) {
     box-shadow: none !important;
-}
-
-.accordion-item {
-    border-bottom: thin solid rgba(0, 0, 0, 0.1) !important;
-}
-
-.accordion-item:last-of-type,
-.accordion-item:last-of-type .accordion-collapse,
-.accordion-item:last-of-type .accordion-button.collapsed {
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+    background-color: var(--color-light) !important;
 }
 
 .accordion-body {
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-}
-
-#id-analysis-accordion .accordion-button,
-#id-analysis-accordion .accordion-button:not(.collapsed) {
-    background-color: #f8f9fa !important;
+    background-color: var(--color-light) !important;
+    border-top: thin solid rgba(0, 0, 0, 0.1) !important;
 }
 
 /* ----------------------------------------------------- */

@@ -53,7 +53,7 @@ def layout(pathname, search):
         ], align="center", justify="between", class_name="border-bottom w-100 mx-auto px-3 py-2"),
         dbc.Row(dbc.Col(content, width=12), align="start", justify="start", class_name="w-100 mx-auto p-3"),
         dcc.Download(id=f"id-{TAG}-download"),
-    ], style={"min-height": "600px"})
+    ], style={"minHeight": "600px"})
 
 
 @app.callback(

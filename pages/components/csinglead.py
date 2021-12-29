@@ -11,10 +11,9 @@ def layout(pathname, search, ad_id, ad_title, ad_class, ad_href, flush=False):
     """
     layout of component
     """
-    style = {"border-top": "thin solid rgba(0, 0, 0, 0.1)"}
     button = html.Button(ad_title, className=f"accordion-button collapsed {ad_class}")
     return html.Div(children=[
         html.Div(html.H2(children=[
             html.A(button, href=ad_href, className="text-decoration-none"),
-        ], className="accordion-header", style=style), className="accordion-item"),
+        ], className="accordion-header", style=None), className="accordion-item border-top-solid border-bottom-solid"),
     ], id=ad_id, className=f"accordion {'accordion-flush' if flush else ''}")
