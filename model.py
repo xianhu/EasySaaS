@@ -41,7 +41,7 @@ class User(app_db.Model):
 
     # print format
     def __repr__(self) -> str:
-        return f"User <{self.id} - {self.name} - {self.email} - {self.phone}>"
+        return f"User <{self.id} - {self.name} - {self.email} - {self.phone} - {self.filename}>"
 
 
 class Plan(app_db.Model):
@@ -64,25 +64,15 @@ class Plan(app_db.Model):
         return f"Plan <{self.id} - {self.name} - {self.price} - {self.pindex} - {self.status}>"
 
 
-def init_db():
-    """
-    initial database
-    """
+if __name__ == "__main__":
+    from config import config_database_uri
+
     # create engine, SQLITE doesn't check the forgien key
     engine = sqlalchemy.create_engine(config_database_uri)
 
     # drop or create all tables
     app_db.Model.metadata.drop_all(engine)
     app_db.Model.metadata.create_all(engine)
-    return
-
-
-def test_db():
-    """
-    test database
-    """
-    # create engine class
-    engine = sqlalchemy.create_engine(config_database_uri)
 
     # basic opration with session
     with orm.sessionmaker(engine)() as session:
@@ -101,11 +91,3 @@ def test_db():
         print(plan)
         print(plan.users)
         print(session.query(User).get(_id))
-    return
-
-
-if __name__ == "__main__":
-    from config import config_database_uri
-
-    init_db()
-    test_db()

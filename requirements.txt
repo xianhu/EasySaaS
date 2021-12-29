@@ -1,7 +1,7 @@
 dash
 dash-daq
 dash-auth
-dash-table
+dash-labs
 dash-bootstrap-components
 
 Flask-Mail

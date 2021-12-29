@@ -22,7 +22,7 @@ app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
-], className="bg-light")
+])
 
 # complete layout
 app.validation_layout = dbc.Container([])

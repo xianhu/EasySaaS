@@ -56,7 +56,7 @@ def layout(pathname, search):
 
     # define components
     cat_list, active_id = [], None
-    class_cat_second = "text-white text-decoration-none px-5 py-2"
+    class_cat_second = "text-decoration-none px-5 py-2"
     for index, (first_cat_title, first_cat_icon, second_cat_list) in enumerate(CATALOG_LIST):
         item_id = f"id-{TAG}-accordion-{index}"
 
@@ -75,11 +75,10 @@ def layout(pathname, search):
 
     # define components
     ad_id, ad_title, ad_href = f"id-{TAG}-sad1", "Table", f"{PATH_ANALYSIS}-table"
-    ad_class = "accordion-bg bg-image-after-none text-white"
     collapse_children = [
         cupload.layout(pathname, search),
         html.Div(className="bg-light", style={"height": "4px"}),
-        csinglead.layout(pathname, search, ad_id, ad_title, ad_class, ad_href, flush=True),
+        csinglead.layout(pathname, search, ad_id, ad_title, "after-bg-image-none", ad_href, flush=True),
         dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
     ]
 
