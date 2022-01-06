@@ -8,7 +8,7 @@ import logging
 
 import flask_login
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app, server
 from config import config_app_name
@@ -81,6 +81,22 @@ def _init_page(pathname, search, session):
     # return 404 ==========================================
     return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS)
 
+
+# clientside callback
+app.clientside_callback(
+    """
+    function(href) {
+        elements = document.getElementsByClassName("_class_address_dummpy")
+        if (elements.length > 0 &&  href != null) {
+            elements[0].click()
+        }
+        return href
+    }
+    """,
+    Output({"type": "id-address", "index": MATCH}, "data"),
+    Input({"type": "id-address", "index": MATCH}, "href"),
+    prevent_initial_call=True,
+)
 
 if __name__ == "__main__":
     app.run_server(host="0.0.0.0", port=8088, debug=True)

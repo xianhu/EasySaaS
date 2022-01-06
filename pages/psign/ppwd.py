@@ -14,14 +14,12 @@ from werkzeug import security
 
 from app import User, app, app_db, app_redis
 from config import config_app_name
-from utility.address import AddressAIO
 from utility.consts import RE_PWD
 
 from .. import palert
 from ..paths import *
 
 TAG = "password"
-ADDRESS = AddressAIO(f"id-{TAG}-address")
 
 
 def layout(pathname, search):
@@ -67,7 +65,8 @@ def layout(pathname, search):
     # return result
     args_button = {"size": "lg", "class_name": "w-100 mt-4"}
     return html.Div(children=[
-        ADDRESS, dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+        html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
 
         html.A(children=[
             html.Img(src="assets/favicon.svg", style={"width": "1.25rem"}),
@@ -92,7 +91,7 @@ def layout(pathname, search):
 
 @app.callback([
     Output(f"id-{TAG}-fb", "children"),
-    Output(f"id-{TAG}-address", "href"),
+    Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
