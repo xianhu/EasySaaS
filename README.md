@@ -22,7 +22,16 @@ source .bash_profile
 
 ```
 cd {DIR} && python3.8 -m venv .venv
-.venv/bin/pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+source .venv/bin/activate / deactivate
+pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+### Run uwsgi, Config File: aconfig/uwsgi.ini
+
+```
+.venv/bin/uwsgi --ini aconfig/uwsgi.ini
+.venv/bin/uwsgi --reload index.pid
+.venv/bin/uwsgi --stop index.pid
 ```
 
 ### Run mysql And redis By Docker
@@ -38,14 +47,6 @@ docker inspect mysql/redis | grep IPAddress
 ```
 docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \ 
                         -v /tmp/:/tmp/ -p 8088:8088 -p 8089:8089 -d nginx
-```
-
-### Run uwsgi, Config File: aconfig/uwsgi.ini
-
-```
-.venv/bin/uwsgi --ini aconfig/uwsgi.ini
-.venv/bin/uwsgi --reload index.pid
-.venv/bin/uwsgi --stop index.pid
 ```
 
 ## Others
