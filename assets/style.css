@@ -15,7 +15,7 @@
     color: var(--color-primary) !important;
 }
 
-.after-bg-image-none::after {
+.bg-image-after-none::after {
     background-image: none !important;
 }
 

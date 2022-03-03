@@ -5,6 +5,7 @@ trigger functions
 """
 
 import json
+import logging
 
 
 def get_trigger_property(triggered):
@@ -15,10 +16,11 @@ def get_trigger_property(triggered):
     AIO: [{'prop_id': '{"aio_id":_id,"subcomponent":_id_index}._property', 'value': value}, ...]
     :return _id, _id_index, _property, value
     """
+    logging.debug("get_trigger_property: %s", triggered)
     if not triggered:
         return None, None, None, None
 
-    # find trigger
+    # find first trigger
     trigger = triggered[0]
     for trigger in triggered:
         if trigger["value"] is not None:

@@ -78,7 +78,7 @@ def layout(pathname, search):
     ad_id, ad_title, ad_href = f"id-{TAG}-sad1", "Table", f"{PATH_ANALYSIS}-table"
     collapse_children = [
         cupload.layout(pathname, search),
-        csinglead.layout(pathname, search, ad_id, ad_title, "bg-light after-bg-image-none", ad_href, flush=True),
+        csinglead.layout(pathname, search, ad_id, ad_title, "bg-light bg-image-after-none", ad_href, flush=True),
         dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
     ]
 
