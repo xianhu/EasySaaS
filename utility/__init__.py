@@ -6,7 +6,6 @@ utility module
 
 import urllib.parse
 
-from .address import AddressAIO
 from .trigger import get_trigger_property
 from .consts import RE_PWD, RE_PHONE, RE_EMAIL
 

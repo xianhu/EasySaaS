@@ -22,6 +22,7 @@ app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-session", storage_type="session"),
+    dcc.Store(id="id-stodata", storage_type="session"),
 ])
 
 # complete layout
@@ -39,6 +40,7 @@ app.validation_layout = dbc.Container([])
 def _init_page(pathname, search, session):
     logging.warning("pathname=%s, search=%s, session=%s", pathname, search, session)
     pathname = PATH_INTROS if pathname == "/" else pathname
+    store_data = {"title": pathname.strip("/")}
 
     # =====================================================
     if pathname == PATH_INTROS:
@@ -86,9 +88,8 @@ def _init_page(pathname, search, session):
 app.clientside_callback(
     """
     function(href) {
-        elements = document.getElementsByClassName("_class_address_dummpy")
-        if (elements.length > 0 &&  href != null) {
-            elements[0].click()
+        if (href != null && href != undefined) {
+            window.location.href = href
         }
         return href
     }

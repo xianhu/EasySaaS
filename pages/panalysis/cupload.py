@@ -12,12 +12,10 @@ from dash import Input, Output, State, dcc, html
 
 from app import app, app_db
 from config import config_dir_store
-from utility.address import AddressAIO
 
 from ..paths import PATH_ANALYSIS, PATH_LOGIN
 
 TAG = "analysis-upload"
-ADDRESS = AddressAIO(f"id-{TAG}-address")
 ARGS_UP = {"accept": ".csv,.xls,.xlsx", "max_size": 1024 * 1024 * 10}
 
 
@@ -33,12 +31,13 @@ def layout(pathname, search):
     # define components
     desc, href = "format description", f"{PATH_ANALYSIS}-upload-desc"
     tooltip = html.Div(html.A(desc, href=href, className="small text-muted"), className="text-center")
+    address = html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy")
 
     # return result
-    return html.Div([ADDRESS, upload, tooltip], className="my-4")
+    return html.Div([address, upload, tooltip], className="my-4")
 
 
-@app.callback(Output(f"id-{TAG}-address", "href"), [
+@app.callback(Output({"type": "id-address", "index": TAG}, "href"), [
     Input(f"id-{TAG}-upload", "contents"),
     State(f"id-{TAG}-upload", "filename"),
 ], prevent_initial_call=True)
