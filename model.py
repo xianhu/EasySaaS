@@ -88,6 +88,5 @@ if __name__ == "__main__":
         session.add(user)
         session.commit()
 
-        print(plan)
-        print(plan.users)
+        print(f"{plan}\n{plan.users}")
         print(session.query(User).get(_id))
