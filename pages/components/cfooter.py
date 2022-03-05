@@ -4,8 +4,8 @@
 footer of page
 """
 
-import dash_bootstrap_components as dbc
 from dash import html
+import dash_bootstrap_components as dbc
 
 from config import config_app_name
 

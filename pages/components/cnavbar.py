@@ -27,10 +27,10 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
 
     # define components
     nav_item_list = dbc.NavItem(children=[
-        html.A("Sign up", href=PATH_REGISTERE),
+        html.A("Sign up", href=PATH_REGISTERE, className=None),
         dbc.Button("Sign in", href=PATH_LOGIN, color="primary", outline=True, class_name="fw-bold ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
-        html.A(html.I(className="bi bi-bell fs-5"), href=PATH_USER, className="pt-md-1"),
+        html.A(html.I(className="bi bi-bell fs-5"), href=PATH_USER, className=None),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
     ], class_name="d-flex align-items-center justify-content-center py-1")
 
@@ -38,7 +38,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     class_navbar = class_navbar or "bg-primary border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
         dbc.NavbarBrand(children=[
-            html.Img(src="assets/favicon.svg", style={"width": "1.2rem"}),
+            html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.2rem"}),
             html.Span(config_app_name, className="fs-5 align-middle ms-1"),
         ], href=PATH_INTROS),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),

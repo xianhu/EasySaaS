@@ -4,6 +4,7 @@
 intros page
 """
 
+import dash
 import dash_bootstrap_components as dbc
 from dash import html
 
@@ -62,7 +63,7 @@ def layout(pathname, search):
     class_row = "w-100 mx-auto"
 
     # define components
-    image = html.Img(src="assets/illustrations/intros.svg", className="img-fluid")
+    image = html.Img(src=dash.get_asset_url("illustrations/intros.svg"), className="img-fluid")
     intros = [
         html.Div(HEADER, className="fs-1 text-center mb-2"),
         html.P(HEADERSUB, className="fs-5 text-center text-muted lead"),
@@ -98,7 +99,7 @@ def layout(pathname, search):
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    content4 = html.Div(children=[
+    content4 = dbc.Row(dbc.Col(children=[
         dbc.Row(dbc.Col(children=[
             html.Div(CONTACT_HEADER, className="fs-2 text-center"),
             html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
@@ -120,7 +121,7 @@ def layout(pathname, search):
                 dbc.Button("Send message", id=f"id-{TAG}-button"),
             ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
         ], align="center", justify="center", class_name=f"{class_row} mt-2"),
-    ], className=f"{class_row} mt-5")
+    ], width=12), align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
     contentt = dbc.Row(children=[
@@ -142,9 +143,9 @@ def layout(pathname, search):
         dbc.Col(dbc.Select(options=[
             {"label": "Option 1", "value": "1"},
             {"label": "Option 2", "value": "2"},
-            {"label": "Disabled option", "value": "3", "disabled": True},
+            {"label": "Disabled Option", "value": "3", "disabled": True},
         ], value=1), width=10, md=3, class_name=class_col),
-    ], align="center", justify="center", className=f"{class_row} mt-5")
+    ], align="center", justify="around", className=f"{class_row} mt-5")
 
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=None)

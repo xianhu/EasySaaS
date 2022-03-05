@@ -4,8 +4,8 @@
 alert page
 """
 
-import dash_bootstrap_components as dbc
 from dash import html
+import dash_bootstrap_components as dbc
 
 
 def layout_simple(text_hd, text_sub, text_button, return_href):
