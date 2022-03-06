@@ -8,6 +8,7 @@ import json
 import uuid
 import hashlib
 
+import dash
 import flask
 import flask_mail
 import dash_bootstrap_components as dbc
@@ -30,11 +31,11 @@ def layout(pathname, search):
     if pathname == PATH_REGISTERE:
         text_hd, text_button = "Sign up", "Verify the email"
         text_sub = "Register an account through an email."
-        image = html.Img(src="assets/illustrations/register.svg", className="img-fluid")
+        image = html.Img(src=dash.get_asset_url("illustrations/register.svg"), className="img-fluid")
     else:
         text_hd, text_button = "Forget password?", "Verify the email"
         text_sub = "Find back the password through email."
-        image = html.Img(src="assets/illustrations/resetpwd.svg", className="img-fluid")
+        image = html.Img(src=dash.get_asset_url("illustrations/resetpwd.svg"), className="img-fluid")
 
     # define components
     form_children = dbc.FormFloating(children=[
@@ -58,9 +59,9 @@ def layout(pathname, search):
         html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
 
         html.A(children=[
-            html.Img(src="assets/favicon.svg", style={"width": "1.25rem"}),
+            html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.25rem"}),
             html.Span(config_app_name, className="fs-5 text-primary align-middle"),
-        ], href="/", className="text-decoration-none position-absolute top-0 start-0"),
+        ], href=PATH_INTROS, className="text-decoration-none position-absolute top-0 start-0"),
 
         dbc.Row(children=[
             dbc.Col(image, width=10, md=4, class_name="mt-auto mt-md-0"),

@@ -8,6 +8,7 @@ import json
 import hashlib
 import logging
 
+import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 from werkzeug import security
@@ -38,7 +39,7 @@ def layout(pathname, search):
     # define text and components
     text_hd, text_button = "Set password", "Set password"
     text_sub = "Set the password of this email please."
-    image = html.Img(src="assets/illustrations/password.svg", className="img-fluid")
+    image = html.Img(src=dash.get_asset_url("illustrations/password.svg"), className="img-fluid")
 
     # define components
     form_children = [
@@ -69,9 +70,9 @@ def layout(pathname, search):
         html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
 
         html.A(children=[
-            html.Img(src="assets/favicon.svg", style={"width": "1.25rem"}),
+            html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.25rem"}),
             html.Span(config_app_name, className="fs-5 text-primary align-middle"),
-        ], href="/", className="text-decoration-none position-absolute top-0 start-0"),
+        ], href=PATH_INTROS, className="text-decoration-none position-absolute top-0 start-0"),
 
         dbc.Row(children=[
             dbc.Col(image, width=10, md=4, class_name="mt-auto mt-md-0"),
