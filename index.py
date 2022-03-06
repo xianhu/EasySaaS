@@ -42,6 +42,9 @@ app.validation_layout = dbc.Container([])
 ], prevent_initial_call=False)
 def _init_page(pathname, search, session):
     logging.warning("pathname=%s, search=%s, session=%s", pathname, search, session)
+
+    # define variables
+    search = search.lstrip("?")
     pathname = PATH_INTROS if pathname == "/" else pathname
     store_data = {"title": pathname.strip("/")}
 
