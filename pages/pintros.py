@@ -99,29 +99,31 @@ def layout(pathname, search):
     ], align="center", justify="around", class_name=f"{class_row} mt-5")
 
     # define components
-    content4 = dbc.Row(dbc.Col(children=[
-        dbc.Row(dbc.Col(children=[
+    content4 = dbc.Row(children=[
+        dbc.Col(children=[
             html.Div(CONTACT_HEADER, className="fs-2 text-center"),
             html.P(CONTACT_HEADERSUB, className="fs-6 text-center text-muted"),
-        ], width=12, md=6), align="center", justify="center", class_name=class_row),
-        dbc.Row(children=[
-            dbc.Col(dbc.FormFloating(children=[
-                dbc.Input(id=f"id-{TAG}-email", type="email"),
-                dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-            ]), width=12, md=4, class_name=None),
-            dbc.Col(dbc.FormFloating(children=[
-                dbc.Input(id=f"id-{TAG}-name", type="text"),
-                dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
-            ]), width=12, md=4, class_name=class_col),
-            dbc.Col(dbc.Textarea(
-                id=f"id-{TAG}-content", rows=4,
-                placeholder="Tell us what we can help you with!",
-            ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
-            dbc.Col(children=[
-                dbc.Button("Send message", id=f"id-{TAG}-button"),
-            ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
-        ], align="center", justify="center", class_name=f"{class_row} mt-2"),
-    ], width=12), align="center", justify="around", class_name=f"{class_row} mt-5")
+        ], width=12, md=6),
+    ], align="center", justify="around", class_name=f"{class_row} mt-5")
+
+    # define components
+    content5 = dbc.Row(children=[
+        dbc.Col(dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-email", type="email"),
+            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+        ]), width=12, md=4, class_name=None),
+        dbc.Col(dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-name", type="text"),
+            dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
+        ]), width=12, md=4, class_name=class_col),
+        dbc.Col(dbc.Textarea(
+            id=f"id-{TAG}-content", rows=4,
+            placeholder="Tell us what we can help you with!",
+        ), width=12, md=8, class_name=f"{class_col} mt-md-4"),
+        dbc.Col(children=[
+            dbc.Button("Send message", id=f"id-{TAG}-button"),
+        ], width=12, md=8, class_name=f"{class_col} mt-md-4 text-center"),
+    ], align="center", justify="center", class_name=f"{class_row} mt-2")
 
     # define components
     contentt = dbc.Row(children=[
@@ -150,7 +152,7 @@ def layout(pathname, search):
     # define components
     navbar = cnavbar.layout(pathname, search, fluid=None)
     footer = cfooter.layout(pathname, search, fluid=None)
-    content = [content1, content2, content3, content4, contentt]
+    content = [content1, content2, content3, content4, content5, contentt]
 
     # return result
     return html.Div([navbar, dbc.Container(content, class_name="py-5"), footer], className=None)

@@ -10,7 +10,7 @@ import dash_bootstrap_components as dbc
 
 def layout_simple(text_hd, text_sub, text_button, return_href):
     """
-    simple alert layout, only text and no image
+    simple alert layout, only text and button, no image
     """
     return dbc.Row(dbc.Col(children=[
         html.Div(text_hd, className="text-center fs-1"),
