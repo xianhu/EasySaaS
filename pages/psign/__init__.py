@@ -21,7 +21,7 @@ def layout(pathname, search):
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         return pemail.layout(pathname, search)
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
-        text_sub = f"An email has sent to [{flask.session.get('email')}]."
+        text_sub = f"An email has sent to {flask.session.get('email')}."
         return palert.layout_simple("Sending success", text_sub, "Back to home", PATH_INTROS)
 
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":

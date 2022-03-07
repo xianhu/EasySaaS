@@ -8,17 +8,16 @@ import json
 import hashlib
 import logging
 
-import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import User, app, app_db, app_redis
-from config import config_app_name
 from utility.consts import RE_PWD
 
 from .. import palert
 from ..paths import *
+from . import ptemplate
 
 TAG = "password"
 
@@ -36,17 +35,12 @@ def layout(pathname, search):
         text_sub = "The link has already expired, click button to safe page."
         return palert.layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
 
-    # define text and components
-    text_hd, text_button = "Set password", "Set password"
-    text_sub = "Set the password of this email please."
-    image = html.Img(src=dash.get_asset_url("illustrations/password.svg"), className="img-fluid")
-
     # define components
     form_children = [
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email", value=email, disabled=True),
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-        ]),
+        ], class_name=None),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
             dbc.Label("Password:", html_for=f"id-{TAG}-pwd1"),
@@ -57,37 +51,21 @@ def layout(pathname, search):
         ], class_name="mt-4"),
     ]
 
-    # define components
-    other_addresses = [
-        html.A("Sign in", href=PATH_LOGIN),
-        html.A("Sign up", href=PATH_REGISTERE),
-    ]
+    # define parames
+    params = {
+        "image_src": "illustrations/password.svg",
+        "text_hd": "Set password",
+        "text_sub": "Set the password of this email please.",
+        "form_children": form_children,
+        "text_button": "Set password",
+        "other_list": [
+            html.A("Sign in", href=PATH_LOGIN),
+            html.A("Sign up", href=PATH_REGISTERE),
+        ],
+    }
 
     # return result
-    args_button = {"size": "lg", "class_name": "w-100 mt-4"}
-    return html.Div(children=[
-        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
-        html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
-
-        html.A(children=[
-            html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.25rem"}),
-            html.Span(config_app_name, className="fs-5 text-primary align-middle"),
-        ], href=PATH_INTROS, className="text-decoration-none position-absolute top-0 start-0"),
-
-        dbc.Row(children=[
-            dbc.Col(image, width=10, md=4, class_name="mt-auto mt-md-0"),
-            dbc.Col(children=[
-                html.Div(text_hd, className="text-center fs-1"),
-                html.Div(text_sub, className="text-center text-muted"),
-
-                dbc.Form(form_children, class_name="mt-4"),
-                html.Div(id=f"id-{TAG}-fb", className="text-danger text-center"),
-
-                dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
-                html.Div(other_addresses, className="d-flex justify-content-between"),
-            ], width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
-        ], align="center", justify="center", class_name="vh-100 w-100 mx-auto")
-    ])
+    return ptemplate.layout(pathname, search, TAG, params)
 
 
 @app.callback([

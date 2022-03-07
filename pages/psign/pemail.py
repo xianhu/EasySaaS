@@ -8,17 +8,17 @@ import json
 import uuid
 import hashlib
 
-import dash
 import flask
 import flask_mail
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
 
 from ..paths import *
+from . import ptemplate
 
 TAG = "email"
 
@@ -27,56 +27,40 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define text and components
-    if pathname == PATH_REGISTERE:
-        text_hd, text_button = "Sign up", "Verify the email"
-        text_sub = "Register an account through an email."
-        image = html.Img(src=dash.get_asset_url("illustrations/register.svg"), className="img-fluid")
-    else:
-        text_hd, text_button = "Forget password?", "Verify the email"
-        text_sub = "Find back the password through email."
-        image = html.Img(src=dash.get_asset_url("illustrations/resetpwd.svg"), className="img-fluid")
-
     # define components
     form_children = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-email", type="email"),
         dbc.Label("Email:", html_for=f"id-{TAG}-email"),
     ])
 
-    # define components
-    other_addresses = [
-        html.A("Sign in", href=PATH_LOGIN),
-        html.A("Forget password?", href=PATH_RESETPWDE),
-    ] if pathname == PATH_REGISTERE else [
-        html.A("Sign in", href=PATH_LOGIN),
-        html.A("Sign up", href=PATH_REGISTERE),
-    ]
+    # define parames
+    if pathname == PATH_REGISTERE:
+        params = {
+            "image_src": "illustrations/register.svg",
+            "text_hd": "Sign up",
+            "text_sub": "Register an account through an email.",
+            "form_children": form_children,
+            "text_button": "Verify the email",
+            "other_list": [
+                html.A("Sign in", href=PATH_LOGIN),
+                html.A("Forget password?", href=PATH_RESETPWDE),
+            ],
+        }
+    else:
+        params = {
+            "image_src": "illustrations/resetpwd.svg",
+            "text_hd": "Forget password?",
+            "text_sub": "Find back the password through email.",
+            "form_children": form_children,
+            "text_button": "Verify the email",
+            "other_list": [
+                html.A("Sign in", href=PATH_LOGIN),
+                html.A("Sign up", href=PATH_REGISTERE),
+            ],
+        }
 
     # return result
-    args_button = {"size": "lg", "class_name": "w-100 mt-4"}
-    return html.Div(children=[
-        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
-        html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
-
-        html.A(children=[
-            html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.25rem"}),
-            html.Span(config_app_name, className="fs-5 text-primary align-middle"),
-        ], href=PATH_INTROS, className="text-decoration-none position-absolute top-0 start-0"),
-
-        dbc.Row(children=[
-            dbc.Col(image, width=10, md=4, class_name="mt-auto mt-md-0"),
-            dbc.Col(children=[
-                html.Div(text_hd, className="text-center fs-1"),
-                html.Div(text_sub, className="text-center text-muted"),
-
-                dbc.Form(form_children, class_name="mt-4"),
-                html.Div(id=f"id-{TAG}-fb", className="text-danger text-center"),
-
-                dbc.Button(text_button, id=f"id-{TAG}-button", **args_button),
-                html.Div(other_addresses, className="d-flex justify-content-between"),
-            ], width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
-        ], align="center", justify="center", class_name="vh-100 w-100 mx-auto")
-    ])
+    return ptemplate.layout(pathname, search, TAG, params)
 
 
 @app.callback([
