@@ -16,25 +16,18 @@ from config import config_dir_store
 from ..paths import PATH_ANALYSIS, PATH_LOGIN
 
 TAG = "analysis-upload"
-ARGS_UP = {"accept": ".csv,.xls,.xlsx", "max_size": 1024 * 1024 * 10}
+ARGS_UP = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
 
 
 def layout(pathname, search):
     """
     layout of component
     """
-    # define components
-    _class = "position-static text-center"
     button = dbc.Button("Upload Data", class_name="w-75")
-    upload = dcc.Upload(button, id=f"id-{TAG}-upload", **ARGS_UP, className=_class)
-
-    # define components
-    desc, href = "format description", f"{PATH_ANALYSIS}-upload-desc"
-    tooltip = html.Div(html.A(desc, href=href, className="small text-muted"), className="text-center")
-    address = html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy")
-
-    # return result
-    return html.Div([address, upload, tooltip], className="my-4")
+    return html.Div(children=[
+        html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
+        dcc.Upload(button, id=f"id-{TAG}-upload", **ARGS_UP, className="text-center"),
+    ], className="my-4")
 
 
 @app.callback(Output({"type": "id-address", "index": TAG}, "href"), [

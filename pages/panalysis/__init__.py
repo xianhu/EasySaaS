@@ -12,7 +12,7 @@ from app import app
 from .. import palert
 from ..paths import PATH_ANALYSIS
 from ..components import cnavbar, csinglead, csmallnav
-from . import cupload, pdesc, pother, ptable
+from . import cupload, pother, ptable
 
 TAG = "analysis"
 CATALOG_LIST = [
@@ -56,63 +56,52 @@ def layout(pathname, search):
 
     # define components
     cat_list, active_id = [], None
-    class_cat_second = "text-decoration-none px-5 py-2"
-    for index, (first_cat_title, first_cat_icon, second_cat_list) in enumerate(CATALOG_LIST):
+    class_second = "text-decoration-none px-5 py-2"
+    for index, (title_first, icon_first, list_second) in enumerate(CATALOG_LIST):
         item_id = f"id-{TAG}-accordion-{index}"
 
-        # define catalog list
+        # define ad_children
         ad_children = []
-        for second_cat_title, path in second_cat_list:
+        for title_second, path in list_second:
             # define active_id
-            active_id = item_id if path == pathname else active_id
+            if path == pathname:
+                active_id = item_id
 
             # define ad_children
-            _class = "text-black" if path != pathname else ""
-            ad_children.append(html.A(second_cat_title, href=path, className=f"{class_cat_second} {_class}"))
+            _class = "text-black hover-primary" if path != pathname else ""
+            ad_children.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
 
         # define catalog list
         _class = "border-bottom-solid" if index == len(CATALOG_LIST) - 1 else ""
-        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=first_cat_title, class_name=_class))
+        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=title_first, class_name=_class))
 
     # define components
-    ad_id, ad_title, ad_href = f"id-{TAG}-sad1", "Table", f"{PATH_ANALYSIS}-table"
-    collapse_children = [
-        cupload.layout(pathname, search),
-        csinglead.layout(pathname, search, ad_id, ad_title, "bg-light bg-image-after-none", ad_href, flush=True),
-        dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
-    ]
-
-    # define components
-    class_title = "d-none d-md-block text-muted my-2"
-    if pathname == f"{PATH_ANALYSIS}-upload-desc":
-        title = "Format description"
-        title_div = html.Div(title, className=class_title)
-        content = dbc.Card(pdesc.layout(pathname, search), class_name="mt-2 mt-md-0")
-    elif pathname == f"{PATH_ANALYSIS}-table":
+    if pathname == f"{PATH_ANALYSIS}-table":
         title = "Table"
-        title_div = html.Div(title, className=class_title)
-        content = dbc.Card(ptable.layout(pathname, search), class_name="mt-2 mt-md-0")
+        content = ptable.layout(pathname, search)
     elif pathname.startswith(PATH_ANALYSIS):
         title = "Other page"
-        title_div = html.Div(title, className=class_title)
-        content = dbc.Card(pother.layout(pathname, search), class_name="mt-2 mt-md-0")
+        content = pother.layout(pathname, search)
     else:
         return palert.layout_404(pathname, search, return_href=PATH_ANALYSIS)
 
+    # define components
+    ad_id, ad_title, ad_class, ad_href = f"id-{TAG}-sad1", "Table", "bg-light", f"{PATH_ANALYSIS}-table"
+    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title)
+    collapse = dbc.Collapse(children=[
+        cupload.layout(pathname, search),
+        csinglead.layout(pathname, search, ad_id, ad_title, ad_class, ad_href, flush=True),
+        dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
+    ], id=f"id-{TAG}-collapse", class_name="d-md-block")
+    footer = html.Div("All rights reserved.", className="d-none d-md-block text-muted text-center mt-auto py-2")
+
     # return result
-    footer = "All rights reserved."
     return html.Div(children=[
-        cnavbar.layout(pathname, search, fluid=True),
-        dbc.Container(children=[
-            csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title),
-            dbc.Row(children=[
-                dbc.Col(children=[
-                    dbc.Collapse(collapse_children, id=f"id-{TAG}-collapse", class_name="d-md-block"),
-                    html.Div(footer, className="d-none d-md-block text-muted text-center mt-auto py-2"),
-                ], width=12, md=2, class_name="d-flex flex-column bg-light h-100-scroll-md p-0"),
-                dbc.Col([title_div, content], width=12, md=10, class_name="h-100-scroll px-md-4"),
-            ], justify="center", class_name="h-100-scroll w-100 mx-auto"),
-        ], fluid=True, class_name="h-100-scroll p-0"),
+        cnavbar.layout(pathname, search, fluid=True, class_navbar=None),
+        dbc.Container(children=[small_div, dbc.Row(children=[
+            dbc.Col([collapse, footer], width=12, md=2, class_name="d-flex flex-column bg-light h-100-scroll-md p-0"),
+            dbc.Col(dbc.Card(content, class_name="mt-2"), width=12, md=10, class_name="h-100-scroll px-md-4"),
+        ], justify="center", class_name="h-100-scroll w-100 mx-auto")], fluid=True, class_name="h-100-scroll p-0"),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
