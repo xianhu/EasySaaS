@@ -4,8 +4,8 @@
 Invoice History
 """
 
-import dash_bootstrap_components as dbc
 from dash import html
+import dash_bootstrap_components as dbc
 
 TAG = "user-invoice"
 INVOICE_LIST = [
@@ -25,13 +25,14 @@ def layout(pathname, search):
     for _id, _date, _flag in INVOICE_LIST:
         if len(invoice_row_list) != 1:
             invoice_row_list.append(html.Hr(className="text-muted mx-4 my-0"))
-        button = dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
         invoice_row_list.append(dbc.Row(children=[
             dbc.Col(children=[
                 html.A(f"Invoice #{_id}", href="#", className=None),
                 html.Div(f"Billed {_date}", className="small text-muted"),
             ], width="auto"),
-            dbc.Col(button, width="auto"),
+            dbc.Col(children=[
+                dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
+            ], width="auto"),
         ], align="center", justify="between", class_name="p-4"))
 
     # return result

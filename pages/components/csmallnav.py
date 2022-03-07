@@ -4,8 +4,8 @@
 small navbar of page
 """
 
-import dash_bootstrap_components as dbc
 from dash import html
+import dash_bootstrap_components as dbc
 
 
 def layout(pathname, search, toggler_id, title, title_class=None):

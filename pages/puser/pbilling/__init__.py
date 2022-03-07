@@ -5,7 +5,6 @@ billing page
 """
 
 from dash import html
-
 from . import cinvoice, cplan
 
 

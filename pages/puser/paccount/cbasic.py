@@ -70,11 +70,10 @@ def _button_click(n_clicks, name, phone):
         return "Phone format is error", False
 
     # check data
-    if (name or "") == (user.name or ""):
-        if (phone or "") == (user.phone or ""):
-            return "No change has happened", False
+    if (name or "") == (user.name or "") and (phone or "") == (user.phone or ""):
+        return "No change has happened", False
 
-    # update user
+    # update data
     user.name = name or ""
     user.phone = phone or ""
 

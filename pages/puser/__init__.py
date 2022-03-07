@@ -37,16 +37,16 @@ def layout(pathname, search):
 
     # define components
     cat_list = []
-    class_cat_first = "small text-muted mt-4 mb-2 px-4"
-    class_cat_second = "small text-decoration-none px-4 py-2"
-    for first_cat_title, first_cat_icon, second_cat_list in CATALOG_LIST:
+    class_first = "small text-muted mt-4 mb-2 px-4"
+    class_second = "small text-decoration-none px-4 py-2"
+    for title_first, icon_first, list_second in CATALOG_LIST:
         # define catalog list
-        cat_list.append(html.Div(first_cat_title, className=class_cat_first))
+        cat_list.append(html.Div(title_first, className=class_first))
 
         # define catalog list
-        for second_cat_title, path in second_cat_list:
+        for title_second, path in list_second:
             _class = "text-black hover-primary" if path != pathname else "text-white bg-primary"
-            cat_list.append(html.A(second_cat_title, href=path, className=f"{class_cat_second} {_class}"))
+            cat_list.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
     cat_list.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
 
     # define components
@@ -60,10 +60,10 @@ def layout(pathname, search):
         title = " > ".join(["ACCOUNT", "notifications"])
         content = paccount.layout(pathname, search)
     elif pathname == f"{PATH_USER}-plan":
-        title = " > ".join(["ACCOUNT", "plan"])
+        title = " > ".join(["BILLING", "plan"])
         content = pbilling.layout(pathname, search)
     elif pathname == f"{PATH_USER}-payments":
-        title = " > ".join(["ACCOUNT", "payments"])
+        title = " > ".join(["BILLING", "payments"])
         content = pbilling.layout(pathname, search)
     else:
         return palert.layout_404(pathname, search, return_href=PATH_USER)

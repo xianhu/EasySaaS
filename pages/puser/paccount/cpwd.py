@@ -76,7 +76,7 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     if (not pwd2) or (pwd2 != pwd1):
         return "Passwords are inconsistent", None
 
-    # update password
+    # update data
     user.pwd = security.generate_password_hash(pwd1)
 
     # commit data
