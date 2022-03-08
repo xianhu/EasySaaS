@@ -16,5 +16,4 @@ def parse_query_string(search):
     """
     if (not search) or (not search.strip("?")):
         return {}
-    search = search.strip("?")
-    return urllib.parse.parse_qs(search)
+    return urllib.parse.parse_qs(search.strip("?"))
