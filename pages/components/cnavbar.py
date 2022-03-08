@@ -32,7 +32,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=PATH_USER, className=None),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
-    ], class_name="d-flex align-items-center justify-content-center py-1")
+    ], class_name="d-flex flex-row align-items-center justify-content-center py-1")
 
     # return result
     class_navbar = class_navbar or "bg-primary border-bottom py-0"

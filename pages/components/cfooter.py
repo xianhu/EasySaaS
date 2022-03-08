@@ -20,7 +20,8 @@ def layout(pathname, search, fluid=None, class_container=None, class_footer=None
     addr = html.A(config_app_name, href="/")
 
     # return result
-    class_footer = class_footer or "small text-center border-top mt-auto py-2"
+    class_footer = class_footer or "border-top mt-auto py-2"
+    class_container = class_container or "small text-center"
     return html.Footer(dbc.Container(dbc.Row(children=[
         dbc.Col(["Powered by ©2021 ", addr, ". All rights reserved."], width=12, md=6),
         dbc.Col(html.A(mservice, href=mhref, className="text-decoration-none"), width=12, md=6),

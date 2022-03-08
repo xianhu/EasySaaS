@@ -155,4 +155,4 @@ def layout(pathname, search):
     content = [content1, content2, content3, content4, content5, contentt]
 
     # return result
-    return html.Div([navbar, dbc.Container(content, class_name="py-5"), footer], className=None)
+    return html.Div(children=[navbar, dbc.Container(content, class_name="py-5"), footer])
