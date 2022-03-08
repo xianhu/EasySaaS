@@ -12,7 +12,7 @@ def layout(pathname, search):
     """
     layout of page
     """
-    return html.Div(children=[
+    return dbc.Card(children=[
         dbc.Row(children=[
             dbc.Col("Other page", width="auto", class_name="fw-bold"),
             dbc.Col(dbc.Button("xxx", size="sm", class_name="invisible"), width="auto"),
@@ -22,4 +22,4 @@ def layout(pathname, search):
             html.Div("format 222", className="px-2"),
             html.Div("format 333", className="px-2"),
         ], width="auto"), align="start", justify="start", class_name="w-100 mx-auto px-3 py-3"),
-    ], style={"minHeight": "600px"})
+    ], class_name="mt-2", style={"minHeight": "600px"})

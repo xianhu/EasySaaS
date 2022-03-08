@@ -68,7 +68,7 @@ def layout(pathname, search):
                 active_id = item_id
 
             # define ad_children
-            _class = "text-black hover-primary" if path != pathname else ""
+            _class = "text-black hover-primary" if path != pathname else "text-primary"
             ad_children.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
 
         # define catalog list
@@ -86,21 +86,23 @@ def layout(pathname, search):
         return palert.layout_404(pathname, search, return_href=PATH_ANALYSIS)
 
     # define components
-    ad_id, ad_title, ad_class, ad_href = f"id-{TAG}-sad1", "Table", "bg-light", f"{PATH_ANALYSIS}-table"
     small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title)
     collapse = dbc.Collapse(children=[
         cupload.layout(pathname, search),
-        csinglead.layout(pathname, search, ad_id, ad_title, ad_class, ad_href, flush=True),
+        csinglead.layout(pathname, search, "Table", f"{PATH_ANALYSIS}-table", flush=True),
         dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
-    footer = html.Div("All rights reserved.", className="d-none d-md-block text-muted text-center mt-auto py-2")
+
+    # define components
+    _class = "d-none d-md-block text-muted text-center mt-auto py-2"
+    footer = html.Div("All rights reserved.", className=_class)
 
     # return result
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=True, class_navbar=None),
         dbc.Container(children=[small_div, dbc.Row(children=[
             dbc.Col([collapse, footer], width=12, md=2, class_name="d-flex flex-column bg-light h-100-scroll-md p-0"),
-            dbc.Col(dbc.Card(content, class_name="mt-2"), width=12, md=10, class_name="h-100-scroll px-md-4"),
+            dbc.Col(content, width=12, md=10, class_name="h-100-scroll px-md-4"),
         ], justify="center", class_name="h-100-scroll w-100 mx-auto")], fluid=True, class_name="h-100-scroll p-0"),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
