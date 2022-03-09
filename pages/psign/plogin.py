@@ -17,7 +17,7 @@ from utility.consts import RE_EMAIL
 from ..paths import *
 from . import ptemplate
 
-TAG = "login"
+TAG = "sign-login"
 
 
 def layout(pathname, search):
@@ -25,7 +25,7 @@ def layout(pathname, search):
     layout of page
     """
     # define components
-    form_children = [
+    form_items = dbc.Form(children=[
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email"),
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
@@ -34,14 +34,14 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-pwd", type="password"),
             dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
-    ]
+    ])
 
     # define parames
     params = {
         "image_src": "illustrations/login.svg",
         "text_hd": "Sign in",
         "text_sub": "Login the system with your account.",
-        "form_children": form_children,
+        "form_items": form_items,
         "text_button": "Sign in",
         "other_list": [
             html.A("Sign up", href=PATH_REGISTERE),

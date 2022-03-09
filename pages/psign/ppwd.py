@@ -19,7 +19,7 @@ from .. import palert
 from ..paths import *
 from . import ptemplate
 
-TAG = "password"
+TAG = "sign-pwd"
 
 
 def layout(pathname, search):
@@ -27,7 +27,7 @@ def layout(pathname, search):
     layout of page
     """
     try:
-        _id, _token = [item.strip() for item in search.strip().split("&&")]
+        _id, _token = [item.strip() for item in search.split("&&")]
         token, email = json.loads(app_redis.get(_id))
         assert _token == token, (_token, token)
     except Exception as excep:
@@ -36,7 +36,7 @@ def layout(pathname, search):
         return palert.layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
 
     # define components
-    form_children = [
+    form_items = dbc.Form(children=[
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email", value=email, disabled=True),
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
@@ -49,14 +49,14 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
             dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
-    ]
+    ])
 
     # define parames
     params = {
         "image_src": "illustrations/password.svg",
         "text_hd": "Set password",
         "text_sub": "Set the password of this email please.",
-        "form_children": form_children,
+        "form_items": form_items,
         "text_button": "Set password",
         "other_list": [
             html.A("Sign in", href=PATH_LOGIN),

@@ -26,7 +26,7 @@ def layout(pathname, search, tag, params):
         html.Div(params["text_hd"], className="text-center fs-1"),
         html.Div(params["text_sub"], className="text-center text-muted"),
 
-        dbc.Form(params["form_children"], class_name="mt-4"),
+        html.Div(params["form_items"], className="mt-4"),
         html.Div(id=f"id-{tag}-fb", className="text-danger text-center"),
 
         dbc.Button(params["text_button"], id=f"id-{tag}-button", **args_button),
