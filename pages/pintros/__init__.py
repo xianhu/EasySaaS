@@ -22,6 +22,6 @@ def layout(pathname, search):
             pintros.layout(pathname, search),
             pplans.layout(pathname, search),
             pcontact.layout(pathname, search),
-        ], class_name="mb-5"),
+        ], fluid=None, class_name="mb-5"),
         cfooter.layout(pathname, search, fluid=None),
     ])
