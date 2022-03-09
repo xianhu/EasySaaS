@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-small navbar of page
+small navbar component
 """
 
 from dash import html
@@ -13,8 +13,8 @@ def layout(pathname, search, toggler_id, title, title_class=None):
     layout of component
     """
     # define components
-    toggler_icon = html.A(html.I(className="bi bi-list fs-1"))
-    toggler = dbc.NavbarToggler(toggler_icon, id=toggler_id, class_name="border")
+    icon = html.A(html.I(className="bi bi-list fs-1"))
+    toggler = dbc.NavbarToggler(icon, id=toggler_id, class_name="border")
 
     # return result
     class_title = title_class or "text-primary"

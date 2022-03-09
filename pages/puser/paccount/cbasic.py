@@ -43,7 +43,8 @@ def layout(pathname, search):
 
     # return result
     return dbc.Card(children=[
-        html.Div("Basic Information:", className="border-bottom p-4"),
+        dbc.CardHeader("Basic Information:", class_name="px-4 py-3"),
+        # html.Div("Basic Information:", className="border-bottom px-4 py-3"),
         dbc.Row(children=[
             dbc.Col(c_email, width=12, md=4, class_name=None),
             dbc.Col(c_name, width=12, md=4, class_name="mt-2 mt-md-0"),

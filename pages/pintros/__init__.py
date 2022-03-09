@@ -8,7 +8,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 
 from ..components import cfooter, cnavbar
-from . import pheader, pintros, pplans, pcontact
+from .components import ccontact, cheader, cintros, cplans
 
 
 def layout(pathname, search):
@@ -18,10 +18,10 @@ def layout(pathname, search):
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=None),
         dbc.Container(children=[
-            pheader.layout(pathname, search),
-            pintros.layout(pathname, search),
-            pplans.layout(pathname, search),
-            pcontact.layout(pathname, search),
+            cheader.layout(pathname, search),
+            cintros.layout(pathname, search),
+            cplans.layout(pathname, search),
+            ccontact.layout(pathname, search),
         ], fluid=None, class_name="mb-5"),
         cfooter.layout(pathname, search, fluid=None),
     ])

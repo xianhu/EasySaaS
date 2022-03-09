@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-layout of contact
+contact component
 """
 
 from dash import html
@@ -14,7 +14,7 @@ HEADERSUB = "We always want to hear from you! Let us know how we can best help y
 
 def layout(pathname, search):
     """
-    layout of contact
+    layout of component
     """
     # define components
     c_email = dbc.FormFloating(children=[

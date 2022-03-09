@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-navbar of page
+navbar component
 """
 
 import dash

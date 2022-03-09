@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-footer of page
+footer component
 """
 
 from dash import html

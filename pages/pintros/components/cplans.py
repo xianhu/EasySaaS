@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-layout of plans
+plans component
 """
 
 from dash import html
@@ -28,7 +28,7 @@ PLAN_LIST = [{
 
 def layout(pathname, search):
     """
-    layout of plans
+    layout of component
     """
     # define components
     plan_list = [dbc.Card(children=[

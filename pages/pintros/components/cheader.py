@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-layout of header
+header component
 """
 
 import dash
@@ -17,7 +17,7 @@ This project will create an easy way to build a SaaS application using Python an
 
 def layout(pathname, search):
     """
-    layout of header
+    layout of component
     """
     # define components
     src = dash.get_asset_url("illustrations/intros.svg")

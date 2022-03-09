@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-single accordion of page
+single accordion component
 """
 
 from dash import html

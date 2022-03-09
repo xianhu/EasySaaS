@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-layout of intros
+intros component
 """
 
 from dash import html
@@ -24,7 +24,7 @@ INTROS_LIST = [[
 
 def layout(pathname, search):
     """
-    layout of intros
+    layout of component
     """
     # define components
     intros_list = [html.Div(children=[
