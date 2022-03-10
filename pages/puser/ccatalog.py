@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-catalog components
+catalog component
 """
 
 from dash import html

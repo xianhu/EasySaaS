@@ -25,6 +25,10 @@ def layout(pathname, search):
     pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
 
     # define components
+    catalog = ccatalog.layout(pathname, search)
+    collapse = dbc.Collapse(catalog, id=f"id-{TAG}-collapse", class_name="d-md-block")
+
+    # define components
     if pathname == f"{PATH_USER}-general":
         title = " > ".join(["ACCOUNT", "General"])
         content = paccount.layout(pathname, search)
@@ -43,17 +47,14 @@ def layout(pathname, search):
     else:
         return palert.layout_404(pathname, search, return_href=PATH_USER)
 
-    # define components
-    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title)
-    collapse = dbc.Collapse(ccatalog.layout(pathname, search), id=f"id-{TAG}-collapse", class_name="d-md-block")
-
     # return result
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=None, class_navbar=None),
-        dbc.Container(children=[small_div, dbc.Row(children=[
+        csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=None),
+        dbc.Container(dbc.Row(children=[
             dbc.Col(collapse, width=12, md=2, class_name="mt-0 mt-md-4"),
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
-        ], justify="center", class_name="w-100 mx-auto")], class_name="p-0"),
+        ], align="start", justify="center", class_name=None), fluid=None),
         cfooter.layout(pathname, search, fluid=None, class_footer=None),
     ])
 
