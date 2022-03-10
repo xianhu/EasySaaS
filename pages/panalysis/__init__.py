@@ -86,7 +86,6 @@ def layout(pathname, search):
         return palert.layout_404(pathname, search, return_href=PATH_ANALYSIS)
 
     # define components
-    small_div = csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title)
     collapse = dbc.Collapse(children=[
         cupload.layout(pathname, search),
         csinglead.layout(pathname, search, "Table", f"{PATH_ANALYSIS}-table", flush=True),
@@ -100,10 +99,11 @@ def layout(pathname, search):
     # return result
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=True, class_navbar=None),
-        dbc.Container(children=[small_div, dbc.Row(children=[
+        csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=True),
+        dbc.Container(dbc.Row(children=[
             dbc.Col([collapse, footer], width=12, md=2, class_name="d-flex flex-column bg-light h-100-scroll-md p-0"),
-            dbc.Col(content, width=12, md=10, class_name="h-100-scroll px-md-4"),
-        ], justify="center", class_name="h-100-scroll w-100 mx-auto")], fluid=True, class_name="h-100-scroll p-0"),
+            dbc.Col(content, width=12, md=10, class_name="h-100-scroll px-md-4 py-md-3"),
+        ], justify="center", class_name="h-100-scroll w-100 mx-auto"), fluid=True, class_name="h-100-scroll p-0"),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 

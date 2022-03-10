@@ -48,7 +48,6 @@ def layout(pathname, search):
             dbc.Col(c_email, width=12, md=4, class_name=None),
             dbc.Col(c_name, width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(c_phone, width=12, md=4, class_name="mt-2 mt-md-0"),
-            # change line
             dbc.Col(c_fb, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(c_button, width=12, md=4, class_name="mt-4 mt-md-4"),
         ], align="center", class_name="p-4"),

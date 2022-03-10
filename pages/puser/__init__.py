@@ -54,7 +54,7 @@ def layout(pathname, search):
         dbc.Container(dbc.Row(children=[
             dbc.Col(collapse, width=12, md=2, class_name="mt-0 mt-md-4"),
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
-        ], align="start", justify="center", class_name=None), fluid=None),
+        ], align="start", justify="center"), fluid=None),
         cfooter.layout(pathname, search, fluid=None, class_footer=None),
     ])
 

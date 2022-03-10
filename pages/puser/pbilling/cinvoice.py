@@ -21,9 +21,9 @@ def layout(pathname, search):
     layout of card
     """
     # define components
-    invoice_row_list = [html.Div("Invoice History:", className="border-bottom p-4"), ]
+    invoice_row_list = []
     for _id, _date, _flag in INVOICE_LIST:
-        if len(invoice_row_list) != 1:
+        if len(invoice_row_list) != 0:
             invoice_row_list.append(html.Hr(className="text-muted mx-4 my-0"))
         invoice_row_list.append(dbc.Row(children=[
             dbc.Col(children=[
@@ -33,7 +33,10 @@ def layout(pathname, search):
             dbc.Col(children=[
                 dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
             ], width="auto"),
-        ], align="center", justify="between", class_name="p-4"))
+        ], align="center", justify="between", class_name="px-4 py-3"))
 
     # return result
-    return dbc.Card(invoice_row_list, class_name="mb-4")
+    return dbc.Card(children=[
+        dbc.CardHeader("Invoice History:", class_name="px-4 py-3"),
+        html.Div(invoice_row_list, className=""),
+    ], class_name="mb-4")

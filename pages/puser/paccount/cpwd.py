@@ -14,7 +14,7 @@ from utility.consts import RE_PWD
 
 from ...paths import PATH_LOGOUT
 
-TAG = "user-password"
+TAG = "user-pwd"
 
 
 def layout(pathname, search):
@@ -41,12 +41,11 @@ def layout(pathname, search):
 
     # return result
     return dbc.Card(children=[
-        html.Div("Change Password:", className="border-bottom p-4"),
+        dbc.CardHeader("Change Password:", class_name="px-4 py-3"),
         dbc.Row(children=[
             dbc.Col(c_pwd, width=12, md=4, class_name=None),
             dbc.Col(c_pwd1, width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(c_pwd2, width=12, md=4, class_name="mt-2 mt-md-0"),
-            # change line
             dbc.Col(c_fb, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(c_button, width=12, md=4, class_name="mt-4 mt-md-4"),
         ], align="center", class_name="p-4"),

@@ -44,5 +44,5 @@ def layout(pathname, search):
             dbc.Col(c_name, width=12, md=4, class_name="mt-4 mt-md-0"),
             dbc.Col(c_text, width=12, md=8, class_name="mt-4 mt-md-4"),
             dbc.Col(c_button, width=12, md=8, class_name="mt-4 mt-md-4 text-center"),
-        ], align="center", justify="center", class_name="mt-2")
+        ], align="center", justify="center", class_name="mt-2"),
     ], className="mt-5")

@@ -21,10 +21,15 @@ def layout(pathname, search):
     """
     layout of card
     """
+    # define components
+    header_row = dbc.Row(children=[
+        dbc.Col("Notifications:", width="auto"),
+        dbc.Col(dbc.Switch(id=f"id-{TAG}-switch", value=True), width="auto"),
+    ], align="center", justify="between")
+    notice_list = [html.Li(notify, className="my-2") for notify in NOTIFICATIONS]
+
+    # return result
     return dbc.Card(children=[
-        dbc.Row(children=[
-            dbc.Col("Notifications:", width="auto"),
-            dbc.Col(dbc.Switch(id=f"id-{TAG}-switch", value=True), width="auto"),
-        ], align="center", justify="between", class_name="gx-0 border-bottom p-4"),
-        html.Div(html.Ul([html.Li(notify, className="my-2") for notify in NOTIFICATIONS]), className="p-4"),
+        dbc.CardHeader(header_row, class_name="px-4 py-3"),
+        html.Div(html.Ul(notice_list), className="p-4"),
     ], class_name="mb-4")

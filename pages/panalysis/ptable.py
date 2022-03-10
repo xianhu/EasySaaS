@@ -9,7 +9,7 @@ import os
 import flask_login
 import pandas as pd
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dash_table, dcc
+from dash import Input, Output, State, dash_table, dcc, html
 
 from app import app
 from config import config_dir_store
@@ -37,15 +37,15 @@ def layout(pathname, search):
     return dbc.Card(children=[
         dcc.Download(id=f"id-{TAG}-download"),
         dcc.Store(id=f"id-{TAG}-filefp", data=file_full_path),
-        dbc.Row(children=[
+        dbc.CardHeader(dbc.Row(children=[
             dbc.Col(file_full_path, width="auto", class_name="fw-bold"),
             dbc.Col(button, width="auto", class_name=None),
-        ], align="center", justify="between", class_name="border-bottom w-100 mx-auto px-3 py-2"),
-        dbc.Row(dbc.Col(dash_table.DataTable(
+        ], align="center", justify="between"), class_name="px-4 py-3"),
+        html.Div(dash_table.DataTable(
             id=f"id-{TAG}-table",
             data=data.to_dict("records")[:100],
             columns=[{"name": str(i), "id": str(i)} for i in data.columns],
-        ), width=12), align="start", justify="start", class_name="w-100 mx-auto px-3 py-3"),
+        ), className="p-4"),
     ], class_name="mt-2", style={"minHeight": "600px"})
 
 
