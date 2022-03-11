@@ -19,7 +19,7 @@ TAG = "analysis-upload"
 ARGS_UP = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of component
     """
@@ -27,7 +27,7 @@ def layout(pathname, search):
     return html.Div(children=[
         html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
         dcc.Upload(button, id=f"id-{TAG}-upload", **ARGS_UP, className="text-center"),
-    ], className="my-4")
+    ], className=class_name)
 
 
 @app.callback(Output({"type": "id-address", "index": TAG}, "href"), [
