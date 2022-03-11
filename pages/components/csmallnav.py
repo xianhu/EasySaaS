@@ -24,5 +24,5 @@ def layout(pathname, search, toggler_id, title, class_title=None, fluid=None, cl
     ], align="center", justify="between", class_name=None)
 
     # return result
-    _class = class_container or "d-md-none border-bottom"
-    return dbc.Container(small_nav, fluid=fluid, class_name=_class)
+    class_container = class_container or "d-md-none border-bottom"
+    return dbc.Container(small_nav, fluid=fluid, class_name=class_container)

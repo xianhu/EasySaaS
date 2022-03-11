@@ -25,4 +25,4 @@ def layout(pathname, search, fluid=None, class_container=None, class_footer=None
     return html.Footer(dbc.Container(dbc.Row(children=[
         dbc.Col(["Powered by ©2021 ", addr, ". All rights reserved."], width=12, md=6),
         dbc.Col(html.A(mservice, href=mhref, className="text-decoration-none"), width=12, md=6),
-    ]), fluid=fluid, class_name=class_container), className=class_footer)
+    ], class_name=None), fluid=fluid, class_name=class_container), className=class_footer)

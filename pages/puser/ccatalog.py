@@ -22,7 +22,7 @@ CATALOG_LIST = [
 ]
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of component
     """
@@ -41,4 +41,4 @@ def layout(pathname, search):
     catalog_children.append(dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"))
 
     # return result
-    return dbc.Card(catalog_children, class_name=None)
+    return dbc.Card(catalog_children, class_name=class_name)

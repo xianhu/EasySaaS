@@ -18,10 +18,10 @@ def layout(pathname, search):
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=None),
         dbc.Container(children=[
-            cheader.layout(pathname, search),
-            cintros.layout(pathname, search),
-            cplans.layout(pathname, search),
-            ccontact.layout(pathname, search),
-        ], fluid=None, class_name="mb-5"),
+            cheader.layout(pathname, search, class_name=None),
+            cintros.layout(pathname, search, class_name="mt-5"),
+            cplans.layout(pathname, search, class_name="mt-5"),
+            ccontact.layout(pathname, search, class_name="mt-5"),
+        ], fluid=None, class_name="my-5"),
         cfooter.layout(pathname, search, fluid=None),
     ], className="d-flex flex-column vh-100")

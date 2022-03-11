@@ -13,7 +13,7 @@ def layout(pathname, search):
     layout of page
     """
     return html.Div(children=[
-        cbasic.layout(pathname, search),
-        cpwd.layout(pathname, search),
-        cnofity.layout(pathname, search),
-    ])
+        cbasic.layout(pathname, search, class_name=None),
+        cpwd.layout(pathname, search, class_name="mt-4"),
+        cnofity.layout(pathname, search, class_name="mt-4"),
+    ], className="mb-4")

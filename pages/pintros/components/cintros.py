@@ -22,7 +22,7 @@ INTROS_LIST = [[
 ]]
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of component
     """
@@ -38,4 +38,4 @@ def layout(pathname, search):
         dbc.Col(intros_list[0], width=10, md=3, class_name=None),
         dbc.Col(intros_list[1], width=10, md=3, class_name="mt-4 mt-md-0"),
         dbc.Col(intros_list[2], width=10, md=3, class_name="mt-4 mt-md-0"),
-    ], align="center", justify="around", class_name="mt-5")
+    ], align="center", justify="around", class_name=class_name)

@@ -17,7 +17,7 @@ from ...paths import PATH_LOGOUT
 TAG = "user-pwd"
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of card
     """
@@ -54,7 +54,7 @@ def layout(pathname, search):
             dbc.ModalBody("The password was updated successfully"),
             dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
-    ], class_name="mb-4")
+    ], class_name=class_name)
 
 
 @app.callback([

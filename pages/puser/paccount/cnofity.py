@@ -17,12 +17,12 @@ NOTIFICATIONS = [
 ]
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of card
     """
     # define components
-    header_row = dbc.Row(children=[
+    row_header = dbc.Row(children=[
         dbc.Col("Notifications:", width="auto"),
         dbc.Col(dbc.Switch(id=f"id-{TAG}-switch", value=True), width="auto"),
     ], align="center", justify="between")
@@ -30,6 +30,6 @@ def layout(pathname, search):
 
     # return result
     return dbc.Card(children=[
-        dbc.CardHeader(header_row, class_name="px-4 py-3"),
+        dbc.CardHeader(row_header, class_name="px-4 py-3"),
         html.Div(html.Ul(notice_list), className="p-4"),
-    ], class_name="mb-4")
+    ], class_name=class_name)

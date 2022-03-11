@@ -14,7 +14,7 @@ from utility.consts import RE_PHONE
 TAG = "user-basic"
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of card
     """
@@ -55,7 +55,7 @@ def layout(pathname, search):
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully"),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
-    ], class_name="mb-4")
+    ], class_name=class_name)
 
 
 @app.callback([

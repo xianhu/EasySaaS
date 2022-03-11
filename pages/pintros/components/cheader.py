@@ -15,15 +15,12 @@ This project will create an easy way to build a SaaS application using Python an
 """.strip()
 
 
-def layout(pathname, search):
+def layout(pathname, search, class_name=None):
     """
     layout of component
     """
     # define components
-    src = dash.get_asset_url("illustrations/intros.svg")
-    image = html.Img(src=src, className="img-fluid")
-
-    # define components
+    image = html.Img(src=dash.get_asset_url("illustrations/intros.svg"), className="img-fluid")
     intros = html.Div(children=[
         html.Div(HEADER, className="fs-1 text-center mb-2"),
         html.P(HEADERSUB, className="fs-5 text-center text-muted lead"),
@@ -33,4 +30,4 @@ def layout(pathname, search):
     return dbc.Row(children=[
         dbc.Col(image, width=10, md={"size": 5, "order": "last"}),
         dbc.Col(intros, width=10, md=5, class_name="mt-4 mt-md-0"),
-    ], align="center", justify="around", class_name="mt-5")
+    ], align="center", justify="around", class_name=class_name)

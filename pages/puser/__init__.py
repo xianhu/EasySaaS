@@ -25,10 +25,6 @@ def layout(pathname, search):
     pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
 
     # define components
-    catalog = ccatalog.layout(pathname, search)
-    collapse = dbc.Collapse(catalog, id=f"id-{TAG}-collapse", class_name="d-md-block")
-
-    # define components
     if pathname == f"{PATH_USER}-general":
         title = " > ".join(["ACCOUNT", "General"])
         content = paccount.layout(pathname, search)
@@ -46,6 +42,10 @@ def layout(pathname, search):
         content = pbilling.layout(pathname, search)
     else:
         return palert.layout_404(pathname, search, return_href=PATH_USER)
+
+    # define components
+    catalog = ccatalog.layout(pathname, search, class_name=None)
+    collapse = dbc.Collapse(catalog, id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
     return html.Div(children=[
