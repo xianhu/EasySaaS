@@ -8,7 +8,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 
 from ..components import cfooter, cnavbar
-from .components import ccontact, cheader, cintros, cplans
+from . import cintros, cplans, ccontact, cheader
 
 
 def layout(pathname, search):

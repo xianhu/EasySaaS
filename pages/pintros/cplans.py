@@ -7,6 +7,7 @@ plans component
 from dash import html
 import dash_bootstrap_components as dbc
 
+TAG = "intros-plans"
 PLAN_LIST = [{
     "name": "Basic", "price": "$10/M", "descs": [
         "project count: 1",
@@ -35,7 +36,7 @@ def layout(pathname, search, class_name=None):
         html.Div(plan["name"], className="fs-2"),
         html.Div(plan["price"], className="text-primary"),
         html.Div([html.Li(desc) for desc in plan["descs"]], className="lh-lg"),
-        dbc.Button("Buy it now", class_name="w-75 mt-4"),
+        dbc.Button("Buy it now", id=f"id-{TAG}-{plan['name']}", class_name="w-75 mt-4"),
     ], body=True, class_name="text-center p-3") for plan in PLAN_LIST]
 
     # return result
