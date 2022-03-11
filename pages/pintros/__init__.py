@@ -24,4 +24,4 @@ def layout(pathname, search):
             ccontact.layout(pathname, search),
         ], fluid=None, class_name="mb-5"),
         cfooter.layout(pathname, search, fluid=None),
-    ])
+    ], className="d-flex flex-column vh-100")

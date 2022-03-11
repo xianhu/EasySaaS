@@ -56,7 +56,7 @@ def layout(pathname, search):
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
         ], align="start", justify="center"), fluid=None),
         cfooter.layout(pathname, search, fluid=None, class_footer=None),
-    ])
+    ], className="d-flex flex-column vh-100")
 
 
 @app.callback(
