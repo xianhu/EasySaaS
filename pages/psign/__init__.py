@@ -6,9 +6,9 @@ sign page
 
 import flask
 
+from . import pemail, plogin, ppwd
 from .. import palert
 from ..paths import *
-from . import pemail, plogin, ppwd
 
 
 def layout(pathname, search):

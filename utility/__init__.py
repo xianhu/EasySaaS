@@ -6,8 +6,8 @@ utility module
 
 import urllib.parse
 
-from .trigger import get_trigger_property
 from .consts import RE_PWD, RE_PHONE, RE_EMAIL
+from .trigger import get_trigger_property
 
 
 def parse_query_string(search):

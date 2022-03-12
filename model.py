@@ -6,8 +6,8 @@ Model Defination
 
 import hashlib
 
-from werkzeug import security
 from flask_sqlalchemy import SQLAlchemy, sqlalchemy, orm
+from werkzeug import security
 
 # create SQLAlchemy
 app_db = SQLAlchemy(app=None)

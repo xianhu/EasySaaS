@@ -4,8 +4,8 @@
 Invoice History
 """
 
-from dash import html
 import dash_bootstrap_components as dbc
+from dash import html
 
 TAG = "user-invoice"
 INVOICE_LIST = [

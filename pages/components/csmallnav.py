@@ -4,8 +4,8 @@
 small navbar component
 """
 
-from dash import html
 import dash_bootstrap_components as dbc
+from dash import html
 
 
 def layout(pathname, search, toggler_id, title, class_title=None, fluid=None, class_container=None):

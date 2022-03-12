@@ -6,13 +6,12 @@ upload of page
 
 import base64
 
-import flask_login
 import dash_bootstrap_components as dbc
+import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app, app_db
 from config import config_dir_store
-
 from ..paths import PATH_ANALYSIS, PATH_LOGIN
 
 TAG = "analysis-upload"
@@ -25,7 +24,7 @@ def layout(pathname, search, class_name=None):
     """
     button = dbc.Button("Upload Data", class_name="w-75")
     return html.Div(children=[
-        html.A(id={"type": "id-address", "index": TAG}, className="_class_address_dummpy"),
+        html.A(id={"type": "id-address", "index": TAG}),
         dcc.Upload(button, id=f"id-{TAG}-upload", **ARGS_UP, className="text-center"),
     ], className=class_name)
 

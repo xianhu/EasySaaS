@@ -6,9 +6,9 @@ table page
 
 import os
 
+import dash_bootstrap_components as dbc
 import flask_login
 import pandas as pd
-import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dash_table, dcc, html
 
 from app import app

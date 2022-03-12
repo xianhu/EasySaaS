@@ -1,20 +1,19 @@
 # _*_ coding: utf-8 _*_
 
 """
-Layout
+Application Layout
 """
 
 import logging
 
 import dash
-import flask_login
 import dash_bootstrap_components as dbc
+import flask_login
 from dash import Input, Output, State, MATCH, dcc, html
 
-from app import app, server
+from app import app
 from config import config_app_name
-from pages import palert, pintros
-from pages import panalysis, psign, puser
+from pages import palert, psign, puser, pintros, panalysis
 from pages.paths import *
 
 # app layout

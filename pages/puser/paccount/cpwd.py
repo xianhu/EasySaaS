@@ -4,14 +4,13 @@
 Change Password
 """
 
-import flask_login
 import dash_bootstrap_components as dbc
+import flask_login
 from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
 from utility.consts import RE_PWD
-
 from ...paths import PATH_LOGOUT
 
 TAG = "user-pwd"

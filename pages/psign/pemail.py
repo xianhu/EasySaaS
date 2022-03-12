@@ -4,21 +4,20 @@
 email page
 """
 
+import hashlib
 import json
 import uuid
-import hashlib
 
+import dash_bootstrap_components as dbc
 import flask
 import flask_mail
-import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-
-from ..paths import *
 from . import ptemplate
+from ..paths import *
 
 TAG = "sign-email"
 

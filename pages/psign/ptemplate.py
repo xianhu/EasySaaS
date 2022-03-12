@@ -9,7 +9,6 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from config import config_app_name
-
 from ..paths import *
 
 
@@ -36,7 +35,7 @@ def layout(pathname, search, tag, params):
     # return result
     return dbc.Container(children=[
         dcc.Store(id=f"id-{tag}-pathname", data=pathname),
-        html.A(id={"type": "id-address", "index": tag}, className="_class_address_dummpy"),
+        html.A(id={"type": "id-address", "index": tag}),
 
         html.A(children=[
             html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.25rem"}),
@@ -44,7 +43,7 @@ def layout(pathname, search, tag, params):
         ], href=PATH_INTROS, className="text-decoration-none position-absolute top-0 start-0"),
 
         dbc.Row(children=[
-            dbc.Col(left, width=10, md=4, class_name="mt-auto mt-md-0"),
+            dbc.Col(left, width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0"),
             dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
         ], align="center", justify="center", class_name="vh-100"),
     ], fluid=None)

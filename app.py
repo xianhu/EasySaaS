@@ -1,16 +1,16 @@
 # _*_ coding: utf-8 _*_
 
 """
-Dash
+Dash Application
 """
 
 import logging
 
 import dash
 import dash_bootstrap_components as dbc
+from flask_login import LoginManager, UserMixin
 from flask_mail import Mail
 from flask_redis import FlaskRedis
-from flask_login import LoginManager, UserMixin
 
 from config import *
 from model import User, app_db

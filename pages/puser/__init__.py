@@ -8,11 +8,10 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
-
-from .. import palert
-from ..paths import PATH_USER
-from ..components import cfooter, cnavbar, csmallnav
 from . import ccatalog, paccount, pbilling
+from .. import palert
+from ..components import cfooter, cnavbar, csmallnav
+from ..paths import PATH_USER
 
 TAG = "user"
 
@@ -64,7 +63,7 @@ def layout(pathname, search):
     Input(f"id-{TAG}-toggler", "n_clicks"),
     State(f"id-{TAG}-collapse", "is_open"),
 )
-def _toggle_catalog(n_clicks, is_open):
+def _toggle_navbar(n_clicks, is_open):
     if n_clicks:
         return not is_open
     return is_open

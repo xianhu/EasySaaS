@@ -4,12 +4,12 @@
 catalog component
 """
 
-from dash import html
 import dash_bootstrap_components as dbc
+from dash import html
 
-from ..paths import PATH_ANALYSIS
-from ..components import csinglead
 from . import cupload
+from ..components import csinglead
+from ..paths import PATH_ANALYSIS
 
 TAG = "analysis-catalog"
 CATALOG_LIST = [

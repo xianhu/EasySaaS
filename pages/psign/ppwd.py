@@ -4,8 +4,8 @@
 password page
 """
 
-import json
 import hashlib
+import json
 import logging
 
 import dash_bootstrap_components as dbc
@@ -14,10 +14,9 @@ from werkzeug import security
 
 from app import User, app, app_db, app_redis
 from utility.consts import RE_PWD
-
+from . import ptemplate
 from .. import palert
 from ..paths import *
-from . import ptemplate
 
 TAG = "sign-pwd"
 

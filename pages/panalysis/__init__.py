@@ -8,11 +8,10 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
-
-from .. import palert
-from ..paths import PATH_ANALYSIS
-from ..components import cnavbar, csmallnav
 from . import ccatalog, pother, ptable
+from .. import palert
+from ..components import cnavbar, csmallnav
+from ..paths import PATH_ANALYSIS
 
 TAG = "analysis"
 

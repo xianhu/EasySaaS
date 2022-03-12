@@ -5,12 +5,11 @@ navbar component
 """
 
 import dash
-import flask_login
 import dash_bootstrap_components as dbc
+import flask_login
 from dash import Input, Output, State, html
 
 from config import config_app_name
-
 from ..paths import *
 
 
