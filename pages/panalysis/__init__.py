@@ -25,10 +25,10 @@ def layout(pathname, search):
 
     # define components
     if pathname == f"{PATH_ANALYSIS}-table":
-        title = "Table"
+        title = "Table Page"
         content = ptable.layout(pathname, search)
     elif pathname.startswith(PATH_ANALYSIS):
-        title = "Other page"
+        title = "Other Page"
         content = pother.layout(pathname, search)
     else:
         return palert.layout_404(pathname, search, return_href=PATH_ANALYSIS)
@@ -37,14 +37,17 @@ def layout(pathname, search):
     catalog = ccatalog.layout(pathname, search, class_name=None)
     collapse = dbc.Collapse(catalog, id=f"id-{TAG}-collapse", class_name="d-md-block")
 
+    # define components
+    container = dbc.Row(children=[
+        dbc.Col(collapse, width=12, md=2, class_name="h-100-scroll-md bg-light"),
+        dbc.Col(content, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
+    ], align="start", justify="center", class_name="h-100-scroll")
+
     # return result
     return html.Div(children=[
         cnavbar.layout(pathname, search, fluid=True, class_navbar=None),
         csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=True),
-        dbc.Container(dbc.Row(children=[
-            dbc.Col(collapse, width=12, md=2, class_name="bg-light h-100-scroll-md"),
-            dbc.Col(content, width=12, md=10, class_name="h-100-scroll px-md-4 py-md-3"),
-        ], justify="center", class_name="h-100-scroll w-100 mx-auto"), fluid=True, class_name="h-100-scroll p-0"),
+        dbc.Container(container, fluid=True, class_name="h-100-scroll"),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
@@ -53,7 +56,7 @@ def layout(pathname, search):
     Input(f"id-{TAG}-toggler", "n_clicks"),
     State(f"id-{TAG}-collapse", "is_open"),
 )
-def _toggle_catalog(n_clicks, is_open):
+def _toggle_navbar(n_clicks, is_open):
     if n_clicks:
         return not is_open
     return is_open

@@ -15,18 +15,17 @@ def layout(pathname, search, class_name=None):
     layout of card
     """
     # define components
-    row_header = dbc.Row(children=[
-        dbc.Col("Current Plan:", width="auto"),
-        dbc.Col(dbc.Button("Renewal", id=f"id-{TAG}-renewal"), width="auto"),
-    ], align="center", justify="between")
+    left = [
+        html.Div("Basic Plan ($19/m)", className=None),
+        html.Div("Next payment: 10/12/2022", className="text-muted"),
+    ]
+    right = dbc.Button("Renewal or Change", id=f"id-{TAG}-change")
 
+    # return result
     return dbc.Card(children=[
-        dbc.CardHeader(row_header, class_name="px-4 py-3"),
+        dbc.CardHeader("Current Plan:", class_name="px-4 py-3"),
         dbc.Row(children=[
-            dbc.Col(children=[
-                html.Div("Basic Plan ($19/m)", className=None),
-                html.Div("Next payment: 10/12/2022", className="text-muted"),
-            ], width="auto", class_name=None),
-            dbc.Col(dbc.Button("Change", id=f"id-{TAG}-change"), width="auto"),
+            dbc.Col(left, width="auto", class_name=None),
+            dbc.Col(right, width="auto", class_name=None),
         ], align="center", justify="between", class_name="p-4"),
     ], class_name=class_name)

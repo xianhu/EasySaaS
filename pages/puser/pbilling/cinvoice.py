@@ -21,24 +21,27 @@ def layout(pathname, search, class_name=None):
     layout of card
     """
     # define components
-    invoice_row_list = []
+    row_invoice_list = []
     for _id, _date, _flag in INVOICE_LIST:
         # define components
-        if len(invoice_row_list) != 0:
-            invoice_row_list.append(html.Hr(className="text-muted mx-4 my-0"))
-        button = dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
+        if len(row_invoice_list) != 0:
+            row_invoice_list.append(html.Hr(className="text-muted mx-4 my-0"))
 
         # define components
-        invoice_row_list.append(dbc.Row(children=[
-            dbc.Col(children=[
-                html.A(f"Invoice #{_id}", href="#", className=None),
-                html.Div(f"Billed {_date}", className="small text-muted"),
-            ], width="auto"),
-            dbc.Col(button, width="auto"),
+        left = [
+            html.A(f"Invoice #{_id}", href="#", className=None),
+            html.Div(f"Billed {_date}", className="small text-muted"),
+        ]
+        right = dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
+
+        # define components
+        row_invoice_list.append(dbc.Row(children=[
+            dbc.Col(left, width="auto", class_name=None),
+            dbc.Col(right, width="auto", class_name=None),
         ], align="center", justify="between", class_name="px-4 py-3"))
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader("Invoice History:", class_name="px-4 py-3"),
-        html.Div(invoice_row_list, className=None),
+        html.Div(row_invoice_list, className=None),
     ], class_name=class_name)

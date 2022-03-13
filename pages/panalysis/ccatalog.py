@@ -49,30 +49,32 @@ def layout(pathname, search, class_name=None):
     layout of component
     """
     # define components
-    cat_list, active_id = [], None
+    upload = cupload.layout(pathname, search, class_name="my-4")
+
+    # define components
+    _class, ad_href = "border-top-solid bg-light", f"{PATH_ANALYSIS}-table"
+    table = csinglead.layout(pathname, search, "Table", ad_href, flush=True, class_item=_class)
+
+    # define components
+    ad_item_list, active_id = [], None
     class_second = "text-decoration-none px-5 py-2"
     for index, (title_first, icon_first, list_second) in enumerate(CATALOG_LIST):
         item_id = f"id-{TAG}-accordion-{index}"
 
-        # define ad_children
+        # define components
         ad_children = []
         for title_second, path in list_second:
-            # define active_id
             if path == pathname:
                 active_id = item_id
 
-            # define ad_children
+            # define components
             _class = "text-black hover-primary" if path != pathname else "text-primary"
             ad_children.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
+        ad_item_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=title_first))
 
-        # define catalog list
-        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=title_first))
+    # define components
+    _class, _id = "border-top-solid border-bottom-solid", f"id-{TAG}-accordion"
+    accordion = dbc.Accordion(ad_item_list, id=_id, active_item=active_id, flush=True, class_name=_class)
 
     # return result
-    _class0 = "bg-light border-top-solid"
-    _class1 = "border-top-solid border-bottom-solid"
-    return html.Div(children=[
-        cupload.layout(pathname, search, class_name="my-4"),
-        csinglead.layout(pathname, search, "Table", f"{PATH_ANALYSIS}-table", flush=True, class_item=_class0),
-        dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True, class_name=_class1),
-    ], className=class_name)
+    return html.Div([upload, table, accordion], className=class_name)

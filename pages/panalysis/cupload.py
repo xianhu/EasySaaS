@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-upload of page
+upload component
 """
 
 import base64
@@ -15,24 +15,29 @@ from config import config_dir_store
 from ..paths import PATH_ANALYSIS, PATH_LOGIN
 
 TAG = "analysis-upload"
-ARGS_UP = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
 
 
 def layout(pathname, search, class_name=None):
     """
     layout of component
     """
+    # define components
     button = dbc.Button("Upload Data", class_name="w-75")
+    args_up = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
+
+    # return result
     return html.Div(children=[
         html.A(id={"type": "id-address", "index": TAG}),
-        dcc.Upload(button, id=f"id-{TAG}-upload", **ARGS_UP, className="text-center"),
+        dcc.Upload(button, id=f"id-{TAG}-upload", **args_up, className="text-center"),
     ], className=class_name)
 
 
-@app.callback(Output({"type": "id-address", "index": TAG}, "href"), [
+@app.callback(
+    Output({"type": "id-address", "index": TAG}, "href"),
     Input(f"id-{TAG}-upload", "contents"),
     State(f"id-{TAG}-upload", "filename"),
-], prevent_initial_call=True)
+    prevent_initial_call=True,
+)
 def _button_click(contents, filename):
     # check user
     user = flask_login.current_user
