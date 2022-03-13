@@ -34,7 +34,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     ], class_name="d-flex align-items-center justify-content-center py-1"), navbar=True)
 
     # return result
-    class_navbar = class_navbar or "bg-primary border-bottom py-0"
+    class_navbar = class_navbar or "border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
         dbc.NavbarBrand(children=[
             html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.2rem"}),

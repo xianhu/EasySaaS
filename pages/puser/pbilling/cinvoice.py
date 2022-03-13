@@ -23,11 +23,12 @@ def layout(pathname, search, class_name=None):
     # define components
     invoice_row_list = []
     for _id, _date, _flag in INVOICE_LIST:
+        # define components
         if len(invoice_row_list) != 0:
             invoice_row_list.append(html.Hr(className="text-muted mx-4 my-0"))
+        button = dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
 
         # define components
-        button = dbc.Button("Paid", size="sm", outline=True, color="primary", disabled=True)
         invoice_row_list.append(dbc.Row(children=[
             dbc.Col(children=[
                 html.A(f"Invoice #{_id}", href="#", className=None),

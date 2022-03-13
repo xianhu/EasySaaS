@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
-from . import ccatalog, paccount, pbilling
+from . import ccatalog
 from .. import palert
 from ..components import cfooter, cnavbar, csmallnav
 from ..paths import PATH_USER
@@ -24,22 +24,8 @@ def layout(pathname, search):
     pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
 
     # define components
-    if pathname == f"{PATH_USER}-general":
-        title = " > ".join(["ACCOUNT", "General"])
-        content = paccount.layout(pathname, search)
-    elif pathname == f"{PATH_USER}-security":
-        title = " > ".join(["ACCOUNT", "Security"])
-        content = paccount.layout(pathname, search)
-    elif pathname == f"{PATH_USER}-notifications":
-        title = " > ".join(["ACCOUNT", "Notifications"])
-        content = paccount.layout(pathname, search)
-    elif pathname == f"{PATH_USER}-plan":
-        title = " > ".join(["BILLING", "Plan"])
-        content = pbilling.layout(pathname, search)
-    elif pathname == f"{PATH_USER}-payments":
-        title = " > ".join(["BILLING", "Payments"])
-        content = pbilling.layout(pathname, search)
-    else:
+    title, content = ccatalog.fcontent(pathname, search)
+    if not content:
         return palert.layout_404(pathname, search, return_href=PATH_USER)
 
     # define components

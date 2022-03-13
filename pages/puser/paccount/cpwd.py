@@ -46,7 +46,7 @@ def layout(pathname, search, class_name=None):
             dbc.Col(c_pwd1, width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(c_pwd2, width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(c_fb, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
-            dbc.Col(c_button, width=12, md=4, class_name="mt-4 mt-md-4"),
+            dbc.Col(c_button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
         ], align="center", class_name="p-4"),
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
