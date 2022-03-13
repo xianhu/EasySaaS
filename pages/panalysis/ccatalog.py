@@ -66,12 +66,13 @@ def layout(pathname, search, class_name=None):
             ad_children.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
 
         # define catalog list
-        _class = "border-bottom-solid" if index == len(CATALOG_LIST) - 1 else ""
-        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=title_first, class_name=_class))
+        cat_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=title_first))
 
     # return result
+    _class0 = "bg-light border-top-solid"
+    _class1 = "border-top-solid border-bottom-solid"
     return html.Div(children=[
         cupload.layout(pathname, search, class_name="my-4"),
-        csinglead.layout(pathname, search, "Table", f"{PATH_ANALYSIS}-table", flush=True),
-        dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True),
+        csinglead.layout(pathname, search, "Table", f"{PATH_ANALYSIS}-table", flush=True, class_item=_class0),
+        dbc.Accordion(cat_list, id=f"id-{TAG}-accordion", active_item=active_id, flush=True, class_name=_class1),
     ], className=class_name)
