@@ -9,7 +9,6 @@ from dash import Input, Output, State, html
 
 from app import app
 from . import ccatalog
-from .. import palert
 from ..components import cfooter, cnavbar, csmallnav
 from ..paths import PATH_USER
 
@@ -21,12 +20,10 @@ def layout(pathname, search):
     layout of page
     """
     # define pathname
-    pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
+    # pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
 
     # define components
-    title, content = ccatalog.fcontent(pathname, search)
-    if not content:
-        return palert.layout_404(pathname, search, return_href=PATH_USER)
+    pathname, title, content = ccatalog.fcontent(pathname, search)
 
     # define components
     catalog = ccatalog.layout(pathname, search, class_name=None)

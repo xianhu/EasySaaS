@@ -8,9 +8,9 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout_simple(text_hd, text_sub, text_button, return_href):
+def layout(pathname, search, text_hd, text_sub, text_button, return_href):
     """
-    simple alert layout, only text and button, no image
+    layout of page, only text and button, no image
     """
     return dbc.Row(dbc.Col(children=[
         html.Div(text_hd, className="text-center fs-1"),
@@ -25,7 +25,7 @@ def layout_404(pathname, search, return_href="/"):
     """
     text_hd = "Page not found"
     text_sub = "This page is not found, click button to safe page."
-    return layout_simple(text_hd, text_sub, "Back to safety", return_href)
+    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
 
 
 def layout_500(pathname, search, return_href="/"):
@@ -34,4 +34,4 @@ def layout_500(pathname, search, return_href="/"):
     """
     text_hd = "An error occurred"
     text_sub = "A server error has occurred, click button to safe page."
-    return layout_simple(text_hd, text_sub, "Back to safety", return_href)
+    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)

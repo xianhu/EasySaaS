@@ -32,7 +32,7 @@ def layout(pathname, search):
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         text_sub = "The link has already expired, click button to safe page."
-        return palert.layout_simple("Link expired", text_sub, "Back to safety", PATH_INTROS)
+        return palert.layout(pathname, search, "Link expired", text_sub, "Back to safety", PATH_INTROS)
 
     # define components
     form_items = dbc.Form(children=[

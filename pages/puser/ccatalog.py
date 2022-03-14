@@ -53,5 +53,5 @@ def fcontent(pathname, search):
         for title_second, path, page in list_second:
             if path != pathname:
                 continue
-            return title_first, page.layout(pathname, search)
-    return "404", None
+            return pathname, title_first, page.layout(pathname, search)
+    return f"{PATH_USER}-general", "ACCOUNT", paccount.layout(pathname, search)
