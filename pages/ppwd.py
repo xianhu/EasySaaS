@@ -25,18 +25,11 @@ def layout(pathname, search):
     layout of page
     """
     try:
-        _id, _token = search["_id"][0], search["token"][0]
-        token, email = json.loads(app_redis.get(_id))
-        assert _token == token, (_token, token)
+        token, email = json.loads(app_redis.get(search["_id"][0]))
+        assert token == search["token"][0], (token, search["token"][0])
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
-        args = {
-            "text_hd": "Link expired",
-            "text_sub": "The link has already expired, click button to safe page.",
-            "text_button": "Back to safety",
-            "return_href": PATH_INTROS,
-        }
-        return palert.layout(pathname, search, **args)
+        return palert.layout_expired(pathname, search, return_href=PATH_INTROS)
 
     # define components
     form_items = dbc.Form(children=[

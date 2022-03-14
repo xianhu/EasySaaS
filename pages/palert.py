@@ -35,3 +35,12 @@ def layout_500(pathname, search, return_href="/"):
     text_hd = "An error occurred"
     text_sub = "A server error has occurred, click button to safe page."
     return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
+
+
+def layout_expired(pathname, search, return_href="/"):
+    """
+    layout of page
+    """
+    text_hd = "Link expired"
+    text_sub = "The link has already expired, click button to safe page."
+    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)

@@ -103,6 +103,7 @@ def _init_page(pathname, search, data_client):
             search["next"] = [PATH_USER, ]
             data_client = {"title": pathname.strip("/")}
             return pathname, plogin.layout(pathname, search), data_client
+        data_client = {"title": pathname.strip("/")}
         return pathname, puser.layout(pathname, search), data_client
 
     # =========================================================================
@@ -112,6 +113,7 @@ def _init_page(pathname, search, data_client):
             search["next"] = [PATH_ANALYSIS, ]
             data_client = {"title": pathname.strip("/")}
             return pathname, plogin.layout(pathname, search), data_client
+        data_client = {"title": pathname.strip("/")}
         return pathname, panalysis.layout(pathname, search), data_client
 
     # return 404 ==============================================================
