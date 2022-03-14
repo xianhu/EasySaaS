@@ -10,6 +10,7 @@ from dash import Input, Output, State, html
 
 from app import app, app_db
 from utility import RE_PHONE
+from ...paths import PATH_LOGIN
 
 TAG = "user-basic"
 
@@ -55,26 +56,32 @@ def layout(pathname, search, class_name=None):
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully"),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
+        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 
 @app.callback([
     Output(f"id-{TAG}-fb", "children"),
     Output(f"id-{TAG}-modal", "is_open"),
+    Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-name", "value"),
     State(f"id-{TAG}-phone", "value"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, name, phone):
-    # check data
-    if phone and (not RE_PHONE.match(phone)):
-        return "Phone format is error", False
+    # check user
+    user = flask_login.current_user
+    if not user.is_authenticated:
+        return None, False, PATH_LOGIN
 
     # check data
-    user = flask_login.current_user
+    if phone and (not RE_PHONE.match(phone)):
+        return "Phone format is error", False, None
+
+    # check data
     if (name or "") == (user.name or "") and (phone or "") == (user.phone or ""):
-        return "No change has happened", False
+        return "No change has happened", False, None
 
     # update data
     user.name = name or ""
@@ -85,4 +92,4 @@ def _button_click(n_clicks, name, phone):
     app_db.session.commit()
 
     # return result
-    return None, True
+    return None, True, None
