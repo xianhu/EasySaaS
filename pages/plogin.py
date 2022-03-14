@@ -12,11 +12,11 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from utility.consts import RE_EMAIL
-from pages import ptemplate
-from pages.paths import *
+from utility import RE_EMAIL
+from . import ptemplate
+from .paths import *
 
-TAG = "sign-login"
+TAG = "login"
 
 
 def layout(pathname, search):
@@ -82,4 +82,4 @@ def _button_click(n_clicks, email, pwd, pathname, search):
     flask_login.login_user(user)
 
     # return result
-    return None, search.get("next", [PATH_ANALYSIS, ])[0]
+    return None, search["next"][0]

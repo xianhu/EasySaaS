@@ -13,11 +13,11 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import User, app, app_db, app_redis
-from utility.consts import RE_PWD
-from pages import palert, ptemplate
-from pages.paths import *
+from utility import RE_PWD
+from . import palert, ptemplate
+from .paths import *
 
-TAG = "sign-pwd"
+TAG = "pwd"
 
 
 def layout(pathname, search):
@@ -30,8 +30,13 @@ def layout(pathname, search):
         assert _token == token, (_token, token)
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
-        text_sub = "The link has already expired, click button to safe page."
-        return palert.layout(pathname, search, "Link expired", text_sub, "Back to safety", PATH_INTROS)
+        args = {
+            "text_hd": "Link expired",
+            "text_sub": "The link has already expired, click button to safe page.",
+            "text_button": "Back to safety",
+            "return_href": PATH_INTROS,
+        }
+        return palert.layout(pathname, search, **args)
 
     # define components
     form_items = dbc.Form(children=[
@@ -75,8 +80,9 @@ def layout(pathname, search):
     State(f"id-{TAG}-pwd1", "value"),
     State(f"id-{TAG}-pwd2", "value"),
     State(f"id-{TAG}-pathname", "data"),
+    State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, pathname):
+def _button_click(n_clicks, email, pwd1, pwd2, pathname, search):
     # check data
     if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", None

@@ -16,11 +16,11 @@ from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from utility.consts import RE_EMAIL
-from pages import ptemplate
-from pages.paths import *
+from utility import RE_EMAIL
+from . import ptemplate
+from .paths import *
 
-TAG = "sign-email"
+TAG = "email"
 
 
 def layout(pathname, search):
@@ -89,12 +89,13 @@ def _button_click(n_clicks, email, pathname, search):
     # send email and cache
     if not app_redis.get(_id):
         token = str(uuid.uuid4())
-        data = {
+        query_string = urllib.parse.urlencode({
             "_id": _id,
             "token": token,
-        }
-        path_pwd = f"{pathname}-pwd?{urllib.parse.urlencode(data)}"
+        })
+        path_pwd = f"{pathname}-pwd?{query_string}"
 
+        # send email
         if pathname == PATH_REGISTERE:
             subject = f"Registration of {config_app_name}"
         else:

@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from config import config_app_name
-from pages.paths import *
+from .paths import *
 
 
 def layout(pathname, search, tag, params):
