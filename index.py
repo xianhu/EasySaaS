@@ -48,24 +48,25 @@ def _init_page(pathname, search, data_client):
     pathname = PATH_INTROS if pathname == "/" else pathname
     search = urllib.parse.parse_qs(search.lstrip("?").strip())
 
-    # define variables
-    data_client = {"title": pathname.strip("/")}
-
     # =========================================================================
     if pathname == PATH_INTROS:
+        data_client = {"title": pathname.strip("/")}
         return pathname, pintros.layout(pathname, search), data_client
 
     # =========================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        data_client["title"] = PATH_LOGIN.strip("/")
-        return PATH_LOGIN, plogin.layout(pathname, search), data_client
+        pathname = PATH_LOGIN
+        search["next"] = [PATH_ANALYSIS, ]
+        data_client = {"title": pathname.strip("/")}
+        return pathname, plogin.layout(pathname, search), data_client
 
     # =========================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
+        data_client = {"title": pathname.strip("/")}
         return pathname, pemail.layout(pathname, search), data_client
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
@@ -75,12 +76,14 @@ def _init_page(pathname, search, data_client):
             "text_button": "Back to home",
             "return_href": PATH_INTROS,
         }
+        data_client = {"title": pathname.strip("/")}
         return pathname, palert.layout(pathname, search, **args), data_client
 
     # =========================================================================
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
+        data_client = {"title": pathname.strip("/")}
         return pathname, ppwd.layout(pathname, search), data_client
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
@@ -90,25 +93,29 @@ def _init_page(pathname, search, data_client):
             "text_button": "Go to login",
             "return_href": PATH_LOGIN,
         }
+        data_client = {"title": pathname.strip("/")}
         return pathname, palert.layout(pathname, search, **args), data_client
 
     # =========================================================================
     if pathname.startswith(PATH_USER):
         if not flask_login.current_user.is_authenticated:
+            pathname = PATH_LOGIN
             search["next"] = [PATH_USER, ]
-            data_client["title"] = PATH_LOGIN.strip("/")
-            return PATH_LOGIN, plogin.layout(PATH_LOGIN, search), data_client
+            data_client = {"title": pathname.strip("/")}
+            return pathname, plogin.layout(pathname, search), data_client
         return pathname, puser.layout(pathname, search), data_client
 
+    # =========================================================================
     if pathname.startswith(PATH_ANALYSIS):
         if not flask_login.current_user.is_authenticated:
+            pathname = PATH_LOGIN
             search["next"] = [PATH_ANALYSIS, ]
-            data_client["title"] = PATH_LOGIN.strip("/")
-            return PATH_LOGIN, plogin.layout(PATH_LOGIN, search), data_client
+            data_client = {"title": pathname.strip("/")}
+            return pathname, plogin.layout(pathname, search), data_client
         return pathname, panalysis.layout(pathname, search), data_client
 
     # return 404 ==============================================================
-    data_client["title"] = "error: 404"
+    data_client = {"title": "error: 404"}
     return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS), data_client
 
 
