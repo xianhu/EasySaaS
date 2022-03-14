@@ -35,6 +35,7 @@ def layout(pathname, search, tag, params):
     # return result
     return dbc.Container(children=[
         dcc.Store(id=f"id-{tag}-pathname", data=pathname),
+        dcc.Store(id=f"id-{tag}-search", data=search),
         html.A(id={"type": "id-address", "index": tag}),
 
         html.A(children=[

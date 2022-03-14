@@ -5,6 +5,7 @@ Application Layout
 """
 
 import logging
+import urllib.parse
 
 import dash
 import dash_bootstrap_components as dbc
@@ -43,41 +44,45 @@ def _init_page(pathname, search, session):
     logging.warning("pathname=%s, search=%s, session=%s", pathname, search, session)
 
     # define variables
-    search = search.lstrip("?").strip()
+    search = urllib.parse.parse_qs(search.lstrip("?").strip())
     pathname = PATH_INTROS if pathname == "/" else pathname
-    store_data = {"title": pathname.strip("/")}
+
+    # define variables
+    data_client = {"title": pathname.strip("/")}
 
     # =========================================================================
     if pathname == PATH_INTROS:
-        return pathname, pintros.layout(pathname, search), store_data
+        return pathname, pintros.layout(pathname, search), data_client
 
     # =========================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, psign.layout(pathname, search), store_data
+        return pathname, psign.layout(pathname, search), data_client
 
     if pathname.startswith(PATH_REGISTERE) or pathname.startswith(PATH_RESETPWDE):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, psign.layout(pathname, search), store_data
+        return pathname, psign.layout(pathname, search), data_client
 
     # =========================================================================
     if pathname.startswith(PATH_USER):
         if not flask_login.current_user.is_authenticated:
-            store_data["title"] = PATH_LOGIN.strip("/")
-            return PATH_LOGIN, psign.layout(PATH_LOGIN, search), store_data
-        return pathname, puser.layout(pathname, search), store_data
+            search["next"] = [PATH_USER, ]
+            data_client["title"] = PATH_LOGIN.strip("/")
+            return PATH_LOGIN, psign.layout(PATH_LOGIN, search), data_client
+        return pathname, puser.layout(pathname, search), data_client
 
     if pathname.startswith(PATH_ANALYSIS):
         if not flask_login.current_user.is_authenticated:
-            store_data["title"] = PATH_LOGIN.strip("/")
-            return PATH_LOGIN, psign.layout(PATH_LOGIN, search), store_data
-        return pathname, panalysis.layout(pathname, search), store_data
+            search["next"] = [PATH_ANALYSIS, ]
+            data_client["title"] = PATH_LOGIN.strip("/")
+            return PATH_LOGIN, psign.layout(PATH_LOGIN, search), data_client
+        return pathname, panalysis.layout(pathname, search), data_client
 
     # return 404 ==============================================================
-    store_data["title"] = "error: 404"
-    return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS), store_data
+    data_client["title"] = "error: 404"
+    return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS), data_client
 
 
 # clientside callback

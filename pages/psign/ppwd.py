@@ -26,7 +26,7 @@ def layout(pathname, search):
     layout of page
     """
     try:
-        _id, _token = [item.strip() for item in search.split("&&")]
+        _id, _token = search["_id"][0], search["token"][0]
         token, email = json.loads(app_redis.get(_id))
         assert _token == token, (_token, token)
     except Exception as excep:

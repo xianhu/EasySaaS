@@ -6,6 +6,7 @@ email page
 
 import hashlib
 import json
+import urllib.parse
 import uuid
 
 import dash_bootstrap_components as dbc
@@ -69,8 +70,9 @@ def layout(pathname, search):
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pathname", "data"),
+    State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pathname):
+def _button_click(n_clicks, email, pathname, search):
     # check data
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
@@ -87,7 +89,11 @@ def _button_click(n_clicks, email, pathname):
     # send email and cache
     if not app_redis.get(_id):
         token = str(uuid.uuid4())
-        path_pwd = f"{pathname}-pwd?{_id}&&{token}"
+        data = {
+            "_id": _id,
+            "token": token,
+        }
+        path_pwd = f"{pathname}-pwd?{urllib.parse.urlencode(data)}"
 
         if pathname == PATH_REGISTERE:
             subject = f"Registration of {config_app_name}"
