@@ -22,7 +22,6 @@ app.title = config_app_name
 app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
     dcc.Location(id="id-location", refresh=False),
-    dcc.Store(id="id-session", storage_type="session"),
     dcc.Store(id="id-store-client", storage_type="session"),
     dcc.Store(id="id-store-dummpy", storage_type="session"),
 ])
@@ -38,14 +37,14 @@ app.validation_layout = dbc.Container([])
 ], [
     Input("id-location", "pathname"),
     State("id-location", "search"),
-    State("id-session", "data"),
+    State("id-store-client", "data"),
 ], prevent_initial_call=False)
-def _init_page(pathname, search, session):
-    logging.warning("pathname=%s, search=%s, session=%s", pathname, search, session)
+def _init_page(pathname, search, data_client):
+    logging.warning("pathname=%s, search=%s, data_client=%s", pathname, search, data_client)
 
     # define variables
-    search = urllib.parse.parse_qs(search.lstrip("?").strip())
     pathname = PATH_INTROS if pathname == "/" else pathname
+    search = urllib.parse.parse_qs(search.lstrip("?").strip())
 
     # define variables
     data_client = {"title": pathname.strip("/")}
@@ -105,7 +104,7 @@ dash.clientside_callback(
     """
     function(data) {
         document.title = data.title || '%s'
-        return null
+        return data
     }
     """ % config_app_name,
     Output("id-store-dummpy", "data"),
