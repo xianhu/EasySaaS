@@ -49,9 +49,16 @@ def fcontent(pathname, search):
     """
     content of catalog item
     """
+    # define pathname, title and content
     for title_first, icon_first, list_second in CATALOG_LIST:
         for title_second, path, page in list_second:
             if path != pathname:
                 continue
-            return pathname, title_first, page.layout(pathname, search)
-    return f"{PATH_USER}-general", "ACCOUNT", paccount.layout(pathname, search)
+
+            # return result
+            pathname, title = path, title_first
+            return pathname, title, page.layout(pathname, search)
+
+    # return default result
+    pathname, title = f"{PATH_USER}-general", "ACCOUNT"
+    return pathname, title, paccount.layout(pathname, search)

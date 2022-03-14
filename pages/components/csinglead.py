@@ -18,9 +18,8 @@ def layout(pathname, search, ad_title, ad_href, flush=None, class_item=None):
     button_a = html.A(button, href=ad_href, className="text-decoration-none")
 
     # return result
-    class_item = class_item or "bg-light border-top-solid"
     return html.Div(children=[
         html.Div(children=[
             html.H2(button_a, className="accordion-header"),
-        ], className=f"accordion-item {class_item}"),
+        ], className=f"accordion-item {class_item or 'bg-light'}"),
     ], className=f"accordion {'accordion-flush' if flush else ''}")

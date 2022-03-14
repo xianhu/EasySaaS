@@ -10,7 +10,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from utility.consts import RE_PWD
+from utility import RE_PWD
 from ...paths import PATH_LOGOUT
 
 TAG = "user-pwd"
@@ -66,12 +66,6 @@ def layout(pathname, search, class_name=None):
     State(f"id-{TAG}-pwd2", "value"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, pwd, pwd1, pwd2):
-    user = flask_login.current_user
-
-    # check data
-    if not security.check_password_hash(user.pwd, pwd or ""):
-        return "Current password is wrong", False
-
     # check data
     if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", None
@@ -79,6 +73,11 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
         return "Must contain numbers and letters", None
     if (not pwd2) or (pwd2 != pwd1):
         return "Passwords are inconsistent", None
+
+    # check data
+    user = flask_login.current_user
+    if not security.check_password_hash(user.pwd, pwd or ""):
+        return "Current password is wrong", False
 
     # update data
     user.pwd = security.generate_password_hash(pwd1)

@@ -9,7 +9,7 @@ import flask_login
 from dash import Input, Output, State, html
 
 from app import app, app_db
-from utility.consts import RE_PHONE
+from utility import RE_PHONE
 
 TAG = "user-basic"
 
@@ -18,7 +18,7 @@ def layout(pathname, search, class_name=None):
     """
     layout of card
     """
-    # define text
+    # define variables
     name = flask_login.current_user.name
     email = flask_login.current_user.email
     phone = flask_login.current_user.phone
@@ -67,13 +67,12 @@ def layout(pathname, search, class_name=None):
     State(f"id-{TAG}-phone", "value"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, name, phone):
-    user = flask_login.current_user
-
     # check data
     if phone and (not RE_PHONE.match(phone)):
         return "Phone format is error", False
 
     # check data
+    user = flask_login.current_user
     if (name or "") == (user.name or "") and (phone or "") == (user.phone or ""):
         return "No change has happened", False
 

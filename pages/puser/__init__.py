@@ -10,7 +10,6 @@ from dash import Input, Output, State, html
 from app import app
 from . import ccatalog
 from ..components import cfooter, cnavbar, csmallnav
-from ..paths import PATH_USER
 
 TAG = "user"
 
@@ -19,9 +18,6 @@ def layout(pathname, search):
     """
     layout of page
     """
-    # define pathname
-    # pathname = f"{PATH_USER}-general" if pathname == PATH_USER else pathname
-
     # define components
     pathname, title, content = ccatalog.fcontent(pathname, search)
 
