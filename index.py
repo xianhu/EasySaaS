@@ -9,12 +9,14 @@ import urllib.parse
 
 import dash
 import dash_bootstrap_components as dbc
+import flask
 import flask_login
 from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
-from pages import palert, psign, puser, pintros, panalysis
+from pages import palert, pemail, plogin, ppwd
+from pages import puser, pintros, panalysis
 from pages.paths import *
 
 # app layout
@@ -57,26 +59,52 @@ def _init_page(pathname, search, data_client):
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, psign.layout(pathname, search), data_client
+        data_client["title"] = PATH_LOGIN.strip("/")
+        return PATH_LOGIN, plogin.layout(pathname, search), data_client
 
-    if pathname.startswith(PATH_REGISTERE) or pathname.startswith(PATH_RESETPWDE):
+    # =========================================================================
+    if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, psign.layout(pathname, search), data_client
+        return pathname, pemail.layout(pathname, search), data_client
+
+    if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
+        args = {
+            "text_hd": "Sending success",
+            "text_sub": f"An email has sent to {flask.session.get('email')}.",
+            "text_button": "Back to home",
+            "return_href": PATH_INTROS,
+        }
+        return pathname, palert.layout(pathname, search, **args), data_client
+
+    # =========================================================================
+    if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
+        if flask_login.current_user.is_authenticated:
+            flask_login.logout_user()
+        return pathname, ppwd.layout(pathname, search), data_client
+
+    if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
+        args = {
+            "text_hd": "Setting success",
+            "text_sub": "The password was set successfully.",
+            "text_button": "Go to login",
+            "return_href": PATH_LOGIN,
+        }
+        return pathname, palert.layout(pathname, search, **args), data_client
 
     # =========================================================================
     if pathname.startswith(PATH_USER):
         if not flask_login.current_user.is_authenticated:
             search["next"] = [PATH_USER, ]
             data_client["title"] = PATH_LOGIN.strip("/")
-            return PATH_LOGIN, psign.layout(PATH_LOGIN, search), data_client
+            return PATH_LOGIN, plogin.layout(PATH_LOGIN, search), data_client
         return pathname, puser.layout(pathname, search), data_client
 
     if pathname.startswith(PATH_ANALYSIS):
         if not flask_login.current_user.is_authenticated:
             search["next"] = [PATH_ANALYSIS, ]
             data_client["title"] = PATH_LOGIN.strip("/")
-            return PATH_LOGIN, psign.layout(PATH_LOGIN, search), data_client
+            return PATH_LOGIN, plogin.layout(PATH_LOGIN, search), data_client
         return pathname, panalysis.layout(pathname, search), data_client
 
     # return 404 ==============================================================

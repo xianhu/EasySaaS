@@ -13,8 +13,8 @@ from werkzeug import security
 
 from app import UserLogin, app
 from utility.consts import RE_EMAIL
-from . import ptemplate
-from ..paths import *
+from pages import ptemplate
+from pages.paths import *
 
 TAG = "sign-login"
 

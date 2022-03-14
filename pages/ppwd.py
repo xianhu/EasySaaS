@@ -14,9 +14,8 @@ from werkzeug import security
 
 from app import User, app, app_db, app_redis
 from utility.consts import RE_PWD
-from . import ptemplate
-from .. import palert
-from ..paths import *
+from pages import palert, ptemplate
+from pages.paths import *
 
 TAG = "sign-pwd"
 

@@ -17,8 +17,8 @@ from dash import Input, Output, State, html
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from . import ptemplate
-from ..paths import *
+from pages import ptemplate
+from pages.paths import *
 
 TAG = "sign-email"
 
