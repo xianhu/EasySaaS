@@ -10,8 +10,8 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from utility.consts import RE_PWD
-from ...paths import PATH_LOGOUT
+from utility import RE_PWD
+from ...paths import PATH_LOGIN, PATH_LOGOUT
 
 TAG = "user-pwd"
 
@@ -53,12 +53,14 @@ def layout(pathname, search, class_name=None):
             dbc.ModalBody("The password was updated successfully"),
             dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
+        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 
 @app.callback([
     Output(f"id-{TAG}-fb", "children"),
     Output(f"id-{TAG}-modal", "is_open"),
+    Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-pwd", "value"),
@@ -66,26 +68,29 @@ def layout(pathname, search, class_name=None):
     State(f"id-{TAG}-pwd2", "value"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, pwd, pwd1, pwd2):
+    # check user
     user = flask_login.current_user
+    if not user.is_authenticated:
+        return None, False, PATH_LOGIN
 
-    # check data
-    if not security.check_password_hash(user.pwd, pwd or ""):
-        return "Current password is wrong", False
-
-    # check data
+    # check password
     if (not pwd1) or (len(pwd1) < 6):
-        return "Password is too short", None
+        return "Password is too short", False, None
     if not RE_PWD.match(pwd1):
-        return "Must contain numbers and letters", None
+        return "Must contain numbers and letters", False, None
     if (not pwd2) or (pwd2 != pwd1):
-        return "Passwords are inconsistent", None
+        return "Passwords are inconsistent", False, None
 
-    # update data
+    # check password
+    if not security.check_password_hash(user.pwd, pwd or ""):
+        return "Current password is wrong", False, None
+
+    # update user
     user.pwd = security.generate_password_hash(pwd1)
 
-    # commit data
+    # commit user
     app_db.session.merge(user)
     app_db.session.commit()
 
     # return result
-    return None, True
+    return None, True, None

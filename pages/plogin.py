@@ -12,11 +12,11 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from utility.consts import RE_EMAIL
+from utility import RE_EMAIL
 from . import ptemplate
-from ..paths import *
+from .paths import *
 
-TAG = "sign-login"
+TAG = "login"
 
 
 def layout(pathname, search):
@@ -60,9 +60,10 @@ def layout(pathname, search):
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd", "value"),
     State(f"id-{TAG}-pathname", "data"),
+    State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, pathname):
-    # check data
+def _button_click(n_clicks, email, pwd, pathname, search):
+    # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         return "Email is invalid", None
@@ -81,4 +82,4 @@ def _button_click(n_clicks, email, pwd, pathname):
     flask_login.login_user(user)
 
     # return result
-    return None, PATH_ANALYSIS
+    return None, search["next"][0]

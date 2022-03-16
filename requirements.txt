@@ -1,4 +1,4 @@
-dash==2.2.0
+dash==2.3.0
 dash-daq==0.5.0
 dash-auth==1.4.1
 dash-labs==1.0.2

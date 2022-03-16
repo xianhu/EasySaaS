@@ -49,8 +49,10 @@ def _button_click(contents, filename):
     with open(f"{config_dir_store}/{user.id}-{filename}", "wb") as file_out:
         file_out.write(base64.b64decode(content_string))
 
-        # commit user
+        # update user
         user.filename = filename
+
+        # commit user
         app_db.session.merge(user)
         app_db.session.commit()
 

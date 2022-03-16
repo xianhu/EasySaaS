@@ -8,8 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
-from . import ccatalog, pother, ptable
-from .. import palert
+from . import ccatalog, pother, pplbasic, ptable
 from ..components import cnavbar, csmallnav
 from ..paths import PATH_ANALYSIS
 
@@ -27,11 +26,12 @@ def layout(pathname, search):
     if pathname == f"{PATH_ANALYSIS}-table":
         title = "Table Page"
         content = ptable.layout(pathname, search)
-    elif pathname.startswith(PATH_ANALYSIS):
+    elif pathname == f"{PATH_ANALYSIS}-pl-basic":
+        title = "Plotly Basic Page"
+        content = pplbasic.layout(pathname, search)
+    else:
         title = "Other Page"
         content = pother.layout(pathname, search)
-    else:
-        return palert.layout_404(pathname, search, return_href=PATH_ANALYSIS)
 
     # define components
     catalog = ccatalog.layout(pathname, search, class_name=None)

@@ -70,6 +70,8 @@ def layout(pathname, search, class_name=None):
             # define components
             _class = "text-black hover-primary" if path != pathname else "text-primary"
             ad_children.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
+
+        # define components
         ad_item_list.append(dbc.AccordionItem(ad_children, item_id=item_id, title=title_first))
 
     # define components

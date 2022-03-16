@@ -17,9 +17,9 @@ def layout(pathname, search, toggler_id, title, class_title=None, fluid=None, cl
     toggler = dbc.NavbarToggler(icon, id=toggler_id, class_name="border")
 
     # define components
-    _class = class_title or "text-primary"
+    class_title = class_title or "text-primary"
     small_nav = dbc.Row(children=[
-        dbc.Col(title, width="auto", class_name=_class),
+        dbc.Col(title, width="auto", class_name=class_title),
         dbc.Col(toggler, width="auto", class_name="my-2"),
     ], align="center", justify="between", class_name=None)
 

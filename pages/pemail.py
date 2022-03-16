@@ -6,6 +6,7 @@ email page
 
 import hashlib
 import json
+import urllib.parse
 import uuid
 
 import dash_bootstrap_components as dbc
@@ -15,11 +16,11 @@ from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from utility.consts import RE_EMAIL
+from utility import RE_EMAIL
 from . import ptemplate
-from ..paths import *
+from .paths import *
 
-TAG = "sign-email"
+TAG = "email"
 
 
 def layout(pathname, search):
@@ -69,9 +70,10 @@ def layout(pathname, search):
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pathname", "data"),
+    State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pathname):
-    # check data
+def _button_click(n_clicks, email, pathname, search):
+    # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         return "Email is invalid", None
@@ -87,8 +89,13 @@ def _button_click(n_clicks, email, pathname):
     # send email and cache
     if not app_redis.get(_id):
         token = str(uuid.uuid4())
-        path_pwd = f"{pathname}-pwd?{_id}&&{token}"
+        query_string = urllib.parse.urlencode({
+            "_id": _id,
+            "token": token,
+        })
+        path_pwd = f"{pathname}-pwd?{query_string}"
 
+        # send email
         if pathname == PATH_REGISTERE:
             subject = f"Registration of {config_app_name}"
         else:
@@ -96,7 +103,7 @@ def _button_click(n_clicks, email, pathname):
         body = f"please click link in 10 minutes: {config_app_domain}{path_pwd}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
 
-        # cache data
+        # cache token and email
         app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
 
     # set session
