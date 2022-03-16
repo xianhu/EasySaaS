@@ -11,7 +11,7 @@ from werkzeug import security
 
 from app import app, app_db
 from utility import RE_PWD
-from ...paths import PATH_LOGIN,PATH_LOGOUT
+from ...paths import PATH_LOGIN, PATH_LOGOUT
 
 TAG = "user-pwd"
 
@@ -73,7 +73,7 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     if not user.is_authenticated:
         return None, False, PATH_LOGIN
 
-    # check data
+    # check password
     if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", False, None
     if not RE_PWD.match(pwd1):
@@ -81,14 +81,14 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     if (not pwd2) or (pwd2 != pwd1):
         return "Passwords are inconsistent", False, None
 
-    # check data
+    # check password
     if not security.check_password_hash(user.pwd, pwd or ""):
         return "Current password is wrong", False, None
 
-    # update data
+    # update user
     user.pwd = security.generate_password_hash(pwd1)
 
-    # commit data
+    # commit user
     app_db.session.merge(user)
     app_db.session.commit()
 

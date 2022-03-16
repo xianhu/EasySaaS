@@ -19,7 +19,7 @@ def layout(pathname, search):
     layout of page
     """
     # define components
-    pathname, title, content = ccatalog.fcontent(pathname, search)
+    pathname, title, content = ccatalog.content(pathname, search)
 
     # define components
     catalog = ccatalog.layout(pathname, search, class_name=None)

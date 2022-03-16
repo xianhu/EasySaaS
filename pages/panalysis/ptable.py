@@ -41,14 +41,13 @@ def layout(pathname, search):
     # return result
     data = pd.read_csv(file_path, encoding="gbk")
     return dbc.Card(children=[
-        dcc.Download(id=f"id-{TAG}-download"),
-        dcc.Store(id=f"id-{TAG}-filepath", data=file_path),
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
         html.Div(dash_table.DataTable(
-            id=f"id-{TAG}-table",
-            data=data.to_dict("records")[:100],
+            id=f"id-{TAG}-table", data=data.to_dict("records")[:100],
             columns=[{"name": str(i), "id": str(i)} for i in data.columns],
         ), className="p-4"),
+        dcc.Download(id=f"id-{TAG}-download"),
+        dcc.Store(id=f"id-{TAG}-filepath", data=file_path),
     ], class_name=None, style={"minHeight": "600px"})
 
 

@@ -75,19 +75,20 @@ def _button_click(n_clicks, name, phone):
     if not user.is_authenticated:
         return None, False, PATH_LOGIN
 
-    # check data
+    # check phone
     if phone and (not RE_PHONE.match(phone)):
         return "Phone format is error", False, None
 
-    # check data
-    if (name or "") == (user.name or "") and (phone or "") == (user.phone or ""):
+    # check name and phone
+    name, phone = (name or "").strip(), (phone or "").strip()
+    if name == (user.name or "") and phone == (user.phone or ""):
         return "No change has happened", False, None
 
-    # update data
+    # update user
     user.name = name or ""
     user.phone = phone or ""
 
-    # commit data
+    # commit user
     app_db.session.merge(user)
     app_db.session.commit()
 

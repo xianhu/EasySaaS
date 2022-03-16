@@ -73,7 +73,7 @@ def layout(pathname, search):
     State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pathname, search):
-    # check data
+    # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         return "Email is invalid", None
@@ -103,7 +103,7 @@ def _button_click(n_clicks, email, pathname, search):
         body = f"please click link in 10 minutes: {config_app_domain}{path_pwd}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
 
-        # cache data
+        # cache token and email
         app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
 
     # set session

@@ -76,16 +76,16 @@ def layout(pathname, search):
     State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd1, pwd2, pathname, search):
-    # check data
+    # check password
     if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", None
     if not RE_PWD.match(pwd1):
         return "Password must contain numbers and letters", None
     if (not pwd2) or (pwd2 != pwd1):
         return "Passwords are inconsistent", None
-    _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
+    _id = hashlib.md5(email.encode()).hexdigest()
     user = User.query.filter_by(id=_id).first()
     if not user:
         user = User(id=_id, email=email)

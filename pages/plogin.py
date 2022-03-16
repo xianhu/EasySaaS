@@ -63,7 +63,7 @@ def layout(pathname, search):
     State(f"id-{TAG}-search", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd, pathname, search):
-    # check data
+    # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         return "Email is invalid", None
