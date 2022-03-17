@@ -27,6 +27,7 @@ def layout(pathname, search):
     file_path = f"{config_dir_store}/{user.id}-{user.filename}"
     if not os.path.exists(file_path):
         file_path = "./assets/demo.csv"
+    data = pd.read_csv(file_path, encoding="gbk")
 
     # define components
     args = {"size": "sm", "color": "primary", "outline": True}
@@ -39,7 +40,6 @@ def layout(pathname, search):
     ], align="center", justify="between")
 
     # return result
-    data = pd.read_csv(file_path, encoding="gbk")
     return dbc.Card(children=[
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
         html.Div(dash_table.DataTable(
