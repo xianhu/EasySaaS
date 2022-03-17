@@ -39,7 +39,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
         dbc.NavbarBrand(children=[
             html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.2rem"}),
             html.Span(config_app_name, className="fs-5 align-middle ms-1"),
-        ], href=PATH_INTROS),
+        ], href=PATH_INTROS, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse([nav_links, nav_address], id="id-collapse", navbar=True),
     ], fluid=fluid, class_name=class_container), class_name=class_navbar)

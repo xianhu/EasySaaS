@@ -14,7 +14,6 @@ def layout(pathname, search, tag, catalog_list, flush=None, class_name=None):
     """
     # define components
     ad_item_list, active_id = [], None
-    class_second = "text-decoration-none px-5 py-2"
     for index, (title_first, icon_first, list_second) in enumerate(catalog_list):
         item_id = f"id-{tag}-accordion-{index}"
 
@@ -25,12 +24,15 @@ def layout(pathname, search, tag, catalog_list, flush=None, class_name=None):
                 active_id = item_id
 
             # define components
-            _class = "text-black hover-primary" if path != pathname else "text-primary"
-            address_list.append(html.A(title_second, href=path, className=f"{class_second} {_class}"))
+            if path == pathname:
+                _class = "text-decoration-none px-5 py-2 text-primary"
+            else:
+                _class = "text-decoration-none px-5 py-2 text-black hover-primary"
+            address_list.append(html.A(title_second, href=path, className=_class))
 
         # define components
-        ad_item_div = html.Div(address_list, className="d-flex flex-column py-2")
-        ad_item_list.append(dbc.AccordionItem(ad_item_div, item_id=item_id, title=title_first))
+        div = html.Div(address_list, className="d-flex flex-column py-2")
+        ad_item_list.append(dbc.AccordionItem(div, item_id=item_id, title=title_first))
 
     # return result
     _class = class_name or "border-top-solid border-bottom-solid"
