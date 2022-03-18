@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
-from . import cupload, pother, pplbasic, ptable
+from . import cupload, pother, pplotly, ptable
 from ..components1 import cnavbar, csmallnav
 from ..components2 import cadmulti, cadsingle
 from ..paths import PATH_ANALYSIS
@@ -16,11 +16,17 @@ from ..paths import PATH_ANALYSIS
 TAG = "analysis"
 CATALOG_LIST = [
     ["Plotly", "bi bi-charts", [
-        ("Basic", f"{PATH_ANALYSIS}-pl-basic"),
-        ("Statistical", f"{PATH_ANALYSIS}-pl-statistical"),
-        ("Scientific", f"{PATH_ANALYSIS}-pl-scientific"),
-        ("Financial", f"{PATH_ANALYSIS}-pl-financial"),
-        ("AL And ML", f"{PATH_ANALYSIS}-pl-alandml"),
+        ("Scatter Plots", f"{PATH_ANALYSIS}-pl-scatter"),
+        ("Line Charts", f"{PATH_ANALYSIS}-pl-line"),
+        ("Bar Charts", f"{PATH_ANALYSIS}-pl-bar"),
+        ("Pie Charts", f"{PATH_ANALYSIS}-pl-pie"),
+    ]],
+    ["Industry", "bi bi-charts", [
+        ("Basic", f"{PATH_ANALYSIS}-id-basic"),
+        ("Statistical", f"{PATH_ANALYSIS}-id-statistical"),
+        ("Scientific", f"{PATH_ANALYSIS}-id-scientific"),
+        ("Financial", f"{PATH_ANALYSIS}-id-financial"),
+        ("AL And ML", f"{PATH_ANALYSIS}-id-alandml"),
     ]],
     ["Dashboards", "bi bi-house-door", [
         ("Analytics", f"{PATH_ANALYSIS}-db-analytics"),
@@ -57,9 +63,18 @@ def layout(pathname, search):
     if pathname == f"{PATH_ANALYSIS}-table":
         title = "Table Page"
         content = ptable.layout(pathname, search)
-    elif pathname == f"{PATH_ANALYSIS}-pl-basic":
-        title = "Plotly Basic Page"
-        content = pplbasic.layout(pathname, search)
+    elif pathname == f"{PATH_ANALYSIS}-pl-scatter":
+        title = "Plotly Page"
+        content = pplotly.layout(pathname, search, _type="scatter")
+    elif pathname == f"{PATH_ANALYSIS}-pl-line":
+        title = "Plotly Page"
+        content = pplotly.layout(pathname, search, _type="line")
+    elif pathname == f"{PATH_ANALYSIS}-pl-bar":
+        title = "Plotly Page"
+        content = pplotly.layout(pathname, search, _type="bar")
+    elif pathname == f"{PATH_ANALYSIS}-pl-pie":
+        title = "Plotly Page"
+        content = pplotly.layout(pathname, search, _type="pie")
     else:
         title = "Other Page"
         content = pother.layout(pathname, search)
