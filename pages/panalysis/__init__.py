@@ -9,7 +9,8 @@ from dash import Input, Output, State, html
 
 from app import app
 from . import cupload, pother, pplbasic, ptable
-from ..components import cadmulti, cadsingle, cnavbar, csmallnav
+from ..components1 import cnavbar, csmallnav
+from ..components2 import cadmulti, cadsingle
 from ..paths import PATH_ANALYSIS
 
 TAG = "analysis"
@@ -65,12 +66,10 @@ def layout(pathname, search):
 
     # define components
     t_title, t_href = "Table", f"{PATH_ANALYSIS}-table"
-    b_title, b_href = "Basic", f"{PATH_ANALYSIS}-basic"
     _class0, _class1 = "border-top-solid", "border-top-solid border-bottom-solid"
     catalog = dbc.Collapse(children=[
         cupload.layout(pathname, search, class_name="my-4"),
         cadsingle.layout(pathname, search, t_title, t_href, flush=True, class_name=_class0),
-        cadsingle.layout(pathname, search, b_title, b_href, flush=True, class_name=_class0),
         cadmulti.layout(pathname, search, TAG, CATALOG_LIST, flush=True, class_name=_class1),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 

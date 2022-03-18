@@ -20,12 +20,12 @@ def layout(pathname, search):
 
     # define components
     row_header = dbc.Row(children=[
-        dbc.Col("Table Page", width="auto"),
-        dbc.Col(button, width="auto"),
-    ], align="center", justify="between")
+        dbc.Col("Table Page", width="auto", class_name=None),
+        dbc.Col(button, width="auto", class_name=None),
+    ], align="center", justify="between", class_name=None)
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
-        html.Div(None, className="p-4"),
+        html.Div(dbc.Table(striped=True, bordered=False, hover=True), className="p-4"),
     ], class_name=None, style={"minHeight": "600px"})
