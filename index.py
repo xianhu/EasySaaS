@@ -16,7 +16,7 @@ from dash import Input, Output, State, MATCH, dcc, html
 from app import app
 from config import config_app_name
 from pages import palert, pemail, plogin, ppwd
-from pages import puser, pintros, panalysis
+from pages import panalysis, pintros, puser
 from pages.paths import *
 
 # app layout
@@ -52,6 +52,11 @@ def _init_page(pathname, search, data_client):
     if pathname == PATH_INTROS:
         data_client = {"title": pathname.strip("/")}
         return pathname, pintros.layout(pathname, search), data_client
+
+    # =========================================================================
+    if pathname.startswith(PATH_ANALYSIS):
+        data_client = {"title": pathname.strip("/")}
+        return pathname, panalysis.layout(pathname, search), data_client
 
     # =========================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
@@ -105,16 +110,6 @@ def _init_page(pathname, search, data_client):
             return pathname, plogin.layout(pathname, search), data_client
         data_client = {"title": pathname.strip("/")}
         return pathname, puser.layout(pathname, search), data_client
-
-    # =========================================================================
-    if pathname.startswith(PATH_ANALYSIS):
-        if not flask_login.current_user.is_authenticated:
-            pathname = PATH_LOGIN
-            search["next"] = [PATH_ANALYSIS, ]
-            data_client = {"title": pathname.strip("/")}
-            return pathname, plogin.layout(pathname, search), data_client
-        data_client = {"title": pathname.strip("/")}
-        return pathname, panalysis.layout(pathname, search), data_client
 
     # return 404 ==============================================================
     data_client = {"title": "error: 404"}
