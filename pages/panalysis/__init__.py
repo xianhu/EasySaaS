@@ -64,11 +64,13 @@ def layout(pathname, search):
         content = pother.layout(pathname, search)
 
     # define components
-    _class0, href0 = "border-top-solid", f"{PATH_ANALYSIS}-table"
-    _class1 = "border-top-solid border-bottom-solid"
+    t_title, t_href = "Table", f"{PATH_ANALYSIS}-table"
+    b_title, b_href = "Basic", f"{PATH_ANALYSIS}-basic"
+    _class0, _class1 = "border-top-solid", "border-top-solid border-bottom-solid"
     catalog = dbc.Collapse(children=[
         cupload.layout(pathname, search, class_name="my-4"),
-        cadsingle.layout(pathname, search, "Table", href0, flush=True, class_name=_class0),
+        cadsingle.layout(pathname, search, t_title, t_href, flush=True, class_name=_class0),
+        cadsingle.layout(pathname, search, b_title, b_href, flush=True, class_name=_class0),
         cadmulti.layout(pathname, search, TAG, CATALOG_LIST, flush=True, class_name=_class1),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
