@@ -22,7 +22,7 @@ def layout(pathname, search, catalog_list, class_name=None):
         catalog_item_list.append(html.Div(title_first, className=class_first))
 
         # define components
-        for title_second, href in list_second:
+        for title_second, href, *temp in list_second:
             _class = class_seco0 if href != pathname else class_seco1
             catalog_item_list.append(html.A(title_second, href=href, className=_class))
 

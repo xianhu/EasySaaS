@@ -7,7 +7,7 @@ intros page
 import dash_bootstrap_components as dbc
 from dash import html
 
-from . import cintros, cplans, ccontact, cheader
+from . import ccontact, cheader, cintros, cplans
 from ..components1 import cfooter, cnavbar
 
 

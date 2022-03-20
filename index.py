@@ -63,7 +63,7 @@ def _init_page(pathname, search, data_client):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         pathname = PATH_LOGIN
-        search["next"] = [PATH_ANALYSIS, ]
+        # search["next"] = [PATH_ANALYSIS, ]
         data_client = {"title": pathname.strip("/")}
         return pathname, plogin.layout(pathname, search), data_client
 
