@@ -28,20 +28,21 @@ def layout(pathname, search):
         dbc.Col(button, width="auto", class_name=None),
     ], align="center", justify="between", class_name=None)
 
+    # define components
+    table_0 = ctable.layout(
+        pathname, search, f"id-{TAG}-table1", DATA.to_dict("records")[:10],
+        DATA.columns.to_list(), DATA.columns.to_list(),
+    )
+
+    # define components
+    _class = {"sepal_length": "bg-light"}
+    table_1 = ctable.layout(
+        pathname, search, f"id-{TAG}-table2", DATA.to_dict("records")[:2],
+        [], DATA.columns.to_list(), data_class=[_class, _class], striped=False, hover=False,
+    )
+
     # return result
-    class_dict = {"sepal_length": "bg-light"}
     return dbc.Card(children=[
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
-        html.Div(children=[
-            ctable.layout(
-                pathname, search,
-                f"id-{TAG}-table1", DATA.to_dict("records")[:10],
-                DATA.columns.to_list(), DATA.columns.to_list(),
-            ),
-            ctable.layout(
-                pathname, search,
-                f"id-{TAG}-table2", DATA.to_dict("records")[20:22], None, DATA.columns.to_list(),
-                data_class=[class_dict, class_dict], striped=False, hover=False,
-            ),
-        ], className="p-4"),
+        html.Div([table_0, table_1], className="p-4"),
     ], class_name=None, style={"minHeight": "600px"})

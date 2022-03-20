@@ -65,7 +65,11 @@ fig_pie_1 = px.pie(TIPS, values="tip", names="day")
 
 fig_pie_2 = px.pie(TIPS, values="tip", names="day", color_discrete_sequence=px.colors.sequential.RdBu)
 
-fig_pie_3 = px.pie(TIPS, values="tip", names="day", color="day", color_discrete_map={"Thur": "lightcyan",
-                                                                                     "Fri": "cyan",
-                                                                                     "Sat": "royalblue",
-                                                                                     "Sun": "darkblue"})
+# figure of pie: color
+color_discrete_map = {
+    "Thur": "lightcyan",
+    "Fri": "cyan",
+    "Sat": "royalblue",
+    "Sun": "darkblue",
+}
+fig_pie_3 = px.pie(TIPS, values="tip", names="day", color="day", color_discrete_map=color_discrete_map)

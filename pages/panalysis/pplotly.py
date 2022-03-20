@@ -46,5 +46,5 @@ def layout(pathname, search, _type):
     # return result
     return dbc.Card(children=[
         dbc.CardHeader(f"Plotly Page: {_type}", class_name="px-4 py-3"),
-        html.Div(children, className="p-0"),
+        html.Div(children=children, className="p-0"),
     ], class_name=None, style={"minHeight": "600px"})
