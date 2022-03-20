@@ -82,4 +82,4 @@ def _button_click(n_clicks, email, pwd, pathname, search):
     flask_login.login_user(user)
 
     # return result
-    return None, search["next"][0]
+    return None, search.get("next", [PATH_INTROS, ])[0]

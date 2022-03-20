@@ -76,7 +76,7 @@ def _button_click(n_clicks, name, phone):
         return None, False, PATH_LOGIN
 
     # check phone
-    if phone and (not RE_PHONE.match(phone)):
+    if phone and (not RE_PHONE.match(phone.strip())):
         return "Phone format is error", False, None
 
     # check name and phone

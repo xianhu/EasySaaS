@@ -25,7 +25,7 @@ def layout(pathname, search, class_name=None):
     for _id, _date, _flag in INVOICE_LIST:
         # define components
         if len(row_invoice_list) != 0:
-            row_invoice_list.append(html.Hr(className="text-muted mx-4 my-0"))
+            row_invoice_list.append(html.Hr(className="text-muted my-3"))
 
         # define components
         left = [
@@ -38,10 +38,10 @@ def layout(pathname, search, class_name=None):
         row_invoice_list.append(dbc.Row(children=[
             dbc.Col(left, width="auto", class_name=None),
             dbc.Col(right, width="auto", class_name=None),
-        ], align="center", justify="between", class_name="px-4 py-3"))
+        ], align="center", justify="between", class_name=None))
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader("Invoice History:", class_name="px-4 py-3"),
-        html.Div(row_invoice_list, className=None),
+        html.Div(row_invoice_list, className="px-4 py-3"),
     ], class_name=class_name)
