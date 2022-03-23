@@ -15,7 +15,8 @@ from werkzeug import security
 from app import User, app, app_db, app_redis
 from paths import PATH_LOGIN, PATH_REGISTERE
 from utility import RE_PWD
-from . import palert, ptemplate
+from templates import tsign
+from . import palert
 
 TAG = "pwd"
 
@@ -61,7 +62,7 @@ def layout(pathname, search):
     }
 
     # return result
-    return ptemplate.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, params)
 
 
 @app.callback([

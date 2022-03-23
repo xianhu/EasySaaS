@@ -14,7 +14,7 @@ from werkzeug import security
 from app import UserLogin, app
 from paths import PATH_REGISTERE, PATH_RESETPWDE
 from utility import RE_EMAIL
-from . import ptemplate
+from templates import tsign
 
 TAG = "login"
 
@@ -49,7 +49,7 @@ def layout(pathname, search):
     }
 
     # return result
-    return ptemplate.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, params)
 
 
 @app.callback([

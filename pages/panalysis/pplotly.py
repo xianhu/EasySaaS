@@ -7,7 +7,7 @@ plotly page
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
-from ..components3 import cplotly
+from components import cplotly
 
 
 def layout(pathname, search, _type):

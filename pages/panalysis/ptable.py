@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 from dash import html
 
-from ..components3 import ctable
+from components import ctable
 
 TAG = "analysis-table"
 DATA = px.data.iris()

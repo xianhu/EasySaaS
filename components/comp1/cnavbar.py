@@ -9,8 +9,8 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, html
 
-from config import config_app_name
 from paths import *
+from . import cbrand
 
 
 def layout(pathname, search, fluid=None, class_container=None, class_navbar=None):
@@ -36,10 +36,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     # return result
     class_navbar = class_navbar or "border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
-        dbc.NavbarBrand(children=[
-            html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.2rem"}),
-            html.Span(config_app_name, className="fs-5 align-middle ms-1"),
-        ], href=PATH_INTROS, class_name=None),
+        cbrand.layout(pathname, search, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse([nav_links, nav_address], id="id-collapse", navbar=True),
     ], fluid=fluid, class_name=class_container), class_name=class_navbar)
