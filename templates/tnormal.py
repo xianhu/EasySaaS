@@ -4,7 +4,8 @@
 template of normal page
 """
 
-from dash import dcc, html
+import dash
+from dash import Input, Output, MATCH, dcc, html
 
 
 def layout(pathname, search, tag, children, class_name=None):
@@ -22,3 +23,19 @@ def layout(pathname, search, tag, children, class_name=None):
         return html.Div([children, *fixed_list], className=class_name)
     else:
         return html.Div([*children, *fixed_list], className=class_name)
+
+
+# clientside callback
+dash.clientside_callback(
+    """
+    function(href) {
+        if (href != null && href != undefined) {
+            window.location.href = href
+        }
+        return href
+    }
+    """,
+    Output({"type": "id-address", "index": MATCH}, "data"),
+    Input({"type": "id-address", "index": MATCH}, "href"),
+    prevent_initial_call=True,
+)

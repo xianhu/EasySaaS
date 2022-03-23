@@ -11,7 +11,7 @@ import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_login
-from dash import Input, Output, State, MATCH, dcc, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from config import config_app_name
@@ -115,21 +115,6 @@ def _init_page(pathname, search, data_client):
     data_client = {"title": "error: 404"}
     return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS), data_client
 
-
-# clientside callback
-dash.clientside_callback(
-    """
-    function(href) {
-        if (href != null && href != undefined) {
-            window.location.href = href
-        }
-        return href
-    }
-    """,
-    Output({"type": "id-address", "index": MATCH}, "data"),
-    Input({"type": "id-address", "index": MATCH}, "href"),
-    prevent_initial_call=True,
-)
 
 # clientside callback
 dash.clientside_callback(
