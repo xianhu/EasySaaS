@@ -10,7 +10,7 @@ import flask_login
 from dash import Input, Output, State, html
 
 from config import config_app_name
-from ..paths import *
+from paths import *
 
 
 def layout(pathname, search, fluid=None, class_container=None, class_navbar=None):

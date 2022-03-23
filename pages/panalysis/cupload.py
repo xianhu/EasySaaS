@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from config import config_dir_store
-from ..paths import PATH_ANALYSIS
+from paths import PATH_ANALYSIS
 
 TAG = "analysis-upload"
 

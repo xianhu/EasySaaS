@@ -8,10 +8,10 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
+from paths import PATH_LOGOUT, PATH_USER
 from . import paccount, pbilling
 from ..components1 import cfooter, cnavbar, csmallnav
 from ..components2 import ccatalog
-from ..paths import PATH_LOGOUT, PATH_USER
 
 TAG = "user"
 CATALOG_LIST = [

@@ -12,9 +12,9 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
+from paths import PATH_REGISTERE, PATH_RESETPWDE
 from utility import RE_EMAIL
 from . import ptemplate
-from .paths import *
 
 TAG = "login"
 
