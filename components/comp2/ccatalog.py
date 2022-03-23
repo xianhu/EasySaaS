@@ -18,7 +18,7 @@ def layout(pathname, search, catalog_list, class_name=None):
 
     # define components
     catalog_item_list = []
-    for title_first, icon_first, list_second in catalog_list:
+    for index, (title_first, icon_first, list_second) in enumerate(catalog_list):
         catalog_item_list.append(html.Div(title_first, className=class_first))
 
         # define components

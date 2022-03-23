@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from components import cbrand
-from templates import tnormal
+from . import tnormal
 
 
 def layout(pathname, search, tag, params):
@@ -32,11 +32,14 @@ def layout(pathname, search, tag, params):
         html.Div(params["other_list"], className="d-flex justify-content-between"),
     ])
 
-    # return result
-    return tnormal.layout(pathname, search, tag, children=dbc.Container(children=[
+    # define components
+    container = dbc.Container(children=[
         cbrand.layout(pathname, search, class_name="position-absolute top-0 start-0 p-0"),
         dbc.Row(children=[
             dbc.Col(left, width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0"),
             dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
         ], align="center", justify="center", class_name="vh-100"),
-    ], fluid=None), class_name=None)
+    ], fluid=None)
+
+    # return result
+    return tnormal.layout(pathname, search, tag, container)

@@ -12,6 +12,7 @@ def layout(pathname, search, tag, children, class_name=None):
     """
     layout of template
     """
+    # define components
     fixed_list = [
         html.A(id={"type": "id-address", "index": tag}),
         dcc.Store(id=f"id-{tag}-pathname", data=pathname),

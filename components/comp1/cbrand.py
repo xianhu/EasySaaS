@@ -11,7 +11,7 @@ from dash import html
 from config import config_app_name
 
 
-def layout(pathname, search, class_name=None):
+def layout(pathname, search, href="/", class_name=None):
     """
     layout of component
     """
@@ -20,4 +20,4 @@ def layout(pathname, search, class_name=None):
     span = html.Span(config_app_name, className="fs-5 align-middle ms-1")
 
     # return result
-    return dbc.NavbarBrand([img, span], href="/", class_name=class_name)
+    return dbc.NavbarBrand([img, span], href=href, class_name=class_name)
