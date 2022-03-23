@@ -10,6 +10,7 @@ from dash import Input, Output, State, html
 
 from app import app, app_db
 from paths import PATH_LOGIN
+from templates import tnormal
 from utility import RE_PHONE
 
 TAG = "user-basic"
@@ -43,7 +44,7 @@ def layout(pathname, search, class_name=None):
     c_button = dbc.Button("Update Information", id=f"id-{TAG}-button", class_name="w-100")
 
     # return result
-    return dbc.Card(children=[
+    return tnormal.layout(pathname, search, TAG, dbc.Card(children=[
         dbc.CardHeader("Basic Information:", class_name="px-4 py-3"),
         dbc.Row(children=[
             dbc.Col(c_email, width=12, md=4, class_name=None),
@@ -56,8 +57,7 @@ def layout(pathname, search, class_name=None):
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully"),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
-        html.A(id={"type": "id-address", "index": TAG}),
-    ], class_name=class_name)
+    ], class_name=class_name), class_name=None)
 
 
 @app.callback([
