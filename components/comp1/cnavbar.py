@@ -18,16 +18,17 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     layout of component
     """
     # define components
-    _class = "fw-bold text-center border-bottom mx-md-1 p-md-3"
+    class_link = "fw-bold text-center border-bottom mx-md-1 p-md-3"
     nav_links = dbc.Nav(children=[
-        dbc.NavLink("Intros", href=PATH_INTROS, class_name=_class),
-        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=_class),
+        dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_link),
+        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_link),
     ], navbar=True, class_name="mx-auto")
 
     # define components
-    nav_address = dbc.Nav(dbc.NavItem(children=[
+    args = {"color": "primary", "outline": True}
+    nav_right = dbc.Nav(dbc.NavItem(children=[
         html.A("Sign up", href=PATH_REGISTERE, className=None),
-        dbc.Button("Sign in", href=PATH_LOGIN, color="primary", outline=True, class_name="fw-bold ms-3"),
+        dbc.Button("Sign in", href=PATH_LOGIN, **args, class_name="fw-bold ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=PATH_USER, className=None),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
@@ -38,7 +39,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     return dbc.Navbar(dbc.Container(children=[
         cbrand.layout(pathname, search, href=PATH_INTROS),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
-        dbc.Collapse([nav_links, nav_address], id="id-collapse", navbar=True),
+        dbc.Collapse([nav_links, nav_right], id="id-collapse", navbar=True),
     ], fluid=fluid, class_name=class_container), class_name=class_navbar)
 
 
