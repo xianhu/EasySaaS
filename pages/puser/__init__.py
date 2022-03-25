@@ -15,14 +15,15 @@ from . import paccount, pbilling
 
 TAG = "user"
 CATALOG_LIST = [
+    ["SETTING", f"id-{TAG}-setting", f"{PATH_USER}-setting"],
     ["ACCOUNT", None, [
-        ("General", f"{PATH_USER}-ac-general"),
-        ("Security", f"{PATH_USER}-ac-security"),
-        ("Notifications", f"{PATH_USER}-ac-notify"),
+        ("General", f"id-{TAG}-ac-general", f"{PATH_USER}-ac-general"),
+        ("Security", f"id-{TAG}-ac-security", f"{PATH_USER}-ac-security"),
+        ("Notifications", f"id-{TAG}-ac-notify", f"{PATH_USER}-ac-notify"),
     ]],
     ["BILLING", None, [
-        ("Plan", f"{PATH_USER}-bl-plan"),
-        ("Payments", f"{PATH_USER}-bl-payments"),
+        ("Plan", f"id-{TAG}-bl-plan", f"{PATH_USER}-bl-plan"),
+        ("Payments", f"id-{TAG}-bl-payments", f"{PATH_USER}-bl-payments"),
     ]],
 ]
 
@@ -44,9 +45,9 @@ def layout(pathname, search):
 
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
-        ccatalog.layout(pathname, search, CATALOG_LIST, class_name=None),
-        dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"),
-    ]), id=f"id-{TAG}-collapse", class_name="d-md-block")
+        ccatalog.layout(pathname, search, CATALOG_LIST, class_name=""),
+        dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
+    ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
     return html.Div(children=[

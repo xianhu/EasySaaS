@@ -19,40 +19,40 @@ from . import pother, pplotly, ptable
 
 TAG = "analysis"
 CATALOG_LIST = [
-    ["Plotly", "bi bi-charts", [
-        ("Scatter Plots", f"{PATH_ANALYSIS}-pl-scatter"),
-        ("Line Charts", f"{PATH_ANALYSIS}-pl-line"),
-        ("Bar Charts", f"{PATH_ANALYSIS}-pl-bar"),
-        ("Pie Charts", f"{PATH_ANALYSIS}-pl-pie"),
+    ["Plotly", f"id-{TAG}-ad-plotly", [
+        ("Scatter Plots", f"id-{TAG}-pl-scatter", f"{PATH_ANALYSIS}-pl-scatter"),
+        ("Line Charts", f"id-{TAG}-pl-line", f"{PATH_ANALYSIS}-pl-line"),
+        ("Bar Charts", f"id-{TAG}-pl-bar", f"{PATH_ANALYSIS}-pl-bar"),
+        ("Pie Charts", f"id-{TAG}-pl-pie", f"{PATH_ANALYSIS}-pl-pie"),
     ]],
-    ["Industry", "bi bi-charts", [
-        ("Basic", f"{PATH_ANALYSIS}-id-basic"),
-        ("Statistical", f"{PATH_ANALYSIS}-id-statistical"),
-        ("Scientific", f"{PATH_ANALYSIS}-id-scientific"),
-        ("Financial", f"{PATH_ANALYSIS}-id-financial"),
-        ("AL And ML", f"{PATH_ANALYSIS}-id-alandml"),
+    ["Industry", f"id-{TAG}-ad-industry", [
+        ("Basic", f"id-{TAG}-id-basic", f"{PATH_ANALYSIS}-id-basic"),
+        ("Statistical", f"id-{TAG}-id-statistical", f"{PATH_ANALYSIS}-id-statistical"),
+        ("Scientific", f"id-{TAG}-id-scientific", f"{PATH_ANALYSIS}-id-scientific"),
+        ("Financial", f"id-{TAG}-id-financial", f"{PATH_ANALYSIS}-id-financial"),
+        ("AL And ML", f"id-{TAG}-id-alandml", f"{PATH_ANALYSIS}-id-alandml"),
     ]],
-    ["Dashboards", "bi bi-house-door", [
-        ("Analytics", f"{PATH_ANALYSIS}-db-analytics"),
-        ("CustomRM", f"{PATH_ANALYSIS}-db-cumtomrm"),
-        ("Ecommerce", f"{PATH_ANALYSIS}-db-ecommerce"),
-        ("Projects", f"{PATH_ANALYSIS}-db-projects"),
-    ]],
-    ["Email", "bi bi-envelope", [
-        ("Inbox", f"{PATH_ANALYSIS}-em-inbox"),
-        ("Read Email", f"{PATH_ANALYSIS}-em-read"),
-    ]],
-    ["Project", "bi bi-cast", [
-        ("List", f"{PATH_ANALYSIS}-pj-list"),
-        ("Details", f"{PATH_ANALYSIS}-pj-details"),
-        ("Gantt", f"{PATH_ANALYSIS}-pj-gantt"),
-        ("Create Project", f"{PATH_ANALYSIS}-pj-create"),
-    ]],
-    ["Tasks", "bi bi-list-task", [
-        ("List", f"{PATH_ANALYSIS}-ts-list"),
-        ("Details", f"{PATH_ANALYSIS}-ts-details"),
-        ("Kanban Board", f"{PATH_ANALYSIS}-ts-board"),
-    ]],
+    # ["Dashboards", f"id-{TAG}-ad-plotly", [
+    #     ("Analytics", f"{PATH_ANALYSIS}-db-analytics"),
+    #     ("CustomRM", f"{PATH_ANALYSIS}-db-cumtomrm"),
+    #     ("Ecommerce", f"{PATH_ANALYSIS}-db-ecommerce"),
+    #     ("Projects", f"{PATH_ANALYSIS}-db-projects"),
+    # ]],
+    # ["Email", f"id-{TAG}-ad-plotly", [
+    #     ("Inbox", f"{PATH_ANALYSIS}-em-inbox"),
+    #     ("Read Email", f"{PATH_ANALYSIS}-em-read"),
+    # ]],
+    # ["Project", f"id-{TAG}-ad-plotly", [
+    #     ("List", f"{PATH_ANALYSIS}-pj-list"),
+    #     ("Details", f"{PATH_ANALYSIS}-pj-details"),
+    #     ("Gantt", f"{PATH_ANALYSIS}-pj-gantt"),
+    #     ("Create Project", f"{PATH_ANALYSIS}-pj-create"),
+    # ]],
+    # ["Tasks", f"id-{TAG}-ad-plotly", [
+    #     ("List", f"{PATH_ANALYSIS}-ts-list"),
+    #     ("Details", f"{PATH_ANALYSIS}-ts-details"),
+    #     ("Kanban Board", f"{PATH_ANALYSIS}-ts-board"),
+    # ]],
 ]
 
 
@@ -90,12 +90,12 @@ def layout(pathname, search):
     # define components
     _class0 = "border-top-solid"
     _class1 = "border-top-solid border-bottom-solid"
-    t_title, t_href = "Table", f"{PATH_ANALYSIS}-table"
+    t_id, t_title, t_href = "id-table", "Table", f"{PATH_ANALYSIS}-table"
     catalog = dbc.Collapse(children=[
         dcc.Upload(button, id=f"id-{TAG}-upload", **args_up, className="text-center my-4"),
         # cupload.layout(pathname, search, class_name="my-4"),
-        cadsingle.layout(pathname, search, t_title, t_href, flush=True, class_name=_class0),
-        cadmulti.layout(pathname, search, TAG, CATALOG_LIST, flush=True, class_name=_class1),
+        cadsingle.layout(pathname, search, t_title, t_id, t_href, flush=True, class_name=_class0),
+        cadmulti.layout(pathname, search, CATALOG_LIST, flush=True, class_name=_class1),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
