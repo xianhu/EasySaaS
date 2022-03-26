@@ -38,7 +38,7 @@ def layout(pathname, search):
     _class = {"sepal_length": "bg-light"}
     table_1 = ctable.layout(
         pathname, search, f"id-{TAG}-table2", DATA.to_dict("records")[:2],
-        [], DATA.columns.to_list(), data_class=[_class, _class], striped=False, hover=False,
+        [], DATA.columns.to_list(), class_data=[_class, _class], striped=False, hover=False,
     )
 
     # return result
