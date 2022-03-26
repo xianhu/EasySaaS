@@ -12,9 +12,9 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
+from paths import PATH_INTROS, PATH_REGISTERE, PATH_RESETPWDE
+from templates import tsign
 from utility import RE_EMAIL
-from . import ptemplate
-from .paths import *
 
 TAG = "login"
 
@@ -49,7 +49,7 @@ def layout(pathname, search):
     }
 
     # return result
-    return ptemplate.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, params)
 
 
 @app.callback([

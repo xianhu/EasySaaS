@@ -11,13 +11,13 @@ import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_login
-from dash import Input, Output, State, MATCH, dcc, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from config import config_app_name
 from pages import palert, pemail, plogin, ppwd
 from pages import panalysis, pintros, puser
-from pages.paths import *
+from paths import *
 
 # app layout
 app.title = config_app_name
@@ -34,8 +34,9 @@ app.validation_layout = dbc.Container([])
 
 @app.callback([
     Output("id-location", "pathname"),
-    Output("id-content", "children"),
+    Output("id-location", "search"),
     Output("id-store-client", "data"),
+    Output("id-content", "children"),
 ], [
     Input("id-location", "pathname"),
     State("id-location", "search"),
@@ -46,33 +47,33 @@ def _init_page(pathname, search, data_client):
 
     # define variables
     pathname = PATH_INTROS if pathname == "/" else pathname
-    search = urllib.parse.parse_qs(search.lstrip("?").strip())
+    search_dict = urllib.parse.parse_qs(search.lstrip("?").strip())
 
-    # =========================================================================
+    # =============================================================================================
     if pathname == PATH_INTROS:
         data_client = {"title": pathname.strip("/")}
-        return pathname, pintros.layout(pathname, search), data_client
+        return pathname, search, data_client, pintros.layout(pathname, search_dict)
 
-    # =========================================================================
+    # =============================================================================================
     if pathname.startswith(PATH_ANALYSIS):
         data_client = {"title": pathname.strip("/")}
-        return pathname, panalysis.layout(pathname, search), data_client
+        return pathname, search, data_client, panalysis.layout(pathname, search_dict)
 
-    # =========================================================================
+    # =============================================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         pathname = PATH_LOGIN
-        # search["next"] = [PATH_ANALYSIS, ]
+        search_dict["next"] = [PATH_ANALYSIS, ]
         data_client = {"title": pathname.strip("/")}
-        return pathname, plogin.layout(pathname, search), data_client
+        return pathname, search, data_client, plogin.layout(pathname, search_dict)
 
-    # =========================================================================
+    # =============================================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         data_client = {"title": pathname.strip("/")}
-        return pathname, pemail.layout(pathname, search), data_client
+        return pathname, search, data_client, pemail.layout(pathname, search_dict)
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
         args = {
@@ -82,14 +83,14 @@ def _init_page(pathname, search, data_client):
             "return_href": PATH_INTROS,
         }
         data_client = {"title": pathname.strip("/")}
-        return pathname, palert.layout(pathname, search, **args), data_client
+        return pathname, search, data_client, palert.layout(pathname, search_dict, **args)
 
-    # =========================================================================
+    # =============================================================================================
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         data_client = {"title": pathname.strip("/")}
-        return pathname, ppwd.layout(pathname, search), data_client
+        return pathname, search, data_client, ppwd.layout(pathname, search_dict)
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
         args = {
@@ -99,37 +100,22 @@ def _init_page(pathname, search, data_client):
             "return_href": PATH_LOGIN,
         }
         data_client = {"title": pathname.strip("/")}
-        return pathname, palert.layout(pathname, search, **args), data_client
+        return pathname, search, data_client, palert.layout(pathname, search_dict, **args)
 
-    # =========================================================================
+    # =============================================================================================
     if pathname.startswith(PATH_USER):
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
-            search["next"] = [PATH_USER, ]
+            search_dict["next"] = [PATH_USER, ]
             data_client = {"title": pathname.strip("/")}
-            return pathname, plogin.layout(pathname, search), data_client
+            return pathname, search, data_client, plogin.layout(pathname, search_dict)
         data_client = {"title": pathname.strip("/")}
-        return pathname, puser.layout(pathname, search), data_client
+        return pathname, search, data_client, puser.layout(pathname, search_dict)
 
-    # return 404 ==============================================================
+    # =============================================================================================
     data_client = {"title": "error: 404"}
-    return pathname, palert.layout_404(pathname, search, return_href=PATH_INTROS), data_client
+    return pathname, search, data_client, palert.layout_404(pathname, search_dict, return_href=PATH_INTROS)
 
-
-# clientside callback
-dash.clientside_callback(
-    """
-    function(href) {
-        if (href != null && href != undefined) {
-            window.location.href = href
-        }
-        return href
-    }
-    """,
-    Output({"type": "id-address", "index": MATCH}, "data"),
-    Input({"type": "id-address", "index": MATCH}, "href"),
-    prevent_initial_call=True,
-)
 
 # clientside callback
 dash.clientside_callback(

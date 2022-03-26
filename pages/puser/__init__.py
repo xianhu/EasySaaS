@@ -8,21 +8,22 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
+from components import ccatalog
+from components import cfooter, cnavbar, csmallnav
+from paths import PATH_LOGOUT, PATH_USER
 from . import paccount, pbilling
-from ..components1 import cfooter, cnavbar, csmallnav
-from ..components2 import ccatalog
-from ..paths import PATH_LOGOUT, PATH_USER
 
 TAG = "user"
 CATALOG_LIST = [
+    ["SETTING", f"id-{TAG}-setting", f"{PATH_USER}-setting"],
     ["ACCOUNT", None, [
-        ("General", f"{PATH_USER}-ac-general"),
-        ("Security", f"{PATH_USER}-ac-security"),
-        ("Notifications", f"{PATH_USER}-ac-notify"),
+        ("General", f"id-{TAG}-ac-general", f"{PATH_USER}-ac-general"),
+        ("Security", f"id-{TAG}-ac-security", f"{PATH_USER}-ac-security"),
+        ("Notifications", f"id-{TAG}-ac-notify", f"{PATH_USER}-ac-notify"),
     ]],
     ["BILLING", None, [
-        ("Plan", f"{PATH_USER}-bl-plan"),
-        ("Payments", f"{PATH_USER}-bl-payments"),
+        ("Plan", f"id-{TAG}-bl-plan", f"{PATH_USER}-bl-plan"),
+        ("Payments", f"id-{TAG}-bl-payments", f"{PATH_USER}-bl-payments"),
     ]],
 ]
 
@@ -32,21 +33,24 @@ def layout(pathname, search):
     layout of page
     """
     # define pathname
-    pathname = f"{PATH_USER}-ac-general" if pathname == PATH_USER else pathname
+    pathname = f"{PATH_USER}-setting" if pathname == PATH_USER else pathname
 
     # define components
     if pathname.startswith(f"{PATH_USER}-bl-"):
         title = "BILLING"
         content = pbilling.layout(pathname, search)
-    else:
+    elif pathname.startswith(f"{PATH_USER}-ac-"):
         title = "ACCOUNT"
+        content = paccount.layout(pathname, search)
+    else:
+        title = "SETTING"
         content = paccount.layout(pathname, search)
 
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
         ccatalog.layout(pathname, search, CATALOG_LIST, class_name=None),
-        dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-4"),
-    ]), id=f"id-{TAG}-collapse", class_name="d-md-block")
+        dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
+    ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
     return html.Div(children=[

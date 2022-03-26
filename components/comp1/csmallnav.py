@@ -8,13 +8,13 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout(pathname, search, tg_id, title, fluid=None, class_container=None):
+def layout(pathname, search, id_tg, title, fluid=None, class_container=None):
     """
     layout of component
     """
     # define components
     icon = html.A(html.I(className="bi bi-list fs-1"))
-    toggler = dbc.NavbarToggler(icon, id=tg_id, class_name="border")
+    toggler = dbc.NavbarToggler(icon, id=id_tg, class_name="border")
 
     # define components
     small_nav = dbc.Row(children=[

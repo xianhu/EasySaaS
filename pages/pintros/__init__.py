@@ -7,8 +7,8 @@ intros page
 import dash_bootstrap_components as dbc
 from dash import html
 
+from components import cfooter, cnavbar
 from . import ccontact, cheader, cintros, cplans
-from ..components1 import cfooter, cnavbar
 
 
 def layout(pathname, search):

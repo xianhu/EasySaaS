@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-paths of page
+Page's Path
 """
 
 PATH_INTROS = "/intros"
