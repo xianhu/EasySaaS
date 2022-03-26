@@ -39,8 +39,8 @@ def layout(pathname, search, class_name=None):
     c_fb = html.Div(id=f"id-{TAG}-fb", className="text-danger text-center")
     c_button = dbc.Button("Update Password", id=f"id-{TAG}-button", class_name="w-100")
 
-    # return result
-    return tnormal.layout(pathname, search, TAG, dbc.Card(children=[
+    # define components
+    card = dbc.Card(children=[
         dbc.CardHeader("Change Password:", class_name="px-4 py-3"),
         dbc.Row(children=[
             dbc.Col(c_pwd, width=12, md=4, class_name=None),
@@ -54,7 +54,10 @@ def layout(pathname, search, class_name=None):
             dbc.ModalBody("The password was updated successfully"),
             dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
-    ], class_name=class_name), class_name=None)
+    ], class_name=None)
+
+    # return result
+    return tnormal.layout(pathname, search, TAG, card, class_name=class_name)
 
 
 @app.callback([

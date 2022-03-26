@@ -33,19 +33,22 @@ def layout(pathname, search):
     layout of page
     """
     # define pathname
-    pathname = f"{PATH_USER}-ac-general" if pathname == PATH_USER else pathname
+    pathname = f"{PATH_USER}-setting" if pathname == PATH_USER else pathname
 
     # define components
     if pathname.startswith(f"{PATH_USER}-bl-"):
         title = "BILLING"
         content = pbilling.layout(pathname, search)
-    else:
+    elif pathname.startswith(f"{PATH_USER}-ac-"):
         title = "ACCOUNT"
+        content = paccount.layout(pathname, search)
+    else:
+        title = "SETTING"
         content = paccount.layout(pathname, search)
 
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
-        ccatalog.layout(pathname, search, CATALOG_LIST, class_name=""),
+        ccatalog.layout(pathname, search, CATALOG_LIST, class_name=None),
         dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
     ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
