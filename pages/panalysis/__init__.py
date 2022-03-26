@@ -32,27 +32,27 @@ CATALOG_LIST = [
         ("Financial", f"id-{TAG}-id-financial", f"{PATH_ANALYSIS}-id-financial"),
         ("AL And ML", f"id-{TAG}-id-alandml", f"{PATH_ANALYSIS}-id-alandml"),
     ]],
-    # ["Dashboards", f"id-{TAG}-ad-plotly", [
-    #     ("Analytics", f"{PATH_ANALYSIS}-db-analytics"),
-    #     ("CustomRM", f"{PATH_ANALYSIS}-db-cumtomrm"),
-    #     ("Ecommerce", f"{PATH_ANALYSIS}-db-ecommerce"),
-    #     ("Projects", f"{PATH_ANALYSIS}-db-projects"),
-    # ]],
-    # ["Email", f"id-{TAG}-ad-plotly", [
-    #     ("Inbox", f"{PATH_ANALYSIS}-em-inbox"),
-    #     ("Read Email", f"{PATH_ANALYSIS}-em-read"),
-    # ]],
-    # ["Project", f"id-{TAG}-ad-plotly", [
-    #     ("List", f"{PATH_ANALYSIS}-pj-list"),
-    #     ("Details", f"{PATH_ANALYSIS}-pj-details"),
-    #     ("Gantt", f"{PATH_ANALYSIS}-pj-gantt"),
-    #     ("Create Project", f"{PATH_ANALYSIS}-pj-create"),
-    # ]],
-    # ["Tasks", f"id-{TAG}-ad-plotly", [
-    #     ("List", f"{PATH_ANALYSIS}-ts-list"),
-    #     ("Details", f"{PATH_ANALYSIS}-ts-details"),
-    #     ("Kanban Board", f"{PATH_ANALYSIS}-ts-board"),
-    # ]],
+    ["Dashboards", f"id-{TAG}-ad-dashboards", [
+        ("Analytics", f"id-{TAG}-db-analytics", f"{PATH_ANALYSIS}-db-analytics"),
+        ("CustomRM", f"id-{TAG}-db-cumtomrm", f"{PATH_ANALYSIS}-db-cumtomrm"),
+        ("Ecommerce", f"id-{TAG}-db-ecommerce", f"{PATH_ANALYSIS}-db-ecommerce"),
+        ("Projects", f"id-{TAG}-db-projects", f"{PATH_ANALYSIS}-db-projects"),
+    ]],
+    ["Email", f"id-{TAG}-ad-email", [
+        ("Inbox", f"id-{TAG}-em-inbox", f"{PATH_ANALYSIS}-em-inbox"),
+        ("Read Email", f"id-{TAG}-em-read", f"{PATH_ANALYSIS}-em-read"),
+    ]],
+    ["Project", f"id-{TAG}-ad-project", [
+        ("List", f"id-{TAG}-pj-list", f"{PATH_ANALYSIS}-pj-list"),
+        ("Details", f"id-{TAG}-pj-details", f"{PATH_ANALYSIS}-pj-details"),
+        ("Gantt", f"id-{TAG}-pj-gantt", f"{PATH_ANALYSIS}-pj-gantt"),
+        ("Create Project", f"id-{TAG}-pj-create", f"{PATH_ANALYSIS}-pj-create"),
+    ]],
+    ["Tasks", f"id-{TAG}-ad-tasks", [
+        ("List", f"id-{TAG}-ts-list", f"{PATH_ANALYSIS}-ts-list"),
+        ("Details", f"id-{TAG}-ts-details", f"{PATH_ANALYSIS}-ts-details"),
+        ("Kanban Board", f"id-{TAG}-ts-board", f"{PATH_ANALYSIS}-ts-board"),
+    ]],
 ]
 
 
@@ -86,16 +86,13 @@ def layout(pathname, search):
     # define components
     button = dbc.Button("Upload Data", class_name="w-75")
     args_up = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
+    t_title, t_id, t_href = "Table", f"id-{TAG}-table", f"{PATH_ANALYSIS}-table"
 
     # define components
-    _class0 = "border-top-solid"
-    _class1 = "border-top-solid border-bottom-solid"
-    t_id, t_title, t_href = "id-table", "Table", f"{PATH_ANALYSIS}-table"
     catalog = dbc.Collapse(children=[
         dcc.Upload(button, id=f"id-{TAG}-upload", **args_up, className="text-center my-4"),
-        # cupload.layout(pathname, search, class_name="my-4"),
-        cadsingle.layout(pathname, search, t_title, t_id, t_href, flush=True, class_name=_class0),
-        cadmulti.layout(pathname, search, CATALOG_LIST, flush=True, class_name=_class1),
+        cadsingle.layout(pathname, search, t_title, t_id, t_href, flush=True, class_name="border-top-solid"),
+        cadmulti.layout(pathname, search, CATALOG_LIST, flush=True, class_name="border-top-solid border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
@@ -107,7 +104,6 @@ def layout(pathname, search):
             dbc.Col(content, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
         ], justify="center", class_name="h-100-scroll"), fluid=True, class_name="h-100-scroll"),
     ], class_name="d-flex flex-column vh-100 overflow-scroll")
-    # return html.Div(children=, className=)
 
 
 @app.callback(

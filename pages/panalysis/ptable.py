@@ -29,20 +29,23 @@ def layout(pathname, search):
     ], align="center", justify="between", class_name=None)
 
     # define components
-    table_0 = ctable.layout(
-        pathname, search, f"id-{TAG}-table1", DATA.to_dict("records")[:10],
+    table_1 = ctable.layout(
+        pathname, search,
+        f"id-{TAG}-table1", DATA.to_dict("records")[:10],
         DATA.columns.to_list(), DATA.columns.to_list(),
     )
 
     # define components
     _class = {"sepal_length": "bg-light"}
-    table_1 = ctable.layout(
-        pathname, search, f"id-{TAG}-table2", DATA.to_dict("records")[:2],
-        [], DATA.columns.to_list(), class_data=[_class, _class], striped=False, hover=False,
+    table_2 = ctable.layout(
+        pathname, search,
+        f"id-{TAG}-table2", DATA.to_dict("records")[:2],
+        [], DATA.columns.to_list(),
+        class_data=[_class, _class], striped=False, hover=False,
     )
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
-        html.Div([table_0, table_1], className="p-4"),
+        html.Div(children=[table_1, table_2], className="p-4"),
     ], class_name=None, style={"minHeight": "600px"})
