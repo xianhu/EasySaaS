@@ -21,7 +21,7 @@ def layout(pathname, search, tag, params):
 
     # define components
     args_button = {"size": "lg", "class_name": "w-100 mt-4"}
-    right = html.Div([
+    right = html.Div(children=[
         html.Div(params["text_hd"], className="text-center fs-1"),
         html.Div(params["text_sub"], className="text-center text-muted"),
 
@@ -30,7 +30,7 @@ def layout(pathname, search, tag, params):
 
         dbc.Button(params["text_button"], id=f"id-{tag}-button", **args_button),
         html.Div(params["other_list"], className="d-flex justify-content-between"),
-    ])
+    ], className=None)
 
     # define components
     container = dbc.Container(children=[
@@ -42,4 +42,4 @@ def layout(pathname, search, tag, params):
     ], fluid=None)
 
     # return result
-    return tnormal.layout(pathname, search, tag, container)
+    return tnormal.layout(pathname, search, tag, container, class_name=None)
