@@ -46,7 +46,7 @@ def _init_page(pathname, search, data_client):
     logging.warning("pathname=%s, search=%s, data_client=%s", pathname, search, data_client)
 
     # define variables
-    pathname = PATH_INTROS if pathname == "/" else pathname
+    pathname = PATH_INTROS if pathname == PATH_ROOT else pathname
     search_dict = urllib.parse.parse_qs(search.lstrip("?").strip())
 
     # =============================================================================================
@@ -80,7 +80,7 @@ def _init_page(pathname, search, data_client):
             "text_hd": "Sending success",
             "text_sub": f"An email has sent to {flask.session.get('email')}.",
             "text_button": "Back to home",
-            "return_href": PATH_INTROS,
+            "return_href": PATH_ROOT,
         }
         data_client = {"title": pathname.strip("/")}
         return pathname, search, data_client, palert.layout(pathname, search_dict, **args)

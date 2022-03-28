@@ -12,7 +12,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from paths import PATH_INTROS, PATH_REGISTERE, PATH_RESETPWDE
+from paths import PATH_REGISTERE, PATH_RESETPWDE, PATH_ROOT
 from templates import tsign
 from utility import RE_EMAIL
 
@@ -82,4 +82,4 @@ def _button_click(n_clicks, email, pwd, pathname, search):
     flask_login.login_user(user)
 
     # return result
-    return None, search.get("next", [PATH_INTROS, ])[0]
+    return None, search.get("next", [PATH_ROOT, ])[0]

@@ -7,6 +7,8 @@ alert page
 import dash_bootstrap_components as dbc
 from dash import html
 
+from paths import PATH_ROOT
+
 
 def layout(pathname, search, text_hd, text_sub, text_button, return_href):
     """
@@ -19,7 +21,7 @@ def layout(pathname, search, text_hd, text_sub, text_button, return_href):
     ], width=10, md=3), align="center", justify="center", class_name="vh-100 w-100 mx-auto")
 
 
-def layout_404(pathname, search, return_href="/"):
+def layout_404(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
     """
@@ -28,7 +30,7 @@ def layout_404(pathname, search, return_href="/"):
     return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
 
 
-def layout_500(pathname, search, return_href="/"):
+def layout_500(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
     """
@@ -37,7 +39,7 @@ def layout_500(pathname, search, return_href="/"):
     return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
 
 
-def layout_expired(pathname, search, return_href="/"):
+def layout_expired(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
     """

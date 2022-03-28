@@ -13,7 +13,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import User, app, app_db, app_redis
-from paths import PATH_INTROS, PATH_LOGIN, PATH_REGISTERE
+from paths import PATH_LOGIN, PATH_REGISTERE, PATH_ROOT
 from templates import tsign
 from utility import RE_PWD
 from . import palert
@@ -30,7 +30,7 @@ def layout(pathname, search):
         assert token == search["token"][0], (token, search["token"][0])
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
-        return palert.layout_expired(pathname, search, return_href=PATH_INTROS)
+        return palert.layout_expired(pathname, search, return_href=PATH_ROOT)
 
     # define components
     form_items = dbc.Form(children=[

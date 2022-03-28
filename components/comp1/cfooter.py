@@ -8,6 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from config import config_app_name
+from paths import PATH_ROOT
 
 
 def layout(pathname, search, fluid=None, class_container=None, class_footer=None):
@@ -17,7 +18,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_footer=None
     # define components
     mhref = "mailto:service@databai.com"
     mservice = "Email: service@databai.com"
-    addr = html.A(config_app_name, href="/")
+    addr = html.A(config_app_name, href=PATH_ROOT)
 
     # return result
     class_footer = class_footer or "border-top mt-auto py-2"

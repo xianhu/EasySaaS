@@ -37,7 +37,7 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     # return result
     class_navbar = class_navbar or "border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
-        cbrand.layout(pathname, search, href=PATH_INTROS),
+        cbrand.layout(pathname, search, href=PATH_ROOT),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse([nav_links, nav_right], id="id-collapse", navbar=True),
     ], fluid=fluid, class_name=class_container), class_name=class_navbar)
