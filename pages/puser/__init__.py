@@ -40,7 +40,7 @@ def layout(pathname, search):
         title = "BILLING"
         content = pbilling.layout(pathname, search)
     else:
-        title = "ADMIN"
+        title = "ACCOUNT"
         content = paccount.layout(pathname, search)
 
     # define components
