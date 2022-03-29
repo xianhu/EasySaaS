@@ -9,9 +9,10 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from config import config_app_name
+from paths import PATH_ROOT
 
 
-def layout(pathname, search, href="/", class_name=None):
+def layout(pathname, search, href=PATH_ROOT, class_name=None):
     """
     layout of component
     """

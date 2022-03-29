@@ -9,6 +9,8 @@ import hashlib
 from flask_sqlalchemy import SQLAlchemy, sqlalchemy, orm
 from werkzeug import security
 
+from config import config_database_uri
+
 # create SQLAlchemy
 app_db = SQLAlchemy(app=None)
 
@@ -64,9 +66,10 @@ class Plan(app_db.Model):
         return f"Plan <{self.id} - {self.name} - {self.price} - {self.pindex} - {self.status}>"
 
 
-if __name__ == "__main__":
-    from config import config_database_uri
-
+def init_db():
+    """
+    initial database
+    """
     # create engine, SQLITE doesn't check the forgien key
     engine = sqlalchemy.create_engine(config_database_uri)
 
@@ -74,19 +77,26 @@ if __name__ == "__main__":
     app_db.Model.metadata.drop_all(engine)
     app_db.Model.metadata.create_all(engine)
 
+
+def add_user(email="aaaa@qq.com", plan_id=None):
+    """
+    add a user to database
+    """
+    # create engine, SQLITE doesn't check the forgien key
+    engine = sqlalchemy.create_engine(config_database_uri)
+
     # basic opration with session
     with orm.sessionmaker(engine)() as session:
-        plan = Plan(name="Free", content="for test")
-        session.add(plan)
-        session.commit()
-
-        email = "aaaa@qq.com"
         _id = hashlib.md5(email.encode()).hexdigest()
         pwd = security.generate_password_hash(email)
 
-        user = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
+        user = User(id=_id, pwd=pwd, email=email, plan_id=plan_id)
         session.add(user)
         session.commit()
 
-        print(f"{plan}\n{plan.users}")
         print(session.query(User).get(_id))
+
+
+if __name__ == "__main__":
+    init_db()
+    add_user()

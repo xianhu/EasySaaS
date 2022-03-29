@@ -15,7 +15,7 @@ from . import paccount, pbilling
 
 TAG = "user"
 CATALOG_LIST = [
-    ["SETTING", f"id-{TAG}-setting", f"{PATH_USER}-setting"],
+    ["Admin", f"id-{TAG}-admin", f"{PATH_USER}-admin"],
     ["ACCOUNT", None, [
         ("General", f"id-{TAG}-ac-general", f"{PATH_USER}-ac-general"),
         ("Security", f"id-{TAG}-ac-security", f"{PATH_USER}-ac-security"),
@@ -33,17 +33,14 @@ def layout(pathname, search):
     layout of page
     """
     # define pathname
-    pathname = f"{PATH_USER}-setting" if pathname == PATH_USER else pathname
+    pathname = f"{PATH_USER}-ac-general" if pathname == PATH_USER else pathname
 
     # define components
     if pathname.startswith(f"{PATH_USER}-bl-"):
         title = "BILLING"
         content = pbilling.layout(pathname, search)
-    elif pathname.startswith(f"{PATH_USER}-ac-"):
-        title = "ACCOUNT"
-        content = paccount.layout(pathname, search)
     else:
-        title = "SETTING"
+        title = "ACCOUNT"
         content = paccount.layout(pathname, search)
 
     # define components
@@ -54,13 +51,13 @@ def layout(pathname, search):
 
     # return result
     return html.Div(children=[
-        cnavbar.layout(pathname, search, fluid=None, class_navbar=None),
+        cnavbar.layout(pathname, search, fluid=None, class_name=None),
         csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=None),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
         ], align="start", justify="center"), fluid=None),
-        cfooter.layout(pathname, search, fluid=None, class_footer=None),
+        cfooter.layout(pathname, search, fluid=None, class_name=None),
     ], className="d-flex flex-column vh-100")
 
 

@@ -13,7 +13,7 @@ from paths import *
 from . import cbrand
 
 
-def layout(pathname, search, fluid=None, class_container=None, class_navbar=None):
+def layout(pathname, search, fluid=None, class_name=None):
     """
     layout of component
     """
@@ -25,22 +25,22 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     ], navbar=True, class_name="mx-auto")
 
     # define components
-    args = {"color": "primary", "outline": True}
+    args_button = {"color": "primary", "outline": True}
     nav_right = dbc.Nav(dbc.NavItem(children=[
         html.A("Sign up", href=PATH_REGISTERE, className=None),
-        dbc.Button("Sign in", href=PATH_LOGIN, **args, class_name="fw-bold ms-3"),
+        dbc.Button("Sign in", href=PATH_LOGIN, **args_button, class_name="fw-bold ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
-        html.A(html.I(className="bi bi-bell fs-5"), href=PATH_USER, className=None),
+        html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}-notifications"),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
-    ], class_name="d-flex align-items-center justify-content-center py-1"), navbar=True)
+    ], class_name="d-flex align-items-center justify-content-center"), navbar=True)
 
     # return result
-    class_navbar = class_navbar or "border-bottom py-0"
+    class_name = class_name or "border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
-        cbrand.layout(pathname, search, href=PATH_INTROS),
+        cbrand.layout(pathname, search, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse([nav_links, nav_right], id="id-collapse", navbar=True),
-    ], fluid=fluid, class_name=class_container), class_name=class_navbar)
+    ], fluid=fluid, class_name=None), class_name=class_name)
 
 
 @dash.callback(

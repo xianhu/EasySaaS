@@ -4,6 +4,8 @@
 Page's Path
 """
 
+PATH_ROOT = "/"
+
 PATH_INTROS = "/intros"
 PATH_ANALYSIS = "/analysis"
 

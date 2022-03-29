@@ -14,6 +14,7 @@ from flask_redis import FlaskRedis
 
 from config import *
 from model import User, app_db
+from paths import PATH_ROOT
 
 # logging config
 logging.basicConfig(format=config_log_format, level=logging.WARNING)
@@ -26,9 +27,9 @@ app = dash.Dash(
     compress=True,
     serve_locally=True,
     show_undo_redo=False,
-    url_base_pathname="/",
     assets_folder="assets",
     update_title="Updating...",
+    url_base_pathname=PATH_ROOT,
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     external_scripts=[],

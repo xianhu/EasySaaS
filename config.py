@@ -30,9 +30,6 @@ config_redis_uri = "redis://localhost:6379/0"
 config_redis_uri_1 = "redis://localhost:6379/1"
 config_redis_uri_2 = "redis://localhost:6379/2"
 
-# define directory to store data
-config_dir_store = ".data/storage"
-
 # define logging format
 config_log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"
 
