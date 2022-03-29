@@ -12,7 +12,7 @@ def layout(pathname, search, title, _id, href, flush=None, class_name=None):
     layout of component
     """
     # define class
-    class_none = "accordion-button collapsed bg-image-after-none"
+    class_none = "accordion-button collapsed bg-image-after-none text-black hover-primary"
     class_curr = "accordion-button collapsed bg-image-after-none text-primary"
 
     # define components

@@ -54,13 +54,13 @@ def layout(pathname, search):
 
     # return result
     return html.Div(children=[
-        cnavbar.layout(pathname, search, fluid=None, class_navbar=None),
+        cnavbar.layout(pathname, search, fluid=None, class_name=None),
         csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=None),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
         ], align="start", justify="center"), fluid=None),
-        cfooter.layout(pathname, search, fluid=None, class_footer=None),
+        cfooter.layout(pathname, search, fluid=None, class_name=None),
     ], className="d-flex flex-column vh-100")
 
 

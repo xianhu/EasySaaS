@@ -13,7 +13,7 @@ from paths import *
 from . import cbrand
 
 
-def layout(pathname, search, fluid=None, class_container=None, class_navbar=None):
+def layout(pathname, search, fluid=None, class_name=None):
     """
     layout of component
     """
@@ -32,15 +32,15 @@ def layout(pathname, search, fluid=None, class_container=None, class_navbar=None
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}-notify", className=None),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
-    ], class_name="d-flex align-items-center justify-content-center py-1"), navbar=True)
+    ], class_name="d-flex align-items-center justify-content-center"), navbar=True)
 
     # return result
-    class_navbar = class_navbar or "border-bottom py-0"
+    class_name = class_name or "border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
         cbrand.layout(pathname, search, href=PATH_ROOT),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse([nav_links, nav_right], id="id-collapse", navbar=True),
-    ], fluid=fluid, class_name=class_container), class_name=class_navbar)
+    ], fluid=fluid, class_name=None), class_name=class_name)
 
 
 @dash.callback(

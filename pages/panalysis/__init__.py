@@ -97,7 +97,7 @@ def layout(pathname, search):
 
     # return result
     return tnormal.layout(pathname, search, TAG, children=[
-        cnavbar.layout(pathname, search, fluid=True, class_navbar=None),
+        cnavbar.layout(pathname, search, fluid=True, class_name=None),
         csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=True),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
