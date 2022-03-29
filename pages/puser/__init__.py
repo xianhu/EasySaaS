@@ -39,9 +39,6 @@ def layout(pathname, search):
     if pathname.startswith(f"{PATH_USER}-bl-"):
         title = "BILLING"
         content = pbilling.layout(pathname, search)
-    elif pathname.startswith(f"{PATH_USER}-ac-"):
-        title = "ACCOUNT"
-        content = paccount.layout(pathname, search)
     else:
         title = "ADMIN"
         content = paccount.layout(pathname, search)

@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout(pathname, search, id_tg, title, fluid=None, class_container=None):
+def layout(pathname, search, id_tg, title, fluid=None, class_name=None):
     """
     layout of component
     """
@@ -23,5 +23,5 @@ def layout(pathname, search, id_tg, title, fluid=None, class_container=None):
     ], align="center", justify="between", class_name=None)
 
     # return result
-    class_container = class_container or "d-md-none border-bottom"
-    return dbc.Container(small_nav, fluid=fluid, class_name=class_container)
+    class_name = class_name or "d-md-none border-bottom"
+    return dbc.Container(small_nav, fluid=fluid, class_name=class_name)

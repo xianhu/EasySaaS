@@ -22,11 +22,13 @@ def layout(pathname, search, catalog_list, class_name=None):
         if isinstance(list_second, str):
             _class = class_curr if list_second == pathname else class_none
             catalog_item_list.append(html.A(title_first, id=id_first, href=list_second, className=_class))
-        else:
-            catalog_item_list.append(html.Div(title_first, className=class_title))
-            for title, _id, href in list_second:
-                _class = class_curr if href == pathname else class_none
-                catalog_item_list.append(html.A(title, id=_id, href=href, className=_class))
+            continue
+
+        # define components
+        catalog_item_list.append(html.Div(title_first, className=class_title))
+        for title, _id, href in list_second:
+            _class = class_curr if href == pathname else class_none
+            catalog_item_list.append(html.A(title, id=_id, href=href, className=_class))
 
     # return result
     return html.Div(catalog_item_list, className=f"d-flex flex-column {class_name}")

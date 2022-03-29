@@ -24,9 +24,9 @@ def layout(pathname, search, class_name=None):
     # define components
     row_header = dbc.Row(children=[
         dbc.Col("Notifications:", width="auto"),
-        dbc.Col(dbc.Switch(id=f"id-{TAG}-switch", value=True), width="auto"),
+        dbc.Col(dbc.Switch(id=f"id-{TAG}-switch"), width="auto"),
     ], align="center", justify="between", class_name=None)
-    notice_list = [html.Li(notify, className="my-2") for notify in NOTIFICATIONS]
+    notice_list = [html.Li(ns, className="my-2") for ns in NOTIFICATIONS]
 
     # return result
     return dbc.Card(children=[
