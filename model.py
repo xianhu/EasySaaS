@@ -77,23 +77,6 @@ def init_db():
     app_db.Model.metadata.drop_all(engine)
     app_db.Model.metadata.create_all(engine)
 
-    # basic opration with session
-    with orm.sessionmaker(engine)() as session:
-        plan = Plan(name="Free", content="for test")
-        session.add(plan)
-        session.commit()
-
-        email = "aaaa@qq.com"
-        _id = hashlib.md5(email.encode()).hexdigest()
-        pwd = security.generate_password_hash(email)
-
-        user = User(id=_id, pwd=pwd, email=email, plan_id=plan.id)
-        session.add(user)
-        session.commit()
-
-        print(f"{plan}\n{plan.users}")
-        print(session.query(User).get(_id))
-
 
 def add_user(email="aaaa@qq.com", plan_id=None):
     """
@@ -116,3 +99,4 @@ def add_user(email="aaaa@qq.com", plan_id=None):
 
 if __name__ == "__main__":
     init_db()
+    add_user()

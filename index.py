@@ -64,7 +64,7 @@ def _init_page(pathname, search, data_client):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         pathname = PATH_LOGIN
-        search_dict["next"] = [PATH_ANALYSIS, ]
+        search_dict["next"] = [PATH_ROOT, ]
         data_client = {"title": pathname.strip("/").upper()}
         return pathname, search, data_client, plogin.layout(pathname, search_dict)
 
@@ -114,7 +114,7 @@ def _init_page(pathname, search, data_client):
 
     # =============================================================================================
     data_client = {"title": "error: 404"}
-    return pathname, search, data_client, palert.layout_404(pathname, search_dict, return_href=PATH_INTROS)
+    return pathname, search, data_client, palert.layout_404(pathname, search_dict, return_href=PATH_ROOT)
 
 
 # clientside callback
