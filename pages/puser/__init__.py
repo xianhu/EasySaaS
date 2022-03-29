@@ -15,7 +15,7 @@ from . import paccount, pbilling
 
 TAG = "user"
 CATALOG_LIST = [
-    ["SETTING", f"id-{TAG}-setting", f"{PATH_USER}-setting"],
+    ["Admin", f"id-{TAG}-admin", f"{PATH_USER}-admin"],
     ["ACCOUNT", None, [
         ("General", f"id-{TAG}-ac-general", f"{PATH_USER}-ac-general"),
         ("Security", f"id-{TAG}-ac-security", f"{PATH_USER}-ac-security"),
@@ -33,7 +33,7 @@ def layout(pathname, search):
     layout of page
     """
     # define pathname
-    pathname = f"{PATH_USER}-setting" if pathname == PATH_USER else pathname
+    pathname = f"{PATH_USER}-ac-general" if pathname == PATH_USER else pathname
 
     # define components
     if pathname.startswith(f"{PATH_USER}-bl-"):
@@ -43,7 +43,7 @@ def layout(pathname, search):
         title = "ACCOUNT"
         content = paccount.layout(pathname, search)
     else:
-        title = "SETTING"
+        title = "ADMIN"
         content = paccount.layout(pathname, search)
 
     # define components

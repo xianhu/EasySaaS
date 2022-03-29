@@ -25,7 +25,7 @@ app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-store-client", storage_type="session"),
-    dcc.Store(id="id-store-dummpy", storage_type="session"),
+    dcc.Store(id="id-store-iwidth", storage_type="session"),
 ])
 
 # complete layout
@@ -122,10 +122,10 @@ dash.clientside_callback(
     """
     function(data) {
         document.title = data.title || '%s'
-        return data
+        return window.innerWidth
     }
     """ % config_app_name,
-    Output("id-store-dummpy", "data"),
+    Output("id-store-iwidth", "data"),
     Input("id-store-client", "data"),
     prevent_initial_call=True,
 )

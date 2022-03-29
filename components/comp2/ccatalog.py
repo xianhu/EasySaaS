@@ -13,8 +13,8 @@ def layout(pathname, search, catalog_list, class_name=None):
     """
     # define class
     class_title = "small text-muted px-4 py-2"
-    class_none = "small text-decoration-none px-4 py-2 text-black hover-primary"
-    class_curr = "small text-decoration-none px-4 py-2 text-primary"
+    class_none = "text-decoration-none px-4 py-2 text-black hover-primary"
+    class_curr = "text-decoration-none px-4 py-2 text-primary"
 
     # define components
     catalog_item_list = []

@@ -12,7 +12,6 @@ from dash import Input, Output, State, dcc
 from app import app
 from components import cadmulti, cadsingle
 from components import cnavbar, csmallnav
-from config import config_dir_store
 from paths import PATH_ANALYSIS
 from templates import tnormal
 from . import pother, pplotly, ptable
@@ -126,7 +125,7 @@ def _toggle_navbar(n_clicks, is_open):
 def _button_click(contents, filename):
     # store data
     content_type, content_string = contents.split(",")
-    with open(f"{config_dir_store}/{filename}", "wb") as file_out:
+    with open(f".data/{filename}", "wb") as file_out:
         file_out.write(base64.b64decode(content_string))
 
     # return result
