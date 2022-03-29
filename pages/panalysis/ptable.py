@@ -6,8 +6,9 @@ table page
 
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from dash import html
+from dash import Input, Output, dcc, html
 
+from app import app
 from components import ctable
 
 TAG = "analysis-table"
@@ -24,7 +25,7 @@ def layout(pathname, search):
 
     # define components
     row_header = dbc.Row(children=[
-        dbc.Col("Table Page", width="auto", class_name=None),
+        dbc.Col("Table Page:", width="auto", class_name=None),
         dbc.Col(button, width="auto", class_name=None),
     ], align="center", justify="between", class_name=None)
 
@@ -48,4 +49,15 @@ def layout(pathname, search):
     return dbc.Card(children=[
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
         html.Div(children=[table_1, table_2], className="p-4"),
+        dcc.Download(id=f"id-{TAG}-download"),
     ], class_name=None, style={"minHeight": "600px"})
+
+
+@app.callback(
+    Output(f"id-{TAG}-download", "data"),
+    Input(f"id-{TAG}-button", "n_clicks"),
+    prevent_initial_call=True,
+)
+def _button_click(n_clicks):
+    # return dcc.send_data_frame(DATA.to_csv, filename="demo.csv")
+    return dict(base64=False, filename="demo.csv", content=DATA.to_csv(sep="\t", index=False))

@@ -14,7 +14,7 @@ from components import cadmulti, cadsingle
 from components import cnavbar, csmallnav
 from paths import PATH_ANALYSIS
 from templates import tnormal
-from . import pother, pplotly, ptable
+from . import pplotly, ptable
 
 TAG = "analysis"
 CATALOG_LIST = [
@@ -63,24 +63,12 @@ def layout(pathname, search):
     pathname = f"{PATH_ANALYSIS}-table" if pathname == PATH_ANALYSIS else pathname
 
     # define components
-    if pathname == f"{PATH_ANALYSIS}-table":
+    if pathname.startswith(f"{PATH_ANALYSIS}-pl-"):
+        title = "Plotly Page"
+        content = pplotly.layout(pathname, search, _type=pathname.split("-")[-1])
+    else:
         title = "Table Page"
         content = ptable.layout(pathname, search)
-    elif pathname == f"{PATH_ANALYSIS}-pl-scatter":
-        title = "Plotly Page"
-        content = pplotly.layout(pathname, search, _type="scatter")
-    elif pathname == f"{PATH_ANALYSIS}-pl-line":
-        title = "Plotly Page"
-        content = pplotly.layout(pathname, search, _type="line")
-    elif pathname == f"{PATH_ANALYSIS}-pl-bar":
-        title = "Plotly Page"
-        content = pplotly.layout(pathname, search, _type="bar")
-    elif pathname == f"{PATH_ANALYSIS}-pl-pie":
-        title = "Plotly Page"
-        content = pplotly.layout(pathname, search, _type="pie")
-    else:
-        title = "Other Page"
-        content = pother.layout(pathname, search)
 
     # define components
     button = dbc.Button("Upload Data", class_name="w-75")
