@@ -39,7 +39,7 @@ def layout(pathname, search, tag, params):
             dbc.Col(left, width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0"),
             dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
         ], align="center", justify="center", class_name="vh-100"),
-    ], fluid=None)
+    ], fluid=None, class_name=None)
 
     # return result
     return tnormal.layout(pathname, search, tag, container, class_name=None)

@@ -28,7 +28,7 @@ def layout(pathname, search, catalog_list, flush=None, class_name=None):
 
         # define components
         div = html.Div(address_list, className="d-flex flex-column py-2")
-        ad_item_list.append(dbc.AccordionItem(div, item_id=id_first, title=title_first))
+        ad_item_list.append(dbc.AccordionItem(div, title=title_first, item_id=id_first))
 
     # return result
     class_name = class_name or "border-top-solid border-bottom-solid"
