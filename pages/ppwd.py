@@ -89,7 +89,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname, search):
     _id = hashlib.md5(email.encode()).hexdigest()
     user = User.query.filter_by(id=_id).first()
     if not user:
-        user = User(id=_id, email=email)
+        user = User(id=_id, email=email, plan_id=None)
     user.pwd = security.generate_password_hash(pwd1)
 
     # commit user

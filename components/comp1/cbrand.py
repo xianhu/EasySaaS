@@ -16,9 +16,7 @@ def layout(pathname, search, href=PATH_ROOT, class_name=None):
     """
     layout of component
     """
-    # define components
-    img = html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.2rem"})
-    span = html.Span(config_app_name, className="fs-5 align-middle ms-1")
-
-    # return result
-    return dbc.NavbarBrand([img, span], href=href, class_name=class_name)
+    return dbc.NavbarBrand(children=[
+        html.Img(src=dash.get_asset_url("favicon.svg"), style={"width": "1.2rem"}),
+        html.Span(config_app_name, className="fs-5 align-middle ms-1"),
+    ], href=href, class_name=class_name)

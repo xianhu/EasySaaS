@@ -59,5 +59,5 @@ def layout(pathname, search):
     prevent_initial_call=True,
 )
 def _button_click(n_clicks):
-    # return dcc.send_data_frame(DATA.to_csv, filename="demo.csv")
+    # return dcc.send_data_frame(DATA.to_csv, filename="demo.csv", sep="\t", index=False)
     return dict(base64=False, filename="demo.csv", content=DATA.to_csv(sep="\t", index=False))
