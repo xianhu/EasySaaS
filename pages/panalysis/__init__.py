@@ -55,7 +55,7 @@ CATALOG_LIST = [
 ]
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """

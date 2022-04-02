@@ -9,7 +9,7 @@ from dash import html
 from . import cinvoice, cplan
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """

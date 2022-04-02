@@ -21,7 +21,7 @@ from . import palert
 TAG = "pwd"
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """

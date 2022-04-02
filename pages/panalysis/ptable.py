@@ -15,7 +15,7 @@ TAG = "analysis-table"
 DATA = px.data.iris()
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """

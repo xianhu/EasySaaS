@@ -19,7 +19,7 @@ from utility import RE_EMAIL
 TAG = "login"
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """

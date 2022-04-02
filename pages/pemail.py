@@ -23,7 +23,7 @@ from utility import RE_EMAIL
 TAG = "email"
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """

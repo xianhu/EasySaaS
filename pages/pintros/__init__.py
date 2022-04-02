@@ -11,7 +11,7 @@ from components import cfooter, cnavbar
 from . import ccontact, cheader, cintros, cplans
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """
