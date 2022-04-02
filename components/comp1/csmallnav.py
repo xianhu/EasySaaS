@@ -19,6 +19,6 @@ def layout(id_tg, title, fluid=None, class_name=None):
     # return result
     class_name = class_name or "d-md-none border-bottom"
     return dbc.Container(dbc.Row(children=[
-        dbc.Col(title, width="auto", class_name="text-primary"),
+        dbc.Col(title, width="auto", class_name=None),
         dbc.Col(toggler, width="auto", class_name="my-2"),
     ], align="center", justify="between"), fluid=fluid, class_name=class_name)

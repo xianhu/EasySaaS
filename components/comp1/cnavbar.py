@@ -25,10 +25,10 @@ def layout(fluid=None, class_name=None):
     ], navbar=True, class_name="mx-auto")
 
     # define components
-    args_button = {"color": "primary", "outline": True}
+    kwargs_button = dict(color="primary", outline=True)
     nav_right = dbc.Nav(dbc.NavItem(children=[
         html.A("Sign up", href=PATH_REGISTERE, className=None),
-        dbc.Button("Sign in", href=PATH_LOGIN, **args_button, class_name="fw-bold ms-3"),
+        dbc.Button("Sign in", href=PATH_LOGIN, **kwargs_button, class_name="fw-bold ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}-notifications"),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
