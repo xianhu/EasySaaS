@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, dcc
 
 from app import app
-from components import cplotly
+from pages.panalysis import cplotly
 
 TAG = "test"
 
