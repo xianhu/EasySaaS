@@ -43,8 +43,8 @@ app.validation_layout = dbc.Container([])
     State("id-store-client", "data"),
     State("id-store-iwidth", "data"),
 ], prevent_initial_call=False)
-def _init_page(pathname, search, data_client, data_iwidth):
-    logging.warning("pathname=%s, search=%s, client=%s, iwidth=%s", pathname, search, data_client, data_iwidth)
+def _init_page(pathname, search, dclient, diwidth):
+    logging.warning("pathname=%s, search=%s, dclient=%s, diwidth=%s", pathname, search, dclient, diwidth)
 
     # define variables
     pathname = PATH_INTROS if pathname == PATH_ROOT else pathname
@@ -52,13 +52,13 @@ def _init_page(pathname, search, data_client, data_iwidth):
 
     # =============================================================================================
     if pathname == PATH_INTROS:
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, pintros.layout(pathname, search_dict)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, pintros.layout(pathname, search_dict)
 
     # =============================================================================================
     if pathname.startswith(PATH_ANALYSIS):
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, panalysis.layout(pathname, search_dict)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, panalysis.layout(pathname, search_dict)
 
     # =============================================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
@@ -66,56 +66,54 @@ def _init_page(pathname, search, data_client, data_iwidth):
             flask_login.logout_user()
         pathname = PATH_LOGIN
         search_dict["next"] = [PATH_ROOT, ]
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, plogin.layout(pathname, search_dict)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, plogin.layout(pathname, search_dict)
 
     # =============================================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, pemail.layout(pathname, search_dict)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, pemail.layout(pathname, search_dict)
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
-        args = {
-            "text_hd": "Sending success",
-            "text_sub": f"An email has sent to {flask.session.get('email')}.",
-            "text_button": "Back to home",
-            "return_href": PATH_ROOT,
-        }
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, palert.layout(pathname, search_dict, **args)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, palert.layout(pathname, search_dict, **dict(
+            text_hd="Sending success",
+            text_sub=f"An email has sent to {flask.session.get('email')}.",
+            text_button="Back to home",
+            return_href=PATH_ROOT,
+        ))
 
     # =============================================================================================
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, ppwd.layout(pathname, search_dict)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, ppwd.layout(pathname, search_dict)
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
-        args = {
-            "text_hd": "Setting success",
-            "text_sub": "The password was set successfully.",
-            "text_button": "Go to login",
-            "return_href": PATH_LOGIN,
-        }
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, palert.layout(pathname, search_dict, **args)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, palert.layout(pathname, search_dict, **dict(
+            text_hd="Setting success",
+            text_sub="The password was set successfully.",
+            text_button="Go to login",
+            return_href=PATH_LOGIN,
+        ))
 
     # =============================================================================================
     if pathname.startswith(PATH_USER):
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
             search_dict["next"] = [PATH_USER, ]
-            data_client = {"title": pathname.strip("/").upper()}
-            return pathname, search, data_client, plogin.layout(pathname, search_dict)
-        data_client = {"title": pathname.strip("/").upper()}
-        return pathname, search, data_client, puser.layout(pathname, search_dict)
+            dclient = {"title": pathname.strip("/").upper()}
+            return pathname, search, dclient, plogin.layout(pathname, search_dict)
+        dclient = {"title": pathname.strip("/").upper()}
+        return pathname, search, dclient, puser.layout(pathname, search_dict)
 
     # =============================================================================================
-    data_client = {"title": "error: 404"}
-    return pathname, search, data_client, palert.layout_404(pathname, search_dict, return_href=PATH_ROOT)
+    dclient = {"title": "error: 404"}
+    return pathname, search, dclient, palert.layout_404(pathname, search_dict, return_href=PATH_ROOT)
 
 
 # clientside callback
