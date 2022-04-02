@@ -9,7 +9,6 @@ import plotly.express as px
 from dash import Input, Output, dcc, html
 
 from app import app
-from components import ctable
 
 TAG = "analysis-table"
 DATA = px.data.iris()
@@ -30,25 +29,25 @@ def layout(pathname, search, **kwargs):
     ], align="center", justify="between", class_name=None)
 
     # define components
-    table_1 = ctable.layout(
-        pathname, search,
-        f"id-{TAG}-table1", DATA.to_dict("records")[:10],
-        DATA.columns.to_list(), DATA.columns.to_list(),
-    )
-
-    # define components
-    _class = {"sepal_length": "bg-light"}
-    table_2 = ctable.layout(
-        pathname, search,
-        f"id-{TAG}-table2", DATA.to_dict("records")[:2],
-        [], DATA.columns.to_list(),
-        class_data=[_class, _class], striped=False, hover=False,
-    )
+    # table_1 = ctable.layout(
+    #     pathname, search,
+    #     f"id-{TAG}-table1", DATA.to_dict("records")[:10],
+    #     DATA.columns.to_list(), DATA.columns.to_list(),
+    # )
+    #
+    # # define components
+    # _class = {"sepal_length": "bg-light"}
+    # table_2 = ctable.layout(
+    #     pathname, search,
+    #     f"id-{TAG}-table2", DATA.to_dict("records")[:2],
+    #     [], DATA.columns.to_list(),
+    #     class_data=[_class, _class], striped=False, hover=False,
+    # )
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader(row_header, class_name="px-4 py-3"),
-        html.Div(children=[table_1, table_2], className="p-4"),
+        html.Div(children=[], className="p-4"),
         dcc.Download(id=f"id-{TAG}-download"),
     ], class_name=None, style={"minHeight": "600px"})
 

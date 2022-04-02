@@ -16,9 +16,8 @@ from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from paths import PATH_LOGIN, PATH_REGISTERE, PATH_RESETPWDE
-from pages import tsign
-from utility import RE_EMAIL
+from consts import PATH_LOGIN, PATH_REGISTERE, PATH_RESETPWDE, RE_EMAIL
+from . import tsign
 
 TAG = "email"
 

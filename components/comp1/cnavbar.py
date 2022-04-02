@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, html
 
-from paths import *
+from consts import *
 from . import cbrand
 
 

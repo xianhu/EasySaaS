@@ -14,7 +14,7 @@ from flask_redis import FlaskRedis
 
 from config import *
 from model import User, app_db
-from paths import PATH_ROOT
+from consts import PATH_ROOT
 
 # logging config
 logging.basicConfig(format=config_log_format, level=logging.WARNING)

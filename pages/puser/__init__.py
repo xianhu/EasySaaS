@@ -10,7 +10,7 @@ from dash import Input, Output, State, html
 from app import app
 from components import ccatalog
 from components import cfooter, cnavbar, csmallnav
-from paths import PATH_LOGOUT, PATH_USER
+from consts import PATH_LOGOUT, PATH_USER
 from . import paccount, pbilling
 
 TAG = "user"

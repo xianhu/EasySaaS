@@ -7,13 +7,12 @@ analysis page
 import base64
 
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cadmulti, cadsingle
 from components import cnavbar, csmallnav
-from paths import PATH_ANALYSIS
-from templates import tnormal
+from consts import PATH_ANALYSIS
 from . import ptable
 from .dplotly import pplotly
 
@@ -84,14 +83,14 @@ def layout(pathname, search, **kwargs):
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
-    return tnormal.layout(pathname, search, TAG, children=[
+    return html.Div(children=[
         cnavbar.layout(fluid=True, class_name=None),
         csmallnav.layout(f"id-{TAG}-toggler", title, fluid=True),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
             dbc.Col(content, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
         ], justify="center", class_name="h-100-scroll"), fluid=True, class_name="h-100-scroll"),
-    ], class_name="d-flex flex-column vh-100 overflow-scroll")
+    ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
 @app.callback(

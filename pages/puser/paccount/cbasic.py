@@ -9,8 +9,7 @@ import flask_login
 from dash import Input, Output, State, html
 
 from app import app, app_db
-from paths import PATH_LOGIN
-from utility import RE_PHONE
+from consts import PATH_LOGIN,RE_PHONE
 
 TAG = "user-basic"
 

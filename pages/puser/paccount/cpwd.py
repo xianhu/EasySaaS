@@ -10,8 +10,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from paths import PATH_LOGIN, PATH_LOGOUT
-from utility import RE_PWD
+from consts import *
 
 TAG = "user-pwd"
 
