@@ -78,14 +78,14 @@ def layout(pathname, search, **kwargs):
     # define components
     catalog = dbc.Collapse(children=[
         dcc.Upload(button, id=f"id-{TAG}-upload", **args_up, className="text-center my-4"),
-        cadsingle.layout(pathname, search, t_title, t_id, t_href, flush=True, class_name="border-top-solid"),
-        cadmulti.layout(pathname, search, CATALOG_LIST, flush=True, class_name="border-top-solid border-bottom-solid"),
+        cadsingle.layout(t_title, t_id, t_href, curr_path=pathname, flush=True, class_name="border-top-solid"),
+        cadmulti.layout(CATALOG_LIST, flush=True, class_name="border-top-solid border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
     return tnormal.layout(pathname, search, TAG, children=[
-        cnavbar.layout(pathname, search, fluid=True, class_name=None),
-        csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=True),
+        cnavbar.layout(fluid=True, class_name=None),
+        csmallnav.layout(f"id-{TAG}-toggler", title, fluid=True),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
             dbc.Col(content, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),

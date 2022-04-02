@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout(pathname, search, catalog_list, flush=None, class_name=None):
+def layout(catalog_list, curr_path=None, flush=None, class_name=None):
     """
     layout of component
     """
@@ -20,11 +20,11 @@ def layout(pathname, search, catalog_list, flush=None, class_name=None):
     ad_item_list, active_id = [], None
     for title_first, id_first, list_second in catalog_list:
         address_list = []
-        for title, _id, href in list_second:
-            if href == pathname:
+        for title, _id, path in list_second:
+            if path == curr_path:
                 active_id = id_first
-            _class = class_curr if href == pathname else class_none
-            address_list.append(html.A(title, id=_id, href=href, className=_class))
+            _class = class_curr if path == curr_path else class_none
+            address_list.append(html.A(title, id=_id, href=path, className=_class))
 
         # define components
         div = html.Div(address_list, className="d-flex flex-column py-2")

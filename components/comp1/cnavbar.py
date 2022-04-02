@@ -13,7 +13,7 @@ from paths import *
 from . import cbrand
 
 
-def layout(pathname, search, fluid=None, class_name=None):
+def layout(fluid=None, class_name=None):
     """
     layout of component
     """
@@ -37,7 +37,7 @@ def layout(pathname, search, fluid=None, class_name=None):
     # return result
     class_name = class_name or "border-bottom py-0"
     return dbc.Navbar(dbc.Container(children=[
-        cbrand.layout(pathname, search, class_name=None),
+        cbrand.layout(href=PATH_ROOT, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
         dbc.Collapse([nav_links, nav_right], id="id-collapse", navbar=True),
     ], fluid=fluid, class_name=None), class_name=class_name)

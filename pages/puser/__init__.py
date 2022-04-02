@@ -45,19 +45,19 @@ def layout(pathname, search, **kwargs):
 
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
-        ccatalog.layout(pathname, search, CATALOG_LIST, class_name=None),
+        ccatalog.layout(CATALOG_LIST, curr_path=pathname, class_name=None),
         dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
     ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
     return html.Div(children=[
-        cnavbar.layout(pathname, search, fluid=None, class_name=None),
-        csmallnav.layout(pathname, search, f"id-{TAG}-toggler", title, fluid=None),
+        cnavbar.layout(fluid=False, class_name=None),
+        csmallnav.layout(f"id-{TAG}-toggler", title, fluid=False),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
         ], align="start", justify="center"), fluid=None),
-        cfooter.layout(pathname, search, fluid=None, class_name=None),
+        cfooter.layout(fluid=False, class_name=None),
     ], className="d-flex flex-column vh-100")
 
 

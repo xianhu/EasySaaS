@@ -11,7 +11,7 @@ from config import config_app_name
 from paths import PATH_ROOT
 
 
-def layout(pathname, search, fluid=None, class_name=None):
+def layout(fluid=None, class_name=None):
     """
     layout of component
     """

@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout(pathname, search, id_tg, title, fluid=None, class_name=None):
+def layout(id_tg, title, fluid=None, class_name=None):
     """
     layout of component
     """

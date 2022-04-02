@@ -7,7 +7,7 @@ catalog component
 from dash import html
 
 
-def layout(pathname, search, catalog_list, class_name=None):
+def layout(catalog_list, curr_path=None, class_name=None):
     """
     layout of component
     """
@@ -20,15 +20,15 @@ def layout(pathname, search, catalog_list, class_name=None):
     catalog_item_list = []
     for title_first, id_first, list_second in catalog_list:
         if isinstance(list_second, str):
-            _class = class_curr if list_second == pathname else class_none
+            _class = class_curr if list_second == curr_path else class_none
             catalog_item_list.append(html.A(title_first, id=id_first, href=list_second, className=_class))
             continue
 
         # define components
         catalog_item_list.append(html.Div(title_first, className=class_title))
-        for title, _id, href in list_second:
-            _class = class_curr if href == pathname else class_none
-            catalog_item_list.append(html.A(title, id=_id, href=href, className=_class))
+        for title, _id, path in list_second:
+            _class = class_curr if path == curr_path else class_none
+            catalog_item_list.append(html.A(title, id=_id, href=path, className=_class))
 
     # return result
     return html.Div(catalog_item_list, className=f"d-flex flex-column {class_name}")
