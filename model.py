@@ -34,6 +34,7 @@ class User(app_db.Model):
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
 
     filename = sqlalchemy.Column(sqlalchemy.String(500), doc="file name")
+    tempcol = sqlalchemy.Column(sqlalchemy.String(500), doc="temporary column")
 
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())

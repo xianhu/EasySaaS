@@ -15,9 +15,9 @@ from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
+from consts import *
 from pages import palert, pemail, plogin, ppwd
 from pages import panalysis, pintros, puser
-from consts import *
 
 # app layout
 app.title = config_app_name
@@ -41,9 +41,10 @@ app.validation_layout = dbc.Container([])
     Input("id-location", "pathname"),
     State("id-location", "search"),
     State("id-store-client", "data"),
+    State("id-store-iwidth", "data"),
 ], prevent_initial_call=False)
-def _init_page(pathname, search, data_client):
-    logging.warning("pathname=%s, search=%s, data_client=%s", pathname, search, data_client)
+def _init_page(pathname, search, data_client, data_iwidth):
+    logging.warning("pathname=%s, search=%s, client=%s, iwidth=%s", pathname, search, data_client, data_iwidth)
 
     # define variables
     pathname = PATH_INTROS if pathname == PATH_ROOT else pathname
@@ -144,5 +145,6 @@ dash.clientside_callback(
     Input({"type": "id-address", "index": MATCH}, "href"),
     prevent_initial_call=True,
 )
+
 if __name__ == "__main__":
     app.run_server(host="0.0.0.0", port=8088, debug=True)

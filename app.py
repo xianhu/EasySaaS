@@ -13,8 +13,8 @@ from flask_mail import Mail
 from flask_redis import FlaskRedis
 
 from config import *
-from model import User, app_db
 from consts import PATH_ROOT
+from model import User, app_db
 
 # logging config
 logging.basicConfig(format=config_log_format, level=logging.WARNING)
