@@ -16,7 +16,7 @@ from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from consts import PATH_LOGIN, PATH_REGISTERE, PATH_RESETPWDE, RE_EMAIL
+from consts import *
 from . import tsign
 
 TAG = "email"
@@ -30,36 +30,36 @@ def layout(pathname, search, **kwargs):
     form_items = dbc.Form(dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-email", type="email"),
         dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-    ]))
+    ]), class_name=None)
 
-    # define parames
+    # define args
     if pathname == PATH_REGISTERE:
-        params = {
-            "image_src": "illustrations/register.svg",
-            "text_hd": "Sign up",
-            "text_sub": "Register an account through an email.",
-            "form_items": form_items,
-            "text_button": "Verify the email",
-            "other_list": [
+        kwargs = dict(
+            image_src="illustrations/register.svg",
+            text_hd="Sign up",
+            text_sub="Register an account through an email.",
+            form_items=form_items,
+            text_button="Verify the email",
+            other_list=[
                 html.A("Sign in", href=PATH_LOGIN),
                 html.A("Forget password?", href=PATH_RESETPWDE),
             ],
-        }
+        )
     else:
-        params = {
-            "image_src": "illustrations/resetpwd.svg",
-            "text_hd": "Forget password?",
-            "text_sub": "Find back the password through email.",
-            "form_items": form_items,
-            "text_button": "Verify the email",
-            "other_list": [
+        kwargs = dict(
+            image_src="illustrations/resetpwd.svg",
+            text_hd="Forget password?",
+            text_sub="Find back the password through email.",
+            form_items=form_items,
+            text_button="Verify the email",
+            other_list=[
                 html.A("Sign in", href=PATH_LOGIN),
                 html.A("Sign up", href=PATH_REGISTERE),
             ],
-        }
+        )
 
     # return result
-    return tsign.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, **kwargs)
 
 
 @app.callback([

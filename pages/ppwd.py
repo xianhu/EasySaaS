@@ -44,23 +44,23 @@ def layout(pathname, search, **kwargs):
             dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
             dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
-    ])
+    ], class_name=None)
 
-    # define parames
-    params = {
-        "image_src": "illustrations/password.svg",
-        "text_hd": "Set password",
-        "text_sub": "Set the password of this email please.",
-        "form_items": form_items,
-        "text_button": "Set password",
-        "other_list": [
+    # define args
+    kwargs = dict(
+        image_src="illustrations/password.svg",
+        text_hd="Set password",
+        text_sub="Set the password of this email please.",
+        form_items=form_items,
+        text_button="Set password",
+        other_list=[
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_REGISTERE),
         ],
-    }
+    )
 
     # return result
-    return tsign.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, **kwargs)
 
 
 @app.callback([

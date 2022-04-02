@@ -79,7 +79,7 @@ def layout(pathname, search, **kwargs):
     catalog = dbc.Collapse(children=[
         dcc.Upload(button, id=f"id-{TAG}-upload", **args_up, className="text-center my-4"),
         cadsingle.layout(t_title, t_id, t_href, curr_path=pathname, flush=True, class_name="border-top-solid"),
-        cadmulti.layout(CATALOG_LIST, flush=True, class_name="border-top-solid border-bottom-solid"),
+        cadmulti.layout(CATALOG_LIST, curr_path=pathname, flush=True, class_name="border-top-solid border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # return result
