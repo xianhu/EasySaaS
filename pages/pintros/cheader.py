@@ -15,7 +15,7 @@ This project will create an easy way to build a SaaS application using Python an
 """.strip()
 
 
-def layout(pathname, search, class_name=None):
+def layout(class_name=None):
     """
     layout of component
     """

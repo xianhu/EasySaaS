@@ -14,6 +14,6 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     return html.Div(children=[
-        cplan.layout(pathname, search, class_name=None),
-        cinvoice.layout(pathname, search, class_name="mt-4"),
+        cplan.layout(class_name=None),
+        cinvoice.layout(class_name="mt-4"),
     ], className="mb-4")

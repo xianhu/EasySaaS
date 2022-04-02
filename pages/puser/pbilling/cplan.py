@@ -10,7 +10,7 @@ from dash import html
 TAG = "user-plan"
 
 
-def layout(pathname, search, class_name=None):
+def layout(class_name=None):
     """
     layout of card
     """

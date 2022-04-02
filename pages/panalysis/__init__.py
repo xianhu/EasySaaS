@@ -14,7 +14,8 @@ from components import cadmulti, cadsingle
 from components import cnavbar, csmallnav
 from paths import PATH_ANALYSIS
 from templates import tnormal
-from . import pplotly, ptable
+from . import ptable
+from .dplotly import pplotly
 
 TAG = "analysis"
 CATALOG_LIST = [

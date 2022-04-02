@@ -27,7 +27,7 @@ PLAN_LIST = [{
 ]
 
 
-def layout(pathname, search, class_name=None):
+def layout(class_name=None):
     """
     layout of component
     """
