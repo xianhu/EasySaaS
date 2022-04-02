@@ -65,10 +65,11 @@ def layout(pathname, search, **kwargs):
     # define components
     if pathname.startswith(f"{PATH_ANALYSIS}-pl-"):
         title = "Plotly Page"
-        content = pplotly.layout(pathname, search, _type=pathname.split("-")[-1])
+        _type = pathname.split("-")[-1]
+        content = pplotly.layout(pathname, search, title=title, _type=_type)
     else:
         title = "Table Page"
-        content = ptable.layout(pathname, search)
+        content = ptable.layout(pathname, search, title=title)
 
     # define components
     button = dbc.Button("Upload Data", class_name="w-75")

@@ -9,10 +9,9 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 HEADER = "Welcome to EasySaaS demo"
-HEADERSUB = """
-This project will be attempted to make a great starting point for your next big business as easy and efficent as possible. 
-This project will create an easy way to build a SaaS application using Python and Dash.
-""".strip()
+HEADERSUB = "This project will be attempted to make a great starting point " \
+            "for your next big business as easy and efficent as possible. " \
+            "This project will create an easy way to build a SaaS application using Python and Dash."
 
 
 def layout(class_name=None):
@@ -20,7 +19,10 @@ def layout(class_name=None):
     layout of component
     """
     # define components
-    image = html.Img(src=dash.get_asset_url("illustrations/intros.svg"), className="img-fluid")
+    src_image = dash.get_asset_url("illustrations/intros.svg")
+    image = html.Img(src=src_image, className="img-fluid")
+
+    # define components
     intros = html.Div(children=[
         html.Div(HEADER, className="fs-1 text-center mb-2"),
         html.P(HEADERSUB, className="fs-5 text-center text-muted lead"),

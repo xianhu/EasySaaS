@@ -52,6 +52,7 @@ def layout(class_name=None):
             dbc.ModalBody("The password was updated successfully"),
             dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
+        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 

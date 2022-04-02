@@ -9,7 +9,7 @@ import flask_login
 from dash import Input, Output, State, html
 
 from app import app, app_db
-from consts import PATH_LOGIN,RE_PHONE
+from consts import PATH_LOGIN, RE_PHONE
 
 TAG = "user-basic"
 
@@ -55,6 +55,7 @@ def layout(class_name=None):
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully"),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
+        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 

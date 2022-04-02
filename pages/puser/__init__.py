@@ -8,8 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 
 from app import app
-from components import ccatalog
-from components import cfooter, cnavbar, csmallnav
+from components import cfooter, cnavbar, csmallnav, ccatalog
 from consts import PATH_LOGOUT, PATH_USER
 from . import paccount, pbilling
 
@@ -38,10 +37,10 @@ def layout(pathname, search, **kwargs):
     # define components
     if pathname.startswith(f"{PATH_USER}-bl-"):
         title = "BILLING"
-        content = pbilling.layout(pathname, search)
+        content = pbilling.layout(pathname, search, title=title)
     else:
         title = "ACCOUNT"
-        content = paccount.layout(pathname, search)
+        content = paccount.layout(pathname, search, title=title)
 
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
@@ -56,7 +55,7 @@ def layout(pathname, search, **kwargs):
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
             dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
-        ], align="start", justify="center"), fluid=None),
+        ], align="start", justify="center"), fluid=False),
         cfooter.layout(fluid=False, class_name=None),
     ], className="d-flex flex-column vh-100")
 
