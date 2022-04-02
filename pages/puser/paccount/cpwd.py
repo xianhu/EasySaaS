@@ -11,7 +11,6 @@ from werkzeug import security
 
 from app import app, app_db
 from paths import PATH_LOGIN, PATH_LOGOUT
-from templates import tnormal
 from utility import RE_PWD
 
 TAG = "user-pwd"

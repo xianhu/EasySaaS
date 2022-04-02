@@ -11,7 +11,7 @@ import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_login
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
@@ -130,5 +130,19 @@ dash.clientside_callback(
     prevent_initial_call=True,
 )
 
+# clientside callback
+dash.clientside_callback(
+    """
+    function(href) {
+        if (href != null && href != undefined) {
+            window.location.href = href
+        }
+        return href
+    }
+    """,
+    Output({"type": "id-address", "index": MATCH}, "data"),
+    Input({"type": "id-address", "index": MATCH}, "href"),
+    prevent_initial_call=True,
+)
 if __name__ == "__main__":
     app.run_server(host="0.0.0.0", port=8088, debug=True)

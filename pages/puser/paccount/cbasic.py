@@ -10,7 +10,6 @@ from dash import Input, Output, State, html
 
 from app import app, app_db
 from paths import PATH_LOGIN
-from templates import tnormal
 from utility import RE_PHONE
 
 TAG = "user-basic"
@@ -60,7 +59,7 @@ def layout(pathname, search, class_name=None):
     ], class_name=None)
 
     # return result
-    return tnormal.layout(pathname, search, TAG, card, class_name=class_name)
+    return .layout(pathname, search, TAG, card, class_name=class_name)
 
 
 @app.callback([

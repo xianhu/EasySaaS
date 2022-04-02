@@ -14,9 +14,8 @@ from werkzeug import security
 
 from app import User, app, app_db, app_redis
 from paths import PATH_LOGIN, PATH_REGISTERE, PATH_ROOT
-from templates import tsign
 from utility import RE_PWD
-from . import palert
+from . import palert, tsign
 
 TAG = "pwd"
 

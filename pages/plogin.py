@@ -13,7 +13,7 @@ from werkzeug import security
 
 from app import UserLogin, app
 from paths import PATH_REGISTERE, PATH_RESETPWDE, PATH_ROOT
-from templates import tsign
+from pages import tsign
 from utility import RE_EMAIL
 
 TAG = "login"
