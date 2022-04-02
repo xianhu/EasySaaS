@@ -33,30 +33,27 @@ def layout(pathname, search, **kwargs):
     ]), class_name=None)
 
     # define args
-    if pathname == PATH_REGISTERE:
-        kwargs = dict(
-            image_src="illustrations/register.svg",
-            text_hd="Sign up",
-            text_sub="Register an account through an email.",
-            form_items=form_items,
-            text_button="Verify the email",
-            other_list=[
-                html.A("Sign in", href=PATH_LOGIN),
-                html.A("Forget password?", href=PATH_RESETPWDE),
-            ],
-        )
-    else:
-        kwargs = dict(
-            image_src="illustrations/resetpwd.svg",
-            text_hd="Forget password?",
-            text_sub="Find back the password through email.",
-            form_items=form_items,
-            text_button="Verify the email",
-            other_list=[
-                html.A("Sign in", href=PATH_LOGIN),
-                html.A("Sign up", href=PATH_REGISTERE),
-            ],
-        )
+    kwargs = dict(
+        image_src="illustrations/register.svg",
+        text_hd="Sign up",
+        text_sub="Register an account through an email.",
+        form_items=form_items,
+        text_button="Verify the email",
+        other_list=[
+            html.A("Sign in", href=PATH_LOGIN),
+            html.A("Forget password?", href=PATH_RESETPWDE),
+        ],
+    ) if pathname == PATH_REGISTERE else dict(
+        image_src="illustrations/resetpwd.svg",
+        text_hd="Forget password?",
+        text_sub="Find back the password through email.",
+        form_items=form_items,
+        text_button="Verify the email",
+        other_list=[
+            html.A("Sign in", href=PATH_LOGIN),
+            html.A("Sign up", href=PATH_REGISTERE),
+        ],
+    )
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs)
