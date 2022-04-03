@@ -5,7 +5,6 @@ Application Layout
 """
 
 import logging
-import urllib.parse
 
 import dash
 import dash_bootstrap_components as dbc
@@ -15,9 +14,9 @@ from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
-from utility.consts import *
 from pages import palert, pemail, plogin, ppwd
 from pages import panalysis, pintros, puser
+from utility.consts import *
 
 # app layout
 app.title = config_app_name
@@ -48,37 +47,35 @@ def _init_page(pathname, search, dclient, diwidth):
 
     # define variables
     pathname = PATH_INTROS if pathname == PATH_ROOT else pathname
-    search_dict = urllib.parse.parse_qs(search.lstrip("?").strip())
 
     # =============================================================================================
     if pathname == PATH_INTROS:
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, pintros.layout(pathname, search_dict)
+        return pathname, search, dclient, pintros.layout(pathname, search)
 
     # =============================================================================================
-    if pathname.startswith(PATH_ANALYSIS):
+    if pathname == PATH_ANALYSIS:
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, panalysis.layout(pathname, search_dict)
+        return pathname, search, dclient, panalysis.layout(pathname, search)
 
     # =============================================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         pathname = PATH_LOGIN
-        search_dict["next"] = [PATH_ROOT, ]
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, plogin.layout(pathname, search_dict)
+        return pathname, search, dclient, plogin.layout(pathname, search)
 
     # =============================================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, pemail.layout(pathname, search_dict)
+        return pathname, search, dclient, pemail.layout(pathname, search)
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, palert.layout(pathname, search_dict, **dict(
+        return pathname, search, dclient, palert.layout(pathname, search, **dict(
             text_hd="Sending success",
             text_sub=f"An email has sent to {flask.session.get('email')}.",
             text_button="Back to home",
@@ -90,11 +87,11 @@ def _init_page(pathname, search, dclient, diwidth):
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, ppwd.layout(pathname, search_dict)
+        return pathname, search, dclient, ppwd.layout(pathname, search)
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, palert.layout(pathname, search_dict, **dict(
+        return pathname, search, dclient, palert.layout(pathname, search, **dict(
             text_hd="Setting success",
             text_sub="The password was set successfully.",
             text_button="Go to login",
@@ -102,18 +99,17 @@ def _init_page(pathname, search, dclient, diwidth):
         ))
 
     # =============================================================================================
-    if pathname.startswith(PATH_USER):
+    if pathname == PATH_USER:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
-            search_dict["next"] = [PATH_USER, ]
             dclient = {"title": pathname.strip("/").upper()}
-            return pathname, search, dclient, plogin.layout(pathname, search_dict)
+            return pathname, search, dclient, plogin.layout(pathname, search, next=PATH_USER)
         dclient = {"title": pathname.strip("/").upper()}
-        return pathname, search, dclient, puser.layout(pathname, search_dict)
+        return pathname, search, dclient, puser.layout(pathname, search)
 
     # =============================================================================================
     dclient = {"title": "error: 404"}
-    return pathname, search, dclient, palert.layout_404(pathname, search_dict, return_href=PATH_ROOT)
+    return pathname, search, dclient, palert.layout_404(pathname, search, return_href=PATH_ROOT)
 
 
 # clientside callback

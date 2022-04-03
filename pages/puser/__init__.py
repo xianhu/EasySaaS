@@ -4,14 +4,13 @@
 user page
 """
 
-import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cfooter, cnavbar, ccatalog
-from utility import get_trigger_property
-from utility.consts import PATH_LOGOUT
+from components import csmallnav
+from utility import PATH_LOGOUT
 from . import paccount, pbilling, padmin
 
 TAG = "user"
@@ -37,13 +36,14 @@ def layout(pathname, search, **kwargs):
     # return result
     return html.Div(children=[
         cnavbar.layout(fluid=False, class_name=None),
-        # csmallnav.layout(f"id-{TAG}-toggler", title, fluid=False),
+        csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),
         dbc.Container(dbc.Row(children=[
             dbc.Col(catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
             # dbc.Col(content, width=12, md=8, class_name="mt-4 mt-md-4"),
             dbc.Col(id=f"id-{TAG}-content", width=12, md=8, class_name="mt-4 mt-md-4"),
         ], align="start", justify="center"), fluid=False),
         cfooter.layout(fluid=False, class_name=None),
+        dcc.Location(id=f"id-{TAG}-hash", refresh=False)
     ], className="d-flex flex-column vh-100")
 
 
@@ -63,16 +63,11 @@ def _toggle_navbar(n_clicks, is_open):
     class_admin=Output(f"id-{TAG}-admin", "className"),
     class_infosec=Output(f"id-{TAG}-infosec", "className"),
     class_planpay=Output(f"id-{TAG}-planpay", "className"),
-), [
-    Input(f"id-{TAG}-admin", "n_clicks"),
-    Input(f"id-{TAG}-infosec", "n_clicks"),
-    Input(f"id-{TAG}-planpay", "n_clicks"),
-], prevent_initial_call=False)
-def _init_page(n_clicks0, n_clicks1, n_clicks2):
+), Input(f"id-{TAG}-hash", "hash"), prevent_initial_call=False)
+def _init_page(_hash):
     # define variables
     class_curr = "text-decoration-none px-4 py-2 text-primary"
     class_none = "text-decoration-none px-4 py-2 text-black hover-primary"
-    _id, _id_index, _property, value = get_trigger_property(dash.callback_context.triggered)
     outputs = dict(
         content=None,
         class_admin=class_none,
@@ -80,7 +75,7 @@ def _init_page(n_clicks0, n_clicks1, n_clicks2):
         class_planpay=class_none,
     )
 
-    curr_id = _id or f"id-{TAG}-infosec"
+    curr_id = f"id-{TAG}-{_hash.strip('#')}"
     if curr_id == f"id-{TAG}-admin":
         outputs["content"] = padmin.layout("", "")
         outputs["class_admin"] = class_curr
