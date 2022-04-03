@@ -13,8 +13,8 @@ from flask_mail import Mail
 from flask_redis import FlaskRedis
 
 from config import *
-from utility.consts import PATH_ROOT
 from model import User, app_db
+from utility import PATH_ROOT
 
 # logging config
 log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"

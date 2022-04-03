@@ -41,6 +41,5 @@ def layout(pathname, search, tag, **kwargs):
         ], align="center", justify="center", class_name="vh-100"),
         # define components
         html.A(id={"type": "id-address", "index": tag}),
-        dcc.Store(id=f"id-{tag}-pathname", data=pathname),
-        dcc.Store(id=f"id-{tag}-search", data=search),
+        dcc.Store(id=f"id-{tag}-data", data=kwargs.get("data")),
     ], fluid=True, class_name=None)

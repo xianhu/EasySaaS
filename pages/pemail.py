@@ -33,7 +33,8 @@ def layout(pathname, search, **kwargs):
     ]), class_name=None)
 
     # define args
-    kwargs = dict(
+    kwargs = dict(data=pathname)
+    kwargs.update(dict(
         image_src="illustrations/register.svg",
         text_hd="Sign up",
         text_sub="Register an account through an email.",
@@ -53,7 +54,7 @@ def layout(pathname, search, **kwargs):
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_REGISTERE),
         ],
-    )
+    ))
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs)
@@ -65,10 +66,9 @@ def layout(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pathname", "data"),
-    State(f"id-{TAG}-search", "data"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pathname, search):
+def _button_click(n_clicks, email, pathname):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):

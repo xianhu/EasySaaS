@@ -5,6 +5,7 @@ user page
 """
 
 import dash_bootstrap_components as dbc
+import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app
@@ -43,6 +44,7 @@ def layout(pathname, search, **kwargs):
             dbc.Col(id=f"id-{TAG}-content", width=12, md=8, class_name="mt-4 mt-md-4"),
         ], align="start", justify="center"), fluid=False),
         cfooter.layout(fluid=False, class_name=None),
+        html.A(id={"type": "id-address", "index": TAG}),
         dcc.Location(id=f"id-{TAG}-hash", refresh=False)
     ], className="d-flex flex-column vh-100")
 
@@ -63,6 +65,7 @@ def _toggle_navbar(n_clicks, is_open):
     class_admin=Output(f"id-{TAG}-admin", "className"),
     class_infosec=Output(f"id-{TAG}-infosec", "className"),
     class_planpay=Output(f"id-{TAG}-planpay", "className"),
+    href=Output({"type": "id-address", "index": TAG}, "href"),
 ), Input(f"id-{TAG}-hash", "hash"), prevent_initial_call=False)
 def _init_page(_hash):
     # define variables
@@ -73,7 +76,14 @@ def _init_page(_hash):
         class_admin=class_none,
         class_infosec=class_none,
         class_planpay=class_none,
+        href=None,
     )
+
+    # check user
+    user = flask_login.current_user
+    if not user.is_authenticated:
+        outputs["href"] = PATH_LOGOUT
+        return outputs
 
     curr_id = f"id-{TAG}-{_hash.strip('#')}"
     if curr_id == f"id-{TAG}-admin":

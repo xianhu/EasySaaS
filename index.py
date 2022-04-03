@@ -16,7 +16,7 @@ from app import app
 from config import config_app_name
 from pages import palert, pemail, plogin, ppwd
 from pages import panalysis, pintros, puser
-from utility.consts import *
+from utility import *
 
 # app layout
 app.title = config_app_name
@@ -45,11 +45,8 @@ app.validation_layout = dbc.Container([])
 def _init_page(pathname, search, dclient, diwidth):
     logging.warning("pathname=%s, search=%s, dclient=%s, diwidth=%s", pathname, search, dclient, diwidth)
 
-    # define variables
-    pathname = PATH_INTROS if pathname == PATH_ROOT else pathname
-
     # =============================================================================================
-    if pathname == PATH_INTROS:
+    if pathname == PATH_INTROS or pathname == PATH_ROOT:
         dclient = {"title": pathname.strip("/").upper()}
         return pathname, search, dclient, pintros.layout(pathname, search)
 
@@ -62,7 +59,6 @@ def _init_page(pathname, search, dclient, diwidth):
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        pathname = PATH_LOGIN
         dclient = {"title": pathname.strip("/").upper()}
         return pathname, search, dclient, plogin.layout(pathname, search)
 
@@ -103,7 +99,7 @@ def _init_page(pathname, search, dclient, diwidth):
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
             dclient = {"title": pathname.strip("/").upper()}
-            return pathname, search, dclient, plogin.layout(pathname, search, next=PATH_USER)
+            return pathname, search, dclient, plogin.layout(pathname, search, nextpath=PATH_USER)
         dclient = {"title": pathname.strip("/").upper()}
         return pathname, search, dclient, puser.layout(pathname, search)
 
@@ -122,7 +118,6 @@ dash.clientside_callback(
     """ % config_app_name,
     Output("id-store-iwidth", "data"),
     Input("id-store-client", "data"),
-    prevent_initial_call=True,
 )
 
 # clientside callback
@@ -137,7 +132,6 @@ dash.clientside_callback(
     """,
     Output({"type": "id-address", "index": MATCH}, "data"),
     Input({"type": "id-address", "index": MATCH}, "href"),
-    prevent_initial_call=True,
 )
 
 if __name__ == "__main__":

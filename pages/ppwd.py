@@ -7,6 +7,7 @@ password page
 import hashlib
 import json
 import logging
+import urllib.parse
 
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
@@ -24,6 +25,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     try:
+        search = urllib.parse.parse_qs(search.lstrip("?").strip())
         token, email = json.loads(app_redis.get(search["_id"][0]))
         assert token == search["token"][0], (token, search["token"][0])
     except Exception as excep:
@@ -48,6 +50,7 @@ def layout(pathname, search, **kwargs):
 
     # define args
     kwargs = dict(
+        data=pathname,
         image_src="illustrations/password.svg",
         text_hd="Set password",
         text_sub="Set the password of this email please.",
@@ -71,10 +74,9 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd1", "value"),
     State(f"id-{TAG}-pwd2", "value"),
-    State(f"id-{TAG}-pathname", "data"),
-    State(f"id-{TAG}-search", "data"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, pathname, search):
+def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # check password
     if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", None

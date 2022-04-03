@@ -36,6 +36,7 @@ def layout(pathname, search, **kwargs):
 
     # define args
     kwargs = dict(
+        data=kwargs.get("nextpath"),
         image_src="illustrations/login.svg",
         text_hd="Sign in",
         text_sub="Login the system with your account.",
@@ -58,10 +59,9 @@ def layout(pathname, search, **kwargs):
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd", "value"),
-    State(f"id-{TAG}-pathname", "data"),
-    State(f"id-{TAG}-search", "data"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, pathname, search):
+def _button_click(n_clicks, email, pwd, nextpath):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
@@ -81,4 +81,4 @@ def _button_click(n_clicks, email, pwd, pathname, search):
     flask_login.login_user(user)
 
     # return result
-    return None, search.get("next", [PATH_ROOT, ])[0]
+    return None, nextpath or PATH_ROOT
