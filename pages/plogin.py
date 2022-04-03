@@ -12,7 +12,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from utility.consts import *
+from utility import *
 from . import tsign
 
 TAG = "login"

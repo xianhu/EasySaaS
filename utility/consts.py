@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-Constants File
+constants
 """
 
 import re

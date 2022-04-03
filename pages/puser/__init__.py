@@ -30,7 +30,7 @@ def layout(pathname, search, **kwargs):
     """
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
-        ccatalog.layout(CATALOG_LIST, curr_path=None, class_name=None),
+        ccatalog.layout(CATALOG_LIST, class_name=None),
         dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
     ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 

@@ -13,7 +13,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import User, app, app_db, app_redis
-from utility.consts import *
+from utility import *
 from . import palert, tsign
 
 TAG = "pwd"

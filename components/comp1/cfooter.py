@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from config import config_app_name
-from utility.consts import PATH_ROOT
+from utility import PATH_ROOT
 
 
 def layout(fluid=None, class_name=None):
