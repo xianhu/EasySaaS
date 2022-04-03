@@ -17,7 +17,8 @@ from consts import PATH_ROOT
 from model import User, app_db
 
 # logging config
-logging.basicConfig(format=config_log_format, level=logging.WARNING)
+log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"
+logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # create app
 app = dash.Dash(
