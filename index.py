@@ -15,7 +15,7 @@ from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
-from consts import *
+from utility.consts import *
 from pages import palert, pemail, plogin, ppwd
 from pages import panalysis, pintros, puser
 

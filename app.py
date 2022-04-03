@@ -13,7 +13,7 @@ from flask_mail import Mail
 from flask_redis import FlaskRedis
 
 from config import *
-from consts import PATH_ROOT
+from utility.consts import PATH_ROOT
 from model import User, app_db
 
 # logging config

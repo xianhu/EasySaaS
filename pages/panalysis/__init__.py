@@ -12,7 +12,7 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from components import cadmulti, cadsingle
 from components import cnavbar, csmallnav
-from consts import PATH_ANALYSIS
+from utility.consts import PATH_ANALYSIS
 from . import ptable
 from .dplotly import pplotly
 

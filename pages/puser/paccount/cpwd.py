@@ -10,7 +10,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from consts import *
+from utility.consts import *
 
 TAG = "user-pwd"
 
