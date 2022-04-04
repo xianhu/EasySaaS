@@ -9,14 +9,14 @@ import flask_login
 from dash import Input, Output, State, html
 
 from app import app, app_db
-from utility.consts import PATH_LOGIN, RE_PHONE
+from utility import PATH_LOGIN, RE_PHONE
 
 TAG = "user-basic"
 
 
 def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define variables
     name = flask_login.current_user.name

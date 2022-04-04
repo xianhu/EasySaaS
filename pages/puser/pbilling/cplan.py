@@ -12,7 +12,7 @@ TAG = "user-plan"
 
 def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define components
     left = [

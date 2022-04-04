@@ -10,14 +10,14 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from utility.consts import *
+from utility import PATH_LOGOUT, PATH_LOGIN, RE_PWD
 
 TAG = "user-pwd"
 
 
 def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define components
     c_pwd = dbc.FormFloating(children=[

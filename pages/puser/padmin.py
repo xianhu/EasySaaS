@@ -12,7 +12,9 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    return dbc.Card(children=[
-        dbc.CardHeader("Admin", class_name="px-4 py-3"),
-        html.Div(children=[], className="p-4"),
-    ], class_name="mb-4")
+    return html.Div(children=[
+        dbc.Card(children=[
+            dbc.CardHeader("Admin", class_name="px-4 py-3"),
+            html.Div(children=[], className="p-4"),
+        ], class_name=None),
+    ], className="mb-4")

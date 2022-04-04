@@ -19,7 +19,7 @@ NOTIFICATIONS = [
 
 def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define components
     row_header = dbc.Row(children=[

@@ -18,7 +18,7 @@ INVOICE_LIST = [
 
 def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define components
     row_invoice_list = []
