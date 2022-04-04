@@ -9,6 +9,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from components import cbrand
+from utility import PATH_ROOT
 
 
 def layout(pathname, search, tag, **kwargs):
@@ -34,12 +35,12 @@ def layout(pathname, search, tag, **kwargs):
 
     # return result
     return dbc.Container(children=[
-        cbrand.layout(class_name="position-absolute top-0 start-0 p-0"),
+        cbrand.layout(href=PATH_ROOT, class_name="position-absolute top-0 start-0 p-0"),
         dbc.Row(children=[
             dbc.Col(left, width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0"),
             dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
         ], align="center", justify="center", class_name="vh-100"),
         # define components
         html.A(id={"type": "id-address", "index": tag}),
-        dcc.Store(id=f"id-{tag}-data", data=kwargs.get("data")),
+        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
     ], fluid=True, class_name=None)

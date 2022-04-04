@@ -33,8 +33,8 @@ def layout(pathname, search, **kwargs):
     ]), class_name=None)
 
     # define args
-    kwargs = dict(data=pathname)
-    kwargs.update(dict(
+    kwargs_temp = dict(data=pathname)
+    kwargs_temp.update(dict(
         image_src="illustrations/register.svg",
         text_hd="Sign up",
         text_sub="Register an account through an email.",
@@ -57,7 +57,7 @@ def layout(pathname, search, **kwargs):
     ))
 
     # return result
-    return tsign.layout(pathname, search, TAG, **kwargs)
+    return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
 @app.callback([

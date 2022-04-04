@@ -49,8 +49,8 @@ def layout(pathname, search, **kwargs):
     ], class_name=None)
 
     # define args
-    kwargs = dict(
-        data=pathname,
+    kwargs_temp = dict(data=pathname)
+    kwargs_temp.update(dict(
         image_src="illustrations/password.svg",
         text_hd="Set password",
         text_sub="Set the password of this email please.",
@@ -60,10 +60,10 @@ def layout(pathname, search, **kwargs):
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_REGISTERE),
         ],
-    )
+    ))
 
     # return result
-    return tsign.layout(pathname, search, TAG, **kwargs)
+    return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
 @app.callback([

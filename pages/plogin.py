@@ -35,8 +35,8 @@ def layout(pathname, search, **kwargs):
     ], class_name=None)
 
     # define args
-    kwargs = dict(
-        data=kwargs.get("nextpath"),
+    kwargs_temp = dict(data=kwargs.get("nextpath", PATH_ROOT))
+    kwargs_temp.update(dict(
         image_src="illustrations/login.svg",
         text_hd="Sign in",
         text_sub="Login the system with your account.",
@@ -46,10 +46,10 @@ def layout(pathname, search, **kwargs):
             html.A("Sign up", href=PATH_REGISTERE),
             html.A("Forget password?", href=PATH_RESETPWDE),
         ],
-    )
+    ))
 
     # return result
-    return tsign.layout(pathname, search, TAG, **kwargs)
+    return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
 @app.callback([
@@ -81,4 +81,4 @@ def _button_click(n_clicks, email, pwd, nextpath):
     flask_login.login_user(user)
 
     # return result
-    return None, nextpath or PATH_ROOT
+    return None, nextpath
