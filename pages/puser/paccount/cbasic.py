@@ -25,7 +25,7 @@ def layout(class_name=None):
 
     # define components
     c_email = dbc.FormFloating(children=[
-        dbc.Input(id=f"id-{TAG}-email", type="email", value=email, disabled=True),
+        dbc.Input(id=f"id-{TAG}-email", type="email", value=email, readonly=True),
         dbc.Label("Email:", html_for=f"id-{TAG}-email"),
     ])
     c_name = dbc.FormFloating(children=[

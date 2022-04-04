@@ -35,7 +35,7 @@ def layout(pathname, search, **kwargs):
     # define components
     form_items = dbc.Form(children=[
         dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email", value=email, disabled=True),
+            dbc.Input(id=f"id-{TAG}-email", type="email", value=email, readonly=True),
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
         ], class_name=None),
         dbc.FormFloating(children=[
