@@ -4,53 +4,28 @@
 analysis page
 """
 
-import base64
-
 import dash_bootstrap_components as dbc
+import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app
-from components import cadmulti, cadsingle
-from components import cnavbar, csmallnav
-from utility.consts import PATH_ANALYSIS
-from . import ptable
-from .dplotly import pplotly
+from components import cnavbar, csmallnav, cadmulti, cadsingle
+from utility import PATH_LOGOUT
+from . import pfileud
+from .dplotly import pptbar, pptline, pptpie, pptscatter
+from .dtables import ptbdash, ptbplotly
 
 TAG = "analysis"
 CATALOG_LIST = [
+    ["Tables", f"id-{TAG}-ad-tables", [
+        ("Dash Table", f"id-{TAG}-tb-dash", "#tb-dash"),
+        ("Plotly Table", f"id-{TAG}-tb-plotly", "#tb-plotly"),
+    ]],
     ["Plotly", f"id-{TAG}-ad-plotly", [
-        ("Scatter Plots", f"id-{TAG}-pl-scatter", f"{PATH_ANALYSIS}-pl-scatter"),
-        ("Line Charts", f"id-{TAG}-pl-line", f"{PATH_ANALYSIS}-pl-line"),
-        ("Bar Charts", f"id-{TAG}-pl-bar", f"{PATH_ANALYSIS}-pl-bar"),
-        ("Pie Charts", f"id-{TAG}-pl-pie", f"{PATH_ANALYSIS}-pl-pie"),
-    ]],
-    ["Industry", f"id-{TAG}-ad-industry", [
-        ("Basic", f"id-{TAG}-id-basic", f"{PATH_ANALYSIS}-id-basic"),
-        ("Statistical", f"id-{TAG}-id-statistical", f"{PATH_ANALYSIS}-id-statistical"),
-        ("Scientific", f"id-{TAG}-id-scientific", f"{PATH_ANALYSIS}-id-scientific"),
-        ("Financial", f"id-{TAG}-id-financial", f"{PATH_ANALYSIS}-id-financial"),
-        ("AL And ML", f"id-{TAG}-id-alandml", f"{PATH_ANALYSIS}-id-alandml"),
-    ]],
-    ["Dashboards", f"id-{TAG}-ad-dashboards", [
-        ("Analytics", f"id-{TAG}-db-analytics", f"{PATH_ANALYSIS}-db-analytics"),
-        ("CustomRM", f"id-{TAG}-db-cumtomrm", f"{PATH_ANALYSIS}-db-cumtomrm"),
-        ("Ecommerce", f"id-{TAG}-db-ecommerce", f"{PATH_ANALYSIS}-db-ecommerce"),
-        ("Projects", f"id-{TAG}-db-projects", f"{PATH_ANALYSIS}-db-projects"),
-    ]],
-    ["Email", f"id-{TAG}-ad-email", [
-        ("Inbox", f"id-{TAG}-em-inbox", f"{PATH_ANALYSIS}-em-inbox"),
-        ("Read Email", f"id-{TAG}-em-read", f"{PATH_ANALYSIS}-em-read"),
-    ]],
-    ["Project", f"id-{TAG}-ad-project", [
-        ("List", f"id-{TAG}-pj-list", f"{PATH_ANALYSIS}-pj-list"),
-        ("Details", f"id-{TAG}-pj-details", f"{PATH_ANALYSIS}-pj-details"),
-        ("Gantt", f"id-{TAG}-pj-gantt", f"{PATH_ANALYSIS}-pj-gantt"),
-        ("Create Project", f"id-{TAG}-pj-create", f"{PATH_ANALYSIS}-pj-create"),
-    ]],
-    ["Tasks", f"id-{TAG}-ad-tasks", [
-        ("List", f"id-{TAG}-ts-list", f"{PATH_ANALYSIS}-ts-list"),
-        ("Details", f"id-{TAG}-ts-details", f"{PATH_ANALYSIS}-ts-details"),
-        ("Kanban Board", f"id-{TAG}-ts-board", f"{PATH_ANALYSIS}-ts-board"),
+        ("Scatter Charts", f"id-{TAG}-pt-scatter", "#pt-scatter"),
+        ("Line Charts", f"id-{TAG}-pt-line", "#pt-line"),
+        ("Bar Charts", f"id-{TAG}-pt-bar", "#pt-bar"),
+        ("Pie Charts", f"id-{TAG}-pt-pie", "#pt-pie"),
     ]],
 ]
 
@@ -59,63 +34,111 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    # define pathname
-    pathname = f"{PATH_ANALYSIS}-table" if pathname == PATH_ANALYSIS else pathname
-
     # define components
-    if pathname.startswith(f"{PATH_ANALYSIS}-pl-"):
-        title = "Plotly Page"
-        _type = pathname.split("-")[-1]
-        content = pplotly.layout(pathname, search, title=title, _type=_type)
-    else:
-        title = "Table Page"
-        content = ptable.layout(pathname, search, title=title)
-
-    # define components
-    button = dbc.Button("Upload Data", class_name="w-75")
-    args_up = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
-    t_title, t_id, t_href = "Table", f"id-{TAG}-table", f"{PATH_ANALYSIS}-table"
-
-    # define components
+    kwargs_file = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", path="#fileud")
     catalog = dbc.Collapse(children=[
-        dcc.Upload(button, id=f"id-{TAG}-upload", **args_up, className="text-center my-4"),
-        cadsingle.layout(t_title, t_id, t_href, curr_path=pathname, flush=True, class_name="border-top-solid"),
-        cadmulti.layout(CATALOG_LIST, curr_path=pathname, flush=True, class_name="border-top-solid border-bottom-solid"),
+        cadsingle.layout(**kwargs_file, flush=True, class_name="border-bottom-solid"),
+        cadmulti.layout(CATALOG_LIST, flush=True, class_name="border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
+
+    # define components
+    ctid = f"id-{TAG}-content"
+    content = dbc.Row(children=[
+        dbc.Col(catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
+        dbc.Col(id=ctid, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
+    ], align="start", justify="center", class_name="h-100-scroll")
 
     # return result
     return html.Div(children=[
         cnavbar.layout(fluid=True, class_name=None),
-        csmallnav.layout(f"id-{TAG}-toggler", title, fluid=True),
-        dbc.Container(dbc.Row(children=[
-            dbc.Col(catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
-            dbc.Col(content, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
-        ], justify="center", class_name="h-100-scroll"), fluid=True, class_name="h-100-scroll"),
+        csmallnav.layout(f"id-{TAG}-toggler", "Analysis", fluid=True),
+        dbc.Container(content, fluid=True, class_name="h-100-scroll"),
+        # define components
+        html.A(id={"type": "id-address", "index": TAG}),
+        dcc.Location(id=f"id-{TAG}-location", refresh=False),
     ], className="d-flex flex-column vh-100 overflow-scroll")
+
+
+@app.callback(output=[
+    dict(cfileud=Output(f"id-{TAG}-fileud", "className")),
+    dict(
+        ctbdash=Output(f"id-{TAG}-tb-dash", "className"),
+        ctbplotly=Output(f"id-{TAG}-tb-plotly", "className"),
+    ),
+    dict(
+        cptscatter=Output(f"id-{TAG}-pt-scatter", "className"),
+        cptline=Output(f"id-{TAG}-pt-line", "className"),
+        cptbar=Output(f"id-{TAG}-pt-bar", "className"),
+        cptpie=Output(f"id-{TAG}-pt-pie", "className"),
+    ),
+    dict(
+        content=Output(f"id-{TAG}-content", "children"),
+        href=Output({"type": "id-address", "index": TAG}, "href"),
+    ),
+], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
+def _init_page(hvalue):
+    # define class
+    class_curr_sigl = "accordion-button collapsed bg-image-after-none text-primary"
+    class_none_sigl = "accordion-button collapsed bg-image-after-none text-black hover-primary"
+
+    # define class
+    class_curr_mult = "text-decoration-none px-5 py-2 text-primary"
+    class_none_mult = "text-decoration-none px-5 py-2 text-black hover-primary"
+
+    # define output
+    output1 = dict(cfileud=class_none_sigl)
+    output2 = dict(
+        ctbdash=class_none_mult,
+        ctbplotly=class_none_mult,
+    )
+    output3 = dict(
+        cptscatter=class_none_mult,
+        cptline=class_none_mult,
+        cptbar=class_none_mult,
+        cptpie=class_none_mult,
+    )
+    output4 = dict(content=None, href=None)
+
+    # check user
+    if not flask_login.current_user.is_authenticated:
+        output4.update(dict(href=PATH_LOGOUT))
+        return [output1, output2, output3, output4]
+
+    # define content
+    curr_id = (hvalue or "").strip("#") or "fileud"
+    if curr_id == "fileud":
+        output1.update(dict(cfileud=class_curr_sigl))
+        output4.update(dict(content=pfileud.layout(None, None)))
+    elif curr_id == "tb-dash":
+        output2.update(dict(ctbdash=class_curr_mult))
+        output4.update(dict(content=ptbdash.layout(None, None))),
+    elif curr_id == "tb-plotly":
+        output2.update(dict(ctbplotly=class_curr_mult))
+        output4.update(dict(content=ptbplotly.layout(None, None))),
+    elif curr_id == "pt-scatter":
+        output3.update(dict(cptscatter=class_curr_mult))
+        output4.update(dict(content=pptscatter.layout(None, None))),
+    elif curr_id == "pt-line":
+        output3.update(dict(cptline=class_curr_mult))
+        output4.update(dict(content=pptline.layout(None, None))),
+    elif curr_id == "pt-bar":
+        output3.update(dict(cptbar=class_curr_mult))
+        output4.update(dict(content=pptbar.layout(None, None))),
+    elif curr_id == "pt-pie":
+        output3.update(dict(cptpie=class_curr_mult))
+        output4.update(dict(content=pptpie.layout(None, None))),
+
+    # return result
+    return [output1, output2, output3, output4]
 
 
 @app.callback(
     Output(f"id-{TAG}-collapse", "is_open"),
     Input(f"id-{TAG}-toggler", "n_clicks"),
+    Input(f"id-{TAG}-location", "hash"),
     State(f"id-{TAG}-collapse", "is_open"),
 )
-def _toggle_navbar(n_clicks, is_open):
+def _toggle_navbar(n_clicks, hvalue, is_open):
     if n_clicks:
         return not is_open
     return is_open
-
-
-@app.callback(
-    Output({"type": "id-address", "index": TAG}, "href"),
-    Input(f"id-{TAG}-upload", "contents"),
-    State(f"id-{TAG}-upload", "filename"),
-    prevent_initial_call=True,
-)
-def _button_click(contents, filename):
-    # store data
-    content_type, content_string = contents.split(",")
-    with open(f".data/{filename}", "wb") as file_out:
-        file_out.write(base64.b64decode(content_string))
-
-    # return result
-    return f"{PATH_ANALYSIS}-table"
