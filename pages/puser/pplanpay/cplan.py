@@ -7,12 +7,12 @@ Current Plan
 import dash_bootstrap_components as dbc
 from dash import html
 
-TAG = "user-plan"
+TAG = "user-billing-plan"
 
 
-def layout(pathname, search, class_name=None):
+def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define components
     left = [

@@ -12,7 +12,7 @@ HEADER = "Let us hear from you directly!"
 HEADERSUB = "We always want to hear from you! Let us know how we can best help you and we'll do our very best."
 
 
-def layout(pathname, search, class_name=None):
+def layout(class_name=None):
     """
     layout of component
     """

@@ -14,10 +14,11 @@ from flask_redis import FlaskRedis
 
 from config import *
 from model import User, app_db
-from paths import PATH_ROOT
+from utility import PATH_ROOT
 
 # logging config
-logging.basicConfig(format=config_log_format, level=logging.WARNING)
+log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"
+logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # create app
 app = dash.Dash(

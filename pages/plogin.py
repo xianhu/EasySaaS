@@ -12,14 +12,13 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from paths import PATH_REGISTERE, PATH_RESETPWDE, PATH_ROOT
-from templates import tsign
-from utility import RE_EMAIL
+from utility import *
+from . import tsign
 
 TAG = "login"
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """
@@ -33,23 +32,24 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-pwd", type="password"),
             dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
-    ])
+    ], class_name=None)
 
-    # define parames
-    params = {
-        "image_src": "illustrations/login.svg",
-        "text_hd": "Sign in",
-        "text_sub": "Login the system with your account.",
-        "form_items": form_items,
-        "text_button": "Sign in",
-        "other_list": [
+    # define args
+    kwargs_temp = dict(data=kwargs.get("nextpath", PATH_ROOT))
+    kwargs_temp.update(dict(
+        image_src="illustrations/login.svg",
+        text_hd="Sign in",
+        text_sub="Login the system with your account.",
+        form_items=form_items,
+        text_button="Sign in",
+        other_list=[
             html.A("Sign up", href=PATH_REGISTERE),
             html.A("Forget password?", href=PATH_RESETPWDE),
         ],
-    }
+    ))
 
     # return result
-    return tsign.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
 @app.callback([
@@ -59,10 +59,9 @@ def layout(pathname, search):
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd", "value"),
-    State(f"id-{TAG}-pathname", "data"),
-    State(f"id-{TAG}-search", "data"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, pathname, search):
+def _button_click(n_clicks, email, pwd, nextpath):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
@@ -82,4 +81,4 @@ def _button_click(n_clicks, email, pwd, pathname, search):
     flask_login.login_user(user)
 
     # return result
-    return None, search.get("next", [PATH_ROOT, ])[0]
+    return None, nextpath

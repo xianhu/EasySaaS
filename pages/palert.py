@@ -7,7 +7,7 @@ alert page
 import dash_bootstrap_components as dbc
 from dash import html
 
-from paths import PATH_ROOT
+from utility import PATH_ROOT
 
 
 def layout(pathname, search, text_hd, text_sub, text_button, return_href):

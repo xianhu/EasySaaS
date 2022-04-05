@@ -7,7 +7,7 @@ Invoice History
 import dash_bootstrap_components as dbc
 from dash import html
 
-TAG = "user-invoice"
+TAG = "user-billing-invoice"
 INVOICE_LIST = [
     ("91240", "01/12/2020", 0),
     ("91230", "01/11/2020", 1),
@@ -16,9 +16,9 @@ INVOICE_LIST = [
 ]
 
 
-def layout(pathname, search, class_name=None):
+def layout(class_name=None):
     """
-    layout of card
+    layout of component
     """
     # define components
     row_invoice_list = []

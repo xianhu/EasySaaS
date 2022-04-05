@@ -6,4 +6,3 @@ components module
 
 from .comp1 import cbrand, cfooter, cnavbar, csmallnav
 from .comp2 import cadmulti, cadsingle, ccatalog
-from .comp3 import cplotly, ctable

@@ -21,6 +21,7 @@ source .bash_profile
 ### Install venv And requirements.txt
 
 ```
+# Python3.8 required
 cd {DIR} && python3.8 -m venv .venv
 source .venv/bin/activate / deactivate
 pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/

@@ -4,5 +4,5 @@
 utility module
 """
 
-from .consts import RE_PWD, RE_PHONE, RE_EMAIL
+from .consts import *
 from .trigger import get_trigger_property

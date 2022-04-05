@@ -7,25 +7,25 @@ password page
 import hashlib
 import json
 import logging
+import urllib.parse
 
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import User, app, app_db, app_redis
-from paths import PATH_LOGIN, PATH_REGISTERE, PATH_ROOT
-from templates import tsign
-from utility import RE_PWD
-from . import palert
+from utility import *
+from . import palert, tsign
 
 TAG = "pwd"
 
 
-def layout(pathname, search):
+def layout(pathname, search, **kwargs):
     """
     layout of page
     """
     try:
+        search = urllib.parse.parse_qs(search.lstrip("?").strip())
         token, email = json.loads(app_redis.get(search["_id"][0]))
         assert token == search["token"][0], (token, search["token"][0])
     except Exception as excep:
@@ -35,7 +35,7 @@ def layout(pathname, search):
     # define components
     form_items = dbc.Form(children=[
         dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email", value=email, disabled=True),
+            dbc.Input(id=f"id-{TAG}-email", type="email", value=email, readonly=True),
             dbc.Label("Email:", html_for=f"id-{TAG}-email"),
         ], class_name=None),
         dbc.FormFloating(children=[
@@ -46,23 +46,24 @@ def layout(pathname, search):
             dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
             dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
-    ])
+    ], class_name=None)
 
-    # define parames
-    params = {
-        "image_src": "illustrations/password.svg",
-        "text_hd": "Set password",
-        "text_sub": "Set the password of this email please.",
-        "form_items": form_items,
-        "text_button": "Set password",
-        "other_list": [
+    # define args
+    kwargs_temp = dict(data=pathname)
+    kwargs_temp.update(dict(
+        image_src="illustrations/password.svg",
+        text_hd="Set password",
+        text_sub="Set the password of this email please.",
+        form_items=form_items,
+        text_button="Set password",
+        other_list=[
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_REGISTERE),
         ],
-    }
+    ))
 
     # return result
-    return tsign.layout(pathname, search, TAG, params)
+    return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
 @app.callback([
@@ -73,10 +74,9 @@ def layout(pathname, search):
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd1", "value"),
     State(f"id-{TAG}-pwd2", "value"),
-    State(f"id-{TAG}-pathname", "data"),
-    State(f"id-{TAG}-search", "data"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, pathname, search):
+def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # check password
     if (not pwd1) or (len(pwd1) < 6):
         return "Password is too short", None
