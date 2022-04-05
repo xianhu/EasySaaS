@@ -11,12 +11,10 @@ def layout(title, _id, path, flush=None, class_name=None):
     """
     layout of component
     """
-    # define class
-    class_click = "accordion-button collapsed bg-image-after-none text-black hover-primary"
-
     # define components
-    kwargs = dict(href=path, className="text-decoration-none")
-    address = html.A(html.Button(title, id=_id, className=class_click), **kwargs)
+    ctitle = html.Div(title, id=_id, className="text-black hover-primary")
+    button = html.Button(ctitle, className="accordion-button collapsed bg-image-after-none")
+    address = html.A(button, href=path, className="text-decoration-none")
 
     # define components
     header = html.H2(address, className="accordion-header")

@@ -11,23 +11,21 @@ def layout(catalog_list, class_name=None):
     """
     layout of component
     """
-    # define class
-    class_title = "small text-muted px-4 py-2"
-    class_click = "text-decoration-none px-4 py-2 text-black hover-primary"
-
     # define components
     catalog_item_list = []
     for title_first, id_first, list_second in catalog_list:
         if isinstance(list_second, str):
-            kwargs = dict(id=id_first, href=list_second, className=class_click)
-            catalog_item_list.append(html.A(title_first, **kwargs))
+            ctitle = html.Div(title_first, id=id_first, className="text-black hover-primary")
+            address = html.A(ctitle, href=list_second, className="text-decoration-none px-4 py-2")
+            catalog_item_list.append(address)
             continue
 
         # define components
-        catalog_item_list.append(html.Div(title_first, className=class_title))
+        catalog_item_list.append(html.Div(title_first, className="small text-muted px-4 py-2"))
         for title, _id, path in list_second:
-            kwargs = dict(id=_id, href=path, className=class_click)
-            catalog_item_list.append(html.A(title, **kwargs))
+            ctitle = html.Div(title, id=_id, className="text-black hover-primary")
+            address = html.A(ctitle, href=path, className="text-decoration-none px-4 py-2")
+            catalog_item_list.append(address)
 
     # return result
     return html.Div(catalog_item_list, className=f"d-flex flex-column {class_name}")

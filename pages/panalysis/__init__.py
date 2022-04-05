@@ -78,12 +78,12 @@ def layout(pathname, search, **kwargs):
 ], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
 def _init_page(hvalue):
     # define class
-    class_curr_sigl = "accordion-button collapsed bg-image-after-none text-primary"
-    class_none_sigl = "accordion-button collapsed bg-image-after-none text-black hover-primary"
+    class_curr_sigl = "text-primary"
+    class_none_sigl = "text-black hover-primary"
 
     # define class
-    class_curr_mult = "text-decoration-none px-5 py-2 text-primary"
-    class_none_mult = "text-decoration-none px-5 py-2 text-black hover-primary"
+    class_curr_mult = "text-primary"
+    class_none_mult = "text-black hover-primary"
 
     # define output
     output1 = dict(cfileud=class_none_sigl)

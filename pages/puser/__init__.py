@@ -61,8 +61,8 @@ def layout(pathname, search, **kwargs):
 ), Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
 def _init_page(hvalue):
     # define variables
-    class_curr = "text-decoration-none px-4 py-2 text-primary"
-    class_none = "text-decoration-none px-4 py-2 text-black hover-primary"
+    class_curr = "text-primary"
+    class_none = "text-black hover-primary"
 
     # define outpus
     outputs = dict(
