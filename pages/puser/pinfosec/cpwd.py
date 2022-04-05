@@ -12,7 +12,7 @@ from werkzeug import security
 from app import app, app_db
 from utility import PATH_LOGOUT, PATH_LOGIN, RE_PWD
 
-TAG = "user-pwd"
+TAG = "user-account-pwd"
 
 
 def layout(class_name=None):
@@ -20,32 +20,32 @@ def layout(class_name=None):
     layout of component
     """
     # define components
-    c_pwd = dbc.FormFloating(children=[
+    pwd = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-pwd", type="password"),
         dbc.Label("Current Password:", html_for=f"id-{TAG}-pwd"),
     ])
-    c_pwd1 = dbc.FormFloating(children=[
+    pwd1 = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
         dbc.Label("New Password:", html_for=f"id-{TAG}-pwd1"),
     ])
-    c_pwd2 = dbc.FormFloating(children=[
+    pwd2 = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
         dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
     ])
 
     # define components
-    c_fb = html.Div(id=f"id-{TAG}-fb", className="text-danger text-center")
-    c_button = dbc.Button("Update Password", id=f"id-{TAG}-button", class_name="w-100")
+    feedback = html.Div(id=f"id-{TAG}-feedback", className="text-danger text-center")
+    button = dbc.Button("Update Password", id=f"id-{TAG}-button", class_name="w-100")
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader("Change Password:", class_name="px-4 py-3"),
         dbc.Row(children=[
-            dbc.Col(c_pwd, width=12, md=4, class_name=None),
-            dbc.Col(c_pwd1, width=12, md=4, class_name="mt-2 mt-md-0"),
-            dbc.Col(c_pwd2, width=12, md=4, class_name="mt-2 mt-md-0"),
-            dbc.Col(c_fb, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
-            dbc.Col(c_button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
+            dbc.Col(pwd, width=12, md=4, class_name=None),
+            dbc.Col(pwd1, width=12, md=4, class_name="mt-2 mt-md-0"),
+            dbc.Col(pwd2, width=12, md=4, class_name="mt-2 mt-md-0"),
+            dbc.Col(feedback, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
+            dbc.Col(button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
         ], align="center", class_name="p-4"),
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
@@ -57,7 +57,7 @@ def layout(class_name=None):
 
 
 @app.callback([
-    Output(f"id-{TAG}-fb", "children"),
+    Output(f"id-{TAG}-feedback", "children"),
     Output(f"id-{TAG}-modal", "is_open"),
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [

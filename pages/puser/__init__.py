@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
 from utility import PATH_LOGOUT
-from . import paccount, pbilling, padmin
+from . import padmin, pinfosec, pplanpay
 
 TAG = "user"
 CATALOG_LIST = [
@@ -38,7 +38,7 @@ def layout(pathname, search, **kwargs):
     content = dbc.Row(children=[
         dbc.Col(catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
         dbc.Col(id=ctid, width=12, md=8, class_name="mt-4 mt-md-4"),
-    ], align="start", justify="center")
+    ], align="start", justify="center", class_name=None)
 
     # return result
     return html.Div(children=[
@@ -52,48 +52,48 @@ def layout(pathname, search, **kwargs):
     ], className="d-flex flex-column vh-100")
 
 
-@app.callback(dict(
-    cadmin=Output(f"id-{TAG}-admin", "className"),
-    cinfosec=Output(f"id-{TAG}-infosec", "className"),
-    cplanpay=Output(f"id-{TAG}-planpay", "className"),
-    content=Output(f"id-{TAG}-content", "children"),
-    href=Output({"type": "id-address", "index": TAG}, "href"),
-), Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
+@app.callback(output=[
+    dict(cadmin=Output(f"id-{TAG}-admin", "className")),
+    dict(
+        cinfosec=Output(f"id-{TAG}-infosec", "className"),
+        cplanpay=Output(f"id-{TAG}-planpay", "className"),
+    ),
+    dict(
+        content=Output(f"id-{TAG}-content", "children"),
+        href=Output({"type": "id-address", "index": TAG}, "href"),
+    ),
+], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
 def _init_page(hvalue):
     # define variables
-    class_curr = "text-primary"
-    class_none = "text-black hover-primary"
+    class_curr, class_none = "text-primary", "text-black hover-primary"
 
-    # define outpus
-    outputs = dict(
-        cadmin=class_none, cinfosec=class_none, cplanpay=class_none,
-        content=None, href=None,
+    # define output
+    output1 = dict(cadmin=class_none)
+    output2 = dict(
+        cinfosec=class_none,
+        cplanpay=class_none,
     )
+    outpute = dict(content=None, href=None)
 
     # check user
     if not flask_login.current_user.is_authenticated:
-        return outputs.update(dict(href=PATH_LOGOUT))
+        outpute.update(dict(href=PATH_LOGOUT))
+        return [output1, output2, outpute]
 
     # define content
-    curr_id = hvalue.strip("#") or "infosec"
+    curr_id = (hvalue or "").strip("#") or "infosec"
     if curr_id == "admin":
-        outputs.update(dict(
-            cadmin=class_curr,
-            content=padmin.layout(None, None),
-        ))
+        output1.update(dict(cadmin=class_curr))
+        outpute.update(dict(content=padmin.layout(None, None)))
     elif curr_id == "infosec":
-        outputs.update(dict(
-            cinfosec=class_curr,
-            content=paccount.layout(None, None),
-        ))
+        output2.update(dict(cinfosec=class_curr))
+        outpute.update(dict(content=pinfosec.layout(None, None)))
     elif curr_id == "planpay":
-        outputs.update(dict(
-            cplanpay=class_curr,
-            content=pbilling.layout(None, None)
-        ))
+        output2.update(dict(cplanpay=class_curr))
+        outpute.update(dict(content=pplanpay.layout(None, None)))
 
     # return result
-    return outputs
+    return [output1, output2, outpute]
 
 
 @app.callback(

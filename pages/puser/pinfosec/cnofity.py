@@ -7,7 +7,7 @@ Notifications
 import dash_bootstrap_components as dbc
 from dash import html
 
-TAG = "user-notify"
+TAG = "user-account-notify"
 NOTIFICATIONS = [
     "The Standard License grants you a non-exclusive right to make use of Theme you have purchased.",
     "You are licensed to use the Item to create one End Product for yourself or for one client (a “single application”), and the End Product can be distributed for Free.",
