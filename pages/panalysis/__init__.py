@@ -78,58 +78,57 @@ def layout(pathname, search, **kwargs):
 ], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
 def _init_page(hvalue):
     # define class
-    class_curr_sigl = "text-primary"
-    class_none_sigl = "text-black hover-primary"
-
-    # define class
-    class_curr_mult = "text-primary"
-    class_none_mult = "text-black hover-primary"
+    class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define output
-    output1 = dict(cfileud=class_none_sigl)
+    output1 = dict(cfileud=class_none)
     output2 = dict(
-        ctbdash=class_none_mult,
-        ctbplotly=class_none_mult,
+        ctbdash=class_none,
+        ctbplotly=class_none,
     )
     output3 = dict(
-        cptscatter=class_none_mult,
-        cptline=class_none_mult,
-        cptbar=class_none_mult,
-        cptpie=class_none_mult,
+        cptscatter=class_none,
+        cptline=class_none,
+        cptbar=class_none,
+        cptpie=class_none,
     )
-    output4 = dict(content=None, href=None)
+    outpute = dict(content=None, href=None)
 
     # check user
     if not flask_login.current_user.is_authenticated:
-        output4.update(dict(href=PATH_LOGOUT))
-        return [output1, output2, output3, output4]
+        outpute.update(dict(href=PATH_LOGOUT))
+        return [output1, output2, output3, outpute]
 
     # define content
     curr_id = (hvalue or "").strip("#") or "fileud"
     if curr_id == "fileud":
-        output1.update(dict(cfileud=class_curr_sigl))
-        output4.update(dict(content=pfileud.layout(None, None)))
+        output1.update(dict(cfileud=class_curr))
+        outpute.update(dict(content=pfileud.layout(None, None)))
+
+    # define content
     elif curr_id == "tb-dash":
-        output2.update(dict(ctbdash=class_curr_mult))
-        output4.update(dict(content=ptbdash.layout(None, None))),
+        output2.update(dict(ctbdash=class_curr))
+        outpute.update(dict(content=ptbdash.layout(None, None))),
     elif curr_id == "tb-plotly":
-        output2.update(dict(ctbplotly=class_curr_mult))
-        output4.update(dict(content=ptbplotly.layout(None, None))),
+        output2.update(dict(ctbplotly=class_curr))
+        outpute.update(dict(content=ptbplotly.layout(None, None))),
+
+    # define content
     elif curr_id == "pt-scatter":
-        output3.update(dict(cptscatter=class_curr_mult))
-        output4.update(dict(content=pptscatter.layout(None, None))),
+        output3.update(dict(cptscatter=class_curr))
+        outpute.update(dict(content=pptscatter.layout(None, None))),
     elif curr_id == "pt-line":
-        output3.update(dict(cptline=class_curr_mult))
-        output4.update(dict(content=pptline.layout(None, None))),
+        output3.update(dict(cptline=class_curr))
+        outpute.update(dict(content=pptline.layout(None, None))),
     elif curr_id == "pt-bar":
-        output3.update(dict(cptbar=class_curr_mult))
-        output4.update(dict(content=pptbar.layout(None, None))),
+        output3.update(dict(cptbar=class_curr))
+        outpute.update(dict(content=pptbar.layout(None, None))),
     elif curr_id == "pt-pie":
-        output3.update(dict(cptpie=class_curr_mult))
-        output4.update(dict(content=pptpie.layout(None, None))),
+        output3.update(dict(cptpie=class_curr))
+        outpute.update(dict(content=pptpie.layout(None, None))),
 
     # return result
-    return [output1, output2, output3, output4]
+    return [output1, output2, output3, outpute]
 
 
 @app.callback(

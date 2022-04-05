@@ -9,7 +9,7 @@ from dash import Input, Output, html
 
 from app import app
 
-TAG = "analysis-table-dash"
+TAG = "analysis-tables-dash"
 
 
 def layout(pathname, search, **kwargs):

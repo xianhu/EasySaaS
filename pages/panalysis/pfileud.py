@@ -17,7 +17,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     return dbc.Card(children=[
-        dbc.CardHeader("File Up & Down", class_name="px-4 py-3"),
+        dbc.CardHeader("File Upload & Download", class_name="px-4 py-3"),
         html.Div(dbc.Spinner(id=f"id-{TAG}-content"), className="p-4"),
     ], class_name=None, style={"minHeight": "600px"})
 

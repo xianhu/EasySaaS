@@ -9,7 +9,7 @@ from dash import Input, Output, html
 
 from app import app
 
-TAG = "analysis-table-plotly"
+TAG = "analysis-tables-plotly"
 
 
 def layout(pathname, search, **kwargs):
