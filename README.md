@@ -16,6 +16,7 @@ vim .bash_profile
 # export ES_MAIL_USERNAME=noreply@databai.com
 # export ES_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxx
 # export ES_REDIS_URI=redis://:password@host:port
+# export ES_DATABASE_URI=sqlite:///dir/main.db?charset=utf8
 source .bash_profile
 ```
 
@@ -34,14 +35,6 @@ pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 .venv/bin/uwsgi --ini aconfig/uwsgi.ini
 .venv/bin/uwsgi --reload index.pid
 .venv/bin/uwsgi --stop index.pid
-```
-
-### Run mysql And redis By Docker
-
-```
-docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD={password} -d mysql:5.7
-docker run --name redis -p 6379:6379 -d redis --requirepass "{redis-password}"
-docker inspect mysql/redis | grep IPAddress
 ```
 
 ### Run nginx By Docker, Config File: aconfig/nginx.conf

@@ -8,6 +8,7 @@ import logging
 
 import dash
 import dash_bootstrap_components as dbc
+from celery import Celery
 from flask_login import LoginManager, UserMixin
 from flask_mail import Mail
 from flask_redis import FlaskRedis
@@ -19,6 +20,10 @@ from utility import PATH_ROOT
 # logging config
 log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING)
+
+# define celery
+celery = Celery(__name__, broker=config_redis_uri, backend=config_redis_uri)
+long_callback_manager = CeleryLongCallbackManager(celery_app)
 
 # create app
 app = dash.Dash(
@@ -58,7 +63,7 @@ server.config.update(
     MAIL_DEFAULT_SENDER=config_mail_sender,
     MAIL_USE_TLS=False, MAIL_USE_SSL=True,
 
-    REDIS_URL=config_redis_uri,
+    REDIS_URL=f"{config_redis_uri}/0",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_DATABASE_URI=config_database_uri,
 )
