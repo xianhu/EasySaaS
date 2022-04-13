@@ -12,7 +12,7 @@ from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
 from utility import PATH_LOGOUT
 from . import pfileud
-from .dplotly import pptbar, pptline, pptpie, pptscatter
+from .dplotly import ppttemplate
 from .dtables import ptbdash, ptbplotly
 
 TAG = "analysis"
@@ -115,19 +115,19 @@ def _init_page(hvalue):
         output2.update(dict(ctbplotly=class_curr))
         outpute.update(dict(content=ptbplotly.layout(None, None))),
 
-    # define content
+    # define content(ppttemplate)
     elif curr_id == "pt-scatter":
         output3.update(dict(cptscatter=class_curr))
-        outpute.update(dict(content=pptscatter.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None))),
     elif curr_id == "pt-line":
         output3.update(dict(cptline=class_curr))
-        outpute.update(dict(content=pptline.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None))),
     elif curr_id == "pt-bar":
         output3.update(dict(cptbar=class_curr))
-        outpute.update(dict(content=pptbar.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None))),
     elif curr_id == "pt-pie":
         output3.update(dict(cptpie=class_curr))
-        outpute.update(dict(content=pptpie.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None))),
 
     # return result
     return [output1, output2, output3, outpute]
