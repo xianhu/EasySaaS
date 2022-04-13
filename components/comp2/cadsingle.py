@@ -7,14 +7,14 @@ accordion component
 from dash import html
 
 
-def layout(title, _id, path, flush=None, class_name=None):
+def layout(title, _id, href, flush=None, class_name=None):
     """
     layout of component
     """
     # define components
     ctitle = html.Div(title, id=_id, className="text-black hover-primary")
     button = html.Button(ctitle, className="accordion-button collapsed bg-image-after-none")
-    address = html.A(button, href=path, className="text-decoration-none")
+    address = html.A(button, href=href, className="text-decoration-none")
 
     # define components
     header = html.H2(address, className="accordion-header")

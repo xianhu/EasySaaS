@@ -22,9 +22,9 @@ def layout(catalog_list, class_name=None):
 
         # define components
         catalog_item_list.append(html.Div(title_first, className="small text-muted px-4 py-2"))
-        for title, _id, path in list_second:
+        for title, _id, href in list_second:
             ctitle = html.Div(title, id=_id, className="text-black hover-primary")
-            address = html.A(ctitle, href=path, className="text-decoration-none px-4 py-2")
+            address = html.A(ctitle, href=href, className="text-decoration-none px-4 py-2")
             catalog_item_list.append(address)
 
     # return result

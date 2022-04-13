@@ -5,7 +5,9 @@ plotly table page
 """
 
 import dash_bootstrap_components as dbc
-from dash import Input, Output, html
+import plotly
+import plotly.graph_objects as go
+from dash import Input, Output, dcc, html
 
 from app import app
 
@@ -28,4 +30,8 @@ def layout(pathname, search, **kwargs):
     prevent_initial_call=False,
 )
 def _init_page(spinner_type):
-    return None
+    data = plotly.data.iris()
+    return dcc.Graph(figure=go.Figure(go.Table(
+        header=dict(values=list(data.columns), fill_color="paleturquoise", align="left"),
+        cells=dict(values=[data[c] for c in data.columns], fill_color="lavender", align="left"),
+    ), layout=None), className=None)

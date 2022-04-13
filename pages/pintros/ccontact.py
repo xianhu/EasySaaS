@@ -17,19 +17,19 @@ def layout(class_name=None):
     layout of component
     """
     # define components
-    c_email = dbc.FormFloating(children=[
+    email = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-email", type="email"),
         dbc.Label("Email:", html_for=f"id-{TAG}-email"),
     ])
-    c_name = dbc.FormFloating(children=[
+    name = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-name", type="text"),
         dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
     ])
-    c_text = dbc.Textarea(
+    text = dbc.Textarea(
         id=f"id-{TAG}-text", rows=4,
         placeholder="Tell us what we can help you with!",
     )
-    c_button = dbc.Button("Send message", id=f"id-{TAG}-button")
+    button = dbc.Button("Send message", id=f"id-{TAG}-button")
 
     # return result
     return html.Div(children=[
@@ -40,9 +40,9 @@ def layout(class_name=None):
             ], width=12, md=6),
         ], align="center", justify="center", class_name=None),
         dbc.Row(children=[
-            dbc.Col(c_email, width=10, md=4, class_name=None),
-            dbc.Col(c_name, width=10, md=4, class_name="mt-4 mt-md-0"),
-            dbc.Col(c_text, width=10, md=8, class_name="mt-4 mt-md-4"),
-            dbc.Col(c_button, width=10, md=8, class_name="mt-4 mt-md-4 text-center"),
+            dbc.Col(email, width=10, md=4, class_name=None),
+            dbc.Col(name, width=10, md=4, class_name="mt-4 mt-md-0"),
+            dbc.Col(text, width=10, md=8, class_name="mt-4 mt-md-4"),
+            dbc.Col(button, width=10, md=8, class_name="mt-4 mt-md-4 text-center"),
         ], align="center", justify="center", class_name="mt-2"),
     ], className=class_name)

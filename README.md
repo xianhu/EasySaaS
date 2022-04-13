@@ -9,12 +9,13 @@ application using Python and Dash.
 
 ```
 vim .bash_profile
+# export ES_APP_DOMAIN=http://0.0.0.0:8088
+# export ES_APP_SECRET_KEY=fejiadhjfehuhad
 # export ES_MAIL_SERVER=smtp.feishu.cn
 # export ES_MAIL_PORT=465
 # export ES_MAIL_USERNAME=noreply@databai.com
-# export ES_MAIL_PASSWORD=xxxxxxxxxxxxx
-# export ES_APP_DOMAIN=http://0.0.0.0:8088
-# export ES_APP_SECRET_KEY=fejiadhjfehuhad
+# export ES_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxx
+# export ES_REDIS_URI=redis://:password@host:port
 source .bash_profile
 ```
 

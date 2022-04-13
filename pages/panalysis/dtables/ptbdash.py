@@ -5,7 +5,8 @@ dash table page
 """
 
 import dash_bootstrap_components as dbc
-from dash import Input, Output, html
+import plotly
+from dash import Input, Output, dash_table, html
 
 from app import app
 
@@ -28,4 +29,12 @@ def layout(pathname, search, **kwargs):
     prevent_initial_call=False,
 )
 def _init_page(spinner_type):
-    return None
+    data = plotly.data.iris()
+    return dash_table.DataTable(
+        id="table",
+        columns=[{"name": i, "id": i} for i in data.columns],
+        data=data.to_dict("records"),
+        style_cell=dict(textAlign="left"),
+        style_header=dict(backgroundColor="paleturquoise"),
+        style_data=dict(backgroundColor="lavender"),
+    )

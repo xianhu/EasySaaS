@@ -41,9 +41,10 @@ def layout(pathname, search, **kwargs):
     ], align="start", justify="center", class_name=None)
 
     # return result
+    tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         cnavbar.layout(fluid=False, class_name=None),
-        csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),
+        csmallnav.layout(tgid, "User", fluid=False, class_name=None),
         dbc.Container(content, fluid=False, class_name=None),
         cfooter.layout(fluid=False, class_name=None),
         # define components
@@ -64,8 +65,9 @@ def layout(pathname, search, **kwargs):
     ),
 ], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
 def _init_page(hvalue):
-    # define variables
-    class_curr, class_none = "text-primary", "text-black hover-primary"
+    # define class
+    class_curr = "text-primary"
+    class_none = "text-black hover-primary"
 
     # define output
     output1 = dict(cadmin=class_none)
