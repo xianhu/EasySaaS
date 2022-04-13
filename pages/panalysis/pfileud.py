@@ -23,6 +23,7 @@ def layout(pathname, search, **kwargs):
     args_up = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
     button_upload = dcc.Upload(dbc.Button("Upload Data"), id=f"id-{TAG}-upload", **args_up)
 
+    # define components
     download = dcc.Download(id=f"id-{TAG}-download"),
     button_download = dbc.Button("Download Data", id=f"id-{TAG}-dlbutton")
 
@@ -66,6 +67,7 @@ def _init_page(contents, filename):
     prevent_initial_call=True,
 )
 def _button_click(n_clicks):
+    # download data
     data = plotly.data.iris()
     # return dcc.send_data_frame(data.to_csv, filename="demo.csv", sep="\t", index=False)
     return dict(base64=False, filename="demo.csv", content=data.to_csv(sep="\t", index=False))
