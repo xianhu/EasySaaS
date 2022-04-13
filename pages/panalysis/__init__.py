@@ -35,7 +35,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_file = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", path="#fileud")
+    kwargs_file = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     catalog = dbc.Collapse(children=[
         cadsingle.layout(**kwargs_file, flush=True, class_name="border-bottom-solid"),
         cadmulti.layout(CATALOG_LIST, flush=True, class_name="border-bottom-solid"),
@@ -49,9 +49,10 @@ def layout(pathname, search, **kwargs):
     ], align="start", justify="center", class_name="h-100-scroll")
 
     # return result
+    tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         cnavbar.layout(fluid=True, class_name=None),
-        csmallnav.layout(f"id-{TAG}-toggler", "Analysis", fluid=True),
+        csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
@@ -78,7 +79,8 @@ def layout(pathname, search, **kwargs):
 ], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
 def _init_page(hvalue):
     # define class
-    class_curr, class_none = "text-primary", "text-black hover-primary"
+    class_curr = "text-primary"
+    class_none = "text-black hover-primary"
 
     # define output
     output1 = dict(cfileud=class_none)
