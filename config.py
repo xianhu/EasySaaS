@@ -22,13 +22,9 @@ config_mail_password = os.environ.get(f"{ENV_PREFIX}_MAIL_PASSWORD")
 config_mail_sender = (config_app_name, config_mail_username)
 
 # define uri of database
+config_redis_uri = os.environ.get(f"{ENV_PREFIX}_REDIS_URI")
 config_database_uri = "sqlite:///.data/main.db?charset=utf8"
 # "mysql+pymysql://user:pwd@localhost:3306/main?charset=utf8"
-
-# define uri of redis
-config_redis_uri = "redis://localhost:6379/0"
-config_redis_uri_1 = "redis://localhost:6379/1"
-config_redis_uri_2 = "redis://localhost:6379/2"
 
 if __name__ == "__main__":
     for key, value in list(locals().items()):
