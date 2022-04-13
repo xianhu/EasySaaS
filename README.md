@@ -5,6 +5,14 @@ application using Python and Dash.
 
 ## Install For Development
 
+### Run mysql And redis By Docker
+
+```
+docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD={password} -d mysql:5.7
+docker run --name redis -p 6379:6379 -d redis --requirepass "{redis-password}"
+docker inspect mysql/redis | grep IPAddress
+```
+
 ### Update System Environs
 
 ```
@@ -17,6 +25,7 @@ vim .bash_profile
 # export ES_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxx
 # export ES_REDIS_URI=redis://:password@host:port
 # export ES_DATABASE_URI=sqlite:///dir/main.db?charset=utf8
+# mysql+pymysql://user:pwd@localhost:3306/main?charset=utf8
 source .bash_profile
 ```
 
