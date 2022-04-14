@@ -5,6 +5,7 @@ file page
 """
 
 import base64
+import time
 
 import dash_bootstrap_components as dbc
 import plotly
@@ -20,39 +21,44 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    args_up = {"accept": ".csv", "max_size": 1024 * 1024 * 10}
-    button_upload = dcc.Upload(dbc.Button("Upload Data"), id=f"id-{TAG}-upload", **args_up)
+    button_up = dbc.Button("Upload Data", id=f"id-{TAG}-btnup")
+    upload = dcc.Upload(button_up, id=f"id-{TAG}-upload", max_size=1024 * 1024 * 10)
 
     # define components
-    download = dcc.Download(id=f"id-{TAG}-download"),
-    button_download = dbc.Button("Download Data", id=f"id-{TAG}-dlbutton")
+    button_down = dbc.Button("Download Data", id=f"id-{TAG}-btndown")
+    download = dcc.Download(id=f"id-{TAG}-download", data=None, base64=None),
 
     # return result
     return dbc.Card(children=[
         dbc.CardHeader("File Upload & Download", class_name="px-4 py-3"),
         html.Div(children=[
             dbc.Row(children=[
-                dbc.Col(button_upload, width="auto"),
-                dbc.Col(button_download, width="auto"),
+                dbc.Col(upload, width="auto"),
                 dbc.Col(download, width="auto"),
+                dbc.Col(button_down, width="auto"),
             ], class_name="mb-2"),
-            html.Div(dbc.Spinner(id=f"id-{TAG}-content")),
+            html.Div(id=f"id-{TAG}-content"),
         ], className="p-4"),
     ], class_name=None, style={"minHeight": "600px"})
 
 
-@app.callback(
+@app.long_callback(
     Output(f"id-{TAG}-content", "children"),
     Input(f"id-{TAG}-upload", "contents"),
     State(f"id-{TAG}-upload", "filename"),
-    prevent_initial_call=False,
+    running=[
+        (Output(f"id-{TAG}-upload", "disabled"), True, False),
+        (Output(f"id-{TAG}-btnup", "children"), "Uploading...", "Upload Data"),
+    ],
+    prevent_initial_call=True,
 )
-def _init_page(contents, filename):
+def _button_click(contents, filename):
     # check data
     if not (contents and filename):
-        return "no files"
+        return "no file"
 
-    # store data
+    # upload data
+    time.sleep(3)
     content_type, content_string = contents.split(",")
     with open(f".data/{filename}", "wb") as file_out:
         file_out.write(base64.b64decode(content_string))
@@ -63,7 +69,7 @@ def _init_page(contents, filename):
 
 @app.callback(
     Output(f"id-{TAG}-download", "data"),
-    Input(f"id-{TAG}-dlbutton", "n_clicks"),
+    Input(f"id-{TAG}-btndown", "n_clicks"),
     prevent_initial_call=True,
 )
 def _button_click(n_clicks):
