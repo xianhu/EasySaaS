@@ -23,15 +23,15 @@ def layout(class_name=None):
     pwd = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-pwd", type="password"),
         dbc.Label("Current Password:", html_for=f"id-{TAG}-pwd"),
-    ])
+    ], class_name=None)
     pwd1 = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
         dbc.Label("New Password:", html_for=f"id-{TAG}-pwd1"),
-    ])
+    ], class_name=None)
     pwd2 = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
         dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
-    ])
+    ], class_name=None)
 
     # define components
     feedback = html.Div(id=f"id-{TAG}-feedback", className="text-danger text-center")

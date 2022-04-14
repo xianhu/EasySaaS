@@ -23,15 +23,15 @@ def layout(class_name=None):
     email = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-email", type="email", value=user.email, readonly=True),
         dbc.Label("Email:", html_for=f"id-{TAG}-email"),
-    ])
+    ], class_name=None)
     name = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-name", type="text", value=user.name),
         dbc.Label("FullName:", html_for=f"id-{TAG}-name"),
-    ])
+    ], class_name=None)
     phone = dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-phone", type="tel", value=user.phone),
         dbc.Label("Phone:", html_for=f"id-{TAG}-phone"),
-    ])
+    ], class_name=None)
 
     # define components
     feedback = html.Div(id=f"id-{TAG}-feedback", className="text-danger text-center")

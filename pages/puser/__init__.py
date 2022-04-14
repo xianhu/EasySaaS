@@ -71,10 +71,7 @@ def _init_page(hvalue):
 
     # define output
     output1 = dict(cadmin=class_none)
-    output2 = dict(
-        cinfosec=class_none,
-        cplanpay=class_none,
-    )
+    output2 = dict(cinfosec=class_none, cplanpay=class_none)
     outpute = dict(content=None, href=None)
 
     # check user

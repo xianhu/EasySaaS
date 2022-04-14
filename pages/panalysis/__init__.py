@@ -35,9 +35,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_file = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
+    kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     catalog = dbc.Collapse(children=[
-        cadsingle.layout(**kwargs_file, flush=True, class_name="border-bottom-solid"),
+        cadsingle.layout(**kwargs_fileud, flush=True, class_name="border-bottom-solid"),
         cadmulti.layout(CATALOG_LIST, flush=True, class_name="border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
@@ -84,15 +84,10 @@ def _init_page(hvalue):
 
     # define output
     output1 = dict(cfileud=class_none)
-    output2 = dict(
-        ctbdash=class_none,
-        ctbplotly=class_none,
-    )
+    output2 = dict(ctbdash=class_none, ctbplotly=class_none)
     output3 = dict(
-        cptscatter=class_none,
-        cptline=class_none,
-        cptbar=class_none,
-        cptpie=class_none,
+        cptscatter=class_none, cptline=class_none,
+        cptbar=class_none, cptpie=class_none,
     )
     outpute = dict(content=None, href=None)
 
@@ -110,24 +105,24 @@ def _init_page(hvalue):
     # define content
     elif curr_id == "tb-dash":
         output2.update(dict(ctbdash=class_curr))
-        outpute.update(dict(content=ptbdash.layout(None, None))),
+        outpute.update(dict(content=ptbdash.layout(None, None)))
     elif curr_id == "tb-plotly":
         output2.update(dict(ctbplotly=class_curr))
-        outpute.update(dict(content=ptbplotly.layout(None, None))),
+        outpute.update(dict(content=ptbplotly.layout(None, None)))
 
     # define content(ppttemplate)
     elif curr_id == "pt-scatter":
         output3.update(dict(cptscatter=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None)))
     elif curr_id == "pt-line":
         output3.update(dict(cptline=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None)))
     elif curr_id == "pt-bar":
         output3.update(dict(cptbar=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None)))
     elif curr_id == "pt-pie":
         output3.update(dict(cptpie=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
+        outpute.update(dict(content=ppttemplate.layout(None, None)))
 
     # return result
     return [output1, output2, output3, outpute]
