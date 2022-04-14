@@ -20,16 +20,16 @@ def layout(pathname, search, **kwargs):
     """
     return dbc.Card(children=[
         dbc.CardHeader("Charts Template", class_name="px-4 py-3"),
-        html.Div(dbc.Spinner(id=f"id-{TAG}-content"), className="p-4"),
+        dbc.Spinner(html.Div(id=f"id-{TAG}-content", className="p-4")),
     ], class_name=None, style={"minHeight": "600px"})
 
 
 @app.callback(
     Output(f"id-{TAG}-content", "children"),
-    Input(f"id-{TAG}-content", "type"),
+    Input(f"id-{TAG}-content", "n_clicks"),
     prevent_initial_call=False,
 )
-def _init_page(spinner_type):
+def _init_page(n_clicks):
     # define variables
     random_x = np.linspace(0, 1, 100)
     random_y0 = np.random.randn(100) + 5

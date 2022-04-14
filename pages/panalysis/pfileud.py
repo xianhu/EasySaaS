@@ -49,9 +49,7 @@ def layout(pathname, search, **kwargs):
     running=[
         (Output(f"id-{TAG}-upload", "disabled"), True, False),
         (Output(f"id-{TAG}-btnup", "children"), "Uploading...", "Upload Data"),
-    ],
-    prevent_initial_call=True,
-)
+    ], prevent_initial_call=True)
 def _button_click(contents, filename):
     # check data
     if not (contents and filename):
