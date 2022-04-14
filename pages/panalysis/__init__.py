@@ -85,10 +85,8 @@ def _init_page(hvalue):
     # define output
     output1 = dict(cfileud=class_none)
     output2 = dict(ctbdash=class_none, ctbplotly=class_none)
-    output3 = dict(
-        cptscatter=class_none, cptline=class_none,
-        cptbar=class_none, cptpie=class_none,
-    )
+    output3 = dict(cptscatter=class_none, cptline=class_none,
+                   cptbar=class_none, cptpie=class_none)
     outpute = dict(content=None, href=None)
 
     # check user
