@@ -5,12 +5,10 @@ analysis page
 """
 
 import dash_bootstrap_components as dbc
-import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility import PATH_LOGOUT
 from . import pfileud
 from .dplotly import ppttemplate
 from .dtables import ptbdash, ptbplotly
@@ -88,11 +86,6 @@ def _init_page(hvalue):
     output3 = dict(cptscatter=class_none, cptline=class_none,
                    cptbar=class_none, cptpie=class_none)
     outpute = dict(content=None, href=None)
-
-    # check user
-    if not flask_login.current_user.is_authenticated:
-        outpute.update(dict(href=PATH_LOGOUT))
-        return [output1, output2, output3, outpute]
 
     # define content
     curr_id = (hvalue or "").strip("#") or "fileud"
