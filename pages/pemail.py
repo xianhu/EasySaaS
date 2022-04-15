@@ -9,6 +9,7 @@ import json
 import urllib.parse
 import uuid
 
+import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_mail
@@ -72,23 +73,23 @@ def _button_click(n_clicks, email, pathname):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return "Email is invalid", None
+        return "Email is invalid", dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = User.query.get(_id)
     if pathname == PATH_REGISTERE and user:
-        return "Email is registered", None
+        return "Email is registered", dash.no_update
     if pathname == PATH_RESETPWDE and (not user):
-        return "Email doesn't exist", None
+        return "Email doesn't exist", dash.no_update
 
     # send email and cache
     if not app_redis.get(_id):
         token = str(uuid.uuid4())
-        query_string = urllib.parse.urlencode({
-            "_id": _id,
-            "token": token,
-        })
+
+        # define path
+        query = dict(_id=_id, token=token)
+        query_string = urllib.parse.urlencode(query)
         path_pwd = f"{pathname}-pwd?{query_string}"
 
         # send email

@@ -9,6 +9,7 @@ import json
 import logging
 import urllib.parse
 
+import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 from werkzeug import security
@@ -79,11 +80,11 @@ def layout(pathname, search, **kwargs):
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # check password
     if (not pwd1) or (len(pwd1) < 6):
-        return "Password is too short", None
+        return "Password is too short", dash.no_update
     if not RE_PWD.match(pwd1):
-        return "Password must contain numbers and letters", None
+        return "Must contain numbers and letters", dash.no_update
     if (not pwd2) or (pwd2 != pwd1):
-        return "Passwords are inconsistent", None
+        return "Passwords are inconsistent", dash.no_update
 
     # check user
     _id = hashlib.md5(email.encode()).hexdigest()

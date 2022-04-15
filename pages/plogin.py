@@ -6,6 +6,7 @@ login page
 
 import hashlib
 
+import dash
 import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, html
@@ -65,17 +66,17 @@ def _button_click(n_clicks, email, pwd, nextpath):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return "Email is invalid", None
+        return "Email is invalid", dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = UserLogin.query.get(_id)
     if not user:
-        return "Email doesn't exist", None
+        return "Email doesn't exist", dash.no_update
 
     # check password
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return "Password is incorrect", None
+        return "Password is incorrect", dash.no_update
 
     # login user
     flask_login.login_user(user)

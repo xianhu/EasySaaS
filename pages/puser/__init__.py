@@ -4,13 +4,14 @@
 user page
 """
 
+import dash
 import dash_bootstrap_components as dbc
 import flask_login
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, html
 
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
-from utility import PATH_LOGOUT
+from utility import PATH_LOGOUT, get_trigger_property
 from . import padmin, pinfosec, pplanpay
 
 TAG = "user"
@@ -49,62 +50,73 @@ def layout(pathname, search, **kwargs):
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
-        dcc.Location(id=f"id-{TAG}-location", refresh=False),
     ], className="d-flex flex-column vh-100")
 
 
 @app.callback(output=[
-    dict(cadmin=Output(f"id-{TAG}-admin", "className")),
     dict(
+        cadmin=Output(f"id-{TAG}-admin", "className"),
         cinfosec=Output(f"id-{TAG}-infosec", "className"),
         cplanpay=Output(f"id-{TAG}-planpay", "className"),
     ),
     dict(
-        content=Output(f"id-{TAG}-content", "children"),
+        is_open=Output(f"id-{TAG}-collapse", "is_open"),
+        children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
-], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
-def _init_page(hvalue):
+], inputs=dict(
+    n_clicks_temp=dict(
+        n_clicks0=Input(f"id-{TAG}-admin", "n_clicks"),
+        n_clicks1=Input(f"id-{TAG}-infosec", "n_clicks"),
+        n_clicks2=Input(f"id-{TAG}-planpay", "n_clicks"),
+    ),
+    togger=dict(
+        n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
+        is_open=State(f"id-{TAG}-collapse", "is_open"),
+    ),
+), prevent_initial_call=False)
+def _init_page(n_clicks_temp, togger):
     # define class
-    class_curr = "text-primary"
-    class_none = "text-black hover-primary"
+    class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define output
-    output1 = dict(cadmin=class_none)
-    output2 = dict(
-        cinfosec=class_none,
-        cplanpay=class_none,
-    )
-    outpute = dict(content=None, href=None)
+    output0 = dict(cadmin=class_none, cinfosec=class_none, cplanpay=class_none)
+    outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # check user
     if not flask_login.current_user.is_authenticated:
         outpute.update(dict(href=PATH_LOGOUT))
-        return [output1, output2, outpute]
+        return [output0, outpute]
+
+    # define variables
+    triggered = dash.callback_context.triggered
+    curr_id, _, _, value = get_trigger_property(triggered)
+
+    # define is_open
+    if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
+        outpute.update(dict(is_open=(not togger["is_open"])))
+        return [output0, outpute]
 
     # define content
-    curr_id = (hvalue or "").strip("#") or "infosec"
-    if curr_id == "admin":
-        output1.update(dict(cadmin=class_curr))
-        outpute.update(dict(content=padmin.layout(None, None)))
-    elif curr_id == "infosec":
-        output2.update(dict(cinfosec=class_curr))
-        outpute.update(dict(content=pinfosec.layout(None, None)))
-    elif curr_id == "planpay":
-        output2.update(dict(cplanpay=class_curr))
-        outpute.update(dict(content=pplanpay.layout(None, None)))
+    curr_id = curr_id or f"id-{TAG}-infosec"
+    if curr_id == f"id-{TAG}-admin":
+        output0.update(dict(cadmin=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=padmin.layout(None, None),
+        ))
+    elif curr_id == f"id-{TAG}-infosec":
+        output0.update(dict(cinfosec=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=pinfosec.layout(None, None),
+        ))
+    elif curr_id == f"id-{TAG}-planpay":
+        output0.update(dict(cplanpay=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=pplanpay.layout(None, None),
+        ))
 
     # return result
-    return [output1, output2, outpute]
-
-
-@app.callback(
-    Output(f"id-{TAG}-collapse", "is_open"),
-    Input(f"id-{TAG}-toggler", "n_clicks"),
-    Input(f"id-{TAG}-location", "hash"),
-    State(f"id-{TAG}-collapse", "is_open"),
-)
-def _toggle_navbar(n_clicks, hvalue, is_open):
-    if n_clicks:
-        return not is_open
-    return is_open
+    return [output0, outpute]

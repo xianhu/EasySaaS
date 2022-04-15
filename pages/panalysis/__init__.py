@@ -4,15 +4,15 @@
 analysis page
 """
 
+import dash
 import dash_bootstrap_components as dbc
-import flask_login
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility import PATH_LOGOUT
+from utility import get_trigger_property
 from . import pfileud
-from .dplotly import ppttemplate
+from .dplotly import pptbasic
 from .dtables import ptbdash, ptbplotly
 
 TAG = "analysis"
@@ -22,10 +22,7 @@ CATALOG_LIST = [
         ("Plotly Table", f"id-{TAG}-tb-plotly", "#tb-plotly"),
     ]],
     ["Plotly", f"id-{TAG}-ad-plotly", [
-        ("Scatter Charts", f"id-{TAG}-pt-scatter", "#pt-scatter"),
-        ("Line Charts", f"id-{TAG}-pt-line", "#pt-line"),
-        ("Bar Charts", f"id-{TAG}-pt-bar", "#pt-bar"),
-        ("Pie Charts", f"id-{TAG}-pt-pie", "#pt-pie"),
+        ("Basic Charts", f"id-{TAG}-pt-basic", "#pt-basic"),
     ]],
 ]
 
@@ -35,9 +32,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_file = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
+    kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     catalog = dbc.Collapse(children=[
-        cadsingle.layout(**kwargs_file, flush=True, class_name="border-bottom-solid"),
+        cadsingle.layout(**kwargs_fileud, flush=True, class_name="border-bottom-solid"),
         cadmulti.layout(CATALOG_LIST, flush=True, class_name="border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
@@ -56,90 +53,80 @@ def layout(pathname, search, **kwargs):
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
-        dcc.Location(id=f"id-{TAG}-location", refresh=False),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
 @app.callback(output=[
-    dict(cfileud=Output(f"id-{TAG}-fileud", "className")),
     dict(
+        cfileud=Output(f"id-{TAG}-fileud", "className"),
         ctbdash=Output(f"id-{TAG}-tb-dash", "className"),
         ctbplotly=Output(f"id-{TAG}-tb-plotly", "className"),
+        cptbasic=Output(f"id-{TAG}-pt-basic", "className"),
     ),
     dict(
-        cptscatter=Output(f"id-{TAG}-pt-scatter", "className"),
-        cptline=Output(f"id-{TAG}-pt-line", "className"),
-        cptbar=Output(f"id-{TAG}-pt-bar", "className"),
-        cptpie=Output(f"id-{TAG}-pt-pie", "className"),
-    ),
-    dict(
-        content=Output(f"id-{TAG}-content", "children"),
+        is_open=Output(f"id-{TAG}-collapse", "is_open"),
+        children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
-], inputs=Input(f"id-{TAG}-location", "hash"), prevent_initial_call=False)
-def _init_page(hvalue):
+], inputs=dict(
+    n_clicks_temp=dict(
+        n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
+        n_clicks1=Input(f"id-{TAG}-tb-dash", "n_clicks"),
+        n_clicks2=Input(f"id-{TAG}-tb-plotly", "n_clicks"),
+        n_clicks3=Input(f"id-{TAG}-pt-basic", "n_clicks"),
+    ),
+    togger=dict(
+        n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
+        is_open=State(f"id-{TAG}-collapse", "is_open"),
+    ),
+), prevent_initial_call=False)
+def _init_page(n_clicks_temp, togger):
     # define class
-    class_curr = "text-primary"
-    class_none = "text-black hover-primary"
+    class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define output
-    output1 = dict(cfileud=class_none)
-    output2 = dict(
-        ctbdash=class_none,
-        ctbplotly=class_none,
-    )
-    output3 = dict(
-        cptscatter=class_none,
-        cptline=class_none,
-        cptbar=class_none,
-        cptpie=class_none,
-    )
-    outpute = dict(content=None, href=None)
+    output0 = dict(cfileud=class_none, ctbdash=class_none, ctbplotly=class_none, cptbasic=class_none)
+    outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
-    # check user
-    if not flask_login.current_user.is_authenticated:
-        outpute.update(dict(href=PATH_LOGOUT))
-        return [output1, output2, output3, outpute]
+    # define variables
+    triggered = dash.callback_context.triggered
+    curr_id, _, _, value = get_trigger_property(triggered)
+
+    # define is_open
+    if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
+        outpute.update(dict(is_open=(not togger["is_open"])))
+        return [output0, outpute]
 
     # define content
-    curr_id = (hvalue or "").strip("#") or "fileud"
-    if curr_id == "fileud":
-        output1.update(dict(cfileud=class_curr))
-        outpute.update(dict(content=pfileud.layout(None, None)))
+    curr_id = curr_id or f"id-{TAG}-fileud"
+    if curr_id == f"id-{TAG}-fileud":
+        output0.update(dict(cfileud=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=pfileud.layout(None, None),
+        ))
 
     # define content
-    elif curr_id == "tb-dash":
-        output2.update(dict(ctbdash=class_curr))
-        outpute.update(dict(content=ptbdash.layout(None, None))),
-    elif curr_id == "tb-plotly":
-        output2.update(dict(ctbplotly=class_curr))
-        outpute.update(dict(content=ptbplotly.layout(None, None))),
+    elif curr_id == f"id-{TAG}-tb-dash":
+        output0.update(dict(ctbdash=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=ptbdash.layout(None, None),
+        ))
+    elif curr_id == f"id-{TAG}-tb-plotly":
+        output0.update(dict(ctbplotly=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=ptbplotly.layout(None, None),
+        ))
 
-    # define content(ppttemplate)
-    elif curr_id == "pt-scatter":
-        output3.update(dict(cptscatter=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
-    elif curr_id == "pt-line":
-        output3.update(dict(cptline=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
-    elif curr_id == "pt-bar":
-        output3.update(dict(cptbar=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
-    elif curr_id == "pt-pie":
-        output3.update(dict(cptpie=class_curr))
-        outpute.update(dict(content=ppttemplate.layout(None, None))),
+    # define content
+    elif curr_id == f"id-{TAG}-pt-basic":
+        output0.update(dict(cptbasic=class_curr))
+        outpute.update(dict(
+            is_open=False,
+            children=pptbasic.layout(None, None),
+        ))
 
     # return result
-    return [output1, output2, output3, outpute]
-
-
-@app.callback(
-    Output(f"id-{TAG}-collapse", "is_open"),
-    Input(f"id-{TAG}-toggler", "n_clicks"),
-    Input(f"id-{TAG}-location", "hash"),
-    State(f"id-{TAG}-collapse", "is_open"),
-)
-def _toggle_navbar(n_clicks, hvalue, is_open):
-    if n_clicks:
-        return not is_open
-    return is_open
+    return [output0, outpute]

@@ -7,8 +7,8 @@ file page
 import base64
 import time
 
-import dash_bootstrap_components as dbc
 import plotly
+import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 
 from app import app

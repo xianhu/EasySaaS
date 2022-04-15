@@ -43,32 +43,30 @@ app.validation_layout = dbc.Container([])
 def _init_page(pathname, search, data_client):
     logging.warning("pathname=%s, search=%s, data_client=%s", pathname, search, data_client)
 
+    # define variables
+    data_server = dict(title=pathname.strip("/").upper())
+
     # =============================================================================================
     if pathname == PATH_INTROS or pathname == PATH_ROOT:
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, pintros.layout(pathname, search)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS:
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, panalysis.layout(pathname, search)
 
     # =============================================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, plogin.layout(pathname, search)
 
     # =============================================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, pemail.layout(pathname, search)
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, palert.layout(pathname, search, **dict(
             text_hd="Sending success",
             text_sub=f"An email has sent to {flask.session.get('email')}.",
@@ -80,11 +78,9 @@ def _init_page(pathname, search, data_client):
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, ppwd.layout(pathname, search)
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, palert.layout(pathname, search, **dict(
             text_hd="Setting success",
             text_sub="The password was set successfully.",
@@ -96,13 +92,12 @@ def _init_page(pathname, search, data_client):
     if pathname == PATH_USER:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
-            data_server = {"title": pathname.strip("/").upper()}
+            data_server = dict(title=pathname.strip("/").upper())
             return pathname, search, data_server, plogin.layout(pathname, search, nextpath=PATH_USER)
-        data_server = {"title": pathname.strip("/").upper()}
         return pathname, search, data_server, puser.layout(pathname, search)
 
     # =============================================================================================
-    data_server = {"title": "error: 404"}
+    data_server = dict(title="error: 404")
     return pathname, search, data_server, palert.layout_404(pathname, search, return_href=PATH_ROOT)
 
 
