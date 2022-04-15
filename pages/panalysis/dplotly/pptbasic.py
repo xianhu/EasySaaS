@@ -19,7 +19,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     return dbc.Card(children=[
-        dbc.CardHeader("Basic Template", class_name="px-4 py-3"),
+        dbc.CardHeader("Basic Charts", class_name="px-4 py-3"),
         dbc.Spinner(html.Div(id=f"id-{TAG}-content", className="p-4")),
     ], class_name=None, style={"minHeight": "600px"})
 

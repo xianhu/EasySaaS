@@ -62,11 +62,10 @@ def layout(pathname, search, **kwargs):
         ctbdash=Output(f"id-{TAG}-tb-dash", "className"),
         ctbplotly=Output(f"id-{TAG}-tb-plotly", "className"),
         cptbasic=Output(f"id-{TAG}-pt-basic", "className"),
-
     ),
     dict(
         is_open=Output(f"id-{TAG}-collapse", "is_open"),
-        content=Output(f"id-{TAG}-content", "children"),
+        children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
 ], inputs=dict(
@@ -86,11 +85,8 @@ def _init_page(n_clicks_temp, togger):
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define output
-    output0 = dict(
-        cfileud=class_none, cptbasic=class_none,
-        ctbdash=class_none, ctbplotly=class_none,
-    )
-    outpute = dict(is_open=dash.no_update, content=None, href=dash.no_update)
+    output0 = dict(cfileud=class_none, ctbdash=class_none, ctbplotly=class_none, cptbasic=class_none)
+    outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # define variables
     triggered = dash.callback_context.triggered
@@ -99,25 +95,29 @@ def _init_page(n_clicks_temp, togger):
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
         outpute.update(dict(is_open=(not togger["is_open"])))
+        return [output0, outpute]
 
     # define content
     curr_id = curr_id or f"id-{TAG}-fileud"
     if curr_id == f"id-{TAG}-fileud":
         output0.update(dict(cfileud=class_curr))
-        outpute.update(dict(content=pfileud.layout(None, None)))
+        outpute.update(dict(
+            is_open=False,
+            children=pfileud.layout(None, None),
+        ))
 
     # define content
     elif curr_id == f"id-{TAG}-tb-dash":
         output0.update(dict(ctbdash=class_curr))
         outpute.update(dict(
             is_open=False,
-            content=ptbdash.layout(None, None),
+            children=ptbdash.layout(None, None),
         ))
     elif curr_id == f"id-{TAG}-tb-plotly":
         output0.update(dict(ctbplotly=class_curr))
         outpute.update(dict(
             is_open=False,
-            content=ptbplotly.layout(None, None),
+            children=ptbplotly.layout(None, None),
         ))
 
     # define content
@@ -125,7 +125,7 @@ def _init_page(n_clicks_temp, togger):
         output0.update(dict(cptbasic=class_curr))
         outpute.update(dict(
             is_open=False,
-            content=pptbasic.layout(None, None),
+            children=pptbasic.layout(None, None),
         ))
 
     # return result

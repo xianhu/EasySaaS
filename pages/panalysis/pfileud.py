@@ -7,8 +7,8 @@ file page
 import base64
 import time
 
-import dash_bootstrap_components as dbc
 import plotly
+import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 
 from app import app
@@ -49,7 +49,9 @@ def layout(pathname, search, **kwargs):
     running=[
         (Output(f"id-{TAG}-upload", "disabled"), True, False),
         (Output(f"id-{TAG}-btnup", "children"), "Uploading...", "Upload Data"),
-    ], prevent_initial_call=True)
+    ],
+    prevent_initial_call=True,
+)
 def _button_click(contents, filename):
     # check data
     if not (contents and filename):
