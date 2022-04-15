@@ -3,7 +3,7 @@
 """
 Change Password
 """
-
+import dash
 import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, html
@@ -47,19 +47,19 @@ def layout(class_name=None):
             dbc.Col(feedback, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
         ], align="center", class_name="p-4"),
+        html.A(id={"type": "id-address", "index": TAG}),
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The password was updated successfully"),
             dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
-        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 
 @app.callback([
     Output(f"id-{TAG}-feedback", "children"),
-    Output(f"id-{TAG}-modal", "is_open"),
     Output({"type": "id-address", "index": TAG}, "href"),
+    Output(f"id-{TAG}-modal", "is_open"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     State(f"id-{TAG}-pwd", "value"),
@@ -70,19 +70,19 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     # check user
     user = flask_login.current_user
     if not user.is_authenticated:
-        return None, False, PATH_LOGIN
+        return None, PATH_LOGIN, False
 
     # check password
     if (not pwd1) or (len(pwd1) < 6):
-        return "Password is too short", False, None
+        return "Password is too short", dash.no_update, False
     if not RE_PWD.match(pwd1):
-        return "Must contain numbers and letters", False, None
+        return "Must contain numbers and letters", dash.no_update, False
     if (not pwd2) or (pwd2 != pwd1):
-        return "Passwords are inconsistent", False, None
+        return "Passwords are inconsistent", dash.no_update, False
 
     # check password
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return "Current password is wrong", False, None
+        return "Current password is wrong", dash.no_update, False
 
     # update user
     user.pwd = security.generate_password_hash(pwd1)
@@ -92,4 +92,4 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     app_db.session.commit()
 
     # return result
-    return None, True, None
+    return None, dash.no_update, True

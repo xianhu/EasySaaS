@@ -61,7 +61,7 @@ def layout(pathname, search, **kwargs):
     ),
     dict(
         is_open=Output(f"id-{TAG}-collapse", "is_open"),
-        content=Output(f"id-{TAG}-content", "children"),
+        children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
 ], inputs=dict(
@@ -81,7 +81,7 @@ def _init_page(n_clicks_temp, togger):
 
     # define output
     output0 = dict(cadmin=class_none, cinfosec=class_none, cplanpay=class_none)
-    outpute = dict(is_open=dash.no_update, content=None, href=dash.no_update)
+    outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # check user
     if not flask_login.current_user.is_authenticated:
@@ -95,6 +95,7 @@ def _init_page(n_clicks_temp, togger):
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
         outpute.update(dict(is_open=(not togger["is_open"])))
+        return [output0, outpute]
 
     # define content
     curr_id = curr_id or f"id-{TAG}-infosec"
@@ -102,19 +103,19 @@ def _init_page(n_clicks_temp, togger):
         output0.update(dict(cadmin=class_curr))
         outpute.update(dict(
             is_open=False,
-            content=padmin.layout(None, None),
+            children=padmin.layout(None, None),
         ))
     elif curr_id == f"id-{TAG}-infosec":
         output0.update(dict(cinfosec=class_curr))
         outpute.update(dict(
             is_open=False,
-            content=pinfosec.layout(None, None),
+            children=pinfosec.layout(None, None),
         ))
     elif curr_id == f"id-{TAG}-planpay":
         output0.update(dict(cplanpay=class_curr))
         outpute.update(dict(
             is_open=False,
-            content=pplanpay.layout(None, None),
+            children=pplanpay.layout(None, None),
         ))
 
     # return result
