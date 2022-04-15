@@ -6,7 +6,9 @@ Model Defination
 
 import hashlib
 
-from flask_sqlalchemy import SQLAlchemy, sqlalchemy, orm
+import sqlalchemy
+from sqlalchemy import func, orm
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug import security
 
 from config import config_database_uri
@@ -36,8 +38,8 @@ class User(app_db.Model):
     filename = sqlalchemy.Column(sqlalchemy.String(500), doc="file name")
     tempcol = sqlalchemy.Column(sqlalchemy.String(500), doc="temporary column")
 
-    datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
-    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
+    datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
+    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), onupdate=func.now())
 
     # foreign key and relationship
     plan = orm.relationship("Plan", backref=orm.backref("users"))
@@ -59,8 +61,8 @@ class Plan(app_db.Model):
     pindex = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="plan index")
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
 
-    datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now())
-    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now())
+    datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
+    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), onupdate=func.now())
 
     # print format
     def __repr__(self) -> str:
@@ -71,7 +73,7 @@ def init_db():
     """
     initial database
     """
-    # create engine, SQLITE doesn't check the forgien key
+    # create engine, SQLite doesn't check the forgien key
     engine = sqlalchemy.create_engine(config_database_uri)
 
     # drop or create all tables
@@ -83,7 +85,7 @@ def add_user(email="aaaa@qq.com", plan_id=None):
     """
     add a user to database
     """
-    # create engine, SQLITE doesn't check the forgien key
+    # create engine, SQLite doesn't check the forgien key
     engine = sqlalchemy.create_engine(config_database_uri)
 
     # basic opration with session
