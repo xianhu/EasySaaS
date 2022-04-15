@@ -26,7 +26,7 @@ def layout(pathname, search, **kwargs):
 
 @app.callback(
     Output(f"id-{TAG}-content", "children"),
-    Input(f"id-{TAG}-content", "n_clicks"),
+    Input(f"id-{TAG}-content", "className"),
     prevent_initial_call=False,
 )
 def _init_page(n_clicks):

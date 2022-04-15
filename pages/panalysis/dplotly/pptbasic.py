@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-template page
+basic plotly page
 """
 
 import dash_bootstrap_components as dbc
@@ -11,7 +11,7 @@ from dash import Input, Output, dcc, html
 
 from app import app
 
-TAG = "analysis-plotly-template"
+TAG = "analysis-plotly-basic"
 
 
 def layout(pathname, search, **kwargs):
@@ -19,14 +19,14 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     return dbc.Card(children=[
-        dbc.CardHeader("Charts Template", class_name="px-4 py-3"),
+        dbc.CardHeader("Basic Template", class_name="px-4 py-3"),
         dbc.Spinner(html.Div(id=f"id-{TAG}-content", className="p-4")),
     ], class_name=None, style={"minHeight": "600px"})
 
 
 @app.callback(
     Output(f"id-{TAG}-content", "children"),
-    Input(f"id-{TAG}-content", "n_clicks"),
+    Input(f"id-{TAG}-content", "className"),
     prevent_initial_call=False,
 )
 def _init_page(n_clicks):
