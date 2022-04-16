@@ -4,8 +4,8 @@
 custom table page
 """
 
-import plotly
 import dash_bootstrap_components as dbc
+import plotly
 from dash import Input, Output, html
 
 from app import app
@@ -31,19 +31,15 @@ def layout(pathname, search, **kwargs):
 )
 def _init_page(n_clicks):
     data = plotly.data.iris()
-    _class = {"sepal_length": "bg-light"}
-
-    # return result
+    _class = dict(sepal_length="bg-light")
     return html.Div(children=[
         ctable.layout(
-            None, None,
             f"id-{TAG}-table1", data.to_dict("records")[:10],
             data.columns.to_list(), data.columns.to_list(),
         ),
         ctable.layout(
-            None, None,
             f"id-{TAG}-table2", data.to_dict("records")[:2],
             [], data.columns.to_list(),
             class_data=[_class, _class], striped=False, hover=False,
-        )
+        ),
     ])
