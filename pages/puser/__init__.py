@@ -79,7 +79,7 @@ def _init_page(n_clicks_temp, togger):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
-    # define output
+    # define default output
     output_class = dict(admin=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
@@ -88,7 +88,7 @@ def _init_page(n_clicks_temp, togger):
         output_other.update(dict(href=PATH_LOGOUT))
         return [output_class, output_other]
 
-    # define variables
+    # parse triggered
     triggered = dash.callback_context.triggered
     curr_id, _, _, value = get_trigger_property(triggered)
 
@@ -100,13 +100,13 @@ def _init_page(n_clicks_temp, togger):
     # define content
     curr_id = curr_id or f"id-{TAG}-infosec"
     if curr_id == f"id-{TAG}-admin":
-        output_class.update(dict(admin=class_curr, infosec=class_none, planpay=class_none))
+        output_class = dict(admin=class_curr, infosec=class_none, planpay=class_none)
         output_other.update(dict(is_open=False, children=padmin.layout(None, None)))
     elif curr_id == f"id-{TAG}-infosec":
-        output_class.update(dict(admin=class_none, infosec=class_curr, planpay=class_none))
+        output_class = dict(admin=class_none, infosec=class_curr, planpay=class_none)
         output_other.update(dict(is_open=False, children=pinfosec.layout(None, None)))
     elif curr_id == f"id-{TAG}-planpay":
-        output_class.update(dict(admin=class_none, infosec=class_none, planpay=class_curr))
+        output_class = dict(admin=class_none, infosec=class_none, planpay=class_curr)
         output_other.update(dict(is_open=False, children=pplanpay.layout(None, None)))
 
     # return result

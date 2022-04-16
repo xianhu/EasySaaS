@@ -58,10 +58,10 @@ def layout(pathname, search, **kwargs):
 
 @app.callback(output=[
     dict(
-        cfileud=Output(f"id-{TAG}-fileud", "className"),
-        ctbdash=Output(f"id-{TAG}-tb-dash", "className"),
-        ctbcustom=Output(f"id-{TAG}-tb-custom", "className"),
-        cptbasic=Output(f"id-{TAG}-pt-basic", "className"),
+        fileud=Output(f"id-{TAG}-fileud", "className"),
+        tbdash=Output(f"id-{TAG}-tb-dash", "className"),
+        tbcustom=Output(f"id-{TAG}-tb-custom", "className"),
+        ptbasic=Output(f"id-{TAG}-pt-basic", "className"),
     ),
     dict(
         is_open=Output(f"id-{TAG}-collapse", "is_open"),
@@ -84,49 +84,52 @@ def _init_page(n_clicks_temp, togger):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
-    # define output
-    output0 = dict(cfileud=class_none, ctbdash=class_none, ctbcustom=class_none, cptbasic=class_none)
-    outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
+    # define default output
+    output_class = dict(
+        fileud=dash.no_update, tbdash=dash.no_update,
+        tbcustom=dash.no_update, ptbasic=dash.no_update,
+    )
+    output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
-    # define variables
+    # parse triggered
     triggered = dash.callback_context.triggered
     curr_id, _, _, value = get_trigger_property(triggered)
 
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
-        outpute.update(dict(is_open=(not togger["is_open"])))
-        return [output0, outpute]
+        output_other.update(dict(is_open=(not togger["is_open"])))
+        return [output_class, output_other]
 
     # define content
     curr_id = curr_id or f"id-{TAG}-fileud"
     if curr_id == f"id-{TAG}-fileud":
-        output0.update(dict(cfileud=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=pfileud.layout(None, None),
-        ))
+        output_class = dict(
+            fileud=class_curr, tbdash=class_none,
+            tbcustom=class_none, ptbasic=class_none,
+        )
+        output_other.update(dict(is_open=False, children=pfileud.layout(None, None)))
 
     # define content
     elif curr_id == f"id-{TAG}-tb-dash":
-        output0.update(dict(ctbdash=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=ptbdash.layout(None, None),
-        ))
+        output_class = dict(
+            fileud=class_none, tbdash=class_curr,
+            tbcustom=class_none, ptbasic=class_none,
+        )
+        output_other.update(dict(is_open=False, children=ptbdash.layout(None, None)))
     elif curr_id == f"id-{TAG}-tb-custom":
-        output0.update(dict(ctbcustom=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=ptbcustom.layout(None, None),
-        ))
+        output_class = dict(
+            fileud=class_none, tbdash=class_none,
+            tbcustom=class_curr, ptbasic=class_none,
+        )
+        output_other.update(dict(is_open=False, children=ptbcustom.layout(None, None)))
 
     # define content
     elif curr_id == f"id-{TAG}-pt-basic":
-        output0.update(dict(cptbasic=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=pptbasic.layout(None, None),
-        ))
+        output_class = dict(
+            fileud=class_none, tbdash=class_none,
+            tbcustom=class_none, ptbasic=class_curr,
+        )
+        output_other.update(dict(is_open=False, children=pptbasic.layout(None, None)))
 
     # return result
-    return [output0, outpute]
+    return [output_class, output_other]
