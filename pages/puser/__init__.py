@@ -50,14 +50,14 @@ def layout(pathname, search, **kwargs):
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
-    ], className="d-flex flex-column vh-100")
+    ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
 @app.callback(output=[
     dict(
-        cadmin=Output(f"id-{TAG}-admin", "className"),
-        cinfosec=Output(f"id-{TAG}-infosec", "className"),
-        cplanpay=Output(f"id-{TAG}-planpay", "className"),
+        admin=Output(f"id-{TAG}-admin", "className"),
+        infosec=Output(f"id-{TAG}-infosec", "className"),
+        planpay=Output(f"id-{TAG}-planpay", "className"),
     ),
     dict(
         is_open=Output(f"id-{TAG}-collapse", "is_open"),
@@ -80,13 +80,13 @@ def _init_page(n_clicks_temp, togger):
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define output
-    output0 = dict(cadmin=class_none, cinfosec=class_none, cplanpay=class_none)
-    outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
+    output_class = dict(admin=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
+    output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # check user
     if not flask_login.current_user.is_authenticated:
-        outpute.update(dict(href=PATH_LOGOUT))
-        return [output0, outpute]
+        output_other.update(dict(href=PATH_LOGOUT))
+        return [output_class, output_other]
 
     # define variables
     triggered = dash.callback_context.triggered
@@ -94,29 +94,20 @@ def _init_page(n_clicks_temp, togger):
 
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
-        outpute.update(dict(is_open=(not togger["is_open"])))
-        return [output0, outpute]
+        output_other.update(dict(is_open=(not togger["is_open"])))
+        return [output_class, output_other]
 
     # define content
     curr_id = curr_id or f"id-{TAG}-infosec"
     if curr_id == f"id-{TAG}-admin":
-        output0.update(dict(cadmin=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=padmin.layout(None, None),
-        ))
+        output_class.update(dict(admin=class_curr, infosec=class_none, planpay=class_none))
+        output_other.update(dict(is_open=False, children=padmin.layout(None, None)))
     elif curr_id == f"id-{TAG}-infosec":
-        output0.update(dict(cinfosec=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=pinfosec.layout(None, None),
-        ))
+        output_class.update(dict(admin=class_none, infosec=class_curr, planpay=class_none))
+        output_other.update(dict(is_open=False, children=pinfosec.layout(None, None)))
     elif curr_id == f"id-{TAG}-planpay":
-        output0.update(dict(cplanpay=class_curr))
-        outpute.update(dict(
-            is_open=False,
-            children=pplanpay.layout(None, None),
-        ))
+        output_class.update(dict(admin=class_none, infosec=class_none, planpay=class_curr))
+        output_other.update(dict(is_open=False, children=pplanpay.layout(None, None)))
 
     # return result
-    return [output0, outpute]
+    return [output_class, output_other]
