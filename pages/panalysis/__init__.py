@@ -13,13 +13,13 @@ from components import cnavbar, csmallnav, cadmulti, cadsingle
 from utility import get_trigger_property
 from . import pfileud
 from .dplotly import pptbasic
-from .dtables import ptbdash, ptbplotly
+from .dtables import ptbcustom, ptbdash
 
 TAG = "analysis"
 CATALOG_LIST = [
     ["Tables", f"id-{TAG}-ad-tables", [
         ("Dash Table", f"id-{TAG}-tb-dash", "#tb-dash"),
-        ("Plotly Table", f"id-{TAG}-tb-plotly", "#tb-plotly"),
+        ("Custom Table", f"id-{TAG}-tb-custom", "#tb-custom"),
     ]],
     ["Plotly", f"id-{TAG}-ad-plotly", [
         ("Basic Charts", f"id-{TAG}-pt-basic", "#pt-basic"),
@@ -60,7 +60,7 @@ def layout(pathname, search, **kwargs):
     dict(
         cfileud=Output(f"id-{TAG}-fileud", "className"),
         ctbdash=Output(f"id-{TAG}-tb-dash", "className"),
-        ctbplotly=Output(f"id-{TAG}-tb-plotly", "className"),
+        ctbcustom=Output(f"id-{TAG}-tb-custom", "className"),
         cptbasic=Output(f"id-{TAG}-pt-basic", "className"),
     ),
     dict(
@@ -72,7 +72,7 @@ def layout(pathname, search, **kwargs):
     n_clicks_temp=dict(
         n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-tb-dash", "n_clicks"),
-        n_clicks2=Input(f"id-{TAG}-tb-plotly", "n_clicks"),
+        n_clicks2=Input(f"id-{TAG}-tb-custom", "n_clicks"),
         n_clicks3=Input(f"id-{TAG}-pt-basic", "n_clicks"),
     ),
     togger=dict(
@@ -85,7 +85,7 @@ def _init_page(n_clicks_temp, togger):
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define output
-    output0 = dict(cfileud=class_none, ctbdash=class_none, ctbplotly=class_none, cptbasic=class_none)
+    output0 = dict(cfileud=class_none, ctbdash=class_none, ctbcustom=class_none, cptbasic=class_none)
     outpute = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # define variables
@@ -113,11 +113,11 @@ def _init_page(n_clicks_temp, togger):
             is_open=False,
             children=ptbdash.layout(None, None),
         ))
-    elif curr_id == f"id-{TAG}-tb-plotly":
-        output0.update(dict(ctbplotly=class_curr))
+    elif curr_id == f"id-{TAG}-tb-custom":
+        output0.update(dict(ctbcustom=class_curr))
         outpute.update(dict(
             is_open=False,
-            children=ptbplotly.layout(None, None),
+            children=ptbcustom.layout(None, None),
         ))
 
     # define content
