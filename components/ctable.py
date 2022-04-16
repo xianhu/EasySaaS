@@ -9,7 +9,6 @@ from dash import html
 
 
 def layout(
-        pathname, search,
         tid, data, header_list, key_list, key_out=None, key_title=None,
         class_th=None, class_td=None, class_tr=None, class_data=None,
         bordered=True, borderless=True, hover=True, striped=True, class_name=None,
@@ -46,5 +45,5 @@ def layout(
         tr_list.append(html.Tr(td_list, id=tr_id, title=tr_title, className=class_tr))
 
     # return result
-    args = {"bordered": bordered, "borderless": borderless, "hover": hover, "striped": striped}
-    return dbc.Table(children=[thead, html.Tbody(tr_list)], id=tid, **args, class_name=class_name)
+    kwargs = dict(bordered=bordered, borderless=borderless, hover=hover, striped=striped)
+    return dbc.Table(children=[thead, html.Tbody(tr_list)], id=tid, **kwargs, class_name=class_name)
