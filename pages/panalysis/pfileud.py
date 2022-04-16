@@ -5,10 +5,9 @@ file page
 """
 
 import base64
-import time
 
-import plotly
 import dash_bootstrap_components as dbc
+import plotly
 from dash import Input, Output, State, dcc, html
 
 from app import app
@@ -42,14 +41,10 @@ def layout(pathname, search, **kwargs):
     ], class_name=None, style={"minHeight": "600px"})
 
 
-@app.long_callback(
+@app.callback(
     Output(f"id-{TAG}-content", "children"),
     Input(f"id-{TAG}-upload", "contents"),
     State(f"id-{TAG}-upload", "filename"),
-    running=[
-        (Output(f"id-{TAG}-upload", "disabled"), True, False),
-        (Output(f"id-{TAG}-btnup", "children"), "Uploading...", "Upload Data"),
-    ],
     prevent_initial_call=True,
 )
 def _button_click(contents, filename):
@@ -58,7 +53,6 @@ def _button_click(contents, filename):
         return "no file"
 
     # upload data
-    time.sleep(3)
     content_type, content_string = contents.split(",")
     with open(f".data/{filename}", "wb") as file_out:
         file_out.write(base64.b64decode(content_string))

@@ -31,7 +31,7 @@ def layout(pathname, search, **kwargs):
 def _init_page(n_clicks):
     data = plotly.data.iris()
     return dash_table.DataTable(
-        id="table",
+        id=f"id-{TAG}-table",
         columns=[{"name": i, "id": i} for i in data.columns],
         data=data.to_dict("records"),
         style_cell=dict(textAlign="left"),

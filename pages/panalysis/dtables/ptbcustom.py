@@ -1,17 +1,17 @@
 # _*_ coding: utf-8 _*_
 
 """
-plotly table page
+custom table page
 """
 
 import dash_bootstrap_components as dbc
 import plotly
-import plotly.graph_objects as go
-from dash import Input, Output, dcc, html
+from dash import Input, Output, html
 
 from app import app
+from components import ctable
 
-TAG = "analysis-tables-plotly"
+TAG = "analysis-tables-custom"
 
 
 def layout(pathname, search, **kwargs):
@@ -31,7 +31,15 @@ def layout(pathname, search, **kwargs):
 )
 def _init_page(n_clicks):
     data = plotly.data.iris()
-    return dcc.Graph(figure=go.Figure(go.Table(
-        header=dict(values=list(data.columns), fill_color="paleturquoise", align="left"),
-        cells=dict(values=[data[c] for c in data.columns], fill_color="lavender", align="left"),
-    ), layout=None), className=None)
+    _class = dict(sepal_length="bg-light")
+    return html.Div(children=[
+        ctable.layout(
+            f"id-{TAG}-table1", data.to_dict("records")[:10],
+            data.columns.to_list(), data.columns.to_list(),
+        ),
+        ctable.layout(
+            f"id-{TAG}-table2", data.to_dict("records")[:2],
+            [], data.columns.to_list(),
+            class_data=[_class, _class], striped=False, hover=False,
+        ),
+    ])
