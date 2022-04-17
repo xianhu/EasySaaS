@@ -94,14 +94,15 @@ def _init_page(pathname, search, vhash, data_client):
     if pathname == PATH_USER:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
-            kwargs.update(nextpath=PATH_USER)
+            kwargs.update(dict(nextpath=PATH_USER))
             data_server = dict(title=pathname.strip("/").upper())
             return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
         return pathname, search, data_server, puser.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_ADMIN and flask_login.current_user.is_authenticated:
-        return pathname, search, data_server, padmin.layout(pathname, search, **kwargs)
+    if pathname == PATH_ADMIN:
+        if flask_login.current_user.is_authenticated and flask_login.current_user.admin:
+            return pathname, search, data_server, padmin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     data_server = dict(title="error: 404")

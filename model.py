@@ -85,7 +85,7 @@ def init_db():
     app_db.Model.metadata.create_all(engine)
 
 
-def add_user(email="aaaa@qq.com", plan_id=None):
+def add_user(email="aaaa@qq.com", admin=0, plan_id=None):
     """
     add a user to database
     """
@@ -97,10 +97,13 @@ def add_user(email="aaaa@qq.com", plan_id=None):
         _id = hashlib.md5(email.encode()).hexdigest()
         pwd = security.generate_password_hash(email)
 
-        user = User(id=_id, pwd=pwd, admin=1, email=email, plan_id=plan_id)
+        user = User(
+            id=_id, pwd=pwd, admin=admin,
+            email=email, plan_id=plan_id,
+        )
+
         session.add(user)
         session.commit()
-
         print(session.query(User).get(_id))
 
 
