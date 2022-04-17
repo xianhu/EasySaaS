@@ -7,7 +7,7 @@ user page
 import dash
 import dash_bootstrap_components as dbc
 import flask_login
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
@@ -50,6 +50,7 @@ def layout(pathname, search, **kwargs):
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
+        dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash"))
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
@@ -74,8 +75,9 @@ def layout(pathname, search, **kwargs):
         n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
+    vhash=State(f"id-{TAG}-vhash", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger):
+def _init_page(n_clicks_temp, togger, vhash):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -97,8 +99,12 @@ def _init_page(n_clicks_temp, togger):
         output_other.update(dict(is_open=(not togger["is_open"])))
         return [output_class, output_other]
 
-    # define content
+    # define curr_id
+    if (not curr_id) and vhash:
+        curr_id = f"id-{TAG}-{vhash.strip('#')}"
     curr_id = curr_id or f"id-{TAG}-infosec"
+
+    # define content
     if curr_id == f"id-{TAG}-template":
         output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(None, None)))
