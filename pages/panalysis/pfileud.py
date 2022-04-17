@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-file page
+file up&down page
 """
 
 import base64

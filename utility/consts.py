@@ -24,3 +24,4 @@ PATH_REGISTERE = "/registere"
 PATH_RESETPWDE = "/resetpwde"
 
 PATH_USER = "/user"
+PATH_ADMIN = "/admin"

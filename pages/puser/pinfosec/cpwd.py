@@ -13,7 +13,7 @@ from werkzeug import security
 from app import app, app_db
 from utility import PATH_LOGOUT, PATH_LOGIN, RE_PWD
 
-TAG = "user-account-pwd"
+TAG = "user-infosec-pwd"
 
 
 def layout(class_name=None):

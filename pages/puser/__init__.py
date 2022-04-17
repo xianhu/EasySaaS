@@ -7,16 +7,16 @@ user page
 import dash
 import dash_bootstrap_components as dbc
 import flask_login
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
 from utility import PATH_LOGOUT, get_trigger_property
-from . import padmin, pinfosec, pplanpay
+from . import ptemplate, pinfosec, pplanpay
 
 TAG = "user"
 CATALOG_LIST = [
-    ["Admin", f"id-{TAG}-admin", "#admin"],
+    ["Template", f"id-{TAG}-template", "#template"],
     ["ACCOUNT", None, [
         ("Info&Security", f"id-{TAG}-infosec", "#infosec"),
         ("Plan&Payments", f"id-{TAG}-planpay", "#planpay"),
@@ -50,12 +50,13 @@ def layout(pathname, search, **kwargs):
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
+        dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash"))
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
 @app.callback(output=[
     dict(
-        admin=Output(f"id-{TAG}-admin", "className"),
+        template=Output(f"id-{TAG}-template", "className"),
         infosec=Output(f"id-{TAG}-infosec", "className"),
         planpay=Output(f"id-{TAG}-planpay", "className"),
     ),
@@ -66,7 +67,7 @@ def layout(pathname, search, **kwargs):
     ),
 ], inputs=dict(
     n_clicks_temp=dict(
-        n_clicks0=Input(f"id-{TAG}-admin", "n_clicks"),
+        n_clicks0=Input(f"id-{TAG}-template", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-infosec", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-planpay", "n_clicks"),
     ),
@@ -74,13 +75,14 @@ def layout(pathname, search, **kwargs):
         n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
+    vhash=State(f"id-{TAG}-vhash", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger):
+def _init_page(n_clicks_temp, togger, vhash):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define default output
-    output_class = dict(admin=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
+    output_class = dict(template=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # check user
@@ -97,16 +99,20 @@ def _init_page(n_clicks_temp, togger):
         output_other.update(dict(is_open=(not togger["is_open"])))
         return [output_class, output_other]
 
-    # define content
+    # define curr_id
+    if (not curr_id) and vhash:
+        curr_id = f"id-{TAG}-{vhash.strip('#')}"
     curr_id = curr_id or f"id-{TAG}-infosec"
-    if curr_id == f"id-{TAG}-admin":
-        output_class = dict(admin=class_curr, infosec=class_none, planpay=class_none)
-        output_other.update(dict(is_open=False, children=padmin.layout(None, None)))
+
+    # define content
+    if curr_id == f"id-{TAG}-template":
+        output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
+        output_other.update(dict(is_open=False, children=ptemplate.layout(None, None)))
     elif curr_id == f"id-{TAG}-infosec":
-        output_class = dict(admin=class_none, infosec=class_curr, planpay=class_none)
+        output_class = dict(template=class_none, infosec=class_curr, planpay=class_none)
         output_other.update(dict(is_open=False, children=pinfosec.layout(None, None)))
     elif curr_id == f"id-{TAG}-planpay":
-        output_class = dict(admin=class_none, infosec=class_none, planpay=class_curr)
+        output_class = dict(template=class_none, infosec=class_none, planpay=class_curr)
         output_other.update(dict(is_open=False, children=pplanpay.layout(None, None)))
 
     # return result

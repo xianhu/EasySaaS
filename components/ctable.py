@@ -41,7 +41,7 @@ def layout(
         td_list = [html.Td(v, className=c) for (v, c) in zip(value_list, class_list)]
 
         # define tr_list
-        tr_id = {"type": tid + "-row", "index": tr_index}
+        tr_id = {"type": f"{tid}-row", "index": tr_index}
         tr_list.append(html.Tr(td_list, id=tr_id, title=tr_title, className=class_tr))
 
     # return result
