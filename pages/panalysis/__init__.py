@@ -6,7 +6,7 @@ analysis page
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
@@ -53,6 +53,7 @@ def layout(pathname, search, **kwargs):
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
+        dcc.Store(id=f"id-{TAG}-dclient", data=kwargs.get("data_client"))
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
@@ -79,8 +80,9 @@ def layout(pathname, search, **kwargs):
         n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
+    data_client=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger):
+def _init_page(n_clicks_temp, togger, data_client):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -100,8 +102,10 @@ def _init_page(n_clicks_temp, togger):
         output_other.update(dict(is_open=(not togger["is_open"])))
         return [output_class, output_other]
 
-    # define content
+    # define curr_id
     curr_id = curr_id or f"id-{TAG}-fileud"
+
+    # define content
     if curr_id == f"id-{TAG}-fileud":
         output_class = dict(
             fileud=class_curr, tbdash=class_none,

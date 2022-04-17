@@ -31,15 +31,20 @@ def layout(pathname, search, **kwargs):
 )
 def _init_page(n_clicks):
     data = plotly.data.iris()
+
+    # define table
+    table1 = ctable.layout(
+        f"id-{TAG}-table1", data.to_dict("records")[:10],
+        data.columns.to_list(), data.columns.to_list(),
+    )
+
+    # define table
     _class = dict(sepal_length="bg-light")
-    return html.Div(children=[
-        ctable.layout(
-            f"id-{TAG}-table1", data.to_dict("records")[:10],
-            data.columns.to_list(), data.columns.to_list(),
-        ),
-        ctable.layout(
-            f"id-{TAG}-table2", data.to_dict("records")[:2],
-            [], data.columns.to_list(),
-            class_data=[_class, _class], striped=False, hover=False,
-        ),
-    ])
+    table2 = ctable.layout(
+        f"id-{TAG}-table2", data.to_dict("records")[:2],
+        [], data.columns.to_list(),
+        class_data=[_class, _class], striped=False, hover=False,
+    )
+
+    # return result
+    return html.Div(children=[table1, table2])
