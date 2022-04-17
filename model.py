@@ -22,9 +22,11 @@ class User(app_db.Model):
 
     id = sqlalchemy.Column(sqlalchemy.String(50), primary_key=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(500), nullable=False)
+    admin = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="0 or 1")
 
     name = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String(500), nullable=True)
+    address = sqlalchemy.Column(sqlalchemy.String(500), nullable=True)
 
     email = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
@@ -46,7 +48,8 @@ class User(app_db.Model):
 
     # print format
     def __repr__(self) -> str:
-        return f"User <{self.id} - {self.name} - {self.email} - {self.phone} - {self.filename}>"
+        col_list = [self.id, self.name, self.admin, self.email, self.phone]
+        return f"User <{' - '.join(map(str, col_list))}>"
 
 
 class Plan(app_db.Model):
@@ -66,7 +69,8 @@ class Plan(app_db.Model):
 
     # print format
     def __repr__(self) -> str:
-        return f"Plan <{self.id} - {self.name} - {self.price} - {self.pindex} - {self.status}>"
+        col_list = [self.id, self.name, self.price, self.pindex, self.status]
+        return f"User <{' - '.join(map(str, col_list))}>"
 
 
 def init_db():
@@ -93,7 +97,7 @@ def add_user(email="aaaa@qq.com", plan_id=None):
         _id = hashlib.md5(email.encode()).hexdigest()
         pwd = security.generate_password_hash(email)
 
-        user = User(id=_id, pwd=pwd, email=email, plan_id=plan_id)
+        user = User(id=_id, pwd=pwd, admin=1, email=email, plan_id=plan_id)
         session.add(user)
         session.commit()
 
