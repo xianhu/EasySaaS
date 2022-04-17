@@ -38,33 +38,35 @@ app.validation_layout = dbc.Container([])
 ], [
     Input("id-location", "pathname"),
     State("id-location", "search"),
+    State("id-location", "hash"),
     State("id-store-client", "data"),
 ], prevent_initial_call=False)
-def _init_page(pathname, search, data_client):
-    logging.warning("pathname=%s, search=%s, data_client=%s", pathname, search, data_client)
+def _init_page(pathname, search, vhash, data_client):
+    logging.warning("pathname=%s, search=%s, hash=%s, data_client=%s", pathname, search, vhash, data_client)
 
     # define variables
+    kwargs = dict(vhash=vhash, data_client=data_client)
     data_server = dict(title=pathname.strip("/").upper())
 
     # =============================================================================================
     if pathname == PATH_INTROS or pathname == PATH_ROOT:
-        return pathname, search, data_server, pintros.layout(pathname, search)
+        return pathname, search, data_server, pintros.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS:
-        return pathname, search, data_server, panalysis.layout(pathname, search)
+        return pathname, search, data_server, panalysis.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, data_server, plogin.layout(pathname, search)
+        return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, data_server, pemail.layout(pathname, search)
+        return pathname, search, data_server, pemail.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
         return pathname, search, data_server, palert.layout(pathname, search, **dict(
@@ -78,7 +80,7 @@ def _init_page(pathname, search, data_client):
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, data_server, ppwd.layout(pathname, search)
+        return pathname, search, data_server, ppwd.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
         return pathname, search, data_server, palert.layout(pathname, search, **dict(
@@ -92,9 +94,10 @@ def _init_page(pathname, search, data_client):
     if pathname == PATH_USER:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
+            kwargs.update(nextpath=PATH_USER)
             data_server = dict(title=pathname.strip("/").upper())
-            return pathname, search, data_server, plogin.layout(pathname, search, nextpath=PATH_USER)
-        return pathname, search, data_server, puser.layout(pathname, search)
+            return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, data_server, puser.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     data_server = dict(title="error: 404")
