@@ -7,7 +7,7 @@ Invoice History
 import dash_bootstrap_components as dbc
 from dash import html
 
-TAG = "user-billing-invoice"
+TAG = "user-planpay-invoice"
 INVOICE_LIST = [
     ("91240", "01/12/2020", 0),
     ("91230", "01/11/2020", 1),

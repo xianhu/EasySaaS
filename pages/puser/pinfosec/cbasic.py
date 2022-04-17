@@ -12,7 +12,7 @@ from dash import Input, Output, State, html
 from app import app, app_db
 from utility import PATH_LOGIN, RE_PHONE
 
-TAG = "user-account-basic"
+TAG = "user-infosec-basic"
 
 
 def layout(class_name=None):
