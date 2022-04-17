@@ -41,40 +41,27 @@ app.validation_layout = dbc.Container([])
     State("id-location", "hash"),
     State("id-store-client", "data"),
 ], prevent_initial_call=False)
-def _init_page(pathname, search, vhash, data_client):
-    logging.warning("pathname=%s, search=%s, hash=%s, data_client=%s", pathname, search, vhash, data_client)
+def _init_page(pathname, search, vhash, dclient):
+    logging.warning("pathname=%s, search=%s, hash=%s, dclient=%s", pathname, search, vhash, dclient)
 
     # define variables
-    kwargs = dict(vhash=vhash, dclient=data_client)
-    data_server = dict(title=pathname.strip("/").upper())
-
-    # =============================================================================================
-    if pathname == PATH_INTROS or pathname == PATH_ROOT:
-        return pathname, search, data_server, pintros.layout(pathname, search, **kwargs)
-
-    # =============================================================================================
-    if pathname == PATH_ANALYSIS:
-        if not flask_login.current_user.is_authenticated:
-            pathname = PATH_LOGIN
-            kwargs.update(dict(nextpath=PATH_USER))
-            data_server = dict(title=pathname.strip("/").upper())
-            return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
-        return pathname, search, data_server, panalysis.layout(pathname, search, **kwargs)
+    kwargs = dict(vhash=vhash, dclient=dclient)
+    dserver = dict(title=pathname.strip("/").upper())
 
     # =============================================================================================
     if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, data_server, pemail.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, pemail.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
-        return pathname, search, data_server, palert.layout(pathname, search, **dict(
+        return pathname, search, dserver, palert.layout(pathname, search, **dict(
             text_hd="Sending success",
             text_sub=f"An email has sent to {flask.session.get('email')}.",
             text_button="Back to home",
@@ -85,10 +72,10 @@ def _init_page(pathname, search, vhash, data_client):
     if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, data_server, ppwd.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, ppwd.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
-        return pathname, search, data_server, palert.layout(pathname, search, **dict(
+        return pathname, search, dserver, palert.layout(pathname, search, **dict(
             text_hd="Setting success",
             text_sub="The password was set successfully.",
             text_button="Go to login",
@@ -96,29 +83,42 @@ def _init_page(pathname, search, vhash, data_client):
         ))
 
     # =============================================================================================
+    if pathname == PATH_INTROS or pathname == PATH_ROOT:
+        return pathname, search, dserver, pintros.layout(pathname, search, **kwargs)
+
+    # =============================================================================================
+    if pathname == PATH_ANALYSIS:
+        if not flask_login.current_user.is_authenticated:
+            pathname = PATH_LOGIN
+            kwargs.update(dict(nextpath=PATH_ANALYSIS))
+            dserver = dict(title=pathname.strip("/").upper())
+            return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, panalysis.layout(pathname, search, **kwargs)
+
+    # =============================================================================================
     if pathname == PATH_USER:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
             kwargs.update(dict(nextpath=PATH_USER))
-            data_server = dict(title=pathname.strip("/").upper())
-            return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
-        return pathname, search, data_server, puser.layout(pathname, search, **kwargs)
+            dserver = dict(title=pathname.strip("/").upper())
+            return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, puser.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ADMIN:
         if flask_login.current_user.is_authenticated and flask_login.current_user.admin:
-            return pathname, search, data_server, padmin.layout(pathname, search, **kwargs)
+            return pathname, search, dserver, padmin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    data_server = dict(title="error: 404")
-    return pathname, search, data_server, palert.layout_404(pathname, search, return_href=PATH_ROOT)
+    dserver = dict(title="error: 404")
+    return pathname, search, dserver, palert.layout_404(pathname, search, return_href=PATH_ROOT)
 
 
 # clientside callback
 app.clientside_callback(
     """
-    function(data) {
-        document.title = data.title || '%s'
+    function(dserver) {
+        document.title = dserver.title || '%s'
         return {
             'iwidth': window.innerWidth,
             'iheight': window.innerHeight,
