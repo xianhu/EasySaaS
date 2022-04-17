@@ -47,4 +47,4 @@ def _init_page(n_clicks):
     )
 
     # return result
-    return html.Div(children=[table1, table2])
+    return html.Div(children=[table1, table2], className=None)

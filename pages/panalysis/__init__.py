@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility import get_trigger_property, PATH_LOGOUT
+from utility import PATH_LOGOUT, get_trigger_property
 from . import pfileud
 from .dplotly import pptbasic
 from .dtables import ptbcustom, ptbdash
