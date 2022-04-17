@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout(catalog_list, flush=None, class_name=None):
+def layout(catalog_list, ad_id="id-ad", ad_active=None, flush=None, class_name=None):
     """
     layout of component
     """
@@ -28,4 +28,4 @@ def layout(catalog_list, flush=None, class_name=None):
 
     # return result
     class_name = class_name or "border-top-solid border-bottom-solid"
-    return dbc.Accordion(accordion_item_list, active_item=None, flush=flush, class_name=class_name)
+    return dbc.Accordion(accordion_item_list, id=ad_id, active_item=ad_active, flush=flush, class_name=class_name)

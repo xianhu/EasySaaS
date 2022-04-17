@@ -45,7 +45,7 @@ def _init_page(pathname, search, vhash, data_client):
     logging.warning("pathname=%s, search=%s, hash=%s, data_client=%s", pathname, search, vhash, data_client)
 
     # define variables
-    kwargs = dict(vhash=vhash, data_client=data_client)
+    kwargs = dict(vhash=vhash, dclient=data_client)
     data_server = dict(title=pathname.strip("/").upper())
 
     # =============================================================================================
@@ -54,6 +54,11 @@ def _init_page(pathname, search, vhash, data_client):
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS:
+        if not flask_login.current_user.is_authenticated:
+            pathname = PATH_LOGIN
+            kwargs.update(dict(nextpath=PATH_USER))
+            data_server = dict(title=pathname.strip("/").upper())
+            return pathname, search, data_server, plogin.layout(pathname, search, **kwargs)
         return pathname, search, data_server, panalysis.layout(pathname, search, **kwargs)
 
     # =============================================================================================
@@ -130,6 +135,9 @@ app.clientside_callback(
     function(href) {
         if (href != null && href != undefined) {
             window.location.href = href
+            if (href.endsWith('#')) {
+                window.location.reload()
+            }
         }
         return href
     }
