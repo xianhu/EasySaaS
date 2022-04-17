@@ -8,12 +8,12 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 
-def layout(catalog_list, flush=None, class_name=None):
+def layout(catalog_list, ad_id="id-ad", ad_active=None, flush=None, class_name=None):
     """
     layout of component
     """
     # define components
-    accordion_item_list = []
+    accordion_items = []
     for title_first, id_first, list_second in catalog_list:
         address_list = []
         for title, _id, href in list_second:
@@ -23,9 +23,8 @@ def layout(catalog_list, flush=None, class_name=None):
 
         # define components
         div = html.Div(address_list, className="d-flex flex-column py-2")
-        accordion_item = dbc.AccordionItem(div, title=title_first, item_id=id_first)
-        accordion_item_list.append(accordion_item)
+        accordion_items.append(dbc.AccordionItem(div, title=title_first, item_id=id_first))
 
     # return result
     class_name = class_name or "border-top-solid border-bottom-solid"
-    return dbc.Accordion(accordion_item_list, active_item=None, flush=flush, class_name=class_name)
+    return dbc.Accordion(accordion_items, id=ad_id, active_item=ad_active, flush=flush, class_name=class_name)

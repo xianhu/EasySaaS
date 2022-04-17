@@ -11,7 +11,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from utility import PATH_LOGOUT, PATH_LOGIN, RE_PWD
+from utility import PATH_LOGIN, PATH_LOGOUT, RE_PWD
 
 TAG = "user-infosec-pwd"
 
@@ -91,6 +91,9 @@ def _button_click(n_clicks, pwd, pwd1, pwd2):
     # commit user
     app_db.session.merge(user)
     app_db.session.commit()
+
+    # logout user
+    flask_login.logout_user()
 
     # return result
     return None, dash.no_update, True

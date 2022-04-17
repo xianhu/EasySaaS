@@ -50,7 +50,8 @@ def layout(pathname, search, **kwargs):
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
-        dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash"))
+        dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash")),
+        dcc.Store(id=f"id-{TAG}-dclient", data=kwargs.get("dclient")),
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
@@ -76,8 +77,9 @@ def layout(pathname, search, **kwargs):
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
     vhash=State(f"id-{TAG}-vhash", "data"),
+    dclient=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger, vhash):
+def _init_page(n_clicks_temp, togger, vhash, dclient):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
