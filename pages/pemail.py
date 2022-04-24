@@ -62,7 +62,7 @@ def layout(pathname, search, **kwargs):
 
 
 @app.callback([
-    Output(f"id-{TAG}-fb", "children"),
+    Output(f"id-{TAG}-feedback", "children"),
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
