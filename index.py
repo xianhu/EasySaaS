@@ -107,7 +107,11 @@ def _init_page(pathname, search, vhash, dclient):
     # =============================================================================================
     if pathname == PATH_ADMIN:
         if flask_login.current_user.is_authenticated and flask_login.current_user.admin:
+            dserver = dict(title="Admin")
             return pathname, search, dserver, padmin.layout(pathname, search, **kwargs)
+        else:
+            dserver = dict(title="error: 500")
+            return pathname, search, dserver, palert.layout_500(pathname, search, return_href=PATH_ROOT)
 
     # =============================================================================================
     dserver = dict(title="error: 404")
