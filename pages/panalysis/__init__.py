@@ -49,8 +49,10 @@ def layout(pathname, search, **kwargs):
     # return result
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
+        # define components
         cnavbar.layout(fluid=True, class_name=None),
         csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
+        # define components
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
@@ -60,7 +62,6 @@ def layout(pathname, search, **kwargs):
 
 
 @app.callback(output=[
-    Output(f"id-{TAG}-ad", "active_item"),
     dict(
         fileud=Output(f"id-{TAG}-fileud", "className"),
         tbdash=Output(f"id-{TAG}-tb-dash", "className"),
@@ -72,6 +73,7 @@ def layout(pathname, search, **kwargs):
         children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
+    Output(f"id-{TAG}-ad", "active_item"),
 ], inputs=dict(
     n_clicks_temp=dict(
         n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
@@ -91,17 +93,17 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
     # define default output
-    output_active = dash.no_update
     output_class = dict(
         fileud=dash.no_update, tbdash=dash.no_update,
         tbcustom=dash.no_update, ptbasic=dash.no_update,
     )
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
+    output_active = dash.no_update
 
     # check user
     if not flask_login.current_user.is_authenticated:
         output_other.update(dict(href=PATH_LOGOUT))
-        return [output_active, output_class, output_other]
+        return [output_class, output_other, output_active]
 
     # parse triggered
     triggered = dash.callback_context.triggered
@@ -110,7 +112,7 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:
         output_other.update(dict(is_open=(not togger["is_open"])))
-        return [output_active, output_class, output_other]
+        return [output_class, output_other, output_active]
 
     # define curr_id
     if (not curr_id) and vhash:
@@ -124,31 +126,32 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
             tbcustom=class_none, ptbasic=class_none,
         )
         output_other.update(dict(is_open=False, children=pfileud.layout(None, None)))
+        output_active = None
 
     # define content
     elif curr_id == f"id-{TAG}-tb-dash":
-        output_active = f"id-{TAG}-ad-tables"
         output_class = dict(
             fileud=class_none, tbdash=class_curr,
             tbcustom=class_none, ptbasic=class_none,
         )
         output_other.update(dict(is_open=False, children=ptbdash.layout(None, None)))
-    elif curr_id == f"id-{TAG}-tb-custom":
         output_active = f"id-{TAG}-ad-tables"
+    elif curr_id == f"id-{TAG}-tb-custom":
         output_class = dict(
             fileud=class_none, tbdash=class_none,
             tbcustom=class_curr, ptbasic=class_none,
         )
         output_other.update(dict(is_open=False, children=ptbcustom.layout(None, None)))
+        output_active = f"id-{TAG}-ad-tables"
 
     # define content
     elif curr_id == f"id-{TAG}-pt-basic":
-        output_active = f"id-{TAG}-ad-plotly"
         output_class = dict(
             fileud=class_none, tbdash=class_none,
             tbcustom=class_none, ptbasic=class_curr,
         )
         output_other.update(dict(is_open=False, children=pptbasic.layout(None, None)))
+        output_active = f"id-{TAG}-ad-plotly"
 
     # return result
-    return [output_active, output_class, output_other]
+    return [output_class, output_other, output_active]
