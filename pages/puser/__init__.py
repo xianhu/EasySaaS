@@ -44,9 +44,12 @@ def layout(pathname, search, **kwargs):
     # return result
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
+        # define components
         cnavbar.layout(fluid=False, class_name=None),
         csmallnav.layout(tgid, "User", fluid=False, class_name=None),
+        # define components
         dbc.Container(content, fluid=False, class_name=None),
+        # define components
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
