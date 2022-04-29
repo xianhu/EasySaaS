@@ -36,7 +36,7 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(data=pathname)
     kwargs_temp.update(dict(
-        image_src="illustrations/register.svg",
+        src_image="illustrations/register.svg",
         text_hd="Sign up",
         text_sub="Register an account through an email.",
         form_items=form_items,
@@ -46,7 +46,7 @@ def layout(pathname, search, **kwargs):
             html.A("Forget password?", href=PATH_RESETPWDE),
         ],
     ) if pathname == PATH_REGISTERE else dict(
-        image_src="illustrations/resetpwd.svg",
+        src_image="illustrations/resetpwd.svg",
         text_hd="Forget password?",
         text_sub="Find back the password through email.",
         form_items=form_items,

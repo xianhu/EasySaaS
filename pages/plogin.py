@@ -38,7 +38,7 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(data=kwargs.get("nextpath", PATH_ROOT))
     kwargs_temp.update(dict(
-        image_src="illustrations/login.svg",
+        src_image="illustrations/login.svg",
         text_hd="Sign in",
         text_sub="Login the system with your account.",
         form_items=form_items,

@@ -52,7 +52,7 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(data=pathname)
     kwargs_temp.update(dict(
-        image_src="illustrations/password.svg",
+        src_image="illustrations/password.svg",
         text_hd="Set password",
         text_sub="Set the password of this email please.",
         form_items=form_items,
