@@ -14,7 +14,7 @@ def layout(pathname, search, **kwargs):
     """
     return html.Div(children=[
         dbc.Card(children=[
-            dbc.CardHeader("Template", class_name="px-4 py-3"),
-            html.Div(children=[], className="p-4"),
+            dbc.CardHeader("Template Page:", class_name="px-4 py-3"),
+            html.Div(children="Template Page", className="p-4"),
         ], class_name=None),
     ], className="mb-4")
