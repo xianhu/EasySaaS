@@ -56,6 +56,9 @@ def layout(pathname, search, **kwargs):
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
+        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+        dcc.Store(id=f"id-{TAG}-search", data=search),
+        # define components
         dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash")),
         dcc.Store(id=f"id-{TAG}-dclient", data=kwargs.get("dclient")),
     ], className="d-flex flex-column vh-100 overflow-scroll")
@@ -85,10 +88,12 @@ def layout(pathname, search, **kwargs):
         n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
+    pathname=State(f"id-{TAG}-pathname", "data"),
+    search=State(f"id-{TAG}-search", "data"),
     vhash=State(f"id-{TAG}-vhash", "data"),
     dclient=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger, vhash, dclient):
+def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -116,7 +121,8 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
 
     # define curr_id
     if (not curr_id) and vhash:
-        curr_id = f"id-{TAG}-{vhash.strip('#')}"
+        _vhash = vhash.strip("#").split("#")[0]
+        curr_id = f"id-{TAG}-{_vhash}"
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content
@@ -125,7 +131,7 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
             fileud=class_curr, tbdash=class_none,
             tbcustom=class_none, ptbasic=class_none,
         )
-        output_other.update(dict(is_open=False, children=pfileud.layout(None, None)))
+        output_other.update(dict(is_open=False, children=pfileud.layout(pathname, search)))
         output_active = None
 
     # define content
@@ -134,14 +140,14 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
             fileud=class_none, tbdash=class_curr,
             tbcustom=class_none, ptbasic=class_none,
         )
-        output_other.update(dict(is_open=False, children=ptbdash.layout(None, None)))
+        output_other.update(dict(is_open=False, children=ptbdash.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-tb-custom":
         output_class = dict(
             fileud=class_none, tbdash=class_none,
             tbcustom=class_curr, ptbasic=class_none,
         )
-        output_other.update(dict(is_open=False, children=ptbcustom.layout(None, None)))
+        output_other.update(dict(is_open=False, children=ptbcustom.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
 
     # define content
@@ -150,7 +156,7 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
             fileud=class_none, tbdash=class_none,
             tbcustom=class_none, ptbasic=class_curr,
         )
-        output_other.update(dict(is_open=False, children=pptbasic.layout(None, None)))
+        output_other.update(dict(is_open=False, children=pptbasic.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-plotly"
 
     # return result
