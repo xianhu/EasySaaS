@@ -21,6 +21,15 @@ def layout(pathname, search, text_hd, text_sub, text_button, return_href):
     ], width=10, md=3), align="center", justify="center", class_name="vh-100 w-100 mx-auto")
 
 
+def layout_403(pathname, search, return_href=PATH_ROOT):
+    """
+    layout of page
+    """
+    text_hd = "No authorization"
+    text_sub = "You have no authorization, click button to safe page."
+    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
+
+
 def layout_404(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
