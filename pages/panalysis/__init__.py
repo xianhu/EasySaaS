@@ -34,9 +34,10 @@ def layout(pathname, search, **kwargs):
     """
     # define components
     kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
+    kwargs_admulti = dict(catalog_list=CATALOG_LIST, ad_id=f"id-{TAG}-admulti")
     catalog = dbc.Collapse(children=[
         cadsingle.layout(**kwargs_fileud, flush=True, class_name="border-bottom-solid"),
-        cadmulti.layout(CATALOG_LIST, ad_id=f"id-{TAG}-ad", flush=True, class_name="border-bottom-solid"),
+        cadmulti.layout(**kwargs_admulti, flush=True, class_name="border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
@@ -76,7 +77,7 @@ def layout(pathname, search, **kwargs):
         children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
-    Output(f"id-{TAG}-ad", "active_item"),
+    Output(f"id-{TAG}-admulti", "active_item"),
 ], inputs=dict(
     n_clicks_temp=dict(
         n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
@@ -121,8 +122,7 @@ def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
 
     # define curr_id
     if (not curr_id) and vhash:
-        _vhash = vhash.strip("#").split("#")[0]
-        curr_id = f"id-{TAG}-{_vhash}"
+        curr_id = f"id-{TAG}-{vhash.strip('#').split('#')[0]}"
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content

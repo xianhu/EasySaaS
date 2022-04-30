@@ -30,7 +30,7 @@ def layout(pathname, search, **kwargs):
     """
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
-        ccatalog.layout(CATALOG_LIST, class_name=None),
+        ccatalog.layout(catalog_list=CATALOG_LIST, class_name=None),
         dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
     ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
@@ -111,8 +111,7 @@ def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
 
     # define curr_id
     if (not curr_id) and vhash:
-        _vhash = vhash.strip("#").split("#")[0]
-        curr_id = f"id-{TAG}-{_vhash}"
+        curr_id = f"id-{TAG}-{vhash.strip('#').split('#')[0]}"
     curr_id = curr_id or f"id-{TAG}-infosec"
 
     # define content
