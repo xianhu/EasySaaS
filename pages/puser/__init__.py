@@ -30,7 +30,7 @@ def layout(pathname, search, **kwargs):
     """
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
-        ccatalog.layout(CATALOG_LIST, class_name=None),
+        ccatalog.layout(catalog_list=CATALOG_LIST, class_name=None),
         dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
     ], class_name="py-2"), id=f"id-{TAG}-collapse", class_name="d-md-block")
 
@@ -53,6 +53,9 @@ def layout(pathname, search, **kwargs):
         cfooter.layout(fluid=False, class_name=None),
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
+        dcc.Store(id=f"id-{TAG}-pathname", data=pathname),
+        dcc.Store(id=f"id-{TAG}-search", data=search),
+        # define components
         dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash")),
         dcc.Store(id=f"id-{TAG}-dclient", data=kwargs.get("dclient")),
     ], className="d-flex flex-column vh-100 overflow-scroll")
@@ -79,10 +82,12 @@ def layout(pathname, search, **kwargs):
         n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
+    pathname=State(f"id-{TAG}-pathname", "data"),
+    search=State(f"id-{TAG}-search", "data"),
     vhash=State(f"id-{TAG}-vhash", "data"),
     dclient=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger, vhash, dclient):
+def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -106,19 +111,19 @@ def _init_page(n_clicks_temp, togger, vhash, dclient):
 
     # define curr_id
     if (not curr_id) and vhash:
-        curr_id = f"id-{TAG}-{vhash.strip('#')}"
+        curr_id = f"id-{TAG}-{vhash.strip('#').split('#')[0]}"
     curr_id = curr_id or f"id-{TAG}-infosec"
 
     # define content
     if curr_id == f"id-{TAG}-template":
         output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(None, None)))
+        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-infosec":
         output_class = dict(template=class_none, infosec=class_curr, planpay=class_none)
-        output_other.update(dict(is_open=False, children=pinfosec.layout(None, None)))
+        output_other.update(dict(is_open=False, children=pinfosec.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-planpay":
         output_class = dict(template=class_none, infosec=class_none, planpay=class_curr)
-        output_other.update(dict(is_open=False, children=pplanpay.layout(None, None)))
+        output_other.update(dict(is_open=False, children=pplanpay.layout(pathname, search)))
 
     # return result
     return [output_class, output_other]

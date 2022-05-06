@@ -17,7 +17,7 @@ def layout(pathname, search, tag, **kwargs):
     layout of template
     """
     # define components
-    src_image = dash.get_asset_url(kwargs["image_src"])
+    src_image = dash.get_asset_url(kwargs["src_image"])
     left = html.Img(src=src_image, className="img-fluid")
 
     # define components
