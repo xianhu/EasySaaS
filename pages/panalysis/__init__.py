@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility.paths import PATH_LOGOUT
+from utility.paths import PATH_LOGOUT, PATH_ANALYSIS
 from . import pfileud
 from .dplotly import pptbasic
 from .dtables import ptbcustom, ptbdash
@@ -51,7 +51,7 @@ def layout(pathname, search, **kwargs):
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(fluid=True, class_name=None),
+        cnavbar.layout(PATH_ANALYSIS, fluid=True, class_name=None),
         csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
         # define components
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),

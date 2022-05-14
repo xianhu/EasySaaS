@@ -13,15 +13,17 @@ from utility.paths import *
 from . import cbrand
 
 
-def layout(fluid=None, class_name=None):
+def layout(pathname, fluid=None, class_name=None):
     """
     layout of component
     """
     # define components
     class_link = "fw-bold text-center border-bottom mx-md-1 p-md-3"
+    class_intros = f"{class_link} {'border-primary' if pathname == PATH_INTROS else ''}"
+    class_analysis = f"{class_link} {'border-primary' if pathname == PATH_ANALYSIS else ''}"
     nav_links = dbc.Nav(children=[
-        dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_link),
-        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_link),
+        dbc.NavLink("Intros", href=PATH_INTROS, class_name=class_intros),
+        dbc.NavLink("Analysis", href=PATH_ANALYSIS, class_name=class_analysis),
     ], navbar=True, class_name="mx-auto")
 
     # define components

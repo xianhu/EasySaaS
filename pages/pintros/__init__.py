@@ -7,6 +7,7 @@ intros page
 import dash_bootstrap_components as dbc
 from dash import html
 
+from utility.paths import PATH_INTROS
 from components import cfooter, cnavbar
 from . import ccontact, cheader, cintros, cplans
 
@@ -16,7 +17,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     return html.Div(children=[
-        cnavbar.layout(fluid=False, class_name=None),
+        cnavbar.layout(PATH_INTROS, fluid=False, class_name=None),
         dbc.Container(children=[
             cheader.layout(class_name=None),
             cintros.layout(class_name="mt-5"),
