@@ -3,6 +3,3 @@
 """
 utility module
 """
-
-from .consts import *
-from .trigger import get_trigger_property

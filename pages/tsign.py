@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from components import cbrand
-from utility import PATH_ROOT
+from utility.paths import PATH_ROOT
 
 
 def layout(pathname, search, tag, **kwargs):

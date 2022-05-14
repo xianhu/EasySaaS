@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility import PATH_LOGOUT, get_trigger_property
+from utility.paths import PATH_LOGOUT
 from . import pfileud
 from .dplotly import pptbasic
 from .dtables import ptbcustom, ptbdash
@@ -111,9 +111,8 @@ def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
         output_other.update(dict(href=PATH_LOGOUT))
         return [output_class, output_other, output_active]
 
-    # parse triggered
-    triggered = dash.callback_context.triggered
-    curr_id, _, _, value = get_trigger_property(triggered)
+    # define triggered
+    curr_id = dash.ctx.triggered_id
 
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:

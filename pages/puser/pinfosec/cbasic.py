@@ -10,7 +10,8 @@ import flask_login
 from dash import Input, Output, State, html
 
 from app import app, app_db
-from utility import PATH_LOGIN, RE_PHONE
+from utility.consts import RE_PHONE
+from utility.paths import PATH_LOGIN
 
 TAG = "user-infosec-basic"
 

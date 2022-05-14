@@ -13,7 +13,8 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from utility import *
+from utility.consts import RE_EMAIL
+from utility.paths import *
 from . import tsign
 
 TAG = "login"

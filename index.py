@@ -15,7 +15,7 @@ from app import app
 from config import config_app_name
 from pages import palert, pemail, plogin, ppwd
 from pages import padmin, panalysis, pintros, puser
-from utility import *
+from utility.paths import *
 
 # app layout
 app.title = config_app_name

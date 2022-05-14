@@ -11,7 +11,8 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db
-from utility import PATH_LOGIN, PATH_LOGOUT, RE_PWD
+from utility.consts import RE_PWD
+from utility.paths import PATH_LOGIN, PATH_LOGOUT
 
 TAG = "user-infosec-pwd"
 
