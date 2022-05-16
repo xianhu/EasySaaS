@@ -86,7 +86,7 @@ def layout(pathname, search, **kwargs):
     ),
     Output(f"id-{TAG}-admulti", "active_item"),
 ], inputs=dict(
-    n_clicks_temp=dict(
+    n_clicks_list=dict(
         n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-tb-dash", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-tb-custom", "n_clicks"),
@@ -101,7 +101,7 @@ def layout(pathname, search, **kwargs):
     vhash=State(f"id-{TAG}-vhash", "data"),
     dclient=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
+def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -113,12 +113,10 @@ def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
     output_active = dash.no_update
 
-    # check user
+    # check user and define curr_id
     if not flask_login.current_user.is_authenticated:
         output_other.update(dict(href=PATH_LOGOUT))
         return [output_class, output_other, output_active]
-
-    # define triggered
     curr_id = dash.ctx.triggered_id
 
     # define is_open
