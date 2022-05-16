@@ -17,8 +17,8 @@ def layout(title, _id, href, flush=None, class_name=None):
     address = html.A(button, href=href, className="text-decoration-none")
 
     # define components
-    header = html.H2(address, className="accordion-header")
-    item = html.Div(header, className=f"accordion-item {class_name}")
+    accordion_header = html.H2(address, className="accordion-header")
+    accordion_item = html.Div(accordion_header, className=f"accordion-item {class_name}")
 
     # return result
-    return html.Div(item, className=f"accordion {'accordion-flush' if flush else ''}")
+    return html.Div(accordion_item, className=f"accordion {'accordion-flush' if flush else ''}")

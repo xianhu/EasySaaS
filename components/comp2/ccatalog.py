@@ -15,8 +15,9 @@ def layout(catalog_list, class_name=None):
     catalog_children = []
     for title_first, id_first, list_second in catalog_list:
         if isinstance(list_second, str):
-            ctitle = html.Div(title_first, id=id_first, className="text-black hover-primary")
-            address = html.A(ctitle, href=list_second, className="text-decoration-none px-4 py-2")
+            title, _id, href = title_first, id_first, list_second
+            ctitle = html.Div(title, id=_id, className="text-black hover-primary")
+            address = html.A(ctitle, href=href, className="text-decoration-none px-4 py-2")
             catalog_children.append(address)
             continue
 
