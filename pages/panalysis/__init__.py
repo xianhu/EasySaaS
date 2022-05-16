@@ -11,16 +11,12 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility.paths import PATH_LOGOUT, PATH_ANALYSIS, PATH_INTROS
+from utility.paths import PATH_LOGOUT, NAV_LINKS
 from . import pfileud
 from .dplotly import pptbasic
 from .dtables import ptbcustom, ptbdash
 
 TAG = "analysis"
-NAV_LINKS = [
-    ["Intros", "id-navbar-intros", PATH_INTROS, "border-bottom"],
-    ["Analysis", "id-navbar-analysis", PATH_ANALYSIS, "border-bottom border-primary"],
-]
 CATALOG_LIST = [
     ["Tables", f"id-{TAG}-ad-tables", [
         ("Dash Table", f"id-{TAG}-tb-dash", "#tb-dash"),
@@ -36,6 +32,13 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    # define components
+    nav_links = []
+    for title, _id, href, _class in NAV_LINKS:
+        if href == pathname:
+            _class = "border-bottom border-primary"
+        nav_links.append([title, _id, href, _class])
+
     # define components
     kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     kwargs_admulti = dict(catalog_list=CATALOG_LIST, ad_id=f"id-{TAG}-admulti")
@@ -55,7 +58,7 @@ def layout(pathname, search, **kwargs):
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(NAV_LINKS, fluid=True, class_name=None),
+        cnavbar.layout(nav_links, fluid=True, class_name=None),
         csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
         # define components
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),

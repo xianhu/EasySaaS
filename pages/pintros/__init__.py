@@ -7,22 +7,25 @@ intros page
 import dash_bootstrap_components as dbc
 from dash import html
 
-from utility.paths import PATH_ANALYSIS, PATH_INTROS
+from utility.paths import NAV_LINKS
 from components import cfooter, cnavbar
 from . import ccontact, cheader, cintros, cplans
-
-NAV_LINKS = [
-    ["Intros", "id-navbar-intros", PATH_INTROS, "border-bottom border-primary"],
-    ["Analysis", "id-navbar-analysis", PATH_ANALYSIS, "border-bottom"],
-]
 
 
 def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    # define components
+    nav_links = []
+    for title, _id, href, _class in NAV_LINKS:
+        if href == pathname:
+            _class = "border-bottom border-primary"
+        nav_links.append([title, _id, href, _class])
+
+    # return result
     return html.Div(children=[
-        cnavbar.layout(NAV_LINKS, fluid=False, class_name=None),
+        cnavbar.layout(nav_links, fluid=False, class_name=None),
         dbc.Container(children=[
             cheader.layout(class_name=None),
             cintros.layout(class_name="mt-5"),

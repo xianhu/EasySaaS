@@ -11,14 +11,10 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
-from utility.paths import *
+from utility.paths import PATH_LOGOUT, NAV_LINKS
 from . import ptemplate, pinfosec, pplanpay
 
 TAG = "user"
-NAV_LINKS = [
-    ["Intros", "id-navbar-intros", PATH_INTROS, "border-bottom"],
-    ["Analysis", "id-navbar-analysis", PATH_ANALYSIS, "border-bottom"],
-]
 CATALOG_LIST = [
     ["Template", f"id-{TAG}-template", "#template"],
     ["ACCOUNT", None, [
