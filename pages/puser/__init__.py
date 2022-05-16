@@ -11,10 +11,14 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
-from utility.paths import PATH_LOGOUT
+from utility.paths import *
 from . import ptemplate, pinfosec, pplanpay
 
 TAG = "user"
+NAV_LINKS = [
+    ["Intros", "id-navbar-intros", PATH_INTROS, "border-bottom"],
+    ["Analysis", "id-navbar-analysis", PATH_ANALYSIS, "border-bottom"],
+]
 CATALOG_LIST = [
     ["Template", f"id-{TAG}-template", "#template"],
     ["ACCOUNT", None, [
@@ -45,7 +49,7 @@ def layout(pathname, search, **kwargs):
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(None, fluid=False, class_name=None),
+        cnavbar.layout(NAV_LINKS, fluid=False, class_name=None),
         csmallnav.layout(tgid, "User", fluid=False, class_name=None),
         # define components
         dbc.Container(content, fluid=False, class_name=None),
