@@ -45,8 +45,8 @@ def layout(pathname, search, **kwargs):
         form_items=form_items,
         text_button="Sign in",
         other_list=[
-            html.A("Sign up", href=PATH_REGISTERE),
-            html.A("Forget password?", href=PATH_RESETPWDE),
+            html.A("Sign up", href=PATH_REGISTER),
+            html.A("Forget password?", href=PATH_RESETPWD),
         ],
     ))
 

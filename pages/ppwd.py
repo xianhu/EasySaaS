@@ -60,7 +60,7 @@ def layout(pathname, search, **kwargs):
         text_button="Set password",
         other_list=[
             html.A("Sign in", href=PATH_LOGIN),
-            html.A("Sign up", href=PATH_REGISTERE),
+            html.A("Sign up", href=PATH_REGISTER),
         ],
     ))
 

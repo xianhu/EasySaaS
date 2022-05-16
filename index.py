@@ -55,12 +55,12 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_REGISTERE or pathname == PATH_RESETPWDE:
+    if pathname == PATH_REGISTER or pathname == PATH_RESETPWD:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, pemail.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTERE}/result" or pathname == f"{PATH_RESETPWDE}/result":
+    if pathname == f"{PATH_REGISTER}/result" or pathname == f"{PATH_RESETPWD}/result":
         return pathname, search, dserver, palert.layout(pathname, search, **dict(
             text_hd="Sending success",
             text_sub=f"An email has sent to {flask.session.get('email')}.",
@@ -69,12 +69,12 @@ def _init_page(pathname, search, vhash, dclient):
         ))
 
     # =============================================================================================
-    if pathname == f"{PATH_REGISTERE}-pwd" or pathname == f"{PATH_RESETPWDE}-pwd":
+    if pathname == f"{PATH_REGISTER}-pwd" or pathname == f"{PATH_RESETPWD}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, ppwd.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTERE}-pwd/result" or pathname == f"{PATH_RESETPWDE}-pwd/result":
+    if pathname == f"{PATH_REGISTER}-pwd/result" or pathname == f"{PATH_RESETPWD}-pwd/result":
         return pathname, search, dserver, palert.layout(pathname, search, **dict(
             text_hd="Setting success",
             text_sub="The password was set successfully.",

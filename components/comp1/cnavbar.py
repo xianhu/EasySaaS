@@ -28,7 +28,7 @@ def layout(nav_links, fluid=None, class_name=None):
     # define components
     kwargs_button = dict(color="primary", outline=True)
     nav_right = dbc.Nav(dbc.NavItem(children=[
-        html.A("Sign up", href=PATH_REGISTERE, className=None),
+        html.A("Sign up", href=PATH_REGISTER, className=None),
         dbc.Button("Sign in", href=PATH_LOGIN, **kwargs_button, class_name="fw-bold ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}#template"),

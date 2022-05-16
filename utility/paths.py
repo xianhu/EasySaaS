@@ -13,8 +13,8 @@ PATH_ANALYSIS = "/analysis"
 PATH_LOGIN = "/login"
 PATH_LOGOUT = "/logout"
 
-PATH_REGISTERE = "/registere"
-PATH_RESETPWDE = "/resetpwde"
+PATH_REGISTER = "/register"
+PATH_RESETPWD = "/resetpwd"
 
 PATH_USER = "/user"
 PATH_ADMIN = "/admin"

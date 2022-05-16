@@ -44,9 +44,9 @@ def layout(pathname, search, **kwargs):
         text_button="Verify the email",
         other_list=[
             html.A("Sign in", href=PATH_LOGIN),
-            html.A("Forget password?", href=PATH_RESETPWDE),
+            html.A("Forget password?", href=PATH_RESETPWD),
         ],
-    ) if pathname == PATH_REGISTERE else dict(
+    ) if pathname == PATH_REGISTER else dict(
         src_image="illustrations/resetpwd.svg",
         text_hd="Forget password?",
         text_sub="Find back the password through email.",
@@ -54,7 +54,7 @@ def layout(pathname, search, **kwargs):
         text_button="Verify the email",
         other_list=[
             html.A("Sign in", href=PATH_LOGIN),
-            html.A("Sign up", href=PATH_REGISTERE),
+            html.A("Sign up", href=PATH_REGISTER),
         ],
     ))
 
@@ -79,9 +79,9 @@ def _button_click(n_clicks, email, pathname):
 
     # check user
     user = User.query.get(_id)
-    if pathname == PATH_REGISTERE and user:
+    if pathname == PATH_REGISTER and user:
         return "Email is registered", dash.no_update
-    if pathname == PATH_RESETPWDE and (not user):
+    if pathname == PATH_RESETPWD and (not user):
         return "Email doesn't exist", dash.no_update
 
     # send email and cache
@@ -94,7 +94,7 @@ def _button_click(n_clicks, email, pathname):
         path_pwd = f"{pathname}-pwd?{query_string}"
 
         # send email
-        if pathname == PATH_REGISTERE:
+        if pathname == PATH_REGISTER:
             subject = f"Registration of {config_app_name}"
         else:
             subject = f"Resetting password of {config_app_name}"
