@@ -27,7 +27,7 @@ def layout(pathname, search, tag, **kwargs):
         html.Div(kwargs["text_sub"], className="text-center text-muted"),
 
         html.Div(kwargs["form_items"], className="mt-4"),
-        html.Div(id=f"id-{tag}-feedback", className="text-danger text-center"),
+        html.Div(id=f"id-{tag}-feedback", className="text-center text-danger"),
 
         dbc.Button(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
         html.Div(kwargs["other_list"], className="d-flex justify-content-between"),

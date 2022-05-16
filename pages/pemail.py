@@ -18,7 +18,7 @@ from dash import Input, Output, State, html
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import *
+from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
 from . import tsign
 
 TAG = "email"
@@ -35,8 +35,7 @@ def layout(pathname, search, **kwargs):
     ]), class_name=None)
 
     # define args
-    kwargs_temp = dict(data=pathname)
-    kwargs_temp.update(dict(
+    kwargs_temp = dict(
         src_image="illustrations/register.svg",
         text_hd="Sign up",
         text_sub="Register an account through an email.",
@@ -46,6 +45,7 @@ def layout(pathname, search, **kwargs):
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Forget password?", href=PATH_RESETPWD),
         ],
+        data=PATH_REGISTER,
     ) if pathname == PATH_REGISTER else dict(
         src_image="illustrations/resetpwd.svg",
         text_hd="Forget password?",
@@ -56,7 +56,8 @@ def layout(pathname, search, **kwargs):
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_REGISTER),
         ],
-    ))
+        data=PATH_RESETPWD,
+    )
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs_temp)

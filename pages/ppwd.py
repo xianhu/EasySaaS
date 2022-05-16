@@ -16,7 +16,7 @@ from werkzeug import security
 
 from app import User, app, app_db, app_redis
 from utility.consts import RE_PWD
-from utility.paths import *
+from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
 from . import palert, tsign
 
 TAG = "pwd"
@@ -51,8 +51,7 @@ def layout(pathname, search, **kwargs):
     ], class_name=None)
 
     # define args
-    kwargs_temp = dict(data=pathname)
-    kwargs_temp.update(dict(
+    kwargs_temp = dict(
         src_image="illustrations/password.svg",
         text_hd="Set password",
         text_sub="Set the password of this email please.",
@@ -62,7 +61,8 @@ def layout(pathname, search, **kwargs):
             html.A("Sign in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_REGISTER),
         ],
-    ))
+        data=pathname,
+    )
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
