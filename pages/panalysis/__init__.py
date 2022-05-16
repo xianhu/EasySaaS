@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
-from utility import PATH_LOGOUT, get_trigger_property
+from utility.paths import PATH_LOGOUT, NAV_LINKS
 from . import pfileud
 from .dplotly import pptbasic
 from .dtables import ptbcustom, ptbdash
@@ -33,6 +33,13 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
+    nav_links = []
+    for title, _id, href, _class in NAV_LINKS:
+        if href == pathname:
+            _class = "border-bottom border-primary"
+        nav_links.append([title, _id, href, _class])
+
+    # define components
     kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     kwargs_admulti = dict(catalog_list=CATALOG_LIST, ad_id=f"id-{TAG}-admulti")
     catalog = dbc.Collapse(children=[
@@ -51,7 +58,7 @@ def layout(pathname, search, **kwargs):
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(fluid=True, class_name=None),
+        cnavbar.layout(nav_links, fluid=True, class_name=None),
         csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
         # define components
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
@@ -79,7 +86,7 @@ def layout(pathname, search, **kwargs):
     ),
     Output(f"id-{TAG}-admulti", "active_item"),
 ], inputs=dict(
-    n_clicks_temp=dict(
+    n_clicks_list=dict(
         n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-tb-dash", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-tb-custom", "n_clicks"),
@@ -94,7 +101,7 @@ def layout(pathname, search, **kwargs):
     vhash=State(f"id-{TAG}-vhash", "data"),
     dclient=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
+def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -106,14 +113,11 @@ def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
     output_active = dash.no_update
 
-    # check user
+    # check user and define curr_id
     if not flask_login.current_user.is_authenticated:
         output_other.update(dict(href=PATH_LOGOUT))
         return [output_class, output_other, output_active]
-
-    # parse triggered
-    triggered = dash.callback_context.triggered
-    curr_id, _, _, value = get_trigger_property(triggered)
+    curr_id = dash.ctx.triggered_id
 
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:

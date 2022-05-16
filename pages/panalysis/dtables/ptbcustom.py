@@ -33,18 +33,14 @@ def _init_page(n_clicks):
     data = plotly.data.iris()
 
     # define table
-    table1 = ctable.layout(
-        f"id-{TAG}-table1", data.to_dict("records")[:10],
-        data.columns.to_list(), data.columns.to_list(),
-    )
+    kwargs = dict(header_list=data.columns.to_list(), key_list=data.columns.to_list())
+    table1 = ctable.layout(f"id-{TAG}-table1", data.to_dict("records")[:10], **kwargs)
 
     # define table
     _class = dict(sepal_length="bg-light")
-    table2 = ctable.layout(
-        f"id-{TAG}-table2", data.to_dict("records")[:2],
-        [], data.columns.to_list(),
-        class_data=[_class, _class], striped=False, hover=False,
-    )
+    kwargs = dict(header_list=[], key_list=data.columns.to_list())
+    kwargs.update(dict(class_data=[_class, _class], striped=False, hover=False))
+    table2 = ctable.layout(f"id-{TAG}-table2", data.to_dict("records")[:2], **kwargs)
 
     # return result
     return html.Div(children=[table1, table2], className=None)

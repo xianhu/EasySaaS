@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
-from utility import PATH_LOGOUT, get_trigger_property
+from utility.paths import PATH_LOGOUT, NAV_LINKS
 from . import ptemplate, pinfosec, pplanpay
 
 TAG = "user"
@@ -29,6 +29,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
+    nav_links = NAV_LINKS
+
+    # define components
     catalog = dbc.Collapse(dbc.Card(children=[
         ccatalog.layout(catalog_list=CATALOG_LIST, class_name=None),
         dbc.Button("Logout", href=PATH_LOGOUT, class_name="w-75 mx-auto my-2"),
@@ -45,7 +48,7 @@ def layout(pathname, search, **kwargs):
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(fluid=False, class_name=None),
+        cnavbar.layout(nav_links, fluid=False, class_name=None),
         csmallnav.layout(tgid, "User", fluid=False, class_name=None),
         # define components
         dbc.Container(content, fluid=False, class_name=None),
@@ -73,7 +76,7 @@ def layout(pathname, search, **kwargs):
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
 ], inputs=dict(
-    n_clicks_temp=dict(
+    n_clicks_list=dict(
         n_clicks0=Input(f"id-{TAG}-template", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-infosec", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-planpay", "n_clicks"),
@@ -87,7 +90,7 @@ def layout(pathname, search, **kwargs):
     vhash=State(f"id-{TAG}-vhash", "data"),
     dclient=State(f"id-{TAG}-dclient", "data"),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
+def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
     # define class
     class_curr, class_none = "text-primary", "text-black hover-primary"
 
@@ -95,14 +98,11 @@ def _init_page(n_clicks_temp, togger, pathname, search, vhash, dclient):
     output_class = dict(template=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
-    # check user
+    # check user and define curr_id
     if not flask_login.current_user.is_authenticated:
         output_other.update(dict(href=PATH_LOGOUT))
         return [output_class, output_other]
-
-    # parse triggered
-    triggered = dash.callback_context.triggered
-    curr_id, _, _, value = get_trigger_property(triggered)
+    curr_id = dash.ctx.triggered_id
 
     # define is_open
     if curr_id == f"id-{TAG}-toggler" and togger["n_clicks"]:

@@ -17,7 +17,8 @@ from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from utility import *
+from utility.consts import RE_EMAIL
+from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
 from . import tsign
 
 TAG = "email"
@@ -34,8 +35,7 @@ def layout(pathname, search, **kwargs):
     ]), class_name=None)
 
     # define args
-    kwargs_temp = dict(data=pathname)
-    kwargs_temp.update(dict(
+    kwargs_temp = dict(
         src_image="illustrations/register.svg",
         text_hd="Sign up",
         text_sub="Register an account through an email.",
@@ -43,9 +43,10 @@ def layout(pathname, search, **kwargs):
         text_button="Verify the email",
         other_list=[
             html.A("Sign in", href=PATH_LOGIN),
-            html.A("Forget password?", href=PATH_RESETPWDE),
+            html.A("Forget password?", href=PATH_RESETPWD),
         ],
-    ) if pathname == PATH_REGISTERE else dict(
+        data=PATH_REGISTER,
+    ) if pathname == PATH_REGISTER else dict(
         src_image="illustrations/resetpwd.svg",
         text_hd="Forget password?",
         text_sub="Find back the password through email.",
@@ -53,9 +54,10 @@ def layout(pathname, search, **kwargs):
         text_button="Verify the email",
         other_list=[
             html.A("Sign in", href=PATH_LOGIN),
-            html.A("Sign up", href=PATH_REGISTERE),
+            html.A("Sign up", href=PATH_REGISTER),
         ],
-    ))
+        data=PATH_RESETPWD,
+    )
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
@@ -78,9 +80,9 @@ def _button_click(n_clicks, email, pathname):
 
     # check user
     user = User.query.get(_id)
-    if pathname == PATH_REGISTERE and user:
+    if pathname == PATH_REGISTER and user:
         return "Email is registered", dash.no_update
-    if pathname == PATH_RESETPWDE and (not user):
+    if pathname == PATH_RESETPWD and (not user):
         return "Email doesn't exist", dash.no_update
 
     # send email and cache
@@ -93,7 +95,7 @@ def _button_click(n_clicks, email, pathname):
         path_pwd = f"{pathname}-pwd?{query_string}"
 
         # send email
-        if pathname == PATH_REGISTERE:
+        if pathname == PATH_REGISTER:
             subject = f"Registration of {config_app_name}"
         else:
             subject = f"Resetting password of {config_app_name}"

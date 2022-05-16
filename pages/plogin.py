@@ -13,7 +13,8 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
-from utility import *
+from utility.consts import RE_EMAIL
+from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
 from . import tsign
 
 TAG = "login"
@@ -36,18 +37,18 @@ def layout(pathname, search, **kwargs):
     ], class_name=None)
 
     # define args
-    kwargs_temp = dict(data=kwargs.get("nextpath", PATH_ROOT))
-    kwargs_temp.update(dict(
+    kwargs_temp = dict(
         src_image="illustrations/login.svg",
         text_hd="Sign in",
         text_sub="Login the system with your account.",
         form_items=form_items,
         text_button="Sign in",
         other_list=[
-            html.A("Sign up", href=PATH_REGISTERE),
-            html.A("Forget password?", href=PATH_RESETPWDE),
+            html.A("Sign up", href=PATH_REGISTER),
+            html.A("Forget password?", href=PATH_RESETPWD),
         ],
-    ))
+        data=kwargs.get("nextpath", PATH_ROOT),
+    )
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
