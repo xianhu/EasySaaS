@@ -19,14 +19,14 @@ from model import User, app_db
 from utility.paths import PATH_ROOT
 
 # logging config
-log_format = "%(asctime)s\t%(levelname)s\t%(process)d\t%(filename)s\t%(funcName)s\t%(message)s"
+log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s\t%(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # celery -A app.app_celery worker -l INFO
 app_celery = Celery(
     __name__,
-    broker=f"{config_redis_uri}/1",
-    backend=f"{config_redis_uri}/2",
+    broker=f"{config_redis_uri}/11",
+    backend=f"{config_redis_uri}/12",
     include=[
         "pages.panalysis.pfileud",
     ],
@@ -72,7 +72,7 @@ server.config.update(
     MAIL_DEFAULT_SENDER=config_mail_sender,
     MAIL_USE_TLS=False, MAIL_USE_SSL=True,
 
-    REDIS_URL=f"{config_redis_uri}/0",
+    REDIS_URL=f"{config_redis_uri}/10",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_DATABASE_URI=config_database_uri,
 )
