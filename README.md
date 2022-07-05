@@ -50,7 +50,7 @@ pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ```
 docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \ 
-                        -v /tmp/:/tmp/ -p 8088:8088 -p 8089:8089 -d nginx
+                        -v /tmp/:/tmp/ -p 8088:8088 -p 80:80 -p 443:443 -d nginx
 ```
 
 ## Others
