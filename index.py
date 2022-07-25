@@ -108,7 +108,7 @@ def _init_page(pathname, search, vhash, dclient):
 
     # =============================================================================================
     if pathname == PATH_ADMIN:
-        if flask_login.current_user.is_authenticated and flask_login.current_user.admin:
+        if flask_login.current_user.is_authenticated and flask_login.current_user.isadmin:
             return pathname, search, dserver, padmin.layout(pathname, search, **kwargs)
         else:
             return pathname, search, dserver, palert.layout_403(pathname, search, return_href=PATH_ROOT)

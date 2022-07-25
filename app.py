@@ -37,12 +37,9 @@ lc_manager = CeleryLongCallbackManager(app_celery)
 app = dash.Dash(
     __name__,
     server=True,
-    title="Dash",
     compress=True,
     serve_locally=True,
     show_undo_redo=False,
-    assets_folder="assets",
-    update_title="Updating...",
     url_base_pathname=PATH_ROOT,
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
