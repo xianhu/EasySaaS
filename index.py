@@ -13,8 +13,8 @@ from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
-from pages import palert, pemail, plogin, ppwd
 from pages import padmin, panalysis, pintros, puser
+from pages import palert, pemail, plogin, ppwd
 from utility.paths import *
 
 # app layout
@@ -108,7 +108,7 @@ def _init_page(pathname, search, vhash, dclient):
 
     # =============================================================================================
     if pathname == PATH_ADMIN:
-        if flask_login.current_user.is_authenticated and flask_login.current_user.admin:
+        if flask_login.current_user.is_authenticated and flask_login.current_user.isadmin:
             return pathname, search, dserver, padmin.layout(pathname, search, **kwargs)
         else:
             return pathname, search, dserver, palert.layout_403(pathname, search, return_href=PATH_ROOT)

@@ -8,8 +8,8 @@ import datetime
 import hashlib
 
 import sqlalchemy
-from sqlalchemy import ForeignKey, Index, func, orm
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import ForeignKey, Index, func, orm
 from werkzeug import security
 
 # create SQLAlchemy
@@ -20,17 +20,14 @@ class Organization(app_db.Model):
     __tablename__ = "organizations"
     __table_args__ = (
         Index("index_o_1", "name"),
-        Index("index_o_2", "email"),
     )
 
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
     # informations
-    avatar = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     name = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
-    email = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
-    phone = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
 
     # address
     addr_state = sqlalchemy.Column(sqlalchemy.String(50), doc="state of address")
@@ -42,7 +39,7 @@ class Organization(app_db.Model):
     plan_expire = sqlalchemy.Column(sqlalchemy.DateTime, doc="expire datetime")
 
     # normal columns
-    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
+    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), onupdate=func.now())
 
@@ -57,16 +54,17 @@ class User(app_db.Model):
     __table_args__ = (
         Index("index_u_1", "name"),
         Index("index_u_2", "email"),
+        Index("index_u_3", "phone"),
     )
 
     # basic
     id = sqlalchemy.Column(sqlalchemy.String(50), primary_key=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(500), nullable=False)
-    admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    isadmin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
     # informations
-    avatar = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     name = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
 
@@ -86,13 +84,13 @@ class User(app_db.Model):
     organization = orm.relationship("Organization", backref=orm.backref("users"), cascade="save-update")
 
     # normal columns
-    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
+    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), onupdate=func.now())
 
     # print format
     def __repr__(self) -> str:
-        col_list1 = [self.id, self.name, self.admin, self.email, self.phone]
+        col_list1 = [self.id, self.name, self.isadmin, self.email, self.phone]
         col_list2 = [self.addr_state, self.addr_city, self.addr_detail]
         col_list3 = [self.organization, self.organ_role, self.status]
         return f"User <{' - '.join(map(str, col_list1 + col_list2 + col_list3))}>"
@@ -115,13 +113,13 @@ class Notification(app_db.Model):
     content = sqlalchemy.Column(sqlalchemy.String(500), nullable=True)
 
     # normal columns
-    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0 or 1")
+    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), onupdate=func.now())
 
     # print format
     def __repr__(self) -> str:
-        col_list = [self.id, self.creater, self.level, self.title]
+        col_list = [self.id, self.creater, self.level, self.title, self.status]
         return f"Notification <{' - '.join(map(str, col_list))}>"
 
 
@@ -145,9 +143,14 @@ class NFDistribute(app_db.Model):
     # is checked
     is_checked = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="True or False")
 
+    # normal columns
+    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
+    datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
+    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), onupdate=func.now())
+
     # print format
     def __repr__(self) -> str:
-        col_list = [self.id, self.user_id, self.nf_id, self.is_checked]
+        col_list = [self.id, self.user_id, self.nf_id, self.is_checked, self.status]
         return f"NFDistribute <{' - '.join(map(str, col_list))}>"
 
 
@@ -190,31 +193,29 @@ def test_db(database_uri):
         session.commit()
         print(session.query(User).get(_id))
 
-        # test
-        print("=" * 50)
+        # test relationship
         print(organization.users)
         print(user.organization)
-        print("=" * 50)
 
         # notification operations
         notification = Notification(creater="admin", level="normal", title="notify title")
+
         session.add(notification)
         session.commit()
         print(session.query(Notification).all())
 
         # notifycation distribute operations
         nfdistribute = NFDistribute(user_id=user.id, nf_id=notification.id)
+
         session.add(nfdistribute)
         session.commit()
         print(session.query(NFDistribute).all())
 
-        # test
-        print("=" * 50)
-        print(user.nfdistributes)
-        print(notification.nfdistributes)
+        # test relationship
         print(nfdistribute.user)
+        print(user.nfdistributes)
         print(nfdistribute.notification)
-        print("=" * 50)
+        print(notification.nfdistributes)
 
 
 if __name__ == "__main__":
