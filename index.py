@@ -13,8 +13,8 @@ from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app
 from config import config_app_name
-from pages import palert, pemail, plogin, ppwd
 from pages import padmin, panalysis, pintros, puser
+from pages import palert, pemail, plogin, ppwd
 from utility.paths import *
 
 # app layout

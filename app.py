@@ -16,7 +16,6 @@ from flask_redis import FlaskRedis
 
 from config import *
 from model import User, app_db
-from utility.paths import PATH_ROOT
 
 # logging config
 log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s\t%(message)s"
@@ -40,7 +39,6 @@ app = dash.Dash(
     compress=True,
     serve_locally=True,
     show_undo_redo=False,
-    url_base_pathname=PATH_ROOT,
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     long_callback_manager=lc_manager,

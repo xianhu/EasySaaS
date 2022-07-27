@@ -7,8 +7,8 @@ intros page
 import dash_bootstrap_components as dbc
 from dash import html
 
-from utility.paths import NAV_LINKS
 from components import cfooter, cnavbar
+from utility.paths import NAV_LINKS
 from . import ccontact, cheader, cintros, cplans
 
 

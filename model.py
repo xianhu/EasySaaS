@@ -8,8 +8,8 @@ import datetime
 import hashlib
 
 import sqlalchemy
-from sqlalchemy import ForeignKey, Index, func, orm
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import ForeignKey, Index, func, orm
 from werkzeug import security
 
 # create SQLAlchemy
