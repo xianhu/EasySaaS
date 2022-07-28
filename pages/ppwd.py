@@ -15,7 +15,7 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import app, app_db, app_redis
-from model import User, Organization
+from model import User
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
 from . import palert, tsign
@@ -92,10 +92,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     _id = hashlib.md5(email.encode()).hexdigest()
     user = User.query.filter_by(id=_id).first()
     if not user:
-        organization = Organization()
-        app_db.session.add(organization)
-        app_db.session.commit()
-        user = User(id=_id, email=email, plan_id=None, organization_id=organization.id)
+        user = User(id=_id, email=email)
     user.pwd = security.generate_password_hash(pwd1)
 
     # commit user
