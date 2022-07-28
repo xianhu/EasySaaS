@@ -52,8 +52,7 @@ class User(app_db.Model):
     def __repr__(self) -> str:
         col_list1 = [self.id, self.name, self.email, self.phone]
         col_list2 = [self.addr_state, self.addr_city, self.addr_detail]
-        col_list3 = [self.organization, self.organization_role, self.status]
-        return f"User <{' - '.join(map(str, col_list1 + col_list2 + col_list3))}>"
+        return f"User <{' - '.join(map(str, col_list1 + col_list2))}>"
 
 
 def init_db(database_uri):

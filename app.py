@@ -6,13 +6,12 @@ Dash Application
 
 import logging
 
-import dash
+import celery
+import dash.long_callback
 import dash_bootstrap_components as dbc
-from celery import Celery
-from dash.long_callback import CeleryLongCallbackManager
-from flask_login import LoginManager, UserMixin
-from flask_mail import Mail
-from flask_redis import FlaskRedis
+import flask_login
+import flask_mail
+import flask_redis
 
 from config import *
 from model import User, app_db
@@ -22,7 +21,7 @@ log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s\t%(message)
 logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # celery -A app.app_celery worker -l INFO
-app_celery = Celery(
+app_celery = celery.Celery(
     __name__,
     broker=f"{config_redis_uri}/11",
     backend=f"{config_redis_uri}/12",
@@ -30,7 +29,7 @@ app_celery = Celery(
         "pages.panalysis.pfileud",
     ],
 )
-lc_manager = CeleryLongCallbackManager(app_celery)
+lc_manager = dash.long_callback.CeleryLongCallbackManager(app_celery)
 
 # create app
 app = dash.Dash(
@@ -76,17 +75,17 @@ server.config.update(
 app_db.init_app(server)
 
 # initial mail
-app_mail = Mail(server)
+app_mail = flask_mail.Mail(server)
 
 # initial redis
-app_redis = FlaskRedis(server)
+app_redis = flask_redis.FlaskRedis(server)
 
 # initial login_manager
-login_manager = LoginManager(server)
+login_manager = flask_login.LoginManager(server)
 
 
 # define UserLogin class
-class UserLogin(User, UserMixin):
+class UserLogin(User, flask_login.UserMixin):
     pass
 
 
