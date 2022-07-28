@@ -6,7 +6,7 @@ infosec page
 
 from dash import html
 
-from . import cbasic, cnofity, cpwd
+from . import cbasic, cpwd
 
 
 def layout(pathname, search, **kwargs):
@@ -16,5 +16,4 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         cbasic.layout(class_name=None),
         cpwd.layout(class_name="mt-4"),
-        cnofity.layout(class_name="mt-4"),
     ], className="mb-4")

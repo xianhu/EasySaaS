@@ -19,17 +19,16 @@ def layout(nav_links, fluid=None, class_name=None):
     """
     # define components
     nav_children = []
-    class_link = "fw-bold text-center mx-md-1 p-md-3"
     for title, _id, href, _class in nav_links:
-        kwargs_link = dict(id=_id, href=href, class_name=f"{class_link} {_class}")
-        nav_children.append(dbc.NavLink(title, **kwargs_link))
+        class_link = f"fw-bold text-center mx-md-1 p-md-3 {_class}"
+        nav_children.append(dbc.NavLink(title, id=_id, href=href, class_name=class_link))
     nav = dbc.Nav(nav_children, navbar=True, class_name="mx-auto")
 
     # define components
     kwargs_button = dict(color="primary", outline=True)
     nav_right = dbc.Nav(dbc.NavItem(children=[
         html.A("Sign up", href=PATH_REGISTER, className=None),
-        dbc.Button("Sign in", href=PATH_LOGIN, **kwargs_button, class_name="fw-bold ms-3"),
+        dbc.Button("Sign in", href=PATH_LOGIN, **kwargs_button, class_name="ms-3"),
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}#template"),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
