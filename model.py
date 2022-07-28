@@ -60,7 +60,6 @@ class User(app_db.Model):
     # basic
     id = sqlalchemy.Column(sqlalchemy.String(50), primary_key=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(500), nullable=False)
-    isadmin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
@@ -79,8 +78,8 @@ class User(app_db.Model):
     tempcol = sqlalchemy.Column(sqlalchemy.String(500), doc="temporary column")
 
     # foreign key and relationship
-    organ_role = sqlalchemy.Column(sqlalchemy.String(50), default="admin", doc="admin/staff")
-    organ_id = sqlalchemy.Column(sqlalchemy.Integer, ForeignKey("organizations.id"))
+    organization_role = sqlalchemy.Column(sqlalchemy.String(50), default="admin", doc="admin/staff")
+    organization_id = sqlalchemy.Column(sqlalchemy.Integer, ForeignKey("organizations.id"))
     organization = orm.relationship("Organization", backref=orm.backref("users"), cascade="save-update")
 
     # normal columns
@@ -90,9 +89,9 @@ class User(app_db.Model):
 
     # print format
     def __repr__(self) -> str:
-        col_list1 = [self.id, self.name, self.isadmin, self.email, self.phone]
+        col_list1 = [self.id, self.name, self.email, self.phone]
         col_list2 = [self.addr_state, self.addr_city, self.addr_detail]
-        col_list3 = [self.organization, self.organ_role, self.status]
+        col_list3 = [self.organization, self.organization_role, self.status]
         return f"User <{' - '.join(map(str, col_list1 + col_list2 + col_list3))}>"
 
 
@@ -187,7 +186,7 @@ def test_db(database_uri):
         email = "aaaa@qq.com"
         _id = hashlib.md5(email.encode()).hexdigest()
         pwd = security.generate_password_hash(email)
-        user = User(id=_id, pwd=pwd, email=email, organ_id=organization.id)
+        user = User(id=_id, pwd=pwd, email=email, organization_id=organization.id)
 
         session.add(user)
         session.commit()
