@@ -12,7 +12,8 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
 from utility.paths import PATH_LOGOUT, NAV_LINKS
-from . import ptemplate, pinfosec
+from . import pinfosec
+from .. import ptemplate
 
 TAG = "user"
 CATALOG_LIST = [

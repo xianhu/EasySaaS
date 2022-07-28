@@ -18,7 +18,8 @@ from app import app, app_db, app_redis
 from model import User
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
-from . import palert, tsign
+from pages import palert
+from pages.dsign import tsign
 
 TAG = "pwd"
 

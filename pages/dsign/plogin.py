@@ -15,7 +15,7 @@ from werkzeug import security
 from app import UserLogin, app
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
-from . import tsign
+from pages.dsign import tsign
 
 TAG = "login"
 

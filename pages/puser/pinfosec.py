@@ -6,7 +6,7 @@ infosec page
 
 from dash import html
 
-from . import cbasic, cpwd
+from . import cpwd, cbasic
 
 
 def layout(pathname, search, **kwargs):

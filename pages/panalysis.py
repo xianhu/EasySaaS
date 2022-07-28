@@ -12,7 +12,6 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
 from utility.paths import PATH_LOGOUT, NAV_LINKS
-
 from . import ptemplate
 
 TAG = "analysis"
