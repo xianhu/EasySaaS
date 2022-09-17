@@ -25,7 +25,7 @@ vim .bash_profile
 # export ES_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxx
 # export ES_REDIS_URI=redis://:password@host:port
 # export ES_DATABASE_URI=sqlite:///{DIR}/main.db?charset=utf8
-# mysql+pymysql://user:pwd@localhost:3306/main?charset=utf8
+# mysql+pymysql://user:password@host:port/dbname?charset=utf8
 source .bash_profile
 ```
 
