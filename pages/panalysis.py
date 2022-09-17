@@ -12,9 +12,7 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
 from utility.paths import PATH_LOGOUT, NAV_LINKS
-from . import pfileud
-from .dplotly import pptbasic
-from .dtables import ptbcustom, ptbdash
+from . import ptemplate
 
 TAG = "analysis"
 CATALOG_LIST = [
@@ -135,7 +133,7 @@ def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
             fileud=class_curr, tbdash=class_none,
             tbcustom=class_none, ptbasic=class_none,
         )
-        output_other.update(dict(is_open=False, children=pfileud.layout(pathname, search)))
+        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = None
 
     # define content
@@ -144,14 +142,14 @@ def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
             fileud=class_none, tbdash=class_curr,
             tbcustom=class_none, ptbasic=class_none,
         )
-        output_other.update(dict(is_open=False, children=ptbdash.layout(pathname, search)))
+        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-tb-custom":
         output_class = dict(
             fileud=class_none, tbdash=class_none,
             tbcustom=class_curr, ptbasic=class_none,
         )
-        output_other.update(dict(is_open=False, children=ptbcustom.layout(pathname, search)))
+        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
 
     # define content
@@ -160,7 +158,7 @@ def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
             fileud=class_none, tbdash=class_none,
             tbcustom=class_none, ptbasic=class_curr,
         )
-        output_other.update(dict(is_open=False, children=pptbasic.layout(pathname, search)))
+        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-plotly"
 
     # return result

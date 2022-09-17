@@ -9,7 +9,6 @@ from dash import html
 
 from components import cfooter, cnavbar
 from utility.paths import NAV_LINKS
-from . import ccontact, cheader, cintros, cplans
 
 
 def layout(pathname, search, **kwargs):
@@ -26,11 +25,6 @@ def layout(pathname, search, **kwargs):
     # return result
     return html.Div(children=[
         cnavbar.layout(nav_links, fluid=False, class_name=None),
-        dbc.Container(children=[
-            cheader.layout(class_name=None),
-            cintros.layout(class_name="mt-5"),
-            cplans.layout(class_name="mt-5"),
-            ccontact.layout(class_name="mt-5"),
-        ], fluid=False, class_name="my-5"),
+        dbc.Container(children=[], fluid=False, class_name="my-5"),
         cfooter.layout(fluid=False, class_name=None),
     ], className="d-flex flex-column vh-100")

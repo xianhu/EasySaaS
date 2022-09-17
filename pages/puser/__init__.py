@@ -12,7 +12,8 @@ from dash import Input, Output, State, dcc, html
 from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
 from utility.paths import PATH_LOGOUT, NAV_LINKS
-from . import ptemplate, pinfosec, pplanpay
+from . import pinfosec
+from .. import ptemplate
 
 TAG = "user"
 CATALOG_LIST = [
@@ -123,7 +124,7 @@ def _init_page(n_clicks_list, togger, pathname, search, vhash, dclient):
         output_other.update(dict(is_open=False, children=pinfosec.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-planpay":
         output_class = dict(template=class_none, infosec=class_none, planpay=class_curr)
-        output_other.update(dict(is_open=False, children=pplanpay.layout(pathname, search)))
+        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
 
     # return result
     return [output_class, output_other]

@@ -19,7 +19,7 @@ from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
-from . import tsign
+from pages.dsign import tsign
 
 TAG = "email"
 
