@@ -17,7 +17,7 @@ from config import *
 from model import User, app_db
 
 # logging config
-log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s\t%(message)s"
+log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # celery -A app.app_celery worker -l INFO
@@ -57,7 +57,7 @@ app = dash.Dash(
 # create server
 server = app.server
 server.config.update(
-    SECRET_KEY=config_app_secret_key,
+    SECRET_KEY=config_secret_key,
 
     MAIL_SERVER=config_mail_server,
     MAIL_PORT=config_mail_port,
