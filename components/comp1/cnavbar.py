@@ -19,8 +19,8 @@ def layout(nav_links, fluid=None, class_name=None):
     """
     # define components
     nav_children = []
-    for title, _id, href, _class in nav_links:
-        class_link = f"fw-bold text-center mx-md-1 p-md-3 {_class}"
+    for title, _id, href, _class_name in nav_links:
+        class_link = f"fw-bold text-center mx-md-1 p-md-3 {_class_name}"
         nav_children.append(dbc.NavLink(title, id=_id, href=href, class_name=class_link))
     nav_middle = dbc.Nav(nav_children, navbar=True, class_name="mx-auto")
 
