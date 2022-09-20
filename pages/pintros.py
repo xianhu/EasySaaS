@@ -17,10 +17,10 @@ def layout(pathname, search, **kwargs):
     """
     # define components
     nav_links = []
-    for title, _id, href, _class in NAV_LINKS:
+    for title, _id, href, class_name in NAV_LINKS:
         if href == pathname:
-            _class = "border-bottom border-primary"
-        nav_links.append([title, _id, href, _class])
+            class_name = "border-bottom border-primary"
+        nav_links.append([title, _id, href, class_name])
 
     # return result
     return html.Div(children=[

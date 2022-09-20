@@ -19,7 +19,7 @@ PATH_ANALYSIS = "/analysis"
 
 # nav links
 NAV_LINKS = [
-    # title, id, path, class_name
+    # title, id, href, class_name
     ["Intros", "id-navbar-intros", PATH_INTROS, "border-bottom"],
     ["Analysis", "id-navbar-analysis", PATH_ANALYSIS, "border-bottom"],
 ]

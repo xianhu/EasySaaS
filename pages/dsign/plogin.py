@@ -13,9 +13,9 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app
+from pages.dsign import tsign
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
-from pages.dsign import tsign
 
 TAG = "login"
 
