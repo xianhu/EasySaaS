@@ -49,11 +49,11 @@ def layout(class_name=None):
             dbc.Col(feedback, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
         ], align="center", justify="start", class_name="p-4"),
-        html.A(id={"type": "id-address", "index": TAG}),
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
-            dbc.ModalBody("The basic information was updated successfully"),
+            dbc.ModalBody("The basic information was updated successfully!"),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
+        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 
@@ -79,7 +79,7 @@ def _button_click(n_clicks, name, phone):
     # check name and phone
     name, phone = (name or "").strip(), (phone or "").strip()
     if name == (user.name or "") and phone == (user.phone or ""):
-        return "No change has happened", dash.no_update, False
+        return "No change has occurred", dash.no_update, False
 
     # update user
     user.name = name or ""

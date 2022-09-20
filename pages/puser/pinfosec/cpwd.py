@@ -49,12 +49,12 @@ def layout(class_name=None):
             dbc.Col(feedback, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
         ], align="center", class_name="p-4"),
-        html.A(id={"type": "id-address", "index": TAG}),
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The password was updated successfully"),
             dbc.ModalFooter(dbc.Button("Go back to re-login", href=PATH_LOGOUT, class_name="ms-auto")),
         ], id=f"id-{TAG}-modal", backdrop="static", is_open=False),
+        html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 
 
