@@ -106,7 +106,7 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     output_class = dict(template=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
-    # check user and define curr_id
+    # check user login
     if not flask_login.current_user.is_authenticated:
         output_other.update(dict(href=PATH_LOGOUT))
         return [output_class, output_other]
