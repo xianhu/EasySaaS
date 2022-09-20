@@ -22,7 +22,7 @@ def layout(
 
     # define thead
     th_list = [html.Th(name, className=class_th) for name in header_list]
-    thead = html.Thead(html.Tr(th_list, className=class_tr), id=tid + "-head")
+    thead = html.Thead(html.Tr(th_list, className=class_tr), id=f"{tid}-head")
 
     # define tr
     tr_list = []
@@ -36,8 +36,10 @@ def layout(
         class_list = [class_info.get(key, "") for key in key_list]
         class_list = [" ".join([class_td, _class]) for _class in class_list]
 
-        # define value list and td list
+        # define value list
         value_list = [item_info.get(key, "") for key in key_list]
+
+        # define td_list
         td_list = [html.Td(v, className=c) for (v, c) in zip(value_list, class_list)]
 
         # define tr_list

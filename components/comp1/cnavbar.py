@@ -22,7 +22,7 @@ def layout(nav_links, fluid=None, class_name=None):
     for title, _id, href, _class in nav_links:
         class_link = f"fw-bold text-center mx-md-1 p-md-3 {_class}"
         nav_children.append(dbc.NavLink(title, id=_id, href=href, class_name=class_link))
-    nav = dbc.Nav(nav_children, navbar=True, class_name="mx-auto")
+    nav_middle = dbc.Nav(nav_children, navbar=True, class_name="mx-auto")
 
     # define components
     kwargs_button = dict(color="primary", outline=True)
@@ -39,7 +39,7 @@ def layout(nav_links, fluid=None, class_name=None):
     return dbc.Navbar(dbc.Container(children=[
         cbrand.layout(href=PATH_ROOT, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="my-2"),
-        dbc.Collapse([nav, nav_right], id="id-collapse", navbar=True),
+        dbc.Collapse([nav_middle, nav_right], id="id-collapse", navbar=True),
     ], fluid=fluid, class_name=None), class_name=class_name)
 
 
