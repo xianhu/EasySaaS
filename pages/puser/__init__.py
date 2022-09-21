@@ -50,7 +50,7 @@ def layout(pathname, search, **kwargs):
     # return result
     return html.Div(children=[
         # define components
-        cnavbar.layout(nav_links, fluid=False, class_name=None),
+        cnavbar.layout(nav_links, curr_path=pathname, fluid=False, class_name=None),
 
         # define components
         csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),

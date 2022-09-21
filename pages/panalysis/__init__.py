@@ -34,13 +34,6 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    nav_links = []
-    for title, _id, href, _class in NAV_LINKS:
-        if href == pathname:
-            _class = "border-bottom border-primary"
-        nav_links.append([title, _id, href, _class])
-
-    # define components
     kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     kwargs_admulti = dict(catalog_list=CATALOG_LIST, ad_id=f"id-{TAG}-admulti")
     catalog = dbc.Collapse(children=[
@@ -59,7 +52,7 @@ def layout(pathname, search, **kwargs):
     tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(nav_links, fluid=True, class_name=None),
+        cnavbar.layout(NAV_LINKS, curr_path=pathname, fluid=True, class_name=None),
 
         # define components
         csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
