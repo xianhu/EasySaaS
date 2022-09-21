@@ -18,7 +18,6 @@ TAG = "analysis"
 
 # catalog list
 CATALOG_LIST = [
-    # [title, id, children]
     ["Tables", f"id-{TAG}-ad-tables", [
         ("Dash Table", f"id-{TAG}-tb-dash", "#tb-dash"),
         ("Custom Table", f"id-{TAG}-tb-custom", "#tb-custom"),
@@ -34,28 +33,26 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_fileud = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
+    kwargs_adsingle = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
     kwargs_admulti = dict(catalog_list=CATALOG_LIST, ad_id=f"id-{TAG}-admulti")
     catalog = dbc.Collapse(children=[
-        cadsingle.layout(**kwargs_fileud, flush=True, class_name="border-bottom-solid"),
+        cadsingle.layout(**kwargs_adsingle, flush=True, class_name="border-bottom-solid"),
         cadmulti.layout(**kwargs_admulti, flush=True, class_name="border-bottom-solid"),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
-    ctid = f"id-{TAG}-content"
     content = dbc.Row(children=[
-        dbc.Col(catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
-        dbc.Col(id=ctid, width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
+        dbc.Col(children=catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
+        dbc.Col(id=f"id-{TAG}-content", width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
     ], align="start", justify="center", class_name="h-100-scroll")
 
     # return result
-    tgid = f"id-{TAG}-toggler"
     return html.Div(children=[
         # define components
-        cnavbar.layout(NAV_LINKS, curr_path=pathname, fluid=True, class_name=None),
+        cnavbar.layout(NAV_LINKS, pathname, fluid=True, class_name=None),
 
         # define components
-        csmallnav.layout(tgid, "Analysis", fluid=True, class_name=None),
+        csmallnav.layout(f"id-{TAG}-toggler", "Analysis", fluid=True),
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
 
         # define components
@@ -134,35 +131,19 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
 
     # define content
     if curr_id == f"id-{TAG}-fileud":
-        output_class = dict(
-            fileud=class_curr, tbdash=class_none,
-            tbcustom=class_none, ptbasic=class_none,
-        )
+        output_class = dict(fileud=class_curr, tbdash=class_none, tbcustom=class_none, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = None
-
-    # define content
     elif curr_id == f"id-{TAG}-tb-dash":
-        output_class = dict(
-            fileud=class_none, tbdash=class_curr,
-            tbcustom=class_none, ptbasic=class_none,
-        )
+        output_class = dict(fileud=class_none, tbdash=class_curr, tbcustom=class_none, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-tb-custom":
-        output_class = dict(
-            fileud=class_none, tbdash=class_none,
-            tbcustom=class_curr, ptbasic=class_none,
-        )
+        output_class = dict(fileud=class_none, tbdash=class_none, tbcustom=class_curr, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
-
-    # define content
     elif curr_id == f"id-{TAG}-pt-basic":
-        output_class = dict(
-            fileud=class_none, tbdash=class_none,
-            tbcustom=class_none, ptbasic=class_curr,
-        )
+        output_class = dict(fileud=class_none, tbdash=class_none, tbcustom=class_none, ptbasic=class_curr)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-plotly"
     else:

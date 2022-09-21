@@ -19,7 +19,6 @@ TAG = "user"
 
 # catalog list
 CATALOG_LIST = [
-    # [title, id, href/children]
     ["Template", f"id-{TAG}-template", "#template"],
     ["ACCOUNT", None, [
         ("Info&Security", f"id-{TAG}-infosec", "#infosec"),
@@ -32,9 +31,6 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    # define components
-    nav_links = NAV_LINKS
-
     # define components
     catalog = dbc.Collapse(dbc.Card(children=[
         ccatalog.layout(catalog_list=CATALOG_LIST, class_name=None),
@@ -50,7 +46,7 @@ def layout(pathname, search, **kwargs):
     # return result
     return html.Div(children=[
         # define components
-        cnavbar.layout(nav_links, curr_path=pathname, fluid=False, class_name=None),
+        cnavbar.layout(NAV_LINKS, pathname, fluid=False, class_name=None),
 
         # define components
         csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),

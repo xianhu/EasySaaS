@@ -17,7 +17,7 @@ def layout(pathname, search, **kwargs):
     """
     # return result
     return html.Div(children=[
-        cnavbar.layout(NAV_LINKS, curr_path=pathname, fluid=False, class_name=None),
+        cnavbar.layout(NAV_LINKS, pathname, fluid=False, class_name=None),
         dbc.Container("intros page", fluid=False, class_name="my-3"),
         cfooter.layout(fluid=False, class_name=None),
     ], className="d-flex flex-column vh-100")
