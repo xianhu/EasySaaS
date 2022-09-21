@@ -12,7 +12,7 @@ ENV_PREFIX = "ES"
 # define saas application
 config_app_name = "EasySaaS"
 config_app_domain = os.environ.get(f"{ENV_PREFIX}_APP_DOMAIN")
-config_app_secret_key = os.environ.get(f"{ENV_PREFIX}_APP_SECRET_KEY")
+config_secret_key = os.environ.get(f"{ENV_PREFIX}_SECRET_KEY")
 
 # define mail config
 config_mail_server = os.environ.get(f"{ENV_PREFIX}_MAIL_SERVER")
@@ -26,6 +26,9 @@ config_redis_uri = os.environ.get(f"{ENV_PREFIX}_REDIS_URI")
 config_database_uri = os.environ.get(f"{ENV_PREFIX}_DATABASE_URI")
 
 if __name__ == "__main__":
+    import pprint
+
     for key, value in list(locals().items()):
         if key.startswith("config_"):
-            print(key, "=>", value)
+            pprint.pprint(f"{key}={value}")
+            assert value, f"Please set {key} in environment variables."

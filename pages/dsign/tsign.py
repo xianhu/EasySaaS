@@ -8,9 +8,6 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
-from components import cbrand
-from utility.paths import PATH_ROOT
-
 
 def layout(pathname, search, tag, **kwargs):
     """
@@ -35,7 +32,6 @@ def layout(pathname, search, tag, **kwargs):
 
     # return result
     return dbc.Container(children=[
-        cbrand.layout(href=PATH_ROOT, class_name="position-absolute top-0 start-0 p-0"),
         dbc.Row(children=[
             dbc.Col(left, width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0"),
             dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),

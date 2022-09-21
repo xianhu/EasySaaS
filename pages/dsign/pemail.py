@@ -17,9 +17,9 @@ from dash import Input, Output, State, html
 
 from app import User, app, app_mail, app_redis
 from config import config_app_domain, config_app_name
+from pages.dsign import tsign
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
-from pages.dsign import tsign
 
 TAG = "email"
 
@@ -89,17 +89,16 @@ def _button_click(n_clicks, email, pathname):
     if not app_redis.get(_id):
         token = str(uuid.uuid4())
 
-        # define path
-        query = dict(_id=_id, token=token)
-        query_string = urllib.parse.urlencode(query)
-        path_pwd = f"{pathname}-pwd?{query_string}"
+        # define href of verify
+        query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
+        href_verify = f"{config_app_domain}{pathname}-pwd?{query_string}"
 
         # send email
         if pathname == PATH_REGISTER:
             subject = f"Registration of {config_app_name}"
         else:
             subject = f"Resetting password of {config_app_name}"
-        body = f"please click link in 10 minutes: {config_app_domain}{path_pwd}"
+        body = f"please click link in 10 minutes: {href_verify}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
 
         # cache token and email

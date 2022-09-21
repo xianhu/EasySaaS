@@ -33,6 +33,10 @@ class User(app_db.Model):
     email = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
 
+    # company
+    company_name = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
+    company_avatar = sqlalchemy.Column(sqlalchemy.String(50), nullable=True)
+
     # address
     addr_state = sqlalchemy.Column(sqlalchemy.String(50), doc="state of address")
     addr_city = sqlalchemy.Column(sqlalchemy.String(50), doc="city of address")
@@ -50,9 +54,7 @@ class User(app_db.Model):
 
     # print format
     def __repr__(self) -> str:
-        col_list1 = [self.id, self.name, self.email, self.phone]
-        col_list2 = [self.addr_state, self.addr_city, self.addr_detail]
-        return f"User <{' - '.join(map(str, col_list1 + col_list2))}>"
+        return f"User <{' - '.join(map(str, [self.id, self.name, self.email, self.phone]))}>"
 
 
 def init_db(database_uri):
@@ -65,13 +67,14 @@ def init_db(database_uri):
     # drop or create all tables
     app_db.Model.metadata.drop_all(engine)
     app_db.Model.metadata.create_all(engine)
+    return True
 
 
 def test_db(database_uri):
     """
     add a user to database
     """
-    # create engine, SQLite doesn't check the forgien key
+    # create engine, SQLite doesn't check forgien key
     engine = sqlalchemy.create_engine(database_uri)
 
     # basic opration with session
@@ -85,6 +88,7 @@ def test_db(database_uri):
         session.add(user)
         session.commit()
         print(session.query(User).get(_id))
+    return True
 
 
 if __name__ == "__main__":

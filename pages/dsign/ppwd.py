@@ -16,10 +16,10 @@ from werkzeug import security
 
 from app import app, app_db, app_redis
 from model import User
-from utility.consts import RE_PWD
-from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
 from pages import palert
 from pages.dsign import tsign
+from utility.consts import RE_PWD
+from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
 
 TAG = "pwd"
 
@@ -29,9 +29,16 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     try:
+        # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        token, email = json.loads(app_redis.get(search["_id"][0]))
-        assert token == search["token"][0], (token, search["token"][0])
+        _id, _token = search.get("_id")[0], search.get("token")[0]
+
+        # get value from redis
+        token, email = json.loads(app_redis.get(_id))
+        app_redis.delete(_id)
+
+        # verify token
+        assert token == _token, (token, _token)
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         return palert.layout_expired(pathname, search, return_href=PATH_ROOT)
@@ -99,9 +106,6 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # commit user
     app_db.session.merge(user)
     app_db.session.commit()
-
-    # delete cache
-    app_redis.delete(_id)
 
     # return result
     return None, f"{pathname}/result"

@@ -92,8 +92,8 @@ def _init_page(pathname, search, vhash, dclient):
     if pathname == PATH_ANALYSIS:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
-            kwargs.update(dict(nextpath=PATH_ANALYSIS))
             dserver = dict(title=pathname.strip("/").upper())
+            kwargs.update(dict(nextpath=PATH_ANALYSIS))
             return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
         return pathname, search, dserver, panalysis.layout(pathname, search, **kwargs)
 
@@ -101,8 +101,8 @@ def _init_page(pathname, search, vhash, dclient):
     if pathname == PATH_USER:
         if not flask_login.current_user.is_authenticated:
             pathname = PATH_LOGIN
-            kwargs.update(dict(nextpath=PATH_USER))
             dserver = dict(title=pathname.strip("/").upper())
+            kwargs.update(dict(nextpath=PATH_USER))
             return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
         return pathname, search, dserver, puser.layout(pathname, search, **kwargs)
 
