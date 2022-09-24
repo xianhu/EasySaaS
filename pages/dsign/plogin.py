@@ -12,7 +12,7 @@ import flask_login
 from dash import Input, Output, State, html
 from werkzeug import security
 
-from app import UserLogin, app
+from app import UserLogin
 from pages.dsign import tsign
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
@@ -54,7 +54,7 @@ def layout(pathname, search, **kwargs):
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
-@app.callback([
+@dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [

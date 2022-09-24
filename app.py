@@ -7,7 +7,7 @@ Dash Application
 import logging
 
 import celery
-import dash.long_callback
+import dash
 import dash_bootstrap_components as dbc
 import flask_login
 import flask_mail
@@ -21,15 +21,11 @@ log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # celery -A app.app_celery worker -l INFO
-app_celery = celery.Celery(
-    __name__,
-    broker=f"{config_redis_uri}/11",
-    backend=f"{config_redis_uri}/12",
-    include=[
-        "pages.panalysis.pfileud",
-    ],
-)
-lc_manager = dash.long_callback.CeleryLongCallbackManager(app_celery)
+broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
+app_celery = celery.Celery(__name__, broker=broker, backend=backend)
+
+# define manager
+callback_manager = dash.CeleryManager(app_celery)
 
 # create app
 app = dash.Dash(
@@ -40,7 +36,6 @@ app = dash.Dash(
     show_undo_redo=False,
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
-    long_callback_manager=lc_manager,
     external_scripts=[],
     external_stylesheets=[
         dbc.icons.BOOTSTRAP,

@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, html
 
-from app import app, app_db
+from app import app_db
 from utility.consts import RE_PHONE
 from utility.paths import PATH_LOGIN
 
@@ -57,7 +57,7 @@ def layout(class_name=None):
     ], class_name=class_name)
 
 
-@app.callback([
+@dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
     Output({"type": "id-address", "index": TAG}, "href"),
     Output(f"id-{TAG}-modal", "is_open"),

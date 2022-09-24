@@ -21,7 +21,7 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
     nav_children = []
     for title, _id, href in nav_links:
         class_link = "border-primary" if href == curr_path else ""
-        class_link = f"fw-bold text-center mx-md-1 p-md-3 border-bottom {class_link}"
+        class_link = f"fw-bold text-center mx-md-1 p-md-2 border-bottom {class_link}"
         nav_children.append(dbc.NavLink(title, id=_id, href=href, class_name=class_link))
     nav_middle = dbc.Nav(nav_children, navbar=True, class_name="mx-auto")
 

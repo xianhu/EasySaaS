@@ -15,7 +15,7 @@ import flask
 import flask_mail
 from dash import Input, Output, State, html
 
-from app import User, app, app_mail, app_redis
+from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from pages.dsign import tsign
 from utility.consts import RE_EMAIL
@@ -63,7 +63,7 @@ def layout(pathname, search, **kwargs):
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
-@app.callback([
+@dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
