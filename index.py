@@ -11,7 +11,7 @@ import flask
 import flask_login
 from dash import Input, Output, State, MATCH, dcc, html
 
-from app import app
+from app import app, server
 from config import config_app_name
 from pages import palert, pemail, plogin, ppwd
 from pages import panalysis, pintros, puser
@@ -143,4 +143,5 @@ app.clientside_callback(
 )
 
 if __name__ == "__main__":
-    app.run_server(host="0.0.0.0", port=8088, debug=True)
+    # app.run_server()
+    server.run(host="0.0.0.0", port=8088, debug=True)
