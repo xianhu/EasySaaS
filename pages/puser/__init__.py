@@ -9,7 +9,6 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from app import app
 from components import cfooter, cnavbar, csmallnav, ccatalog
 from utility.paths import PATH_LOGOUT, NAV_LINKS
 from . import pinfosec
@@ -50,7 +49,7 @@ def layout(pathname, search, **kwargs):
 
         # define components
         csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),
-        dbc.Container(children=content, fluid=False, class_name=None),
+        dbc.Container(content, fluid=False, class_name=None),
 
         # define components
         cfooter.layout(fluid=False, class_name=None),
@@ -66,7 +65,7 @@ def layout(pathname, search, **kwargs):
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
-@app.callback(output=[
+@dash.callback(output=[
     dict(
         template=Output(f"id-{TAG}-template", "className"),
         infosec=Output(f"id-{TAG}-infosec", "className"),
@@ -95,9 +94,6 @@ def layout(pathname, search, **kwargs):
     ),
 ), prevent_initial_call=False)
 def _init_page(n_clicks_list, togger_dict, data_dict):
-    # define class
-    class_curr, class_none = "text-primary", "text-black hover-primary"
-
     # define default output
     output_class = dict(template=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
@@ -123,6 +119,7 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-infosec"
 
     # define content
+    class_curr, class_none = "text-primary", "text-black hover-primary"
     if curr_id == f"id-{TAG}-template":
         output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))

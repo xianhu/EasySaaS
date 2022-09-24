@@ -9,7 +9,6 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from app import app
 from components import cnavbar, csmallnav, cadmulti, cadsingle
 from utility.paths import PATH_LOGOUT, NAV_LINKS
 from .. import ptemplate
@@ -33,11 +32,10 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_adsingle = dict(title="FileUp&Down", _id=f"id-{TAG}-fileud", href="#fileud")
-    kwargs_admulti = dict(catalog_list=CATALOG_LIST, ad_id=f"id-{TAG}-admulti")
+    kwargs_ad = dict(flush=True, class_name="border-bottom-solid")
     catalog = dbc.Collapse(children=[
-        cadsingle.layout(**kwargs_adsingle, flush=True, class_name="border-bottom-solid"),
-        cadmulti.layout(**kwargs_admulti, flush=True, class_name="border-bottom-solid"),
+        cadsingle.layout("FileUp&Down", f"id-{TAG}-fileud", "#fileud", **kwargs_ad),
+        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", **kwargs_ad),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
@@ -56,6 +54,9 @@ def layout(pathname, search, **kwargs):
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
 
         # define components
+        # cfooter.layout(fluid=False, class_name=None),
+
+        # define components
         html.A(id={"type": "id-address", "index": TAG}),
 
         # define components
@@ -66,7 +67,7 @@ def layout(pathname, search, **kwargs):
     ], className="d-flex flex-column vh-100 overflow-scroll")
 
 
-@app.callback(output=[
+@dash.callback(output=[
     dict(
         fileud=Output(f"id-{TAG}-fileud", "className"),
         tbdash=Output(f"id-{TAG}-tb-dash", "className"),
@@ -98,9 +99,6 @@ def layout(pathname, search, **kwargs):
     ),
 ), prevent_initial_call=False)
 def _init_page(n_clicks_list, togger_dict, data_dict):
-    # define class
-    class_curr, class_none = "text-primary", "text-black hover-primary"
-
     # define default output
     output_class = dict(
         fileud=dash.no_update, tbdash=dash.no_update,
@@ -130,6 +128,7 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content
+    class_curr, class_none = "text-primary", "text-black hover-primary"
     if curr_id == f"id-{TAG}-fileud":
         output_class = dict(fileud=class_curr, tbdash=class_none, tbcustom=class_none, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
