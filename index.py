@@ -6,6 +6,7 @@ Application Layout
 
 import logging
 
+import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_login
@@ -30,7 +31,7 @@ app.layout = html.Div(children=[
 app.validation_layout = dbc.Container([])
 
 
-@app.callback([
+@dash.callback([
     Output("id-location", "pathname"),
     Output("id-location", "search"),
     Output("id-store-server", "data"),

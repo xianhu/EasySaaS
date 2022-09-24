@@ -14,7 +14,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
 from werkzeug import security
 
-from app import app, app_db, app_redis
+from app import app_db, app_redis
 from model import User
 from pages import palert
 from pages.dsign import tsign
@@ -33,11 +33,10 @@ def layout(pathname, search, **kwargs):
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
         _id, _token = search.get("_id")[0], search.get("token")[0]
 
-        # get value from redis
+        # get values from redis
         token, email = json.loads(app_redis.get(_id))
-        app_redis.delete(_id)
 
-        # verify token
+        # verify token values
         assert token == _token, (token, _token)
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
@@ -77,7 +76,7 @@ def layout(pathname, search, **kwargs):
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
-@app.callback([
+@dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
@@ -106,6 +105,9 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # commit user
     app_db.session.merge(user)
     app_db.session.commit()
+
+    # delete cache
+    app_redis.delete(_id)
 
     # return result
     return None, f"{pathname}/result"
