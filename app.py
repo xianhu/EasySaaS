@@ -39,7 +39,7 @@ app = dash.Dash(
     external_scripts=[],
     external_stylesheets=[
         dbc.icons.BOOTSTRAP,
-        dbc.themes.BOOTSTRAP,
+        # dbc.themes.BOOTSTRAP,
     ],
     meta_tags=[{
         "charset": "utf-8",
