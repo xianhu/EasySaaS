@@ -16,4 +16,4 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         cbasic.layout(class_name=None),
         cpwd.layout(class_name="mt-4"),
-    ], className="mb-4")
+    ], className=None)
