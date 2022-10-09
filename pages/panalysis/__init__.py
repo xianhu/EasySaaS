@@ -32,17 +32,17 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_ad = dict(flush=True, class_name="border-bottom-solid")
+    kwargs_ad = dict(flush=True, class_name="border-catalog-bottom")
     catalog = dbc.Collapse(children=[
         cadsingle.layout("FileUp&Down", f"id-{TAG}-fileud", "#fileud", **kwargs_ad),
-        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", **kwargs_ad),
+        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", flush=True),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
     content = dbc.Row(children=[
-        dbc.Col(children=catalog, width=12, md=2, class_name="h-100-scroll-md bg-light"),
+        dbc.Col(children=catalog, width=12, md=2, class_name="h-100-scroll-md px-0 bg-dark"),
         dbc.Col(id=f"id-{TAG}-content", width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
-    ], align="start", justify="center", class_name="h-100-scroll")
+    ], align="start", justify="center", class_name="h-100-scroll bg-light")
 
     # return result
     return html.Div(children=[
@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
         dcc.Store(id=f"id-{TAG}-search", data=search),
         dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash")),
         dcc.Store(id=f"id-{TAG}-dclient", data=kwargs.get("dclient")),
-    ], className="d-flex flex-column vh-100 overflow-scroll")
+    ], className="d-flex flex-column vh-100 overflow-auto")
 
 
 @dash.callback(output=[
@@ -128,7 +128,7 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content
-    class_curr, class_none = "text-primary", "text-black hover-primary"
+    class_curr, class_none = dash.no_update, dash.no_update
     if curr_id == f"id-{TAG}-fileud":
         output_class = dict(fileud=class_curr, tbdash=class_none, tbcustom=class_none, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
