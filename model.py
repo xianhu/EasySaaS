@@ -5,6 +5,7 @@ Model Defination
 """
 
 import hashlib
+import logging
 
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
@@ -61,6 +62,8 @@ def init_db(database_uri):
     """
     initial database
     """
+    logging.warning("init database - %s", config_database_uri)
+
     # create engine, SQLite doesn't check the forgien key
     engine = sqlalchemy.create_engine(database_uri)
 
