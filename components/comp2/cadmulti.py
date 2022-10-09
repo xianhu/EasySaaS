@@ -17,8 +17,8 @@ def layout(catalog_list, ad_id, ad_active=None, flush=None, class_name=None):
     for title_first, id_first, list_second in catalog_list:
         address_list = []
         for title, _id, href in list_second:
-            ctitle = html.Div(title, id=_id, className="text-white")
-            address = html.A(ctitle, href=href, className="accordion-button text-decoration-none px-5 py-3")
+            ctitle = html.Div(title, className="text-white")
+            address = html.A(ctitle, id=_id, href=href, className="accordion-background text-decoration-none px-5 py-3")
             address_list.append(address)
 
         # define components
@@ -26,5 +26,5 @@ def layout(catalog_list, ad_id, ad_active=None, flush=None, class_name=None):
         accordion_items.append(dbc.AccordionItem(div, title=title_first, item_id=id_first))
 
     # return result
-    class_name = class_name or "border-top-solid border-bottom-solid"
+    class_name = class_name or ""
     return dbc.Accordion(accordion_items, id=ad_id, active_item=ad_active, flush=flush, class_name=class_name)

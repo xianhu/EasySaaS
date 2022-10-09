@@ -128,21 +128,23 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content
-    class_curr, class_none = dash.no_update, dash.no_update
+    class_curr_button = "accordion-button accordion-image-after-none accordion-background-selected"
+    class_none_button = "accordion-button accordion-image-after-none"
+    class_curr, class_none = "accordion-background text-decoration-none px-5 py-3 accordion-background-selected", "accordion-background text-decoration-none px-5 py-3 accordion-background"
     if curr_id == f"id-{TAG}-fileud":
-        output_class = dict(fileud=class_curr, tbdash=class_none, tbcustom=class_none, ptbasic=class_none)
+        output_class = dict(fileud=class_curr_button, tbdash=class_none, tbcustom=class_none, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = None
     elif curr_id == f"id-{TAG}-tb-dash":
-        output_class = dict(fileud=class_none, tbdash=class_curr, tbcustom=class_none, ptbasic=class_none)
+        output_class = dict(fileud=class_none_button, tbdash=class_curr, tbcustom=class_none, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-tb-custom":
-        output_class = dict(fileud=class_none, tbdash=class_none, tbcustom=class_curr, ptbasic=class_none)
+        output_class = dict(fileud=class_none_button, tbdash=class_none, tbcustom=class_curr, ptbasic=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-pt-basic":
-        output_class = dict(fileud=class_none, tbdash=class_none, tbcustom=class_none, ptbasic=class_curr)
+        output_class = dict(fileud=class_none_button, tbdash=class_none, tbcustom=class_none, ptbasic=class_curr)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-plotly"
     else:

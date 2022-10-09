@@ -13,8 +13,7 @@
 
 /* ----------------------------------------------------- */
 
-.accordion-button,
-.accordion-button:not(.collapsed) {
+.accordion-button {
     color: white !important;
     box-shadow: none !important;
     background-color: var(--color-catalog) !important;
@@ -29,6 +28,7 @@
 }
 
 .accordion-item {
+    border: none !important;
     border-bottom: 1px solid var(--color-catalog-1) !important;
 }
 
@@ -42,38 +42,42 @@
 
 /* ----------------------------------------------------- */
 
-.hover-success:hover {
-    color: var(--color-success) !important;
-}
-
-/* ----------------------------------------------------- */
-
-.bg-catalog {
-    background-color: var(--color-catalog) !important;
-}
-
-.bg-catalog:hover {
-    background-color: var(--color-catalog-1) !important;
-}
-
-.bg-catalog-selected {
-    background-color: var(--color-catalog-1) !important;
-}
-
-/* ----------------------------------------------------- */
-
-.border-catalog-top {
+.accordion-border-top {
     border-top: 1px solid var(--color-catalog-1) !important;
 }
 
-.border-catalog-bottom {
+.accordion-border-bottom {
     border-bottom: 1px solid var(--color-catalog-1) !important;
+}
+
+.accordion-background {
+    background-color: var(--color-catalog) !important;
+}
+
+.accordion-background:hover {
+    background-color: var(--color-catalog-1) !important;
+}
+
+.accordion-background-selected {
+    background-color: var(--color-catalog-1) !important;
+}
+
+.accordion-background-selected:hover {
+    background-color: var(--color-catalog-1) !important;
+}
+
+.accordion-image-after-none:after {
+    background-image: none !important;
 }
 
 /* ----------------------------------------------------- */
 
-.image-catalog-after-none:after {
-    background-image: none !important;
+.hover-primary:hover {
+    color: var(--color-primary) !important;
+}
+
+.hover-success:hover {
+    color: var(--color-success) !important;
 }
 
 /* ----------------------------------------------------- */
@@ -92,4 +96,3 @@
         overflow-y: auto !important;
     }
 }
-

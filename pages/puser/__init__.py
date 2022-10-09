@@ -119,7 +119,7 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-infosec"
 
     # define content
-    class_curr, class_none = "text-primary", "text-black hover-primary"
+    class_curr, class_none = "text-success", "text-black hover-success"
     if curr_id == f"id-{TAG}-template":
         output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
