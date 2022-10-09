@@ -13,9 +13,12 @@ from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin
-from pages.dsign import tsign
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
+from . import ERROR_EMAIL_INVALID, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
+from . import LABEL_EMAIL, LABEL_PASSWORD, SIGN_UP, FORGET_PWD
+from . import SIGN_IN, SIGN_IN_SUB, SIGN_IN_BUTTON
+from . import tsign
 
 TAG = "login"
 
@@ -28,24 +31,24 @@ def layout(pathname, search, **kwargs):
     form_items = dbc.Form(children=[
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email"),
-            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+            dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
         ], class_name=None),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd", type="password"),
-            dbc.Label("Password:", html_for=f"id-{TAG}-pwd"),
+            dbc.Label(f"{LABEL_PASSWORD}:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
     ], class_name=None)
 
     # define args
     kwargs_temp = dict(
         src_image="illustrations/login.svg",
-        text_hd="Sign in",
-        text_sub="Login the system with your account.",
+        text_hd=SIGN_IN,
+        text_sub=SIGN_IN_SUB,
         form_items=form_items,
-        text_button="Sign in",
+        text_button=SIGN_IN_BUTTON,
         other_list=[
-            html.A("Sign up", href=PATH_REGISTER),
-            html.A("Forget password?", href=PATH_RESETPWD),
+            html.A(SIGN_UP, href=PATH_REGISTER),
+            html.A(FORGET_PWD, href=PATH_RESETPWD),
         ],
         data=kwargs.get("nextpath", PATH_ROOT),
     )
@@ -67,17 +70,17 @@ def _button_click(n_clicks, email, pwd, nextpath):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return "Email is invalid", dash.no_update
+        return ERROR_EMAIL_INVALID, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = UserLogin.query.get(_id)
     if not user:
-        return "Email doesn't exist", dash.no_update
+        return ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # check password
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return "Password is incorrect", dash.no_update
+        return ERROR_PWD_INCORRECT, dash.no_update
 
     # login user
     flask_login.login_user(user)

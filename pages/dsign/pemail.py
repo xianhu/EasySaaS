@@ -19,6 +19,10 @@ from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_ROOT, PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
+from . import ERROR_EMAIL_INVALID, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
+from . import FORGET_PWD, FORGET_PWD_SUB, FORGET_PWD_BUTTON
+from . import LABEL_EMAIL, SIGN_IN
+from . import SIGN_UP, SIGN_UP_SUB, SIGN_UP_BUTTON
 from . import tsign
 from .. import palert
 
@@ -32,32 +36,32 @@ def layout(pathname, search, **kwargs):
     # define components
     form_items = dbc.Form(dbc.FormFloating(children=[
         dbc.Input(id=f"id-{TAG}-email", type="email"),
-        dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+        dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
     ]), class_name=None)
 
     # define args
     kwargs_temp = dict(
         src_image="illustrations/register.svg",
-        text_hd="Sign up",
-        text_sub="Register an account through an email.",
+        text_hd=SIGN_UP,
+        text_sub=SIGN_UP_SUB,
         form_items=form_items,
-        text_button="Verify the email",
+        text_button=SIGN_UP_BUTTON,
         other_list=[
-            html.A("Sign in", href=PATH_LOGIN),
-            html.A("Forget password?", href=PATH_RESETPWD),
+            html.A(SIGN_IN, href=PATH_LOGIN),
+            html.A(FORGET_PWD, href=PATH_RESETPWD),
         ],
-        data=PATH_REGISTER,
+        data=pathname,
     ) if pathname == PATH_REGISTER else dict(
         src_image="illustrations/resetpwd.svg",
-        text_hd="Forget password?",
-        text_sub="Find back the password through email.",
+        text_hd=FORGET_PWD,
+        text_sub=FORGET_PWD_SUB,
         form_items=form_items,
-        text_button="Verify the email",
+        text_button=FORGET_PWD_BUTTON,
         other_list=[
-            html.A("Sign in", href=PATH_LOGIN),
-            html.A("Sign up", href=PATH_REGISTER),
+            html.A(SIGN_IN, href=PATH_LOGIN),
+            html.A(SIGN_UP, href=PATH_REGISTER),
         ],
-        data=PATH_RESETPWD,
+        data=pathname,
     )
 
     # return result
@@ -88,15 +92,15 @@ def _button_click(n_clicks, email, pathname):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return "Email is invalid", dash.no_update
+        return ERROR_EMAIL_INVALID, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = User.query.get(_id)
     if pathname == PATH_REGISTER and user:
-        return "Email is registered", dash.no_update
+        return ERROR_EMAIL_EXIST, dash.no_update
     if pathname == PATH_RESETPWD and (not user):
-        return "Email doesn't exist", dash.no_update
+        return ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # send email and cache
     if not app_redis.get(_id):

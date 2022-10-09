@@ -16,10 +16,13 @@ from werkzeug import security
 
 from app import app_db, app_redis
 from model import User
-from pages import palert
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
+from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
+from . import LABEL_EMAIL, LABEL_PASSWORD, LABEL_PASSWORD_CONFIRM, SIGN_IN, SIGN_UP
+from . import SET_PWD, SET_PWD_SUB, SET_PWD_BUTTON
 from . import tsign
+from .. import palert
 
 TAG = "pwd"
 
@@ -46,28 +49,28 @@ def layout(pathname, search, **kwargs):
     form_items = dbc.Form(children=[
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-email", type="email", value=email, readonly=True),
-            dbc.Label("Email:", html_for=f"id-{TAG}-email"),
+            dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
         ], class_name=None),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
-            dbc.Label("Password:", html_for=f"id-{TAG}-pwd1"),
+            dbc.Label(f"{LABEL_PASSWORD}:", html_for=f"id-{TAG}-pwd1"),
         ], class_name="mt-4"),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
-            dbc.Label("Confirm Password:", html_for=f"id-{TAG}-pwd2"),
+            dbc.Label(f"{LABEL_PASSWORD_CONFIRM}:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
     ], class_name=None)
 
     # define args
     kwargs_temp = dict(
         src_image="illustrations/password.svg",
-        text_hd="Set password",
-        text_sub="Set the password of this email please.",
+        text_hd=SET_PWD,
+        text_sub=SET_PWD_SUB,
         form_items=form_items,
-        text_button="Set password",
+        text_button=SET_PWD_BUTTON,
         other_list=[
-            html.A("Sign in", href=PATH_LOGIN),
-            html.A("Sign up", href=PATH_REGISTER),
+            html.A(SIGN_IN, href=PATH_LOGIN),
+            html.A(SIGN_UP, href=PATH_REGISTER),
         ],
         data=pathname,
     )
@@ -101,11 +104,11 @@ def layout_result(pathname, search, **kwargs):
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # check password
     if (not pwd1) or (len(pwd1) < 6):
-        return "Password is too short", dash.no_update
+        return ERROR_PWD_SHORT, dash.no_update
     if not RE_PWD.match(pwd1):
-        return "Must contain numbers and letters", dash.no_update
+        return ERROR_PWD_FORMAT, dash.no_update
     if (not pwd2) or (pwd2 != pwd1):
-        return "Passwords are inconsistent", dash.no_update
+        return ERROR_PWD_INCONSISTENT, dash.no_update
 
     # check user
     _id = hashlib.md5(email.encode()).hexdigest()
