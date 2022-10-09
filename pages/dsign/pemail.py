@@ -17,9 +17,10 @@ from dash import Input, Output, State, html
 
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from pages.dsign import tsign
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
+from utility.paths import PATH_ROOT, PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
+from . import tsign
+from .. import palert
 
 TAG = "email"
 
@@ -61,6 +62,18 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
+
+
+def layout_result(pathname, search, **kwargs):
+    """
+    layout of page
+    """
+    return palert.layout(pathname, search, **dict(
+        text_hd="Sending success",
+        text_sub=f"An email has sent to {flask.session.get('email')}.",
+        text_button="Back to home",
+        return_href=PATH_ROOT,
+    ))
 
 
 @dash.callback([

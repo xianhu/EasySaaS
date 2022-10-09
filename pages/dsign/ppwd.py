@@ -17,9 +17,9 @@ from werkzeug import security
 from app import app_db, app_redis
 from model import User
 from pages import palert
-from pages.dsign import tsign
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
+from . import tsign
 
 TAG = "pwd"
 
@@ -74,6 +74,18 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
+
+
+def layout_result(pathname, search, **kwargs):
+    """
+    layout of page
+    """
+    return palert.layout(pathname, search, **dict(
+        text_hd="Setting success",
+        text_sub="The password was set successfully.",
+        text_button="Go to login",
+        return_href=PATH_LOGIN,
+    ))
 
 
 @dash.callback([

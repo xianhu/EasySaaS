@@ -8,7 +8,6 @@ import logging
 
 import dash
 import dash_bootstrap_components as dbc
-import flask
 import flask_login
 from dash import Input, Output, State, MATCH, dcc, html
 
@@ -62,12 +61,7 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, pemail.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTER}/result" or pathname == f"{PATH_RESETPWD}/result":
-        return pathname, search, dserver, palert.layout(pathname, search, **dict(
-            text_hd="Sending success",
-            text_sub=f"An email has sent to {flask.session.get('email')}.",
-            text_button="Back to home",
-            return_href=PATH_ROOT,
-        ))
+        return pathname, search, dserver, pemail.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == f"{PATH_REGISTER}-pwd" or pathname == f"{PATH_RESETPWD}-pwd":
@@ -76,12 +70,7 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, ppwd.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTER}-pwd/result" or pathname == f"{PATH_RESETPWD}-pwd/result":
-        return pathname, search, dserver, palert.layout(pathname, search, **dict(
-            text_hd="Setting success",
-            text_sub="The password was set successfully.",
-            text_button="Go to login",
-            return_href=PATH_LOGIN,
-        ))
+        return pathname, search, dserver, ppwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_INTROS or pathname == PATH_ROOT:
