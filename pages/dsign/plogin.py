@@ -16,7 +16,7 @@ from app import UserLogin
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
 from . import ERROR_EMAIL_INVALID, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
-from . import LABEL_EMAIL, LABEL_PASSWORD, SIGN_UP, FORGET_PWD
+from . import LABEL_EMAIL, LABEL_PWD, SIGN_UP, FORGET_PWD
 from . import SIGN_IN, SIGN_IN_SUB, SIGN_IN_BUTTON
 from . import tsign
 
@@ -35,7 +35,7 @@ def layout(pathname, search, **kwargs):
         ], class_name=None),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd", type="password"),
-            dbc.Label(f"{LABEL_PASSWORD}:", html_for=f"id-{TAG}-pwd"),
+            dbc.Label(f"{LABEL_PWD}:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
     ], class_name=None)
 

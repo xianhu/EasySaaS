@@ -20,9 +20,8 @@ from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_ROOT, PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
 from . import ERROR_EMAIL_INVALID, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
-from . import FORGET_PWD, FORGET_PWD_SUB, FORGET_PWD_BUTTON
 from . import LABEL_EMAIL, SIGN_IN
-from . import SIGN_UP, SIGN_UP_SUB, SIGN_UP_BUTTON
+from . import SIGN_UP, SIGN_UP_SUB, SIGN_UP_BUTTON, FORGET_PWD, FORGET_PWD_SUB, FORGET_PWD_BUTTON
 from . import tsign
 from .. import palert
 

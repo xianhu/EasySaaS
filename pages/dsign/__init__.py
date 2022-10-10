@@ -6,8 +6,8 @@ sign page
 
 # define label
 LABEL_EMAIL = "Email"
-LABEL_PASSWORD = "Password"
-LABEL_PASSWORD_CONFIRM = "Confirm password"
+LABEL_PWD = "Password"
+LABEL_PWD_CONFIRM = "Confirm password"
 
 # define text
 SIGN_IN = "Sign in"

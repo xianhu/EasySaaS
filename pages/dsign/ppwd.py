@@ -19,7 +19,7 @@ from model import User
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
-from . import LABEL_EMAIL, LABEL_PASSWORD, LABEL_PASSWORD_CONFIRM, SIGN_IN, SIGN_UP
+from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CONFIRM, SIGN_IN, SIGN_UP
 from . import SET_PWD, SET_PWD_SUB, SET_PWD_BUTTON
 from . import tsign
 from .. import palert
@@ -53,11 +53,11 @@ def layout(pathname, search, **kwargs):
         ], class_name=None),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
-            dbc.Label(f"{LABEL_PASSWORD}:", html_for=f"id-{TAG}-pwd1"),
+            dbc.Label(f"{LABEL_PWD}:", html_for=f"id-{TAG}-pwd1"),
         ], class_name="mt-4"),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
-            dbc.Label(f"{LABEL_PASSWORD_CONFIRM}:", html_for=f"id-{TAG}-pwd2"),
+            dbc.Label(f"{LABEL_PWD_CONFIRM}:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
     ], class_name=None)
 
