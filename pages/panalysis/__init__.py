@@ -35,14 +35,14 @@ def layout(pathname, search, **kwargs):
     kwargs_ad = dict(flush=True, class_name="border-catalog-bottom")
     catalog = dbc.Collapse(children=[
         cadsingle.layout("FileUp&Down", f"id-{TAG}-fileud", "#fileud", **kwargs_ad),
-        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", flush=True),
+        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", flush=True, class_name=None),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components
     content = dbc.Row(children=[
-        dbc.Col(children=catalog, width=12, md=2, class_name="h-100-scroll-md px-0 bg-dark"),
-        dbc.Col(id=f"id-{TAG}-content", width=12, md=10, class_name="h-100-scroll mt-4 mt-md-0 p-md-4"),
-    ], align="start", justify="center", class_name="h-100-scroll bg-light")
+        dbc.Col(children=catalog, width=12, md=2, class_name="bg-dark p-0 h-100-scroll-md"),
+        dbc.Col(id=f"id-{TAG}-content", width=12, md=10, class_name="bg-light p-4 h-100-scroll"),
+    ], align="start", justify="center", class_name="h-100-scroll")
 
     # return result
     return html.Div(children=[
@@ -100,10 +100,7 @@ def layout(pathname, search, **kwargs):
 ), prevent_initial_call=False)
 def _init_page(n_clicks_list, togger_dict, data_dict):
     # define default output
-    output_class = dict(
-        fileud=dash.no_update, tbdash=dash.no_update,
-        tbcustom=dash.no_update, ptbasic=dash.no_update,
-    )
+    output_class = dict(fileud=dash.no_update, tbdash=dash.no_update, tbcustom=dash.no_update, ptbasic=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
     output_active = dash.no_update
 
@@ -113,11 +110,11 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
         return [output_class, output_other, output_active]
 
     # define variables
-    curr_id = dash.ctx.triggered_id
     pathname, search = data_dict.get("pathname"), data_dict.get("search")
     vhash, dclient = data_dict.get("vhash"), data_dict.get("dclient")
 
     # define is_open
+    curr_id = dash.ctx.triggered_id
     if curr_id == f"id-{TAG}-toggler" and togger_dict["n_clicks"]:
         output_other.update(dict(is_open=(not togger_dict["is_open"])))
         return [output_class, output_other, output_active]
@@ -128,23 +125,24 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content
-    class_curr_button = "accordion-button accordion-image-after-none accordion-background-selected"
-    class_none_button = "accordion-button accordion-image-after-none"
-    class_curr, class_none = "accordion-background text-decoration-none px-5 py-3 accordion-background-selected", "accordion-background text-decoration-none px-5 py-3 accordion-background"
+    class_none_single = "accordion-button collapsed accordion-image-after-none"
+    class_curr_single = "accordion-button collapsed accordion-image-after-none accordion-background-selected"
+    class_none_multi = "text-white text-decoration-none px-5 py-3 accordion-background"
+    class_curr_multi = "text-white text-decoration-none px-5 py-3 accordion-background accordion-background-selected"
     if curr_id == f"id-{TAG}-fileud":
-        output_class = dict(fileud=class_curr_button, tbdash=class_none, tbcustom=class_none, ptbasic=class_none)
+        output_class = dict(fileud=class_curr_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = None
     elif curr_id == f"id-{TAG}-tb-dash":
-        output_class = dict(fileud=class_none_button, tbdash=class_curr, tbcustom=class_none, ptbasic=class_none)
+        output_class = dict(fileud=class_none_single, tbdash=class_curr_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-tb-custom":
-        output_class = dict(fileud=class_none_button, tbdash=class_none, tbcustom=class_curr, ptbasic=class_none)
+        output_class = dict(fileud=class_none_single, tbdash=class_none_multi, tbcustom=class_curr_multi, ptbasic=class_none_multi)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-tables"
     elif curr_id == f"id-{TAG}-pt-basic":
-        output_class = dict(fileud=class_none_button, tbdash=class_none, tbcustom=class_none, ptbasic=class_curr)
+        output_class = dict(fileud=class_none_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_curr_multi)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
         output_active = f"id-{TAG}-ad-plotly"
     else:

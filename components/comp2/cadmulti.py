@@ -17,9 +17,8 @@ def layout(catalog_list, ad_id, ad_active=None, flush=None, class_name=None):
     for title_first, id_first, list_second in catalog_list:
         address_list = []
         for title, _id, href in list_second:
-            ctitle = html.Div(title, className="text-white")
-            address = html.A(ctitle, id=_id, href=href, className="accordion-background text-decoration-none px-5 py-3")
-            address_list.append(address)
+            class_a = "text-white text-decoration-none px-5 py-3 accordion-background"
+            address_list.append(html.A(title, id=_id, href=href, className=class_a))
 
         # define components
         div = html.Div(address_list, className="d-flex flex-column")
