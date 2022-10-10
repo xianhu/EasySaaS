@@ -128,7 +128,7 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     class_none_single = "accordion-button collapsed accordion-image-after-none"
     class_curr_single = "accordion-button collapsed accordion-image-after-none accordion-background-selected"
     class_none_multi = "text-white text-decoration-none px-5 py-3 accordion-background"
-    class_curr_multi = "text-white text-decoration-none px-5 py-3 accordion-background accordion-background-selected"
+    class_curr_multi = "text-white text-decoration-none px-5 py-3 accordion-background-selected"
     if curr_id == f"id-{TAG}-fileud":
         output_class = dict(fileud=class_curr_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
