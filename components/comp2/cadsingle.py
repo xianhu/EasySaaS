@@ -12,8 +12,8 @@ def layout(title, _id, href, flush=None, class_name=None):
     layout of component
     """
     # define components
-    ctitle = html.Div(title, id=_id, className="text-black hover-primary")
-    button = html.Button(ctitle, className="accordion-button collapsed bg-image-after-none")
+    class_button = "accordion-button collapsed accordion-image-after-none"
+    button = html.Button(title, id=_id, className=class_button)
     address = html.A(button, href=href, className="text-decoration-none")
 
     # define components

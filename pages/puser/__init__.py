@@ -38,8 +38,8 @@ def layout(pathname, search, **kwargs):
 
     # define components
     content = dbc.Row(children=[
-        dbc.Col(children=catalog, width=12, md=2, class_name="mt-0 mt-md-4"),
-        dbc.Col(id=f"id-{TAG}-content", width=12, md=8, class_name="mt-4 mt-md-4"),
+        dbc.Col(children=catalog, width=12, md=2, class_name="my-0 my-md-4"),
+        dbc.Col(id=f"id-{TAG}-content", width=12, md=8, class_name="my-4 my-md-4"),
     ], align="start", justify="center", class_name=None)
 
     # return result
@@ -49,7 +49,7 @@ def layout(pathname, search, **kwargs):
 
         # define components
         csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),
-        dbc.Container(content, fluid=False, class_name=None),
+        dbc.Container(children=content, fluid=False),
 
         # define components
         cfooter.layout(fluid=False, class_name=None),
@@ -62,7 +62,7 @@ def layout(pathname, search, **kwargs):
         dcc.Store(id=f"id-{TAG}-search", data=search),
         dcc.Store(id=f"id-{TAG}-vhash", data=kwargs.get("vhash")),
         dcc.Store(id=f"id-{TAG}-dclient", data=kwargs.get("dclient")),
-    ], className="d-flex flex-column vh-100 overflow-scroll")
+    ], className="d-flex flex-column vh-100 overflow-auto")
 
 
 @dash.callback(output=[
@@ -104,11 +104,11 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
         return [output_class, output_other]
 
     # define variables
-    curr_id = dash.ctx.triggered_id
     pathname, search = data_dict.get("pathname"), data_dict.get("search")
     vhash, dclient = data_dict.get("vhash"), data_dict.get("dclient")
 
     # define is_open
+    curr_id = dash.ctx.triggered_id
     if curr_id == f"id-{TAG}-toggler" and togger_dict["n_clicks"]:
         output_other.update(dict(is_open=(not togger_dict["is_open"])))
         return [output_class, output_other]
@@ -119,7 +119,8 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-infosec"
 
     # define content
-    class_curr, class_none = "text-primary", "text-black hover-primary"
+    class_none = "text-decoration-none py-2 text-black hover-success"
+    class_curr = "text-decoration-none py-2 text-success hover-success"
     if curr_id == f"id-{TAG}-template":
         output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))

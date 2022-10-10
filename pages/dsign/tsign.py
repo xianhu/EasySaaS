@@ -20,7 +20,7 @@ def layout(pathname, search, tag, **kwargs):
     # define components
     kwargs_button = dict(size="lg", class_name="w-100 mt-4")
     right = html.Div(children=[
-        html.Div(kwargs["text_hd"], className="text-center fs-1"),
+        html.Div(kwargs["text_hd"], className="text-center fs-2"),
         html.Div(kwargs["text_sub"], className="text-center text-muted"),
 
         html.Div(kwargs["form_items"], className="mt-4"),

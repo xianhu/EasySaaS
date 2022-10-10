@@ -20,7 +20,7 @@ def layout(
     :param header_list: header of table, list of str
     :param key_list: key of data, list of str
     :param key_out: key of data to be excluded, list of str
-    :param key_title: key of data to be used as title, list of str
+    :param key_title: key of data to be title, list of str
     :param class_th: class_name of th, a string
     :param class_td: class_name of td, a string
     :param class_tr: class_name of tr, a string
