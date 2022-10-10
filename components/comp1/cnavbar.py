@@ -28,7 +28,7 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
     # define components
     nav_right = dbc.Nav(dbc.NavItem(children=[
         html.A("Sign up", href=PATH_REGISTER, className="me-3"),
-        dbc.Button("Sign in", href=PATH_LOGIN, color="success", outline=True),
+        dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="success"),
     ] if not flask_login.current_user.is_authenticated else [
         html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}#template"),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),

@@ -7,8 +7,8 @@
 :root {
     --color-primary: #2c3e50;
     --color-success: #18bc9c;
-    --color-catalog: #7b8a8b;
-    --color-catalog-1: #95a5a6;
+    --color-catalog: #7b8a8b; /* bg-dark */
+    --color-catalog-1: #95a5a6; /* bg-secondary */
 }
 
 /* ----------------------------------------------------- */
