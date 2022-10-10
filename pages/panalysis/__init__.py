@@ -32,10 +32,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    kwargs_ad = dict(flush=True, class_name="border-catalog-bottom")
     catalog = dbc.Collapse(children=[
-        cadsingle.layout("FileUp&Down", f"id-{TAG}-fileud", "#fileud", **kwargs_ad),
-        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", flush=True, class_name=None),
+        cadsingle.layout("FileUp&Down", f"id-{TAG}-fileud", "#fileud", flush=True),
+        cadmulti.layout(CATALOG_LIST, f"id-{TAG}-admulti", flush=True),
     ], id=f"id-{TAG}-collapse", class_name="d-md-block")
 
     # define components

@@ -48,8 +48,8 @@ def layout(pathname, search, **kwargs):
         cnavbar.layout(NAV_LINKS, pathname, fluid=False, class_name=None),
 
         # define components
-        csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False, class_name=None),
-        dbc.Container(children=content, fluid=False, class_name=None),
+        csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),
+        dbc.Container(children=content, fluid=False),
 
         # define components
         cfooter.layout(fluid=False, class_name=None),
