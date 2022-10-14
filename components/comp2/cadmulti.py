@@ -25,4 +25,4 @@ def layout(catalog_list, ad_id, ad_active=None, flush=None, class_name=None):
         accordion_items.append(dbc.AccordionItem(div, title=title_first, item_id=id_first))
 
     # return result
-    return dbc.Accordion(accordion_items, id=ad_id, active_item=ad_active, flush=flush, class_name=class_name)
+    return dbc.Accordion(accordion_items, id=ad_id, active_item=ad_active, flush=flush, class_name=f"accordion-catalog {class_name}")

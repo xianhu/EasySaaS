@@ -39,7 +39,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     content = dbc.Row(children=[
-        dbc.Col(children=catalog, width=12, md=2, class_name="bg-dark p-0 h-100-scroll-md"),
+        dbc.Col(children=catalog, width=12, md=2, class_name="p-0 h-100-scroll-md bg-catalog"),
         dbc.Col(id=f"id-{TAG}-content", width=12, md=10, class_name="bg-light p-4 h-100-scroll"),
     ], align="start", justify="center", class_name="h-100-scroll")
 
@@ -124,8 +124,8 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     curr_id = curr_id or f"id-{TAG}-fileud"
 
     # define content
-    class_none_single = "accordion-button collapsed accordion-image-after-none"
-    class_curr_single = "accordion-button collapsed accordion-image-after-none accordion-background-selected"
+    class_none_single = "accordion-button collapsed"
+    class_curr_single = "accordion-button collapsed accordion-background-selected"
     class_none_multi = "text-white text-decoration-none px-5 py-3 accordion-background"
     class_curr_multi = "text-white text-decoration-none px-5 py-3 accordion-background-selected"
     if curr_id == f"id-{TAG}-fileud":
