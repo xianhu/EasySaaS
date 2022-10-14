@@ -15,9 +15,9 @@ from werkzeug import security
 from app import UserLogin
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
-from . import ERROR_EMAIL_INVALID, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
-from . import LABEL_EMAIL, LABEL_PWD, SIGN_UP, FORGET_PWD
-from . import SIGN_IN, SIGN_IN_SUB, SIGN_IN_BUTTON
+from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
+from . import LABEL_EMAIL, LABEL_PWD, LINK_SIGN_UP, LINK_FORGET_PWD
+from . import SIGN_IN_HD, SIGN_IN_SUB, SIGN_IN_BUTTON
 from . import tsign
 
 TAG = "login"
@@ -42,13 +42,13 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(
         src_image="illustrations/login.svg",
-        text_hd=SIGN_IN,
+        text_hd=SIGN_IN_HD,
         text_sub=SIGN_IN_SUB,
         form_items=form_items,
         text_button=SIGN_IN_BUTTON,
         other_list=[
-            html.A(SIGN_UP, href=PATH_REGISTER),
-            html.A(FORGET_PWD, href=PATH_RESETPWD),
+            html.A(LINK_SIGN_UP, href=PATH_REGISTER),
+            html.A(LINK_FORGET_PWD, href=PATH_RESETPWD),
         ],
         data=kwargs.get("nextpath", PATH_ROOT),
     )
@@ -70,7 +70,7 @@ def _button_click(n_clicks, email, pwd, nextpath):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return ERROR_EMAIL_INVALID, dash.no_update
+        return ERROR_EMAIL_FORMAT, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user

@@ -19,9 +19,10 @@ from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_ROOT, PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
-from . import ERROR_EMAIL_INVALID, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
-from . import LABEL_EMAIL, SIGN_IN
-from . import SIGN_UP, SIGN_UP_SUB, SIGN_UP_BUTTON, FORGET_PWD, FORGET_PWD_SUB, FORGET_PWD_BUTTON
+from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
+from . import FORGET_PWD_HD, FORGET_PWD_SUB, FORGET_PWD_BUTTON
+from . import LABEL_EMAIL, LINK_SIGN_IN, LINK_SIGN_UP, LINK_FORGET_PWD
+from . import SIGN_UP_HD, SIGN_UP_SUB, SIGN_UP_BUTTON
 from . import tsign
 from .. import palert
 
@@ -41,24 +42,24 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(
         src_image="illustrations/register.svg",
-        text_hd=SIGN_UP,
+        text_hd=SIGN_UP_HD,
         text_sub=SIGN_UP_SUB,
         form_items=form_items,
         text_button=SIGN_UP_BUTTON,
         other_list=[
-            html.A(SIGN_IN, href=PATH_LOGIN),
-            html.A(FORGET_PWD, href=PATH_RESETPWD),
+            html.A(LINK_SIGN_IN, href=PATH_LOGIN),
+            html.A(LINK_FORGET_PWD, href=PATH_RESETPWD),
         ],
         data=pathname,
     ) if pathname == PATH_REGISTER else dict(
         src_image="illustrations/resetpwd.svg",
-        text_hd=FORGET_PWD,
+        text_hd=FORGET_PWD_HD,
         text_sub=FORGET_PWD_SUB,
         form_items=form_items,
         text_button=FORGET_PWD_BUTTON,
         other_list=[
-            html.A(SIGN_IN, href=PATH_LOGIN),
-            html.A(SIGN_UP, href=PATH_REGISTER),
+            html.A(LINK_SIGN_IN, href=PATH_LOGIN),
+            html.A(LINK_SIGN_UP, href=PATH_REGISTER),
         ],
         data=pathname,
     )
@@ -91,7 +92,7 @@ def _button_click(n_clicks, email, pathname):
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return ERROR_EMAIL_INVALID, dash.no_update
+        return ERROR_EMAIL_FORMAT, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
