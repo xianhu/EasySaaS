@@ -39,7 +39,7 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
         cbrand.layout(href=PATH_ROOT, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="border-white"),
         dbc.Collapse([nav_middle, nav_right], id="id-collapse", navbar=True),
-    ], fluid=fluid), dark=True, color="primary", class_name=f"py-1 {class_name}")
+    ], fluid=fluid), dark=True, color="primary", class_name=(class_name or "py-1"))
 
 
 @dash.callback(
