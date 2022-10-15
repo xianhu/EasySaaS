@@ -39,7 +39,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     content = dbc.Row(children=[
-        dbc.Col(children=catalog, width=12, md=2, class_name="p-0 h-100-scroll-md bg-catalog"),
+        dbc.Col(children=catalog, width=12, md=2, class_name="bg-catalog p-0 h-100-scroll-md"),
         dbc.Col(id=f"id-{TAG}-content", width=12, md=10, class_name="bg-light p-4 h-100-scroll"),
     ], align="start", justify="center", class_name="h-100-scroll")
 
