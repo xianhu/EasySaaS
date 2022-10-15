@@ -18,7 +18,7 @@ TAG = "user"
 
 # catalog list
 CATALOG_LIST = [
-    ["Template", f"id-{TAG}-template", "#template"],
+    ["Notifications", f"id-{TAG}-notify", "#notify"],
     ["ACCOUNT", None, [
         ("Info&Security", f"id-{TAG}-infosec", "#infosec"),
         ("Plan&Payments", f"id-{TAG}-planpay", "#planpay"),
@@ -67,7 +67,7 @@ def layout(pathname, search, **kwargs):
 
 @dash.callback(output=[
     dict(
-        template=Output(f"id-{TAG}-template", "className"),
+        notify=Output(f"id-{TAG}-notify", "className"),
         infosec=Output(f"id-{TAG}-infosec", "className"),
         planpay=Output(f"id-{TAG}-planpay", "className"),
     ),
@@ -78,7 +78,7 @@ def layout(pathname, search, **kwargs):
     ),
 ], inputs=dict(
     n_clicks_list=dict(
-        n_clicks0=Input(f"id-{TAG}-template", "n_clicks"),
+        n_clicks0=Input(f"id-{TAG}-notify", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-infosec", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-planpay", "n_clicks"),
     ),
@@ -95,7 +95,7 @@ def layout(pathname, search, **kwargs):
 ), prevent_initial_call=False)
 def _init_page(n_clicks_list, togger_dict, data_dict):
     # define default output
-    output_class = dict(template=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
+    output_class = dict(notify=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
 
     # check user login
@@ -121,14 +121,15 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     # define content
     class_none = "text-decoration-none py-2 text-black hover-success"
     class_curr = "text-decoration-none py-2 text-success hover-success"
-    if curr_id == f"id-{TAG}-template":
-        output_class = dict(template=class_curr, infosec=class_none, planpay=class_none)
+
+    if curr_id == f"id-{TAG}-notify":
+        output_class = dict(notify=class_curr, infosec=class_none, planpay=class_none)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-infosec":
-        output_class = dict(template=class_none, infosec=class_curr, planpay=class_none)
+        output_class = dict(notify=class_none, infosec=class_curr, planpay=class_none)
         output_other.update(dict(is_open=False, children=pinfosec.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-planpay":
-        output_class = dict(template=class_none, infosec=class_none, planpay=class_curr)
+        output_class = dict(notify=class_none, infosec=class_none, planpay=class_curr)
         output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
     else:
         raise Exception(f"Invalid curr_id: {curr_id}")
