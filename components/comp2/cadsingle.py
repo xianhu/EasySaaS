@@ -13,7 +13,7 @@ def layout(title, _id, href, flush=None, class_name=None):
     """
     # define components
     button = html.Button(title, id=_id, className="accordion-button collapsed")
-    address = html.A(button, href=href, className="text-decoration-none accordion-single")
+    address = html.A(button, href=href, className="accordion-single text-decoration-none")
 
     # define components
     accordion_header = html.H2(address, className="accordion-header")
