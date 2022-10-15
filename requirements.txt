@@ -4,7 +4,7 @@ dash-bootstrap-components==1.2.1
 Flask-Mail==0.9.1
 Flask-Login==0.6.2
 Flask-Redis==0.4.0
-Flask-SQLAlchemy==3.0.0
+Flask-SQLAlchemy==3.0.2
 
 uWSGI==2.0.20
 celery==5.2.7

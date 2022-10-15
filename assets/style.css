@@ -27,6 +27,8 @@
     background-image: url(svg/arrow-down.svg) !important;
 }
 
+/* ----------------------------------------------------- */
+
 .accordion-catalog .accordion-item {
     border: none !important;
     border-bottom: 1px solid var(--color-catalog-1) !important;
@@ -64,11 +66,11 @@
     background-image: none !important;
 }
 
+/* ----------------------------------------------------- */
+
 .bg-catalog {
     background-color: var(--color-catalog) !important;
 }
-
-/* ----------------------------------------------------- */
 
 .hover-primary:hover {
     color: var(--color-primary) !important;
