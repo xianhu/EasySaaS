@@ -41,14 +41,14 @@ def layout(class_name=None):
 
     # define components
     return dbc.Card(children=[
-        dbc.CardHeader("Basic Information:", class_name="px-4 py-3"),
-        dbc.Row(children=[
+        dbc.CardHeader("Basic Information:", class_name="py-3"),
+        dbc.CardBody(dbc.Row(children=[
             dbc.Col(email, width=12, md=4, class_name=None),
             dbc.Col(name, width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(phone, width=12, md=4, class_name="mt-2 mt-md-0"),
             dbc.Col(feedback, width=12, md={"size": 4, "order": "last"}, class_name="mt-0 mt-md-4"),
             dbc.Col(button, width=12, md={"size": 4, "order": None}, class_name="mt-4 mt-md-4"),
-        ], align="center", justify="start", class_name="p-4"),
+        ], align="center", justify="start", class_name=None)),
         # define components
         dbc.Modal(children=[
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),

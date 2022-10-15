@@ -18,7 +18,7 @@ def layout(href=PATH_ROOT, class_text=None, class_name=None):
     """
     # define variables
     src_logo = dash.get_asset_url("favicon.svg")
-    class_text = f"fs-5 text-white align-middle ms-1 {class_text}"
+    class_text = class_text or "fs-5 text-white align-middle ms-1"
 
     # return result
     return dbc.NavbarBrand(children=[

@@ -24,7 +24,7 @@ logging.basicConfig(format=log_format, level=logging.WARNING)
 broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
 app_celery = celery.Celery(__name__, broker=broker, backend=backend)
 
-# define manager
+# define callback manager
 callback_manager = dash.CeleryManager(app_celery)
 
 # create app
@@ -34,6 +34,7 @@ app = dash.Dash(
     compress=True,
     serve_locally=True,
     show_undo_redo=False,
+    update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     external_scripts=[],

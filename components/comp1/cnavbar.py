@@ -30,7 +30,7 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
         html.A("Sign up", href=PATH_REGISTER, className="me-3"),
         dbc.Button("Sign in", href=PATH_LOGIN, outline=True, color="success"),
     ] if not flask_login.current_user.is_authenticated else [
-        html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}#template"),
+        html.A(html.I(className="bi bi-bell fs-5"), href=f"{PATH_USER}#notify"),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
     ], class_name="d-flex align-items-center justify-content-center py-1 py-md-0"), navbar=True)
 
@@ -39,7 +39,7 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
         cbrand.layout(href=PATH_ROOT, class_name=None),
         dbc.NavbarToggler(id="id-toggler", class_name="border-white"),
         dbc.Collapse([nav_middle, nav_right], id="id-collapse", navbar=True),
-    ], fluid=fluid), dark=True, color="primary", class_name=f"py-1 {class_name}")
+    ], fluid=fluid), dark=True, color="primary", class_name=(class_name or "py-1"))
 
 
 @dash.callback(

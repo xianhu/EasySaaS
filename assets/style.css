@@ -13,26 +13,28 @@
 
 /* ----------------------------------------------------- */
 
-.accordion-button {
+.accordion-catalog .accordion-button {
     color: white !important;
     box-shadow: none !important;
     background-color: var(--color-catalog) !important;
 }
 
-.accordion-button:hover {
+.accordion-catalog .accordion-button:hover {
     background-color: var(--color-catalog-1) !important;
 }
 
-.accordion-button:after {
+.accordion-catalog .accordion-button:after {
     background-image: url(svg/arrow-down.svg) !important;
 }
 
-.accordion-item {
+/* ----------------------------------------------------- */
+
+.accordion-catalog .accordion-item {
     border: none !important;
     border-bottom: 1px solid var(--color-catalog-1) !important;
 }
 
-.accordion-body {
+.accordion-catalog .accordion-body {
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
@@ -42,39 +44,33 @@
 
 /* ----------------------------------------------------- */
 
-.accordion-border-top {
-    border-top: 1px solid var(--color-catalog-1) !important;
-}
-
-.accordion-border-bottom {
-    border-bottom: 1px solid var(--color-catalog-1) !important;
-}
-
-/* ----------------------------------------------------- */
-
-.accordion-background {
+.accordion-catalog .accordion-background {
     background-color: var(--color-catalog) !important;
 }
 
-.accordion-background:hover {
+.accordion-catalog .accordion-background:hover {
     background-color: var(--color-catalog-1) !important;
 }
 
-.accordion-background-selected {
+.accordion-catalog .accordion-background-selected {
     background-color: var(--color-catalog-1) !important;
 }
 
-.accordion-background-selected:hover {
+.accordion-catalog .accordion-background-selected:hover {
     background-color: var(--color-catalog-1) !important;
 }
 
 /* ----------------------------------------------------- */
 
-.accordion-image-after-none:after {
+.accordion-catalog .accordion-single .accordion-button:after {
     background-image: none !important;
 }
 
 /* ----------------------------------------------------- */
+
+.bg-catalog {
+    background-color: var(--color-catalog) !important;
+}
 
 .hover-primary:hover {
     color: var(--color-primary) !important;
