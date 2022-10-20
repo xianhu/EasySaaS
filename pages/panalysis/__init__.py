@@ -86,7 +86,7 @@ def layout(pathname, search, **kwargs):
         n_clicks2=Input(f"id-{TAG}-tb-custom", "n_clicks"),
         n_clicks3=Input(f"id-{TAG}-pt-basic", "n_clicks"),
     ),
-    togger_dict=dict(
+    toggler_dict=dict(
         n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
         is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
@@ -97,7 +97,7 @@ def layout(pathname, search, **kwargs):
         dclient=State(f"id-{TAG}-dclient", "data"),
     ),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_list, togger_dict, data_dict):
+def _init_page(n_clicks_list, toggler_dict, data_dict):
     # define default output
     output_class = dict(fileud=dash.no_update, tbdash=dash.no_update, tbcustom=dash.no_update, ptbasic=dash.no_update)
     output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
@@ -114,8 +114,8 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
 
     # define is_open
     curr_id = dash.ctx.triggered_id
-    if curr_id == f"id-{TAG}-toggler" and togger_dict["n_clicks"]:
-        output_other.update(dict(is_open=(not togger_dict["is_open"])))
+    if curr_id == f"id-{TAG}-toggler" and toggler_dict["n_clicks"]:
+        output_other.update(dict(is_open=(not toggler_dict["is_open"])))
         return [output_class, output_other, output_active]
 
     # define curr_id
