@@ -48,7 +48,6 @@ def layout(pathname, search, **kwargs):
         # define components
         cnavbar.layout(NAV_LINKS, pathname, fluid=True, class_name=None),
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
-        # cfooter.layout(fluid=False, class_name=None),
 
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
@@ -114,16 +113,16 @@ def _init_page(n_clicks_list, data_dict):
     class_curr_multi = "text-white text-decoration-none px-5 py-3 accordion-background-selected"
     if curr_id == f"id-{TAG}-fileud":
         output_class = dict(fileud=class_curr_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
-        output_other.update(dict(children=ptemplate.layout(pathname, search), output_active=None))
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=None))
     elif curr_id == f"id-{TAG}-tb-dash":
         output_class = dict(fileud=class_none_single, tbdash=class_curr_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
-        output_other.update(dict(children=ptemplate.layout(pathname, search), output_active=f"id-{TAG}-ad-tables"))
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=f"id-{TAG}-ad-tables"))
     elif curr_id == f"id-{TAG}-tb-custom":
         output_class = dict(fileud=class_none_single, tbdash=class_none_multi, tbcustom=class_curr_multi, ptbasic=class_none_multi)
-        output_other.update(dict(children=ptemplate.layout(pathname, search), output_active=f"id-{TAG}-ad-tables"))
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=f"id-{TAG}-ad-tables"))
     elif curr_id == f"id-{TAG}-pt-basic":
         output_class = dict(fileud=class_none_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_curr_multi)
-        output_other.update(dict(children=ptemplate.layout(pathname, search), output_active=f"id-{TAG}-ad-plotly"))
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=f"id-{TAG}-ad-plotly"))
     else:
         raise Exception(f"Invalid curr_id: {curr_id}")
 

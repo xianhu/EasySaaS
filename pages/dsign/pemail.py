@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email page
+email [register/forgetpwd] page
 """
 
 import hashlib

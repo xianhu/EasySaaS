@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-password page
+set password page
 """
 
 import hashlib

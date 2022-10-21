@@ -38,14 +38,14 @@ def layout(pathname, search, **kwargs):
 
     # define components
     content = dbc.Row(children=[
-        dbc.Col(children=catalog, width=12, md=2, class_name="my-0 my-md-4"),
-        dbc.Col(id=f"id-{TAG}-content", width=12, md=8, class_name="my-4 my-md-4"),
-    ], align="start", justify="center", class_name=None)
+        dbc.Col(children=catalog, width=12, md=2),
+        dbc.Col(id=f"id-{TAG}-content", width=12, md=8),
+    ], align="start", justify="center", class_name="my-4")
 
     # return result
     return html.Div(children=[
         # define components
-        cnavbar.layout(NAV_LINKS, pathname, fluid=False, class_name=None),
+        cnavbar.layout(NAV_LINKS, pathname, fluid=False),
         dbc.Container(children=content, fluid=False),
         cfooter.layout(fluid=False, class_name=None),
 
