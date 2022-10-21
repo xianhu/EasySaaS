@@ -108,7 +108,7 @@ def _button_click(n_clicks, email, pathname):
 
         # define href of verify
         query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
-        href_verify = f"{config_app_domain}{pathname}-pwd?{query_string}"
+        href_verify = f"{config_app_domain}{pathname}-setpwd?{query_string}"
 
         # send email
         if pathname == PATH_REGISTER:

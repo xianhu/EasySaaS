@@ -17,7 +17,7 @@ from pages import palert, pemail, plogin, psetpwd
 from pages import panalysis, pintros, puser
 from utility.paths import *
 
-# app layout
+# application layout
 app.title = config_app_name
 app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
@@ -65,12 +65,12 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, pemail.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == f"{PATH_REGISTER}-pwd" or pathname == f"{PATH_FORGETPWD}-pwd":
+    if pathname == f"{PATH_REGISTER}-setpwd" or pathname == f"{PATH_FORGETPWD}-setpwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, psetpwd.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTER}-pwd/result" or pathname == f"{PATH_FORGETPWD}-pwd/result":
+    if pathname == f"{PATH_REGISTER}-setpwd/result" or pathname == f"{PATH_FORGETPWD}-setpwd/result":
         return pathname, search, dserver, psetpwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
