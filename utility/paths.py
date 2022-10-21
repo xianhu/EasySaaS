@@ -6,13 +6,13 @@ page paths
 
 PATH_ROOT = "/"
 
+PATH_USER = "/user"
 PATH_LOGIN = "/login"
 PATH_LOGOUT = "/logout"
 
+PATH_SETPWD = "/setpwd"
 PATH_REGISTER = "/register"
-PATH_RESETPWD = "/resetpwd"
-
-PATH_USER = "/user"
+PATH_FORGETPWD = "/forgetpwd"
 
 PATH_INTROS = "/intros"
 PATH_ANALYSIS = "/analysis"

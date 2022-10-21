@@ -14,10 +14,10 @@ from werkzeug import security
 
 from app import UserLogin
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_REGISTER, PATH_RESETPWD, PATH_ROOT
+from utility.paths import PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
-from . import LABEL_EMAIL, LABEL_PWD, LINK_SIGN_UP, LINK_FORGET_PWD
-from . import SIGN_IN_HD, SIGN_IN_SUB, SIGN_IN_BUTTON
+from . import LABEL_EMAIL, LABEL_PWD, LINK_REGISTER, LINK_FORGETPWD
+from . import LOGIN_TEXT_HD, LOGIN_TEXT_SUB, LOGIN_TEXT_BUTTON
 from . import tsign
 
 TAG = "login"
@@ -42,13 +42,13 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(
         src_image="illustrations/login.svg",
-        text_hd=SIGN_IN_HD,
-        text_sub=SIGN_IN_SUB,
+        text_hd=LOGIN_TEXT_HD,
+        text_sub=LOGIN_TEXT_SUB,
         form_items=form_items,
-        text_button=SIGN_IN_BUTTON,
+        text_button=LOGIN_TEXT_BUTTON,
         other_list=[
-            html.A(LINK_SIGN_UP, href=PATH_REGISTER),
-            html.A(LINK_FORGET_PWD, href=PATH_RESETPWD),
+            html.A(LINK_REGISTER, href=PATH_REGISTER),
+            html.A(LINK_FORGETPWD, href=PATH_FORGETPWD),
         ],
         data=kwargs.get("nextpath", PATH_ROOT),
     )

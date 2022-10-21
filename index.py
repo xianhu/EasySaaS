@@ -55,21 +55,21 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_REGISTER or pathname == PATH_RESETPWD:
+    if pathname == PATH_REGISTER or pathname == PATH_FORGETPWD:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, pemail.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTER}/result" or pathname == f"{PATH_RESETPWD}/result":
+    if pathname == f"{PATH_REGISTER}/result" or pathname == f"{PATH_FORGETPWD}/result":
         return pathname, search, dserver, pemail.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == f"{PATH_REGISTER}-pwd" or pathname == f"{PATH_RESETPWD}-pwd":
+    if pathname == f"{PATH_REGISTER}-pwd" or pathname == f"{PATH_FORGETPWD}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, ppwd.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTER}-pwd/result" or pathname == f"{PATH_RESETPWD}-pwd/result":
+    if pathname == f"{PATH_REGISTER}-pwd/result" or pathname == f"{PATH_FORGETPWD}-pwd/result":
         return pathname, search, dserver, ppwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================

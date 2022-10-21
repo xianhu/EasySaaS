@@ -37,6 +37,7 @@ app = dash.Dash(
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
+    assets_ignore="favicon1.*",
     external_scripts=[],
     external_stylesheets=[
         dbc.icons.BOOTSTRAP,
