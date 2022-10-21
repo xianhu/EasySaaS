@@ -21,6 +21,7 @@ from utility.paths import *
 app.title = config_app_name
 app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
+    # define components
     dcc.Location(id="id-location", refresh=False),
     dcc.Store(id="id-store-client", storage_type="session"),
     dcc.Store(id="id-store-server", storage_type="session"),
@@ -73,6 +74,15 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, ppwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
+    if pathname == PATH_USER:
+        if not flask_login.current_user.is_authenticated:
+            pathname = PATH_LOGIN
+            dserver = dict(title=pathname.strip("/").upper())
+            kwargs.update(dict(nextpath=PATH_USER))
+            return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, puser.layout(pathname, search, **kwargs)
+
+    # =============================================================================================
     if pathname == PATH_INTROS or pathname == PATH_ROOT:
         pathname = PATH_INTROS
         dserver = dict(title=pathname.strip("/").upper())
@@ -86,15 +96,6 @@ def _init_page(pathname, search, vhash, dclient):
             kwargs.update(dict(nextpath=PATH_ANALYSIS))
             return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
         return pathname, search, dserver, panalysis.layout(pathname, search, **kwargs)
-
-    # =============================================================================================
-    if pathname == PATH_USER:
-        if not flask_login.current_user.is_authenticated:
-            pathname = PATH_LOGIN
-            dserver = dict(title=pathname.strip("/").upper())
-            kwargs.update(dict(nextpath=PATH_USER))
-            return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
-        return pathname, search, dserver, puser.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     return pathname, search, dserver, palert.layout_404(pathname, search, return_href=PATH_ROOT)
