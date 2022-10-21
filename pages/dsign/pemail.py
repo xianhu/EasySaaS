@@ -18,7 +18,7 @@ from dash import Input, Output, State, html
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_ROOT, PATH_LOGIN, PATH_REGISTER, PATH_FORGETPWD
+from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
 from . import FORGETPWD_TEXT_HD, FORGETPWD_TEXT_SUB, FORGETPWD_TEXT_BUTTON
 from . import LABEL_EMAIL, LINK_LOGIN, LINK_REGISTER, LINK_FORGETPWD
@@ -52,7 +52,7 @@ def layout(pathname, search, **kwargs):
         ],
         data=pathname,
     ) if pathname == PATH_REGISTER else dict(
-        src_image="illustrations/resetpwd.svg",
+        src_image="illustrations/forgetpwd.svg",
         text_hd=FORGETPWD_TEXT_HD,
         text_sub=FORGETPWD_TEXT_SUB,
         form_items=form_items,

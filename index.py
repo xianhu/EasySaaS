@@ -13,7 +13,7 @@ from dash import Input, Output, State, MATCH, dcc, html
 
 from app import app, server
 from config import config_app_name
-from pages import palert, pemail, plogin, ppwd
+from pages import palert, pemail, plogin, psetpwd
 from pages import panalysis, pintros, puser
 from utility.paths import *
 
@@ -68,10 +68,10 @@ def _init_page(pathname, search, vhash, dclient):
     if pathname == f"{PATH_REGISTER}-pwd" or pathname == f"{PATH_FORGETPWD}-pwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, dserver, ppwd.layout(pathname, search, **kwargs)
+        return pathname, search, dserver, psetpwd.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_REGISTER}-pwd/result" or pathname == f"{PATH_FORGETPWD}-pwd/result":
-        return pathname, search, dserver, ppwd.layout_result(pathname, search, **kwargs)
+        return pathname, search, dserver, psetpwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_USER:
