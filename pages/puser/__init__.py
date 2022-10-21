@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from components import cfooter, cnavbar, csmallnav, ccatalog
+from components import cfooter, cnavbar, ccatalog
 from utility.paths import PATH_LOGOUT, NAV_LINKS
 from . import pinfosec
 from .. import ptemplate
@@ -46,12 +46,7 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         # define components
         cnavbar.layout(NAV_LINKS, pathname, fluid=False, class_name=None),
-
-        # define components
-        csmallnav.layout(f"id-{TAG}-toggler", "User", fluid=False),
         dbc.Container(children=content, fluid=False),
-
-        # define components
         cfooter.layout(fluid=False, class_name=None),
 
         # define components
@@ -72,7 +67,6 @@ def layout(pathname, search, **kwargs):
         planpay=Output(f"id-{TAG}-planpay", "className"),
     ),
     dict(
-        is_open=Output(f"id-{TAG}-collapse", "is_open"),
         children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
     ),
@@ -82,10 +76,6 @@ def layout(pathname, search, **kwargs):
         n_clicks1=Input(f"id-{TAG}-infosec", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-planpay", "n_clicks"),
     ),
-    togger_dict=dict(
-        n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
-        is_open=State(f"id-{TAG}-collapse", "is_open"),
-    ),
     data_dict=dict(
         pathname=State(f"id-{TAG}-pathname", "data"),
         search=State(f"id-{TAG}-search", "data"),
@@ -93,10 +83,10 @@ def layout(pathname, search, **kwargs):
         dclient=State(f"id-{TAG}-dclient", "data"),
     ),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_list, togger_dict, data_dict):
+def _init_page(n_clicks_list, data_dict):
     # define default output
     output_class = dict(notify=dash.no_update, infosec=dash.no_update, planpay=dash.no_update)
-    output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
+    output_other = dict(children=dash.no_update, href=dash.no_update)
 
     # check user login
     if not flask_login.current_user.is_authenticated:
@@ -107,13 +97,8 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     pathname, search = data_dict.get("pathname"), data_dict.get("search")
     vhash, dclient = data_dict.get("vhash"), data_dict.get("dclient")
 
-    # define is_open
-    curr_id = dash.ctx.triggered_id
-    if curr_id == f"id-{TAG}-toggler" and togger_dict["n_clicks"]:
-        output_other.update(dict(is_open=(not togger_dict["is_open"])))
-        return [output_class, output_other]
-
     # define curr_id
+    curr_id = dash.ctx.triggered_id
     if (not curr_id) and vhash:
         curr_id = f"id-{TAG}-{vhash.strip('#').split('#')[0]}"
     curr_id = curr_id or f"id-{TAG}-infosec"
@@ -121,16 +106,15 @@ def _init_page(n_clicks_list, togger_dict, data_dict):
     # define content
     class_none = "text-decoration-none py-2 text-black hover-success"
     class_curr = "text-decoration-none py-2 text-success hover-success"
-
     if curr_id == f"id-{TAG}-notify":
         output_class = dict(notify=class_curr, infosec=class_none, planpay=class_none)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
+        output_other.update(dict(children=ptemplate.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-infosec":
         output_class = dict(notify=class_none, infosec=class_curr, planpay=class_none)
-        output_other.update(dict(is_open=False, children=pinfosec.layout(pathname, search)))
+        output_other.update(dict(children=pinfosec.layout(pathname, search)))
     elif curr_id == f"id-{TAG}-planpay":
         output_class = dict(notify=class_none, infosec=class_none, planpay=class_curr)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
+        output_other.update(dict(children=ptemplate.layout(pathname, search)))
     else:
         raise Exception(f"Invalid curr_id: {curr_id}")
 
