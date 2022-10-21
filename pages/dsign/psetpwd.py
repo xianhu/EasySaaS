@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-password page
+set password page
 """
 
 import hashlib
@@ -11,16 +11,16 @@ import urllib.parse
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html
+from dash import Input, Output, State
 from werkzeug import security
 
 from app import app_db, app_redis
 from model import User
 from utility.consts import RE_PWD
-from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_ROOT
+from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
-from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CONFIRM, LINK_SIGN_IN, LINK_SIGN_UP
-from . import SET_PWD_HD, SET_PWD_SUB, SET_PWD_BUTTON
+from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CONFIRM
+from . import SETPWD_TEXT_HD, SETPWD_TEXT_SUB, SETPWD_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
@@ -63,15 +63,12 @@ def layout(pathname, search, **kwargs):
 
     # define args
     kwargs_temp = dict(
-        src_image="illustrations/password.svg",
-        text_hd=SET_PWD_HD,
-        text_sub=SET_PWD_SUB,
+        src_image="illustrations/setpwd.svg",
+        text_hd=SETPWD_TEXT_HD,
+        text_sub=SETPWD_TEXT_SUB,
         form_items=form_items,
-        text_button=SET_PWD_BUTTON,
-        other_list=[
-            html.A(LINK_SIGN_IN, href=PATH_LOGIN),
-            html.A(LINK_SIGN_UP, href=PATH_REGISTER),
-        ],
+        text_button=SETPWD_TEXT_BUTTON,
+        other_list=[],
         data=pathname,
     )
 

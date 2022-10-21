@@ -26,9 +26,7 @@ config_redis_uri = os.environ.get(f"{ENV_PREFIX}_REDIS_URI")
 config_database_uri = os.environ.get(f"{ENV_PREFIX}_DATABASE_URI")
 
 if __name__ == "__main__":
-    import pprint
-
     for key, value in list(locals().items()):
         if key.startswith("config_"):
-            pprint.pprint(f"{key}={value}")
+            print(f"{key} = {value}")
             assert value, f"Please set {key} in environment variables."

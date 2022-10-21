@@ -38,10 +38,9 @@ app = dash.Dash(
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     external_scripts=[],
-    external_stylesheets=[
-        dbc.icons.BOOTSTRAP,
-        # dbc.themes.BOOTSTRAP,
-    ],
+    external_stylesheets=[dbc.icons.BOOTSTRAP, ],
+    assets_folder="assets",
+    assets_ignore="favicon1.*",
     meta_tags=[{
         "charset": "utf-8",
     }, {

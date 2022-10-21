@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from components import cnavbar, csmallnav, cadmulti, cadsingle
+from components import cnavbar, cadmulti, cadsingle
 from utility.paths import PATH_LOGOUT, NAV_LINKS
 from .. import ptemplate
 
@@ -47,13 +47,7 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         # define components
         cnavbar.layout(NAV_LINKS, pathname, fluid=True, class_name=None),
-
-        # define components
-        csmallnav.layout(f"id-{TAG}-toggler", "Analysis", fluid=True),
         dbc.Container(content, fluid=True, class_name="h-100-scroll"),
-
-        # define components
-        # cfooter.layout(fluid=False, class_name=None),
 
         # define components
         html.A(id={"type": "id-address", "index": TAG}),
@@ -74,21 +68,16 @@ def layout(pathname, search, **kwargs):
         ptbasic=Output(f"id-{TAG}-pt-basic", "className"),
     ),
     dict(
-        is_open=Output(f"id-{TAG}-collapse", "is_open"),
         children=Output(f"id-{TAG}-content", "children"),
         href=Output({"type": "id-address", "index": TAG}, "href"),
+        active_item=Output(f"id-{TAG}-admulti", "active_item"),
     ),
-    Output(f"id-{TAG}-admulti", "active_item"),
 ], inputs=dict(
     n_clicks_list=dict(
         n_clicks0=Input(f"id-{TAG}-fileud", "n_clicks"),
         n_clicks1=Input(f"id-{TAG}-tb-dash", "n_clicks"),
         n_clicks2=Input(f"id-{TAG}-tb-custom", "n_clicks"),
         n_clicks3=Input(f"id-{TAG}-pt-basic", "n_clicks"),
-    ),
-    toggler_dict=dict(
-        n_clicks=Input(f"id-{TAG}-toggler", "n_clicks"),
-        is_open=State(f"id-{TAG}-collapse", "is_open"),
     ),
     data_dict=dict(
         pathname=State(f"id-{TAG}-pathname", "data"),
@@ -97,28 +86,22 @@ def layout(pathname, search, **kwargs):
         dclient=State(f"id-{TAG}-dclient", "data"),
     ),
 ), prevent_initial_call=False)
-def _init_page(n_clicks_list, toggler_dict, data_dict):
+def _init_page(n_clicks_list, data_dict):
     # define default output
     output_class = dict(fileud=dash.no_update, tbdash=dash.no_update, tbcustom=dash.no_update, ptbasic=dash.no_update)
-    output_other = dict(is_open=dash.no_update, children=dash.no_update, href=dash.no_update)
-    output_active = dash.no_update
+    output_other = dict(children=dash.no_update, href=dash.no_update, active_item=dash.no_update)
 
     # check user login
     if not flask_login.current_user.is_authenticated:
         output_other.update(dict(href=PATH_LOGOUT))
-        return [output_class, output_other, output_active]
+        return [output_class, output_other]
 
     # define variables
     pathname, search = data_dict.get("pathname"), data_dict.get("search")
     vhash, dclient = data_dict.get("vhash"), data_dict.get("dclient")
 
-    # define is_open
-    curr_id = dash.ctx.triggered_id
-    if curr_id == f"id-{TAG}-toggler" and toggler_dict["n_clicks"]:
-        output_other.update(dict(is_open=(not toggler_dict["is_open"])))
-        return [output_class, output_other, output_active]
-
     # define curr_id
+    curr_id = dash.ctx.triggered_id
     if (not curr_id) and vhash:
         curr_id = f"id-{TAG}-{vhash.strip('#').split('#')[0]}"
     curr_id = curr_id or f"id-{TAG}-fileud"
@@ -130,22 +113,18 @@ def _init_page(n_clicks_list, toggler_dict, data_dict):
     class_curr_multi = "text-white text-decoration-none px-5 py-3 accordion-background-selected"
     if curr_id == f"id-{TAG}-fileud":
         output_class = dict(fileud=class_curr_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
-        output_active = None
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=None))
     elif curr_id == f"id-{TAG}-tb-dash":
         output_class = dict(fileud=class_none_single, tbdash=class_curr_multi, tbcustom=class_none_multi, ptbasic=class_none_multi)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
-        output_active = f"id-{TAG}-ad-tables"
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=f"id-{TAG}-ad-tables"))
     elif curr_id == f"id-{TAG}-tb-custom":
         output_class = dict(fileud=class_none_single, tbdash=class_none_multi, tbcustom=class_curr_multi, ptbasic=class_none_multi)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
-        output_active = f"id-{TAG}-ad-tables"
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=f"id-{TAG}-ad-tables"))
     elif curr_id == f"id-{TAG}-pt-basic":
         output_class = dict(fileud=class_none_single, tbdash=class_none_multi, tbcustom=class_none_multi, ptbasic=class_curr_multi)
-        output_other.update(dict(is_open=False, children=ptemplate.layout(pathname, search)))
-        output_active = f"id-{TAG}-ad-plotly"
+        output_other.update(dict(children=ptemplate.layout(pathname, search), active_item=f"id-{TAG}-ad-plotly"))
     else:
         raise Exception(f"Invalid curr_id: {curr_id}")
 
     # return result
-    return [output_class, output_other, output_active]
+    return [output_class, output_other]

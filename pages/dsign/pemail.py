@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email page
+email [register/forgetpwd] page
 """
 
 import hashlib
@@ -18,11 +18,11 @@ from dash import Input, Output, State, html
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_ROOT, PATH_LOGIN, PATH_REGISTER, PATH_RESETPWD
+from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
-from . import FORGET_PWD_HD, FORGET_PWD_SUB, FORGET_PWD_BUTTON
-from . import LABEL_EMAIL, LINK_SIGN_IN, LINK_SIGN_UP, LINK_FORGET_PWD
-from . import SIGN_UP_HD, SIGN_UP_SUB, SIGN_UP_BUTTON
+from . import FORGETPWD_TEXT_HD, FORGETPWD_TEXT_SUB, FORGETPWD_TEXT_BUTTON
+from . import LABEL_EMAIL, LINK_LOGIN, LINK_REGISTER, LINK_FORGETPWD
+from . import REGISTER_TEXT_HD, REGISTER_TEXT_SUB, REGISTER_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
@@ -42,24 +42,24 @@ def layout(pathname, search, **kwargs):
     # define args
     kwargs_temp = dict(
         src_image="illustrations/register.svg",
-        text_hd=SIGN_UP_HD,
-        text_sub=SIGN_UP_SUB,
+        text_hd=REGISTER_TEXT_HD,
+        text_sub=REGISTER_TEXT_SUB,
         form_items=form_items,
-        text_button=SIGN_UP_BUTTON,
+        text_button=REGISTER_TEXT_BUTTON,
         other_list=[
-            html.A(LINK_SIGN_IN, href=PATH_LOGIN),
-            html.A(LINK_FORGET_PWD, href=PATH_RESETPWD),
+            html.A(LINK_LOGIN, href=PATH_LOGIN),
+            html.A(LINK_FORGETPWD, href=PATH_FORGETPWD),
         ],
         data=pathname,
     ) if pathname == PATH_REGISTER else dict(
-        src_image="illustrations/resetpwd.svg",
-        text_hd=FORGET_PWD_HD,
-        text_sub=FORGET_PWD_SUB,
+        src_image="illustrations/forgetpwd.svg",
+        text_hd=FORGETPWD_TEXT_HD,
+        text_sub=FORGETPWD_TEXT_SUB,
         form_items=form_items,
-        text_button=FORGET_PWD_BUTTON,
+        text_button=FORGETPWD_TEXT_BUTTON,
         other_list=[
-            html.A(LINK_SIGN_IN, href=PATH_LOGIN),
-            html.A(LINK_SIGN_UP, href=PATH_REGISTER),
+            html.A(LINK_LOGIN, href=PATH_LOGIN),
+            html.A(LINK_REGISTER, href=PATH_REGISTER),
         ],
         data=pathname,
     )
@@ -99,7 +99,7 @@ def _button_click(n_clicks, email, pathname):
     user = User.query.get(_id)
     if pathname == PATH_REGISTER and user:
         return ERROR_EMAIL_EXIST, dash.no_update
-    if pathname == PATH_RESETPWD and (not user):
+    if pathname == PATH_FORGETPWD and (not user):
         return ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # send email and cache
@@ -108,7 +108,7 @@ def _button_click(n_clicks, email, pathname):
 
         # define href of verify
         query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
-        href_verify = f"{config_app_domain}{pathname}-pwd?{query_string}"
+        href_verify = f"{config_app_domain}{pathname}-setpwd?{query_string}"
 
         # send email
         if pathname == PATH_REGISTER:

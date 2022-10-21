@@ -17,6 +17,10 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
     """
     layout of component
     """
+    # message list
+    message_list = ["Message 1", "Message 2", "Message 3"]
+    message_list = [f"- {message}" for message in message_list]
+
     # define components
     nav_children = []
     for title, _id, href in nav_links:
@@ -34,14 +38,10 @@ def layout(nav_links, curr_path, fluid=None, class_name=None):
         dbc.Popover(children=[
             dbc.PopoverHeader("You have 5 messages to read!"),
             dbc.PopoverBody(children=[
-                html.Ul(children=[
-                    html.Li("- Message 1"),
-                    html.Li("- Message 2"),
-                    html.Li("- Message 3"),
-                ], className="list-unstyled"),
-                html.A("Read all messages", href=f"{PATH_USER}#notify", ),
-            ]),
-        ], target="id-notify", trigger="click", placement="bottom", hide_arrow=True),
+                html.Ul([html.Li(message) for message in message_list], className="list-unstyled"),
+                html.A("Read all messages", href=f"{PATH_USER}#notify"),
+            ], class_name=None),
+        ], target="id-notify", trigger="focus", placement="bottom", hide_arrow=True),
         html.A(html.I(className="bi bi-person-circle fs-4"), href=PATH_USER, className="ms-3"),
     ], class_name="d-flex align-items-center justify-content-center py-1 py-md-0"), navbar=True)
 

@@ -53,5 +53,5 @@ def layout_expired(pathname, search, return_href=PATH_ROOT):
     layout of page
     """
     text_hd = "Link expired"
-    text_sub = "The link has already expired, click button to safe page."
+    text_sub = "The link has expired, click button to safe page."
     return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)

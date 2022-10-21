@@ -54,6 +54,7 @@ def layout(class_name=None):
             dbc.ModalHeader(dbc.ModalTitle("Update Success"), close_button=False),
             dbc.ModalBody("The basic information was updated successfully!"),
         ], id=f"id-{TAG}-modal", backdrop=True, is_open=False),
+        # define components
         html.A(id={"type": "id-address", "index": TAG}),
     ], class_name=class_name)
 

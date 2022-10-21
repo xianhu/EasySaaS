@@ -10,7 +10,7 @@ PATH_LOGIN = "/login"
 PATH_LOGOUT = "/logout"
 
 PATH_REGISTER = "/register"
-PATH_RESETPWD = "/resetpwd"
+PATH_FORGETPWD = "/forgetpwd"
 
 PATH_USER = "/user"
 
