@@ -18,7 +18,7 @@ from dash import Input, Output, State, html
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
+from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD, PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
 from . import FORGETPWD_TEXT_HD, FORGETPWD_TEXT_SUB, FORGETPWD_TEXT_BUTTON
 from . import LABEL_EMAIL, LINK_LOGIN, LINK_REGISTER, LINK_FORGETPWD
@@ -48,10 +48,10 @@ def layout(pathname, search, **kwargs):
         text_button=REGISTER_TEXT_BUTTON,
         other_list=[
             html.A(LINK_LOGIN, href=PATH_LOGIN),
-            html.A(LINK_FORGETPWD, href=PATH_FORGETPWD),
+            html.A(LINK_FORGETPWD, href=PATH_FORGOTPWD),
         ],
         data=pathname,
-    ) if pathname == PATH_REGISTER else dict(
+    ) if pathname == PATH_SIGNUP else dict(
         src_image="illustrations/forgetpwd.svg",
         text_hd=FORGETPWD_TEXT_HD,
         text_sub=FORGETPWD_TEXT_SUB,
@@ -59,7 +59,7 @@ def layout(pathname, search, **kwargs):
         text_button=FORGETPWD_TEXT_BUTTON,
         other_list=[
             html.A(LINK_LOGIN, href=PATH_LOGIN),
-            html.A(LINK_REGISTER, href=PATH_REGISTER),
+            html.A(LINK_REGISTER, href=PATH_SIGNUP),
         ],
         data=pathname,
     )
@@ -97,9 +97,9 @@ def _button_click(n_clicks, email, pathname):
 
     # check user
     user = User.query.get(_id)
-    if pathname == PATH_REGISTER and user:
+    if pathname == PATH_SIGNUP and user:
         return ERROR_EMAIL_EXIST, dash.no_update
-    if pathname == PATH_FORGETPWD and (not user):
+    if pathname == PATH_FORGOTPWD and (not user):
         return ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # send email and cache
@@ -111,7 +111,7 @@ def _button_click(n_clicks, email, pathname):
         href_verify = f"{config_app_domain}{pathname}-setpwd?{query_string}"
 
         # send email
-        if pathname == PATH_REGISTER:
+        if pathname == PATH_SIGNUP:
             subject = f"Registration of {config_app_name}"
         else:
             subject = f"Resetting password of {config_app_name}"

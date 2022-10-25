@@ -14,7 +14,7 @@ from werkzeug import security
 
 from app import UserLogin
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
+from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD, PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
 from . import LABEL_EMAIL, LABEL_PWD, LINK_REGISTER, LINK_FORGETPWD
 from . import LOGIN_TEXT_HD, LOGIN_TEXT_SUB, LOGIN_TEXT_BUTTON
@@ -47,8 +47,8 @@ def layout(pathname, search, **kwargs):
         form_items=form_items,
         text_button=LOGIN_TEXT_BUTTON,
         other_list=[
-            html.A(LINK_REGISTER, href=PATH_REGISTER),
-            html.A(LINK_FORGETPWD, href=PATH_FORGETPWD),
+            html.A(LINK_REGISTER, href=PATH_SIGNUP),
+            html.A(LINK_FORGETPWD, href=PATH_FORGOTPWD),
         ],
         data=kwargs.get("nextpath", PATH_ROOT),
     )
