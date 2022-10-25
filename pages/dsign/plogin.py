@@ -59,11 +59,16 @@ def layout(pathname, search, **kwargs):
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
-    State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd", "value"),
+    Input(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-pwd", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd, nextpath):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    if trigger == f"id-{TAG}-email" or trigger == f"id-{TAG}-pwd":
+        return None, dash.no_update
+
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):

@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email [signup/forgotpwd] page
+email[signup/forgotpwd] page
 """
 
 import hashlib
@@ -18,7 +18,7 @@ from dash import Input, Output, State
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD, PATH_ROOT
+from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
 from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
 from . import LABEL_EMAIL, A_LOGIN, A_SIGNUP, A_FORGOTPWD
@@ -47,7 +47,7 @@ def layout(pathname, search, **kwargs):
         form_items=form_items,
         text_button=SIGNUP_TEXT_BUTTON,
         other_list=[A_LOGIN, A_FORGOTPWD],
-        data=pathname,
+        data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         src_image="illustrations/forgotpwd.svg",
         text_hd=FORGOTPWD_TEXT_HD,
@@ -55,7 +55,7 @@ def layout(pathname, search, **kwargs):
         form_items=form_items,
         text_button=FORGOTPWD_TEXT_BUTTON,
         other_list=[A_LOGIN, A_SIGNUP],
-        data=pathname,
+        data=PATH_FORGOTPWD,
     )
 
     # return result
@@ -66,11 +66,12 @@ def layout_result(pathname, search, **kwargs):
     """
     layout of page
     """
+    email = flask.session.get("email")
     return palert.layout(pathname, search, **dict(
         text_hd="Sending success",
-        text_sub=f"An email has sent to {flask.session.get('email')}.",
-        text_button="Back to home",
-        return_href=PATH_ROOT,
+        text_sub=f"An email has sent to {email}.",
+        text_button="Now, go to mailbox!",
+        return_href=None,
     ))
 
 
@@ -79,10 +80,15 @@ def layout_result(pathname, search, **kwargs):
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
-    State(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pathname):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    if trigger == f"id-{TAG}-email":
+        return None, dash.no_update
+
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):

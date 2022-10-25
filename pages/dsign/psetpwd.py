@@ -24,7 +24,7 @@ from . import SETPWD_TEXT_HD, SETPWD_TEXT_SUB, SETPWD_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
-TAG = "pwd"
+TAG = "set-pwd"
 
 
 def layout(pathname, search, **kwargs):
@@ -93,12 +93,17 @@ def layout_result(pathname, search, **kwargs):
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
-    State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd1", "value"),
-    State(f"id-{TAG}-pwd2", "value"),
+    Input(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-pwd1", "value"),
+    Input(f"id-{TAG}-pwd2", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    if trigger in (f"id-{TAG}-email", f"id-{TAG}-pwd1", f"id-{TAG}-pwd2"):
+        return None, dash.no_update
+
     # check password
     if (not pwd1) or (len(pwd1) < 6):
         return ERROR_PWD_SHORT, dash.no_update
