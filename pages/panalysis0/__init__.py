@@ -23,21 +23,27 @@ def layout(pathname, search, **kwargs):
 
     # define components
     class_link = "fw-bold text-white text-center mx-2"
+    navlink_list = [
+        dbc.NavLink("Intros", id=f"id-{TAG}-intros", href="#", class_name=class_link),
+        dbc.NavLink("Products", id=f"id-{TAG}-products", href="#", class_name=class_link),
+        dbc.NavLink("Prices", id=f"id-{TAG}-prices", href="#", class_name=class_link),
+        dbc.NavLink("Contacts", id=f"id-{TAG}-contacts", href="#", class_name=class_link),
+    ]
+
+    # define components
+    navitem_bottom = dbc.NavItem(children=[
+        dbc.Badge(5, color="danger", href="#", class_name="text-decoration-none"),
+        dbc.DropdownMenu(children=[
+            dbc.DropdownMenuItem("Basic Profile", href="#"),
+            dbc.DropdownMenuItem(divider=True),
+            dbc.DropdownMenuItem("Logout", href=PATH_LOGIN)
+        ], label=user.email.split("@")[0], class_name="ms-1"),
+    ], class_name="d-flex align-items-center")
+
     navbar = dbc.Navbar(dbc.Container(children=[
         cbrand.layout(),
-        dbc.Nav(children=[
-            dbc.NavLink("Intros", id=f"id-{TAG}-intros", href="#", class_name=class_link),
-            dbc.NavLink("Prices", id=f"id-{TAG}-prices", href="#", class_name=class_link),
-            dbc.NavLink("Contacts", id=f"id-{TAG}-contacts", href="#", class_name=class_link),
-        ], navbar=True, class_name="mx-auto"),
-        dbc.Nav(dbc.NavItem(children=[
-            dbc.Badge(5, color="danger", href="#"),
-            dbc.DropdownMenu(children=[
-                dbc.DropdownMenuItem("Basic Profile", href="#"),
-                dbc.DropdownMenuItem(divider=True),
-                dbc.DropdownMenuItem("Logout", href=PATH_LOGIN)
-            ], label=user.email.split("@")[0], class_name="ms-2"),
-        ], class_name="d-flex align-items-center"), navbar=True),
+        dbc.Nav(navlink_list, navbar=True, class_name="mx-auto"),
+        dbc.Nav(navitem_bottom, navbar=True, class_name=None),
     ], fluid=False), color="primary", class_name="py-1")
 
     # define components

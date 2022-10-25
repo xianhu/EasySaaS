@@ -15,7 +15,15 @@
     color: var(--color-primary) !important;
 }
 
+.hover-primary:focus {
+    color: var(--color-primary) !important;
+}
+
 .hover-success:hover {
+    color: var(--color-success) !important;
+}
+
+.hover-success:focus {
     color: var(--color-success) !important;
 }
 
@@ -24,14 +32,4 @@
 .h-100-scroll {
     height: 100% !important;
     overflow-y: auto !important;
-}
-
-.h-100-scroll-md {
-}
-
-@media (min-width: 768px) {
-    .h-100-scroll-md {
-        height: 100% !important;
-        overflow-y: auto !important;
-    }
 }
