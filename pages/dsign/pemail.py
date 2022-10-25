@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email [register/forgetpwd] page
+email [signup/forgotpwd] page
 """
 
 import hashlib
@@ -13,16 +13,16 @@ import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_mail
-from dash import Input, Output, State, html
+from dash import Input, Output, State
 
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD, PATH_ROOT
+from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD, PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
-from . import FORGETPWD_TEXT_HD, FORGETPWD_TEXT_SUB, FORGETPWD_TEXT_BUTTON
-from . import LABEL_EMAIL, LINK_LOGIN, LINK_REGISTER, LINK_FORGETPWD
-from . import REGISTER_TEXT_HD, REGISTER_TEXT_SUB, REGISTER_TEXT_BUTTON
+from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
+from . import LABEL_EMAIL, A_LOGIN, A_SIGNUP, A_FORGOTPWD
+from . import SIGNUP_TEXT_HD, SIGNUP_TEXT_SUB, SIGNUP_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
@@ -41,26 +41,20 @@ def layout(pathname, search, **kwargs):
 
     # define args
     kwargs_temp = dict(
-        src_image="illustrations/register.svg",
-        text_hd=REGISTER_TEXT_HD,
-        text_sub=REGISTER_TEXT_SUB,
+        src_image="illustrations/signup.svg",
+        text_hd=SIGNUP_TEXT_HD,
+        text_sub=SIGNUP_TEXT_SUB,
         form_items=form_items,
-        text_button=REGISTER_TEXT_BUTTON,
-        other_list=[
-            html.A(LINK_LOGIN, href=PATH_LOGIN),
-            html.A(LINK_FORGETPWD, href=PATH_FORGOTPWD),
-        ],
+        text_button=SIGNUP_TEXT_BUTTON,
+        other_list=[A_LOGIN, A_FORGOTPWD],
         data=pathname,
     ) if pathname == PATH_SIGNUP else dict(
-        src_image="illustrations/forgetpwd.svg",
-        text_hd=FORGETPWD_TEXT_HD,
-        text_sub=FORGETPWD_TEXT_SUB,
+        src_image="illustrations/forgotpwd.svg",
+        text_hd=FORGOTPWD_TEXT_HD,
+        text_sub=FORGOTPWD_TEXT_SUB,
         form_items=form_items,
-        text_button=FORGETPWD_TEXT_BUTTON,
-        other_list=[
-            html.A(LINK_LOGIN, href=PATH_LOGIN),
-            html.A(LINK_REGISTER, href=PATH_SIGNUP),
-        ],
+        text_button=FORGOTPWD_TEXT_BUTTON,
+        other_list=[A_LOGIN, A_SIGNUP],
         data=pathname,
     )
 
