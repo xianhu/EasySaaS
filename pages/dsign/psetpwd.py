@@ -19,12 +19,12 @@ from model import User
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
-from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CONFIRM
+from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CFM
 from . import SETPWD_TEXT_HD, SETPWD_TEXT_SUB, SETPWD_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
-TAG = "pwd"
+TAG = "set-pwd"
 
 
 def layout(pathname, search, **kwargs):
@@ -57,7 +57,7 @@ def layout(pathname, search, **kwargs):
         ], class_name="mt-4"),
         dbc.FormFloating(children=[
             dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
-            dbc.Label(f"{LABEL_PWD_CONFIRM}:", html_for=f"id-{TAG}-pwd2"),
+            dbc.Label(f"{LABEL_PWD_CFM}:", html_for=f"id-{TAG}-pwd2"),
         ], class_name="mt-4"),
     ], class_name=None)
 
@@ -93,12 +93,17 @@ def layout_result(pathname, search, **kwargs):
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
-    State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd1", "value"),
-    State(f"id-{TAG}-pwd2", "value"),
+    Input(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-pwd1", "value"),
+    Input(f"id-{TAG}-pwd2", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    if trigger in (f"id-{TAG}-email", f"id-{TAG}-pwd1", f"id-{TAG}-pwd2"):
+        return None, dash.no_update
+
     # check password
     if (not pwd1) or (len(pwd1) < 6):
         return ERROR_PWD_SHORT, dash.no_update

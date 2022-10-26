@@ -14,7 +14,7 @@ from dash import Input, Output, State, MATCH, dcc, html
 from app import app, server
 from config import config_app_name
 from pages import palert, pemail, plogin, psetpwd
-from pages import panalysis, pintros, puser
+from pages import panalysis0, panalysis1
 from utility.paths import *
 
 # application layout
@@ -50,52 +50,42 @@ def _init_page(pathname, search, vhash, dclient):
     dserver = dict(title=pathname.strip("/").upper())
 
     # =============================================================================================
-    if pathname == PATH_LOGIN or pathname == PATH_LOGOUT:
+    if pathname == PATH_LOGIN:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_REGISTER or pathname == PATH_FORGETPWD:
+    if pathname == PATH_SIGNUP or pathname == PATH_FORGOTPWD:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, pemail.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTER}/result" or pathname == f"{PATH_FORGETPWD}/result":
+    if pathname == f"{PATH_SIGNUP}/result" or pathname == f"{PATH_FORGOTPWD}/result":
         return pathname, search, dserver, pemail.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == f"{PATH_REGISTER}-setpwd" or pathname == f"{PATH_FORGETPWD}-setpwd":
+    if pathname == f"{PATH_SIGNUP}-setpwd" or pathname == f"{PATH_FORGOTPWD}-setpwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, dserver, psetpwd.layout(pathname, search, **kwargs)
 
-    if pathname == f"{PATH_REGISTER}-setpwd/result" or pathname == f"{PATH_FORGETPWD}-setpwd/result":
+    if pathname == f"{PATH_SIGNUP}-setpwd/result" or pathname == f"{PATH_FORGOTPWD}-setpwd/result":
         return pathname, search, dserver, psetpwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_USER:
+    if pathname == PATH_ROOT or pathname == PATH_ANALYSIS0:
         if not flask_login.current_user.is_authenticated:
-            pathname = PATH_LOGIN
-            dserver = dict(title=pathname.strip("/").upper())
-            kwargs.update(dict(nextpath=PATH_USER))
-            return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
-        return pathname, search, dserver, puser.layout(pathname, search, **kwargs)
+            _id = {"type": "id-address", "index": pathname}
+            return pathname, search, dserver, html.A(id=_id, href=PATH_LOGIN)
+        return pathname, search, dserver, panalysis0.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_INTROS or pathname == PATH_ROOT:
-        pathname = PATH_INTROS
-        dserver = dict(title=pathname.strip("/").upper())
-        return pathname, search, dserver, pintros.layout(pathname, search, **kwargs)
-
-    # =============================================================================================
-    if pathname == PATH_ANALYSIS:
+    if pathname == PATH_ANALYSIS1:
         if not flask_login.current_user.is_authenticated:
-            pathname = PATH_LOGIN
-            dserver = dict(title=pathname.strip("/").upper())
-            kwargs.update(dict(nextpath=PATH_ANALYSIS))
-            return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
-        return pathname, search, dserver, panalysis.layout(pathname, search, **kwargs)
+            _id = {"type": "id-address", "index": pathname}
+            return pathname, search, dserver, html.A(id=_id, href=PATH_LOGIN)
+        return pathname, search, dserver, panalysis1.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     return pathname, search, dserver, palert.layout_404(pathname, search, return_href=PATH_ROOT)

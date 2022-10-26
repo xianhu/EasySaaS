@@ -9,14 +9,14 @@ import hashlib
 import dash
 import dash_bootstrap_components as dbc
 import flask_login
-from dash import Input, Output, State, html
+from dash import Input, Output, State
 from werkzeug import security
 
 from app import UserLogin
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
+from utility.paths import PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
-from . import LABEL_EMAIL, LABEL_PWD, LINK_REGISTER, LINK_FORGETPWD
+from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD
 from . import LOGIN_TEXT_HD, LOGIN_TEXT_SUB, LOGIN_TEXT_BUTTON
 from . import tsign
 
@@ -46,10 +46,7 @@ def layout(pathname, search, **kwargs):
         text_sub=LOGIN_TEXT_SUB,
         form_items=form_items,
         text_button=LOGIN_TEXT_BUTTON,
-        other_list=[
-            html.A(LINK_REGISTER, href=PATH_REGISTER),
-            html.A(LINK_FORGETPWD, href=PATH_FORGETPWD),
-        ],
+        other_list=[A_SIGNUP, A_FORGOTPWD],
         data=kwargs.get("nextpath", PATH_ROOT),
     )
 
@@ -62,11 +59,16 @@ def layout(pathname, search, **kwargs):
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
-    State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd", "value"),
+    Input(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-pwd", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd, nextpath):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    if trigger == f"id-{TAG}-email" or trigger == f"id-{TAG}-pwd":
+        return None, dash.no_update
+
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):

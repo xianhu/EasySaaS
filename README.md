@@ -61,3 +61,4 @@ docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \
 - Css File: https://github.com/tcbegley/dash-bootstrap-css
 - Bootstrap: https://getbootstrap.com/docs/5.1/utilities/api/
 - CheatSheet: https://dashcheatsheet.pythonanywhere.com/
+- Front4.0: https://htmlstream.com/front-v4.0/index.html

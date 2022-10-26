@@ -7,76 +7,23 @@
 :root {
     --color-primary: #2c3e50;
     --color-success: #18bc9c;
-    --color-catalog: #7b8a8b; /* bg-dark */
-    --color-catalog-1: #95a5a6; /* bg-secondary */
 }
 
 /* ----------------------------------------------------- */
-
-.accordion-catalog .accordion-button {
-    color: white !important;
-    box-shadow: none !important;
-    background-color: var(--color-catalog) !important;
-}
-
-.accordion-catalog .accordion-button:hover {
-    background-color: var(--color-catalog-1) !important;
-}
-
-.accordion-catalog .accordion-button:after {
-    background-image: url(svg/arrow-down.svg) !important;
-}
-
-/* ----------------------------------------------------- */
-
-.accordion-catalog .accordion-single .accordion-button:after {
-    background-image: none !important;
-}
-
-/* ----------------------------------------------------- */
-
-.accordion-catalog .accordion-item {
-    border: none !important;
-    border-bottom: 1px solid var(--color-catalog-1) !important;
-}
-
-.accordion-catalog .accordion-body {
-    padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    background-color: var(--color-catalog) !important;
-    border-top: 1px solid var(--color-catalog-1) !important;
-}
-
-/* ----------------------------------------------------- */
-
-.accordion-catalog .accordion-background {
-    background-color: var(--color-catalog) !important;
-}
-
-.accordion-catalog .accordion-background:hover {
-    background-color: var(--color-catalog-1) !important;
-}
-
-.accordion-catalog .accordion-background-selected {
-    background-color: var(--color-catalog-1) !important;
-}
-
-.accordion-catalog .accordion-background-selected:hover {
-    background-color: var(--color-catalog-1) !important;
-}
-
-/* ----------------------------------------------------- */
-
-.bg-catalog {
-    background-color: var(--color-catalog) !important;
-}
 
 .hover-primary:hover {
     color: var(--color-primary) !important;
 }
 
+.hover-primary:focus {
+    color: var(--color-primary) !important;
+}
+
 .hover-success:hover {
+    color: var(--color-success) !important;
+}
+
+.hover-success:focus {
     color: var(--color-success) !important;
 }
 
@@ -85,14 +32,4 @@
 .h-100-scroll {
     height: 100% !important;
     overflow-y: auto !important;
-}
-
-.h-100-scroll-md {
-}
-
-@media (min-width: 768px) {
-    .h-100-scroll-md {
-        height: 100% !important;
-        overflow-y: auto !important;
-    }
 }

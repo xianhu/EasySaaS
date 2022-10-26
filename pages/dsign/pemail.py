@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email [register/forgetpwd] page
+email[signup/forgotpwd] page
 """
 
 import hashlib
@@ -13,16 +13,16 @@ import dash
 import dash_bootstrap_components as dbc
 import flask
 import flask_mail
-from dash import Input, Output, State, html
+from dash import Input, Output, State
 
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL
-from utility.paths import PATH_LOGIN, PATH_REGISTER, PATH_FORGETPWD, PATH_ROOT
+from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
-from . import FORGETPWD_TEXT_HD, FORGETPWD_TEXT_SUB, FORGETPWD_TEXT_BUTTON
-from . import LABEL_EMAIL, LINK_LOGIN, LINK_REGISTER, LINK_FORGETPWD
-from . import REGISTER_TEXT_HD, REGISTER_TEXT_SUB, REGISTER_TEXT_BUTTON
+from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
+from . import LABEL_EMAIL, A_LOGIN, A_SIGNUP, A_FORGOTPWD
+from . import SIGNUP_TEXT_HD, SIGNUP_TEXT_SUB, SIGNUP_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
@@ -41,27 +41,21 @@ def layout(pathname, search, **kwargs):
 
     # define args
     kwargs_temp = dict(
-        src_image="illustrations/register.svg",
-        text_hd=REGISTER_TEXT_HD,
-        text_sub=REGISTER_TEXT_SUB,
+        src_image="illustrations/signup.svg",
+        text_hd=SIGNUP_TEXT_HD,
+        text_sub=SIGNUP_TEXT_SUB,
         form_items=form_items,
-        text_button=REGISTER_TEXT_BUTTON,
-        other_list=[
-            html.A(LINK_LOGIN, href=PATH_LOGIN),
-            html.A(LINK_FORGETPWD, href=PATH_FORGETPWD),
-        ],
-        data=pathname,
-    ) if pathname == PATH_REGISTER else dict(
-        src_image="illustrations/forgetpwd.svg",
-        text_hd=FORGETPWD_TEXT_HD,
-        text_sub=FORGETPWD_TEXT_SUB,
+        text_button=SIGNUP_TEXT_BUTTON,
+        other_list=[A_LOGIN, A_FORGOTPWD],
+        data=PATH_SIGNUP,
+    ) if pathname == PATH_SIGNUP else dict(
+        src_image="illustrations/forgotpwd.svg",
+        text_hd=FORGOTPWD_TEXT_HD,
+        text_sub=FORGOTPWD_TEXT_SUB,
         form_items=form_items,
-        text_button=FORGETPWD_TEXT_BUTTON,
-        other_list=[
-            html.A(LINK_LOGIN, href=PATH_LOGIN),
-            html.A(LINK_REGISTER, href=PATH_REGISTER),
-        ],
-        data=pathname,
+        text_button=FORGOTPWD_TEXT_BUTTON,
+        other_list=[A_LOGIN, A_SIGNUP],
+        data=PATH_FORGOTPWD,
     )
 
     # return result
@@ -72,11 +66,12 @@ def layout_result(pathname, search, **kwargs):
     """
     layout of page
     """
+    email = flask.session.get("email")
     return palert.layout(pathname, search, **dict(
         text_hd="Sending success",
-        text_sub=f"An email has sent to {flask.session.get('email')}.",
-        text_button="Back to home",
-        return_href=PATH_ROOT,
+        text_sub=f"An email has sent to {email}.",
+        text_button="Now, go to mailbox!",
+        return_href=None,
     ))
 
 
@@ -85,10 +80,15 @@ def layout_result(pathname, search, **kwargs):
     Output({"type": "id-address", "index": TAG}, "href"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
-    State(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pathname):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    if trigger == f"id-{TAG}-email":
+        return None, dash.no_update
+
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
@@ -97,9 +97,9 @@ def _button_click(n_clicks, email, pathname):
 
     # check user
     user = User.query.get(_id)
-    if pathname == PATH_REGISTER and user:
+    if pathname == PATH_SIGNUP and user:
         return ERROR_EMAIL_EXIST, dash.no_update
-    if pathname == PATH_FORGETPWD and (not user):
+    if pathname == PATH_FORGOTPWD and (not user):
         return ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # send email and cache
@@ -111,7 +111,7 @@ def _button_click(n_clicks, email, pathname):
         href_verify = f"{config_app_domain}{pathname}-setpwd?{query_string}"
 
         # send email
-        if pathname == PATH_REGISTER:
+        if pathname == PATH_SIGNUP:
             subject = f"Registration of {config_app_name}"
         else:
             subject = f"Resetting password of {config_app_name}"
