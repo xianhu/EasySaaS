@@ -67,7 +67,7 @@ def layout(pathname, search, **kwargs):
     ], width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll")
 
     # return result
-    return dbc.Row([col_left, col_right], class_name="mx-0 vh-100 overflow-auto")
+    return dbc.Row([col_left, col_right], class_name="bg-light vh-100 overflow-auto mx-0")
 
 
 @dash.callback(
