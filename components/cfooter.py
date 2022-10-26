@@ -21,7 +21,7 @@ def layout(fluid=None, class_name=None):
     address = html.A(config_app_name, href=PATH_ROOT)
 
     # return result
-    class_name = class_name or "bg-light mt-auto py-2"
+    class_name = class_name or "bg-light py-2"
     return html.Footer(dbc.Container(dbc.Row(children=[
         dbc.Col(["Powered by ©2022 ", address, ". All rights reserved."], width=12, md=6),
         dbc.Col(html.A(mservice, href=mhref, className="text-decoration-none"), width=12, md=6),

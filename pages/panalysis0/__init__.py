@@ -22,7 +22,7 @@ def layout(pathname, search, **kwargs):
     user = flask_login.current_user
 
     # define components
-    class_link = "fw-bold text-white text-center mx-2"
+    class_link = "fw-bold text-white text-center mx-2 hover-success"
     navlink_list = [
         dbc.NavLink("Intros", id=f"id-{TAG}-intros", href="#", class_name=class_link),
         dbc.NavLink("Products", id=f"id-{TAG}-products", href="#", class_name=class_link),
@@ -47,7 +47,7 @@ def layout(pathname, search, **kwargs):
     ], fluid=False), color="primary", class_name="py-1")
 
     # define components
-    content = dbc.Container("analysis page", fluid=False, class_name="my-2")
+    content = dbc.Container("analysis page", fluid=False, class_name="my-2 mb-auto")
     footer = cfooter.layout(fluid=False, class_name=None)
 
     # return result
