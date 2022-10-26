@@ -29,12 +29,12 @@ def layout(pathname, search, **kwargs):
         dbc.NavLink("Prices", id=f"id-{TAG}-prices", href="#", class_name=class_link),
         dbc.NavLink("Contacts", id=f"id-{TAG}-contacts", href="#", class_name=class_link),
 
-        dbc.NavItem("HOME", className="small text-white-50 mt-4 mb-1"),
+        dbc.NavItem("HOME", class_name="small text-white-50 mt-4 mb-1"),
         dbc.NavLink("Overview", id=f"id-{TAG}-*", href="#", class_name=class_link),
         dbc.NavLink("Updates", id=f"id-{TAG}-*", href="#", class_name=class_link),
         dbc.NavLink("Reports", id=f"id-{TAG}-*", href="#", class_name=class_link),
 
-        dbc.NavItem("DASHBOARD", className="small text-white-50 mt-4 mb-1"),
+        dbc.NavItem("DASHBOARD", class_name="small text-white-50 mt-4 mb-1"),
         dbc.NavLink("Overview", id=f"id-{TAG}-*", href="#", class_name=class_link),
         dbc.NavLink("Weekly", id=f"id-{TAG}-*", href="#", class_name=class_link),
         dbc.NavLink("Monthly", id=f"id-{TAG}-*", href="#", class_name=class_link),
@@ -44,24 +44,26 @@ def layout(pathname, search, **kwargs):
     # define components
     navitem_bottom = dbc.NavItem(children=[
         dbc.DropdownMenu(children=[
-            dbc.DropdownMenuItem("Basic Profile", href="#"),
+            dbc.DropdownMenuItem("Basic Profile", id=f"id-{TAG}-profile", href="#"),
             dbc.DropdownMenuItem(divider=True),
-            dbc.DropdownMenuItem("Logout", href=PATH_LOGIN)
+            dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
         ], label=user.email.split("@")[0], class_name="me-1"),
-        dbc.Badge(5, color="danger", href="#", class_name="text-decoration-none"),
-    ], class_name="d-flex align-items-center")
+        dbc.Badge(5, id=f"id-{TAG}-badge", color="danger", href="#", class_name="text-decoration-none"),
+    ], class_name="d-flex align-items-center justify-content-start")
+
+    # define components
+    col_left = dbc.Col(children=[
+        cbrand.layout(class_text=None, class_name=None),
+        html.Hr(className="text-white my-2"),
+        dbc.Nav(navlink_list, vertical=True, class_name="mb-auto"),
+        html.Hr(className="text-white my-2"),
+        dbc.Nav(navitem_bottom, vertical=True, class_name=None),
+    ], width=12, md=2, class_name="bg-primary px-4 py-2 h-100-scroll d-flex flex-column")
+
+    # define components
+    col_right = dbc.Col(children=[
+        dbc.Container("analysis page", id=f"id-{TAG}-content", fluid=True),
+    ], width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll")
 
     # return result
-    return dbc.Row(children=[
-        # define components
-        dbc.Col(children=[
-            cbrand.layout(class_name=None),
-            html.Hr(className="text-white my-2"),
-            dbc.Nav(navlink_list, vertical=True, class_name="mb-auto"),
-            html.Hr(className="text-white my-2"),
-            dbc.Nav(navitem_bottom, vertical=True, class_name=None),
-        ], width=12, md=2, class_name="d-flex flex-column bg-primary px-4 py-2 h-100-scroll"),
-
-        # define components
-        dbc.Col("analysis page", width=12, md=10, class_name="d-flex flex-row bg-light px-4 py-2 h-100-scroll"),
-    ], align="start", justify="center", class_name="mx-0 vh-100 overflow-auto")
+    return dbc.Row([col_left, col_right], class_name="mx-0 vh-100 overflow-auto")
