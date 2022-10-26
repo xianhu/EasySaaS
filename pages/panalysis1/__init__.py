@@ -4,9 +4,10 @@
 analysis page
 """
 
+import dash
 import dash_bootstrap_components as dbc
 import flask_login
-from dash import html
+from dash import html, Input, Output, ALL
 
 from components import cbrand
 from utility.paths import PATH_LOGIN
@@ -24,21 +25,21 @@ def layout(pathname, search, **kwargs):
     # define components
     class_link = "fs-6 text-white px-0 hover-success"
     navlink_list = [
-        dbc.NavLink("Intros", id=f"id-{TAG}-intros", href="#", class_name=class_link),
-        dbc.NavLink("Products", id=f"id-{TAG}-products", href="#", class_name=class_link),
-        dbc.NavLink("Prices", id=f"id-{TAG}-prices", href="#", class_name=class_link),
-        dbc.NavLink("Contacts", id=f"id-{TAG}-contacts", href="#", class_name=class_link),
+        dbc.NavLink("Intros", id={"type": f"id-{TAG}-catalog", "index": "intros"}, href="#", class_name=class_link),
+        dbc.NavLink("Products", id={"type": f"id-{TAG}-catalog", "index": "products"}, href="#", class_name=class_link),
+        dbc.NavLink("Prices", id={"type": f"id-{TAG}-catalog", "index": "prices"}, href="#", class_name=class_link),
+        dbc.NavLink("Contacts", id={"type": f"id-{TAG}-catalog", "index": "contacts"}, href="#", class_name=class_link),
 
         dbc.NavItem("HOME", class_name="small text-white-50 mt-4 mb-1"),
-        dbc.NavLink("Overview", id=f"id-{TAG}-*", href="#", class_name=class_link),
-        dbc.NavLink("Updates", id=f"id-{TAG}-*", href="#", class_name=class_link),
-        dbc.NavLink("Reports", id=f"id-{TAG}-*", href="#", class_name=class_link),
+        dbc.NavLink("Overview", id={"type": f"id-{TAG}-catalog", "index": "hm-overview"}, href="#", class_name=class_link),
+        dbc.NavLink("Updates", id={"type": f"id-{TAG}-catalog", "index": "hm-updates"}, href="#", class_name=class_link),
+        dbc.NavLink("Reports", id={"type": f"id-{TAG}-catalog", "index": "hm-reports"}, href="#", class_name=class_link),
 
         dbc.NavItem("DASHBOARD", class_name="small text-white-50 mt-4 mb-1"),
-        dbc.NavLink("Overview", id=f"id-{TAG}-*", href="#", class_name=class_link),
-        dbc.NavLink("Weekly", id=f"id-{TAG}-*", href="#", class_name=class_link),
-        dbc.NavLink("Monthly", id=f"id-{TAG}-*", href="#", class_name=class_link),
-        dbc.NavLink("Annually", id=f"id-{TAG}-*", href="#", class_name=class_link),
+        dbc.NavLink("Overview", id={"type": f"id-{TAG}-catalog", "index": "db-overview"}, href="#", class_name=class_link),
+        dbc.NavLink("Weekly", id={"type": f"id-{TAG}-catalog", "index": "db-weekly"}, href="#", class_name=class_link),
+        dbc.NavLink("Monthly", id={"type": f"id-{TAG}-catalog", "index": "db-monthly"}, href="#", class_name=class_link),
+        dbc.NavLink("Annually", id={"type": f"id-{TAG}-catalog", "index": "db-annually"}, href="#", class_name=class_link),
     ]
 
     # define components
@@ -67,3 +68,17 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return dbc.Row([col_left, col_right], class_name="mx-0 vh-100 overflow-auto")
+
+
+@dash.callback(
+    Output(f"id-{TAG}-content", "children"),
+    Input({"type": f"id-{TAG}-catalog", "index": ALL}, "n_clicks"),
+    prevent_initial_call=False,
+)
+def _update_content(n_clicks):
+    # check trigger
+    trigger = dash.ctx.triggered_id
+    trigger_index = trigger["index"] if trigger else "intros"
+
+    # return result
+    return trigger_index
