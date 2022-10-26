@@ -4,5 +4,4 @@
 components module
 """
 
-from . import cbrand
-from . import cfooter
+from . import cbrand, cfooter
