@@ -64,6 +64,9 @@ server.config.update(
     REDIS_URL=f"{config_redis_uri}/10",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_DATABASE_URI=config_database_uri,
+
+    REMEMBER_COOKIE_NAME="remember_token",
+    REMEMBER_COOKIE_DURATION=60 * 60 * 24 * 7,
 )
 
 # initial db

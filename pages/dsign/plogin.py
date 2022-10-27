@@ -85,7 +85,7 @@ def _button_click(n_clicks, email, pwd, nextpath):
         return ERROR_PWD_INCORRECT, dash.no_update
 
     # login user
-    flask_login.login_user(user)
+    flask_login.login_user(user, remember=True)
 
     # return result
     return None, nextpath
