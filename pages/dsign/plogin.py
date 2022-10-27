@@ -16,8 +16,8 @@ from werkzeug import security
 from app import UserLogin
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_ROOT
-from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT, ERROR_CPC_INCORRECT
-from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD
+from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
+from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD, ERROR_CPC_INCORRECT
 from . import LOGIN_TEXT_HD, LOGIN_TEXT_SUB, LOGIN_TEXT_BUTTON
 from . import tsign
 

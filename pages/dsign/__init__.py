@@ -36,6 +36,7 @@ SETPWD_TEXT_SUB = "Set the password of this email please."
 SETPWD_TEXT_BUTTON = "Set password"
 
 # define error message
+ERROR_CPC_INCORRECT = "Captcha is incorrect"
 ERROR_EMAIL_FORMAT = "Format of email is invalid"
 ERROR_EMAIL_EXIST = "This email has been registered"
 ERROR_EMAIL_NOTEXIST = "This Email does't exist"
@@ -44,8 +45,6 @@ ERROR_PWD_SHORT = "Password is too short"
 ERROR_PWD_FORMAT = "Password must contain numbers and letters"
 ERROR_PWD_INCORRECT = "Password is incorrect"
 ERROR_PWD_INCONSISTENT = "Passwords are inconsistent"
-
-ERROR_CPC_INCORRECT = "Captcha is incorrect"
 
 # define components
 A_LOGIN = html.A(LINK_LOGIN, href=PATH_LOGIN)
