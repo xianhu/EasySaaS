@@ -74,7 +74,7 @@ def _init_page(pathname, search, vhash, dclient):
         return pathname, search, dserver, psetpwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_ROOT or pathname == PATH_ANALYSIS0:
+    if pathname == PATH_ANALYSIS0 or pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
             _id = {"type": "id-address", "index": pathname}
             return pathname, search, dserver, html.A(id=_id, href=PATH_LOGIN)

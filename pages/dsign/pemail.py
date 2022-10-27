@@ -11,6 +11,7 @@ import uuid
 
 import dash
 import dash_bootstrap_components as dbc
+import feffery_utils_components as fuc
 import flask
 import flask_mail
 from dash import Input, Output, State
@@ -21,7 +22,7 @@ from utility.consts import RE_EMAIL
 from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
 from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
-from . import LABEL_EMAIL, A_LOGIN, A_SIGNUP, A_FORGOTPWD
+from . import LABEL_EMAIL, A_LOGIN, A_SIGNUP, A_FORGOTPWD, ERROR_CPC_INCORRECT
 from . import SIGNUP_TEXT_HD, SIGNUP_TEXT_SUB, SIGNUP_TEXT_BUTTON
 from . import tsign
 from .. import palert
@@ -34,10 +35,16 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    form_items = dbc.Form(dbc.FormFloating(children=[
-        dbc.Input(id=f"id-{TAG}-email", type="email"),
-        dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
-    ]), class_name=None)
+    form_items = dbc.Form(children=[
+        dbc.FormFloating(children=[
+            dbc.Input(id=f"id-{TAG}-email", type="email"),
+            dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
+        ], class_name=None),
+        dbc.Row(children=[
+            dbc.Col(dbc.Input(id=f"id-{TAG}-cpcinput", placeholder="captcha"), width=6),
+            dbc.Col(fuc.FefferyCaptcha(id=f"id-{TAG}-cpcimage", charNum=4), width=6),
+        ], align="center", class_name="mt-4"),
+    ], class_name=None)
 
     # define args
     kwargs_temp = dict(
@@ -81,13 +88,19 @@ def layout_result(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     Input(f"id-{TAG}-email", "value"),
+    Input(f"id-{TAG}-cpcinput", "value"),
+    State(f"id-{TAG}-cpcimage", "captcha"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pathname):
+def _button_click(n_clicks, email, cinput, vimage, pathname):
     # check trigger
     trigger = dash.ctx.triggered_id
-    if trigger == f"id-{TAG}-email":
+    if trigger == f"id-{TAG}-email" or trigger == f"id-{TAG}-cpcinput":
         return None, dash.no_update
+
+    # check captcha
+    if cinput != vimage:
+        return ERROR_CPC_INCORRECT, dash.no_update
 
     # check email
     email = (email or "").strip()

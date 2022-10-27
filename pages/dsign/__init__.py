@@ -36,6 +36,7 @@ SETPWD_TEXT_SUB = "Set the password of this email please."
 SETPWD_TEXT_BUTTON = "Set password"
 
 # define error message
+ERROR_CPC_INCORRECT = "Captcha is incorrect"
 ERROR_EMAIL_FORMAT = "Format of email is invalid"
 ERROR_EMAIL_EXIST = "This email has been registered"
 ERROR_EMAIL_NOTEXIST = "This Email does't exist"

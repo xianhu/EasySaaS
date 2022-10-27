@@ -12,6 +12,7 @@ import dash_bootstrap_components as dbc
 import flask_login
 import flask_mail
 import flask_redis
+from flask import request
 
 from config import *
 from model import User, app_db
@@ -64,6 +65,9 @@ server.config.update(
     REDIS_URL=f"{config_redis_uri}/10",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_DATABASE_URI=config_database_uri,
+
+    REMEMBER_COOKIE_NAME="remember_token",
+    REMEMBER_COOKIE_DURATION=60 * 60 * 24 * 7,
 )
 
 # initial db
@@ -88,3 +92,19 @@ class UserLogin(User, flask_login.UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     return UserLogin.query.get(user_id)
+
+
+# define before_request
+@server.before_request
+def before_request():
+    logging.debug(f"request.headers = {request.headers}")
+    logging.debug(f"request.remote_addr = {request.remote_addr}")
+    return None
+
+
+# define after_request
+@server.after_request
+def after_request(response):
+    logging.debug(f"response.headers = {response.headers}")
+    logging.debug(f"response.status = {response.status}")
+    return response

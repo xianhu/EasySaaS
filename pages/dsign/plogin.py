@@ -8,6 +8,7 @@ import hashlib
 
 import dash
 import dash_bootstrap_components as dbc
+import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State
 from werkzeug import security
@@ -16,7 +17,7 @@ from app import UserLogin
 from utility.consts import RE_EMAIL
 from utility.paths import PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
-from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD
+from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD, ERROR_CPC_INCORRECT
 from . import LOGIN_TEXT_HD, LOGIN_TEXT_SUB, LOGIN_TEXT_BUTTON
 from . import tsign
 
@@ -37,6 +38,10 @@ def layout(pathname, search, **kwargs):
             dbc.Input(id=f"id-{TAG}-pwd", type="password"),
             dbc.Label(f"{LABEL_PWD}:", html_for=f"id-{TAG}-pwd"),
         ], class_name="mt-4"),
+        dbc.Row(children=[
+            dbc.Col(dbc.Input(id=f"id-{TAG}-cpcinput", placeholder="captcha"), width=6),
+            dbc.Col(fuc.FefferyCaptcha(id=f"id-{TAG}-cpcimage", charNum=4), width=6),
+        ], align="center", class_name="mt-4"),
     ], class_name=None)
 
     # define args
@@ -61,13 +66,19 @@ def layout(pathname, search, **kwargs):
     Input(f"id-{TAG}-button", "n_clicks"),
     Input(f"id-{TAG}-email", "value"),
     Input(f"id-{TAG}-pwd", "value"),
+    Input(f"id-{TAG}-cpcinput", "value"),
+    State(f"id-{TAG}-cpcimage", "captcha"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, nextpath):
+def _button_click(n_clicks, email, pwd, cinput, vimage, nextpath):
     # check trigger
     trigger = dash.ctx.triggered_id
-    if trigger == f"id-{TAG}-email" or trigger == f"id-{TAG}-pwd":
+    if trigger in (f"id-{TAG}-email", f"id-{TAG}-pwd", f"id-{TAG}-cpcinput"):
         return None, dash.no_update
+
+    # check captcha
+    if cinput != vimage:
+        return ERROR_CPC_INCORRECT, dash.no_update
 
     # check email
     email = (email or "").strip()
@@ -85,7 +96,7 @@ def _button_click(n_clicks, email, pwd, nextpath):
         return ERROR_PWD_INCORRECT, dash.no_update
 
     # login user
-    flask_login.login_user(user)
+    flask_login.login_user(user, remember=True)
 
     # return result
     return None, nextpath
