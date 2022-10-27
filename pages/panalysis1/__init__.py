@@ -63,7 +63,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     col_right = dbc.Col(children=[
-        dbc.Container("analysis page", id=f"id-{TAG}-content", fluid=True),
+        dbc.Container(id=f"id-{TAG}-content", fluid=True, class_name=None),
     ], width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll")
 
     # return result

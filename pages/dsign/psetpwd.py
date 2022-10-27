@@ -14,8 +14,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State
 from werkzeug import security
 
-from app import app_db, app_redis
-from model import User
+from app import User, app_db, app_redis
 from utility.consts import RE_PWD
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT

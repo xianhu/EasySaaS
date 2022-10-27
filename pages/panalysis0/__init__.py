@@ -31,7 +31,7 @@ def layout(pathname, search, **kwargs):
     ]
 
     # define components
-    navitem_bottom = dbc.NavItem(children=[
+    navitem_right = dbc.NavItem(children=[
         dbc.Badge(5, id=f"id-{TAG}-badge", color="danger", href="#", class_name="text-decoration-none"),
         dbc.DropdownMenu(children=[
             dbc.DropdownMenuItem("Basic Profile", id=f"id-{TAG}-profile", href="#"),
@@ -44,12 +44,12 @@ def layout(pathname, search, **kwargs):
     navbar = dbc.Navbar(dbc.Container(children=[
         cbrand.layout(class_text=None, class_name=None),
         dbc.Nav(navlink_list, navbar=True, class_name="mx-auto"),
-        dbc.Nav(navitem_bottom, navbar=True, class_name=None),
+        dbc.Nav(navitem_right, navbar=True, class_name=None),
     ], fluid=False), color="primary", class_name="sticky-top py-1")
 
     # define components
-    content = dbc.Container("analysis page", id=f"id-{TAG}-content", fluid=False, className="bg-light py-2 mb-auto")
+    content = dbc.Container(id=f"id-{TAG}-content", fluid=False, className="bg-light py-2 mb-auto")
     footer = cfooter.layout(fluid=False, class_name="sticky-bottom border-top bg-light py-2")
 
     # return result
-    return html.Div([navbar, content, footer], className="d-flex flex-column bg-light vh-100 overflow-scroll")
+    return html.Div([navbar, content, footer], className="bg-light vh-100 overflow-scroll d-flex flex-column")
