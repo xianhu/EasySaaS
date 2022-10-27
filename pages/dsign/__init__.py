@@ -45,6 +45,8 @@ ERROR_PWD_FORMAT = "Password must contain numbers and letters"
 ERROR_PWD_INCORRECT = "Password is incorrect"
 ERROR_PWD_INCONSISTENT = "Passwords are inconsistent"
 
+ERROR_CPC_INCORRECT = "Captcha is incorrect"
+
 # define components
 A_LOGIN = html.A(LINK_LOGIN, href=PATH_LOGIN)
 A_SIGNUP = html.A(LINK_SIGNUP, href=PATH_SIGNUP)
