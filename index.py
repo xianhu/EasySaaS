@@ -9,7 +9,7 @@ import logging
 import dash
 import dash_bootstrap_components as dbc
 import flask_login
-from dash import Input, Output, State, MATCH, dcc, html
+from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
@@ -104,23 +104,6 @@ app.clientside_callback(
     """ % config_app_name,
     Output("id-store-client", "data"),
     Input("id-store-server", "data"),
-)
-
-# clientside callback
-app.clientside_callback(
-    """
-    function(href) {
-        if (href != null && href != undefined) {
-            window.location.href = href
-            if (href.endsWith('#')) {
-                window.location.reload()
-            }
-        }
-        return href
-    }
-    """,
-    Output({"type": "id-address", "index": MATCH}, "data"),
-    Input({"type": "id-address", "index": MATCH}, "href"),
 )
 
 if __name__ == "__main__":

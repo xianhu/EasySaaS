@@ -9,3 +9,4 @@ Flask-SQLAlchemy==3.0.2
 
 uWSGI==2.0.21
 celery==5.2.7
+pymysql==1.0.2

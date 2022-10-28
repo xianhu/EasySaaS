@@ -61,7 +61,7 @@ def layout(pathname, search, **kwargs):
 
 @dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
-    Output({"type": "id-address", "index": TAG}, "href"),
+    Output(f"id-{TAG}-executejs", "jsString"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     Input(f"id-{TAG}-email", "value"),
@@ -99,4 +99,4 @@ def _button_click(n_clicks, email, pwd, cinput, vimage, nextpath):
     flask_login.login_user(user, remember=True)
 
     # return result
-    return None, nextpath
+    return None, f"window.location.href='{nextpath}';"
