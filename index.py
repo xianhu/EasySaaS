@@ -78,15 +78,15 @@ def _init_page(pathname, search, vhash, dclient):
     # =============================================================================================
     if pathname == PATH_ANALYSIS0 or pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
-            _id = {"type": "id-address", "index": pathname}
-            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=FMT_EXECUTEJS.format(href=PATH_LOGIN))
+            js_string = FMT_EXECUTEJS.format(href=PATH_LOGIN)
+            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=js_string)
         return pathname, search, dserver, panalysis0.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS1:
         if not flask_login.current_user.is_authenticated:
-            _id = {"type": "id-address", "index": pathname}
-            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=FMT_EXECUTEJS.format(href=PATH_LOGIN))
+            js_string = FMT_EXECUTEJS.format(href=PATH_LOGIN)
+            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=js_string)
         return pathname, search, dserver, panalysis1.layout(pathname, search, **kwargs)
 
     # =============================================================================================
