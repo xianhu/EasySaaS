@@ -48,8 +48,8 @@ def layout(pathname, search, **kwargs):
     ], fluid=False), color="primary", class_name="sticky-top py-1")
 
     # define components
-    content = dbc.Container(id=f"id-{TAG}-content", fluid=False, className="bg-light py-2 mb-auto")
-    footer = cfooter.layout(fluid=False, class_name="sticky-bottom border-top bg-light py-2")
+    content = dbc.Container(id=f"id-{TAG}-content", fluid=False, class_name="py-2 mb-auto")
+    footer = cfooter.layout(fluid=False, class_name="sticky-bottom py-2 border-top")
 
     # return result
     return html.Div([navbar, content, footer], className="bg-light vh-100 overflow-scroll d-flex flex-column")
