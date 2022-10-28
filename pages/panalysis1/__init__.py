@@ -4,15 +4,30 @@
 analysis page
 """
 
+import json
+
 import dash
 import dash_bootstrap_components as dbc
+import feffery_utils_components as fuc
 import flask_login
-from dash import html, Input, Output, ALL
+from dash import dcc, html, Input, Output, State, ALL
 
 from components import cbrand
 from utility.paths import PATH_LOGIN
 
 TAG = "analysis1"
+FMT_EXECUTEJS = """
+    var nav_cur = document.getElementById('{nav_cur}');
+    if (nav_cur) {{
+        nav_cur.classList.remove('text-white');
+        nav_cur.classList.add('text-success');
+    }}    
+    var ele_pre = document.getElementById('{nav_pre}');
+    if (ele_pre) {{
+        ele_pre.classList.remove('text-success');
+        ele_pre.classList.add('text-white');
+    }}
+"""
 
 
 def layout(pathname, search, **kwargs):
@@ -59,6 +74,9 @@ def layout(pathname, search, **kwargs):
         dbc.Nav(navlink_list, vertical=True, class_name="mb-auto"),
         html.Hr(className="text-white my-2"),
         dbc.Nav(navitem_bottom, vertical=True, class_name=None),
+        # define components
+        dcc.Store(id=f"id-{TAG}-navpre"),
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
     ], width=12, md=2, class_name="bg-primary px-4 py-2 h-100-scroll d-flex flex-column")
 
     # define components
@@ -70,15 +88,21 @@ def layout(pathname, search, **kwargs):
     return dbc.Row([col_left, col_right], class_name="bg-light vh-100 overflow-auto mx-0")
 
 
-@dash.callback(
+@dash.callback([
     Output(f"id-{TAG}-content", "children"),
+    Output(f"id-{TAG}-navpre", "data"),
+    Output(f"id-{TAG}-executejs", "jsString"),
+], [
     Input({"type": f"id-{TAG}-catalog", "index": ALL}, "n_clicks"),
-    prevent_initial_call=False,
-)
-def _update_content(n_clicks):
+    State(f"id-{TAG}-navpre", "data"),
+], prevent_initial_call=False)
+def _update_content(n_clicks, nav_pre):
     # check trigger
-    trigger = dash.ctx.triggered_id
-    trigger_index = trigger["index"] if trigger else "intros"
+    trigger = dash.ctx.triggered_id or {"index": "intros", "type": f"id-{TAG}-catalog"}
+    trigger_string = json.dumps(trigger, separators=(",", ":"))
+
+    # define variables
+    js_string = FMT_EXECUTEJS.format(nav_pre=nav_pre, nav_cur=trigger_string)
 
     # return result
-    return trigger_index
+    return trigger["index"], trigger_string, js_string
