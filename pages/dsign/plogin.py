@@ -14,7 +14,7 @@ from dash import Input, Output, State
 from werkzeug import security
 
 from app import UserLogin
-from utility.consts import RE_EMAIL
+from utility.consts import RE_EMAIL, FMT_EXECUTEJS
 from utility.paths import PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
 from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD, ERROR_CPC_INCORRECT
@@ -61,7 +61,7 @@ def layout(pathname, search, **kwargs):
 
 @dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
-    Output({"type": "id-address", "index": TAG}, "href"),
+    Output(f"id-{TAG}-executejs", "jsString"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     Input(f"id-{TAG}-email", "value"),
@@ -99,4 +99,4 @@ def _button_click(n_clicks, email, pwd, cinput, vimage, nextpath):
     flask_login.login_user(user, remember=True)
 
     # return result
-    return None, nextpath
+    return None, FMT_EXECUTEJS.format(href=nextpath)

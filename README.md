@@ -8,7 +8,7 @@ application using Python and Dash.
 ### Run mysql And redis By Docker
 
 ```
-docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD={password} -d mysql:5.7
+docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD={password} -d mysql
 docker run --name redis -p 6379:6379 -d redis --requirepass "{redis-password}"
 docker inspect mysql/redis | grep IPAddress
 ```

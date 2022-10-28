@@ -8,13 +8,15 @@ import logging
 
 import dash
 import dash_bootstrap_components as dbc
+import feffery_utils_components as fuc
 import flask_login
-from dash import Input, Output, State, MATCH, dcc, html
+from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
 from pages import palert, pemail, plogin, psetpwd
 from pages import panalysis0, panalysis1
+from utility.consts import FMT_EXECUTEJS
 from utility.paths import *
 
 # application layout
@@ -76,15 +78,15 @@ def _init_page(pathname, search, vhash, dclient):
     # =============================================================================================
     if pathname == PATH_ANALYSIS0 or pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
-            _id = {"type": "id-address", "index": pathname}
-            return pathname, search, dserver, html.A(id=_id, href=PATH_LOGIN)
+            js_string = FMT_EXECUTEJS.format(href=PATH_LOGIN)
+            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=js_string)
         return pathname, search, dserver, panalysis0.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS1:
         if not flask_login.current_user.is_authenticated:
-            _id = {"type": "id-address", "index": pathname}
-            return pathname, search, dserver, html.A(id=_id, href=PATH_LOGIN)
+            js_string = FMT_EXECUTEJS.format(href=PATH_LOGIN)
+            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=js_string)
         return pathname, search, dserver, panalysis1.layout(pathname, search, **kwargs)
 
     # =============================================================================================
@@ -104,23 +106,6 @@ app.clientside_callback(
     """ % config_app_name,
     Output("id-store-client", "data"),
     Input("id-store-server", "data"),
-)
-
-# clientside callback
-app.clientside_callback(
-    """
-    function(href) {
-        if (href != null && href != undefined) {
-            window.location.href = href
-            if (href.endsWith('#')) {
-                window.location.reload()
-            }
-        }
-        return href
-    }
-    """,
-    Output({"type": "id-address", "index": MATCH}, "data"),
-    Input({"type": "id-address", "index": MATCH}, "href"),
 )
 
 if __name__ == "__main__":

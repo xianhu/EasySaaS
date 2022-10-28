@@ -15,7 +15,7 @@ from dash import Input, Output, State
 from werkzeug import security
 
 from app import User, app_db, app_redis
-from utility.consts import RE_PWD
+from utility.consts import RE_PWD, FMT_EXECUTEJS
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
 from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CFM
@@ -89,7 +89,7 @@ def layout_result(pathname, search, **kwargs):
 
 @dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
-    Output({"type": "id-address", "index": TAG}, "href"),
+    Output(f"id-{TAG}-executejs", "jsString"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     Input(f"id-{TAG}-email", "value"),
@@ -126,4 +126,4 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     app_redis.delete(_id)
 
     # return result
-    return None, f"{pathname}/result"
+    return None, FMT_EXECUTEJS.format(href=f"{pathname}/result")

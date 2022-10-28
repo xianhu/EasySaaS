@@ -6,6 +6,7 @@ template of sign page
 
 import dash
 import dash_bootstrap_components as dbc
+import feffery_utils_components as fuc
 from dash import dcc, html
 
 
@@ -37,6 +38,6 @@ def layout(pathname, search, tag, **kwargs):
             dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
         ], align="center", justify="center", class_name="vh-100"),
         # define components
-        html.A(id={"type": "id-address", "index": tag}),
+        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
     ], fluid=True, class_name=None)

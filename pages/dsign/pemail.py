@@ -18,7 +18,7 @@ from dash import Input, Output, State
 
 from app import User, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from utility.consts import RE_EMAIL
+from utility.consts import RE_EMAIL, FMT_EXECUTEJS
 from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
 from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
@@ -84,7 +84,7 @@ def layout_result(pathname, search, **kwargs):
 
 @dash.callback([
     Output(f"id-{TAG}-feedback", "children"),
-    Output({"type": "id-address", "index": TAG}, "href"),
+    Output(f"id-{TAG}-executejs", "jsString"),
 ], [
     Input(f"id-{TAG}-button", "n_clicks"),
     Input(f"id-{TAG}-email", "value"),
@@ -138,4 +138,4 @@ def _button_click(n_clicks, email, cinput, vimage, pathname):
     flask.session["email"] = email
 
     # return result
-    return None, f"{pathname}/result"
+    return None, FMT_EXECUTEJS.format(href=f"{pathname}/result")
