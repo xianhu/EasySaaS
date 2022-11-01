@@ -75,7 +75,7 @@ def layout(pathname, search, **kwargs):
         html.Hr(className="text-white my-2"),
         dbc.Nav(navitem_bottom, vertical=True, class_name=None),
         # define components
-        dcc.Store(id=f"id-{TAG}-navpre"),
+        dcc.Store(id=f"id-{TAG}-navpre", data=None),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
     ], width=12, md=2, class_name="bg-primary px-4 py-2 h-100-scroll d-flex flex-column")
 
