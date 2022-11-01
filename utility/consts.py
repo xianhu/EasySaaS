@@ -13,3 +13,4 @@ RE_EMAIL = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
 
 # format string of executejs
 FMT_EXECUTEJS = "window.location.href = '{href}';"
+FMT_EXECUTEJS_RL = "window.location.href = '{href}'; window.location.reload();"
