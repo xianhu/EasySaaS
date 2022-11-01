@@ -15,7 +15,8 @@ import flask_redis
 from flask import request
 
 from config import *
-from model import User, app_db
+from models import app_db
+from models.users import User
 
 # logging config
 log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(message)s"

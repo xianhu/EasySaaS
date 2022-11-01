@@ -1,19 +1,19 @@
 # _*_ coding: utf-8 _*_
 
 """
-Model Defination
+user model
 """
 
 import hashlib
-import logging
 
 import sqlalchemy
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Index, func, orm
 from werkzeug import security
 
-# create SQLAlchemy
-app_db = SQLAlchemy(app=None)
+try:
+    from . import app_db
+except ImportError:
+    from models import app_db
 
 
 class User(app_db.Model):
@@ -43,11 +43,6 @@ class User(app_db.Model):
     addr_city = sqlalchemy.Column(sqlalchemy.String(128), doc="city of address")
     addr_detail = sqlalchemy.Column(sqlalchemy.String(128), doc="detail of address")
 
-    # others
-    filename = sqlalchemy.Column(sqlalchemy.String(255), doc="file name")
-    session = sqlalchemy.Column(sqlalchemy.String(255), doc="session value")
-    tempcol = sqlalchemy.Column(sqlalchemy.String(255), doc="temporary column")
-
     # normal columns
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
@@ -58,44 +53,23 @@ class User(app_db.Model):
         return f"User <{' - '.join(map(str, [self.id, self.name, self.email, self.phone]))}>"
 
 
-def init_db(database_uri):
-    """
-    initial database
-    """
-    logging.warning("init database - %s", config_database_uri)
-
-    # create engine, SQLite doesn't check the forgien key
-    engine = sqlalchemy.create_engine(database_uri)
-
-    # drop or create all tables
-    app_db.Model.metadata.drop_all(engine)
-    app_db.Model.metadata.create_all(engine)
-    return True
-
-
-def test_db(database_uri):
-    """
-    add a user to database
-    """
-    # create engine, SQLite doesn't check forgien key
-    engine = sqlalchemy.create_engine(database_uri)
-
-    # basic opration with session
-    with orm.sessionmaker(engine)() as session:
-        # user operations
-        email = "aaaa@qq.com"
-        _id = hashlib.md5(email.encode()).hexdigest()
-        pwd = security.generate_password_hash(email)
-        user = User(id=_id, pwd=pwd, email=email)
-
-        session.add(user)
-        session.commit()
-        print(session.query(User).get(_id))
-    return True
-
-
 if __name__ == "__main__":
     from config import config_database_uri
 
-    init_db(config_database_uri)
-    test_db(config_database_uri)
+    # create engine
+    engine = sqlalchemy.create_engine(config_database_uri)
+
+    # create all tables
+    User.__table__.drop(engine, checkfirst=True)
+    User.__table__.create(engine, checkfirst=True)
+
+    # create session and add data
+    with orm.sessionmaker(engine)() as session:
+        _email = "aaaa@qq.com"
+        _id = hashlib.md5(_email.encode()).hexdigest()
+        _pwd = security.generate_password_hash(_email)
+        _user = User(id=_id, pwd=_pwd, email=_email)
+
+        session.add(_user)
+        session.commit()
+        print(session.query(User).get(_id))
