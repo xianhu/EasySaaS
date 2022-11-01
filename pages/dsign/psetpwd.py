@@ -14,7 +14,8 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State
 from werkzeug import security
 
-from app import User, app_db, app_redis
+from app import app_db, app_redis
+from models.users import User
 from utility.consts import RE_PWD, FMT_EXECUTEJS
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
@@ -110,13 +111,14 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
         return ERROR_PWD_FORMAT, dash.no_update
     if (not pwd2) or (pwd2 != pwd1):
         return ERROR_PWD_INCONSISTENT, dash.no_update
+    _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
     user = User.query.filter_by(id=_id).first()
-    if not user:
-        user = User(id=_id, email=email)
-    user.pwd = security.generate_password_hash(pwd1)
+    if user:
+        user.pwd = security.generate_password_hash(pwd1)
+    else:
+        user = User(_id=_id, pwd=security.generate_password_hash(pwd1), email=email)
 
     # commit user
     app_db.session.merge(user)

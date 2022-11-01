@@ -48,9 +48,38 @@ class User(app_db.Model):
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
-    # print format
+    def __init__(self, _id, pwd, name=None, avatar=None, email=None, phone=None, status=1):
+        """
+        init user
+        """
+        self.id = _id
+        self.pwd = pwd
+        self.name = name
+        self.avatar = avatar
+        self.email = email
+        self.phone = phone
+        self.status = status
+        return
+
     def __repr__(self) -> str:
-        return f"User <{' - '.join(map(str, [self.id, self.name, self.email, self.phone]))}>"
+        """
+        to string
+        """
+        col_list = [self.id, self.name, self.email, self.phone]
+        return f"User <{' - '.join(map(str, col_list))}>"
+
+    def to_json(self) -> dict:
+        """
+        to json
+        """
+        return {
+            "id": self.id,
+            "name": self.name,
+            "avatar": self.avatar,
+            "email": self.email,
+            "phone": self.phone,
+            "status": self.status,
+        }
 
 
 if __name__ == "__main__":
@@ -68,7 +97,7 @@ if __name__ == "__main__":
         _email = "aaaa@qq.com"
         _id = hashlib.md5(_email.encode()).hexdigest()
         _pwd = security.generate_password_hash(_email)
-        _user = User(id=_id, pwd=_pwd, email=_email)
+        _user = User(_id=_id, pwd=_pwd, email=_email)
 
         session.add(_user)
         session.commit()
