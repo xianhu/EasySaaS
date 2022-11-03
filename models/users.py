@@ -25,23 +25,23 @@ class User(app_db.Model):
     )
 
     # basic
-    id = sqlalchemy.Column(sqlalchemy.String(128), primary_key=True)
+    id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(512), nullable=False)
 
     # informations
-    name = sqlalchemy.Column(sqlalchemy.String(128), nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String(128), nullable=True)
-    email = sqlalchemy.Column(sqlalchemy.String(128), nullable=True)
-    phone = sqlalchemy.Column(sqlalchemy.String(128), nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    email = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
 
     # company
-    company_name = sqlalchemy.Column(sqlalchemy.String(128), nullable=True)
-    company_avatar = sqlalchemy.Column(sqlalchemy.String(128), nullable=True)
+    company_name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    company_avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
 
     # address
-    addr_state = sqlalchemy.Column(sqlalchemy.String(128), doc="state of address")
-    addr_city = sqlalchemy.Column(sqlalchemy.String(128), doc="city of address")
-    addr_detail = sqlalchemy.Column(sqlalchemy.String(128), doc="detail of address")
+    addr_state = sqlalchemy.Column(sqlalchemy.String(255), doc="state of address")
+    addr_city = sqlalchemy.Column(sqlalchemy.String(255), doc="city of address")
+    addr_detail = sqlalchemy.Column(sqlalchemy.String(255), doc="detail of address")
 
     # normal columns
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")

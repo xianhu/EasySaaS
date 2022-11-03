@@ -24,7 +24,9 @@ logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # celery -A app.app_celery worker -l INFO
 broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
-app_celery = celery.Celery(__name__, broker=broker, backend=backend)
+app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
+    "pages.dsign.plogin", "pages.dsign.pemail", "pages.dsign.psetpwd",
+])
 
 # define callback manager
 callback_manager = dash.CeleryManager(app_celery)
@@ -39,8 +41,9 @@ app = dash.Dash(
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
-    external_scripts=[],
+    background_callback_manager=callback_manager,
     external_stylesheets=[dbc.icons.BOOTSTRAP, ],
+    external_scripts=[],
     assets_folder="assets",
     assets_ignore="favicon1.*",
     meta_tags=[{
