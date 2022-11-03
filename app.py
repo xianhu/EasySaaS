@@ -24,7 +24,9 @@ logging.basicConfig(format=log_format, level=logging.WARNING)
 
 # celery -A app.app_celery worker -l INFO
 broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
-app_celery = celery.Celery(__name__, broker=broker, backend=backend)
+app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
+    "pages.dsign.plogin", "pages.dsign.pemail", "pages.dsign.psetpwd",
+])
 
 # define callback manager
 callback_manager = dash.CeleryManager(app_celery)
