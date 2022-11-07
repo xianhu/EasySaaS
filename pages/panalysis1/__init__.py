@@ -60,7 +60,7 @@ def layout(pathname, search, **kwargs):
     # define components
     navitem_bottom = dbc.NavItem(children=[
         dbc.DropdownMenu(children=[
-            dbc.DropdownMenuItem("Basic Profile", id=f"id-{TAG}-profile", href="#"),
+            dbc.DropdownMenuItem("Profile", id=f"id-{TAG}-profile", href="#"),
             dbc.DropdownMenuItem(divider=True),
             dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
         ], label=user.email.split("@")[0], class_name="me-1"),
