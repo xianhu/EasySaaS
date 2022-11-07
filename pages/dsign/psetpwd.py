@@ -16,7 +16,7 @@ from werkzeug import security
 
 from app import app_db, app_redis
 from models.users import User
-from utility.consts import RE_PWD, FMT_EXECUTEJS
+from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
 from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CFM
@@ -128,4 +128,4 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     app_redis.delete(_id)
 
     # return result
-    return None, FMT_EXECUTEJS.format(href=f"{pathname}/result")
+    return None, FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")

@@ -16,7 +16,7 @@ from app import app, server
 from config import config_app_name
 from pages import palert, pemail, plogin, psetpwd
 from pages import panalysis0, panalysis1
-from utility.consts import FMT_EXECUTEJS
+from utility.consts import *
 from utility.paths import *
 
 # application layout
@@ -24,9 +24,8 @@ app.title = config_app_name
 app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
     # define components
+    fuc.FefferyExecuteJs(id="id-executejs"),
     dcc.Location(id="id-location", refresh=False),
-    dcc.Store(id="id-store-client", storage_type="session"),
-    dcc.Store(id="id-store-server", storage_type="session"),
 ])
 
 # complete layout
@@ -36,61 +35,60 @@ app.validation_layout = dbc.Container([])
 @dash.callback([
     Output("id-location", "pathname"),
     Output("id-location", "search"),
-    Output("id-store-server", "data"),
+    Output("id-executejs", "jsString"),
     Output("id-content", "children"),
 ], [
     Input("id-location", "pathname"),
     State("id-location", "search"),
     State("id-location", "hash"),
-    State("id-store-client", "data"),
 ], prevent_initial_call=False)
-def _init_page(pathname, search, vhash, dclient):
-    logging.warning("pathname=%s, search=%s, hash=%s, dclient=%s", pathname, search, vhash, dclient)
+def _init_page(pathname, search, vhash):
+    logging.warning("pathname=%s, search=%s, hash=%s", pathname, search, vhash)
 
     # define variables
-    kwargs = dict(vhash=vhash, dclient=dclient)
-    dserver = dict(title=pathname.strip("/").upper())
+    kwargs = dict(vhash=vhash, nextpath=None)
+    js_str = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
     # =============================================================================================
     if pathname == PATH_LOGIN:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, dserver, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, js_str, plogin.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_SIGNUP or pathname == PATH_FORGOTPWD:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, dserver, pemail.layout(pathname, search, **kwargs)
+        return pathname, search, js_str, pemail.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_SIGNUP}/result" or pathname == f"{PATH_FORGOTPWD}/result":
-        return pathname, search, dserver, pemail.layout_result(pathname, search, **kwargs)
+        return pathname, search, js_str, pemail.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == f"{PATH_SIGNUP}-setpwd" or pathname == f"{PATH_FORGOTPWD}-setpwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, dserver, psetpwd.layout(pathname, search, **kwargs)
+        return pathname, search, js_str, psetpwd.layout(pathname, search, **kwargs)
 
     if pathname == f"{PATH_SIGNUP}-setpwd/result" or pathname == f"{PATH_FORGOTPWD}-setpwd/result":
-        return pathname, search, dserver, psetpwd.layout_result(pathname, search, **kwargs)
+        return pathname, search, js_str, psetpwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS0 or pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
-            js_string = FMT_EXECUTEJS.format(href=PATH_LOGIN)
-            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=js_string)
-        return pathname, search, dserver, panalysis0.layout(pathname, search, **kwargs)
+            js_str = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
+            return pathname, search, js_str, dash.no_update
+        return pathname, search, js_str, panalysis0.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS1:
         if not flask_login.current_user.is_authenticated:
-            js_string = FMT_EXECUTEJS.format(href=PATH_LOGIN)
-            return pathname, search, dserver, fuc.FefferyExecuteJs(jsString=js_string)
-        return pathname, search, dserver, panalysis1.layout(pathname, search, **kwargs)
+            js_str = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
+            return pathname, search, js_str, dash.no_update
+        return pathname, search, js_str, panalysis1.layout(pathname, search, **kwargs)
 
     # =============================================================================================
-    return pathname, search, dserver, palert.layout_404(pathname, search, return_href=PATH_ROOT)
+    return pathname, search, js_str, palert.layout_404(pathname, search, return_href=PATH_ROOT)
 
 
 # clientside callback
