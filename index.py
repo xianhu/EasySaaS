@@ -14,8 +14,8 @@ from dash import Input, Output, State, dcc, html
 
 from app import app, server
 from config import config_app_name
-from pages import palert, pemail, plogin, psetpwd
-from pages import panalysis0, panalysis1
+from pages import palert, panalysis0, panalysis1
+from pages.dsign import plogin, pemail, psetpwd
 from utility.consts import *
 from utility.paths import *
 
@@ -90,21 +90,6 @@ def _init_page(pathname, search, vhash):
     # =============================================================================================
     return pathname, search, js_str, palert.layout_404(pathname, search, return_href=PATH_ROOT)
 
-
-# clientside callback
-app.clientside_callback(
-    """
-    function(dserver) {
-        document.title = dserver.title || '%s'
-        return {
-            'iwidth': window.innerWidth,
-            'iheight': window.innerHeight,
-        }
-    }
-    """ % config_app_name,
-    Output("id-store-client", "data"),
-    Input("id-store-server", "data"),
-)
 
 if __name__ == "__main__":
     # app.run_server(host="0.0.0.0", port=8088)
