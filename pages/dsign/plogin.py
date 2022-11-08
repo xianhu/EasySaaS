@@ -60,6 +60,7 @@ def layout(pathname, search, **kwargs):
 
 
 @dash.callback([
+    Output(f"id-{TAG}-cpcimage", "refresh"),
     Output(f"id-{TAG}-feedback", "children"),
     Output(f"id-{TAG}-executejs", "jsString"),
 ], [
@@ -74,29 +75,29 @@ def _button_click(n_clicks, email, pwd, cinput, vimage, nextpath):
     # check trigger
     trigger = dash.ctx.triggered_id
     if trigger in (f"id-{TAG}-email", f"id-{TAG}-pwd", f"id-{TAG}-cpcinput"):
-        return None, dash.no_update
+        return dash.no_update, None, dash.no_update
 
     # check captcha
-    if cinput != vimage:
-        return ERROR_CPC_INCORRECT, dash.no_update
+    if (cinput != vimage) or (not cinput):
+        return True, ERROR_CPC_INCORRECT, dash.no_update
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return ERROR_EMAIL_FORMAT, dash.no_update
+        return dash.no_update, ERROR_EMAIL_FORMAT, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = UserLogin.query.get(_id)
     if not user:
-        return ERROR_EMAIL_NOTEXIST, dash.no_update
+        return dash.no_update, ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # check password
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return ERROR_PWD_INCORRECT, dash.no_update
+        return dash.no_update, ERROR_PWD_INCORRECT, dash.no_update
 
     # login user
     flask_login.login_user(user, remember=True)
 
     # return result
-    return None, FMT_EXECUTEJS_HREF.format(href=nextpath)
+    return dash.no_update, None, FMT_EXECUTEJS_HREF.format(href=nextpath)
