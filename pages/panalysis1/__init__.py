@@ -17,12 +17,12 @@ from utility.paths import PATH_LOGIN
 
 TAG = "analysis1"
 FMT_EXECUTEJS = """
-    var nav_cur = document.getElementById('{nav_cur}');
-    if (nav_cur) {{
-        nav_cur.classList.remove('text-white');
-        nav_cur.classList.add('text-success');
+    var ele_cur = document.getElementById('{id_nav_cur}');
+    if (ele_cur) {{
+        ele_cur.classList.remove('text-white');
+        ele_cur.classList.add('text-success');
     }}    
-    var ele_pre = document.getElementById('{nav_pre}');
+    var ele_pre = document.getElementById('{id_nav_pre}');
     if (ele_pre) {{
         ele_pre.classList.remove('text-success');
         ele_pre.classList.add('text-white');
@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
         dbc.DropdownMenu(children=[
             dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
             dbc.DropdownMenuItem(divider=True),
-            dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
+            dbc.DropdownMenuItem("Logout", id=None, href=PATH_LOGIN),
         ], label=user.email.split("@")[0], class_name="me-1"),
         dbc.Badge(5, id=id_badge, color="danger", href="#", class_name="text-decoration-none"),
     ], class_name="d-flex align-items-center justify-content-start")
@@ -98,15 +98,16 @@ def layout(pathname, search, **kwargs):
     Input({"type": f"id-{TAG}-catalog", "index": ALL}, "n_clicks"),
     State(f"id-{TAG}-navpre", "data"),
 ], prevent_initial_call=False)
-def _update_content(n_clicks, nav_pre):
+def _update_content(n_clicks, id_nav_pre):
     # check trigger
     trigger_id = dash.ctx.triggered_id or {"index": "intros", "type": f"id-{TAG}-catalog"}
-    nav_cur = json.dumps(trigger_id, separators=(",", ":"))
+    id_nav_cur = json.dumps(trigger_id, separators=(",", ":"))
 
     # define variables
-    if nav_cur.find("profile") >= 0 or nav_cur.find("badge") >= 0:
-        nav_cur = ""
-    js_string = FMT_EXECUTEJS.format(nav_pre=nav_pre, nav_cur=nav_cur)
+    id_nav_pre = id_nav_pre or ""
+    if id_nav_cur.find("profile") >= 0 or id_nav_cur.find("badge") >= 0:
+        id_nav_cur = ""
+    js_string = FMT_EXECUTEJS.format(id_nav_pre=id_nav_pre, id_nav_cur=id_nav_cur)
 
     # return result
-    return trigger_id["index"], nav_cur, js_string
+    return trigger_id["index"], id_nav_cur, js_string
