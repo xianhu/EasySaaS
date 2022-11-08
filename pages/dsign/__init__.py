@@ -8,11 +8,6 @@ from dash import html
 
 from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD
 
-# define link text
-LINK_LOGIN = "Log in"
-LINK_SIGNUP = "Sign up"
-LINK_FORGOTPWD = "Forgot password?"
-
 # define label text
 LABEL_EMAIL = "Email"
 LABEL_PWD = "Password"
@@ -47,6 +42,6 @@ ERROR_PWD_INCORRECT = "Password is incorrect"
 ERROR_PWD_INCONSISTENT = "Passwords are inconsistent"
 
 # define components
-A_LOGIN = html.A(LINK_LOGIN, href=PATH_LOGIN)
-A_SIGNUP = html.A(LINK_SIGNUP, href=PATH_SIGNUP)
-A_FORGOTPWD = html.A(LINK_FORGOTPWD, href=PATH_FORGOTPWD)
+A_LOGIN = html.A("Log in", href=PATH_LOGIN)
+A_SIGNUP = html.A("Sign up", href=PATH_SIGNUP)
+A_FORGOTPWD = html.A("Forgot password?", href=PATH_FORGOTPWD)

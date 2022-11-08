@@ -16,7 +16,7 @@ import flask
 import flask_mail
 from dash import Input, Output, State
 
-from app import User, app_mail, app_redis
+from app import UserLogin, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
@@ -109,7 +109,7 @@ def _button_click(n_clicks, email, cinput, vimage, pathname):
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
-    user = User.query.get(_id)
+    user = UserLogin.query.get(_id)
     if pathname == PATH_SIGNUP and user:
         return ERROR_EMAIL_EXIST, dash.no_update
     if pathname == PATH_FORGOTPWD and (not user):

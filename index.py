@@ -76,15 +76,13 @@ def _init_page(pathname, search, vhash):
     # =============================================================================================
     if pathname == PATH_ANALYSIS0 or pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
-            js_str = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
-            return pathname, search, js_str, dash.no_update
+            return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
         return pathname, search, js_str, panalysis0.layout(pathname, search, **kwargs)
 
     # =============================================================================================
     if pathname == PATH_ANALYSIS1:
         if not flask_login.current_user.is_authenticated:
-            js_str = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
-            return pathname, search, js_str, dash.no_update
+            return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
         return pathname, search, js_str, panalysis1.layout(pathname, search, **kwargs)
 
     # =============================================================================================
