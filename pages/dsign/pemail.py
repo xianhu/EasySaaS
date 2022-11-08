@@ -16,9 +16,9 @@ import flask
 import flask_mail
 from dash import Input, Output, State
 
-from app import User, app_mail, app_redis
+from app import UserLogin, app_mail, app_redis
 from config import config_app_domain, config_app_name
-from utility.consts import RE_EMAIL, FMT_EXECUTEJS
+from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
 from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
@@ -83,6 +83,7 @@ def layout_result(pathname, search, **kwargs):
 
 
 @dash.callback([
+    Output(f"id-{TAG}-cpcimage", "refresh"),
     Output(f"id-{TAG}-feedback", "children"),
     Output(f"id-{TAG}-executejs", "jsString"),
 ], [
@@ -96,24 +97,24 @@ def _button_click(n_clicks, email, cinput, vimage, pathname):
     # check trigger
     trigger = dash.ctx.triggered_id
     if trigger == f"id-{TAG}-email" or trigger == f"id-{TAG}-cpcinput":
-        return None, dash.no_update
+        return dash.no_update, None, dash.no_update
 
     # check captcha
-    if cinput != vimage:
-        return ERROR_CPC_INCORRECT, dash.no_update
+    if (cinput != vimage) or (not cinput):
+        return True, ERROR_CPC_INCORRECT, dash.no_update
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return ERROR_EMAIL_FORMAT, dash.no_update
+        return dash.no_update, ERROR_EMAIL_FORMAT, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
-    user = User.query.get(_id)
+    user = UserLogin.query.get(_id)
     if pathname == PATH_SIGNUP and user:
-        return ERROR_EMAIL_EXIST, dash.no_update
+        return dash.no_update, ERROR_EMAIL_EXIST, dash.no_update
     if pathname == PATH_FORGOTPWD and (not user):
-        return ERROR_EMAIL_NOTEXIST, dash.no_update
+        return dash.no_update, ERROR_EMAIL_NOTEXIST, dash.no_update
 
     # send email and cache
     if not app_redis.get(_id):
@@ -138,4 +139,4 @@ def _button_click(n_clicks, email, cinput, vimage, pathname):
     flask.session["email"] = email
 
     # return result
-    return None, FMT_EXECUTEJS.format(href=f"{pathname}/result")
+    return dash.no_update, None, FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")

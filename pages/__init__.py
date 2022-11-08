@@ -3,5 +3,3 @@
 """
 pages module
 """
-
-from .dsign import pemail, plogin, psetpwd

@@ -17,12 +17,12 @@ from utility.paths import PATH_LOGIN
 
 TAG = "analysis1"
 FMT_EXECUTEJS = """
-    var nav_cur = document.getElementById('{nav_cur}');
-    if (nav_cur) {{
-        nav_cur.classList.remove('text-white');
-        nav_cur.classList.add('text-success');
+    var ele_cur = document.getElementById('{id_nav_cur}');
+    if (ele_cur) {{
+        ele_cur.classList.remove('text-white');
+        ele_cur.classList.add('text-success');
     }}    
-    var ele_pre = document.getElementById('{nav_pre}');
+    var ele_pre = document.getElementById('{id_nav_pre}');
     if (ele_pre) {{
         ele_pre.classList.remove('text-success');
         ele_pre.classList.add('text-white');
@@ -58,13 +58,15 @@ def layout(pathname, search, **kwargs):
     ]
 
     # define components
+    id_profile = {"type": f"id-{TAG}-catalog", "index": "profile"}
+    id_badge = {"type": f"id-{TAG}-catalog", "index": "badge"}
     navitem_bottom = dbc.NavItem(children=[
         dbc.DropdownMenu(children=[
-            dbc.DropdownMenuItem("Basic Profile", id=f"id-{TAG}-profile", href="#"),
+            dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
             dbc.DropdownMenuItem(divider=True),
             dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
-        ], label=user.email.split("@")[0], class_name="me-1"),
-        dbc.Badge(5, id=f"id-{TAG}-badge", color="danger", href="#", class_name="text-decoration-none"),
+        ], align_end=False, label=user.email.split("@")[0], class_name="me-1"),
+        dbc.Badge(5, id=id_badge, color="danger", href="#", class_name="text-decoration-none"),
     ], class_name="d-flex align-items-center justify-content-start")
 
     # define components
@@ -80,29 +82,37 @@ def layout(pathname, search, **kwargs):
     ], width=12, md=2, class_name="bg-primary px-4 py-2 h-100-scroll d-flex flex-column")
 
     # define components
-    col_right = dbc.Col(children=[
-        dbc.Container(id=f"id-{TAG}-content", fluid=True, class_name=None),
-    ], width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll")
+    col_right = dbc.Col(dbc.Spinner(children=[
+        html.Div(id=f"id-{TAG}-content", className=None),
+    ]), width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll d-flex flex-column")
 
     # return result
     return dbc.Row([col_left, col_right], class_name="bg-light vh-100 overflow-auto mx-0")
 
 
 @dash.callback([
-    Output(f"id-{TAG}-content", "children"),
     Output(f"id-{TAG}-navpre", "data"),
     Output(f"id-{TAG}-executejs", "jsString"),
+    Output(f"id-{TAG}-content", "children"),
 ], [
     Input({"type": f"id-{TAG}-catalog", "index": ALL}, "n_clicks"),
     State(f"id-{TAG}-navpre", "data"),
 ], prevent_initial_call=False)
-def _update_content(n_clicks, nav_pre):
+def _update_content(n_clicks, id_nav_pre):
     # check trigger
-    trigger = dash.ctx.triggered_id or {"index": "intros", "type": f"id-{TAG}-catalog"}
-    trigger_string = json.dumps(trigger, separators=(",", ":"))
+    trigger_id = dash.ctx.triggered_id
+    if not trigger_id:
+        trigger_id = {"index": "intros", "type": f"id-{TAG}-catalog"}
 
     # define variables
-    js_string = FMT_EXECUTEJS.format(nav_pre=nav_pre, nav_cur=trigger_string)
+    id_nav_pre = id_nav_pre or ""
+    id_nav_cur = json.dumps(trigger_id, separators=(",", ":"))
+    if id_nav_cur.find("profile") >= 0 or id_nav_cur.find("badge") >= 0:
+        id_nav_cur = ""
+    js_string = FMT_EXECUTEJS.format(id_nav_pre=id_nav_pre, id_nav_cur=id_nav_cur)
+
+    # define components
+    content = trigger_id["index"]
 
     # return result
-    return trigger["index"], trigger_string, js_string
+    return id_nav_cur, js_string, content

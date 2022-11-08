@@ -31,13 +31,15 @@ def layout(pathname, search, **kwargs):
     ]
 
     # define components
+    id_badge = f"id-{TAG}-badge"
+    id_profile = f"id-{TAG}-profile"
     navitem_right = dbc.NavItem(children=[
-        dbc.Badge(5, id=f"id-{TAG}-badge", color="danger", href="#", class_name="text-decoration-none"),
+        dbc.Badge(5, id=id_badge, color="danger", href="#", class_name="text-decoration-none"),
         dbc.DropdownMenu(children=[
-            dbc.DropdownMenuItem("Basic Profile", id=f"id-{TAG}-profile", href="#"),
+            dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
             dbc.DropdownMenuItem(divider=True),
             dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
-        ], label=user.email.split("@")[0], class_name="ms-1"),
+        ], align_end=True, label=user.email.split("@")[0], class_name="ms-1"),
     ], class_name="d-flex align-items-center justify-content-center")
 
     # define components

@@ -14,9 +14,8 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State
 from werkzeug import security
 
-from app import app_db, app_redis
-from models.users import User
-from utility.consts import RE_PWD, FMT_EXECUTEJS
+from app import UserLogin, app_db, app_redis
+from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
 from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CFM
@@ -112,13 +111,14 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     if (not pwd2) or (pwd2 != pwd1):
         return ERROR_PWD_INCONSISTENT, dash.no_update
     _id = hashlib.md5(email.encode()).hexdigest()
+    pwd = security.generate_password_hash(pwd1)
 
     # check user
-    user = User.query.filter_by(id=_id).first()
+    user = UserLogin.query.get(_id)
     if user:
-        user.pwd = security.generate_password_hash(pwd1)
+        user.pwd = pwd
     else:
-        user = User(_id=_id, pwd=security.generate_password_hash(pwd1), email=email)
+        user = UserLogin(_id=_id, pwd=pwd, email=email)
 
     # commit user
     app_db.session.merge(user)
@@ -128,4 +128,4 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     app_redis.delete(_id)
 
     # return result
-    return None, FMT_EXECUTEJS.format(href=f"{pathname}/result")
+    return None, FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
