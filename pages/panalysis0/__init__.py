@@ -38,7 +38,7 @@ def layout(pathname, search, **kwargs):
         dbc.DropdownMenu(children=[
             dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
             dbc.DropdownMenuItem(divider=True),
-            dbc.DropdownMenuItem("Logout", id=None, href=PATH_LOGIN),
+            dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
         ], align_end=True, label=user.email.split("@")[0], class_name="ms-1"),
     ], class_name="d-flex align-items-center justify-content-center")
 

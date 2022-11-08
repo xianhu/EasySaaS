@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
         dbc.DropdownMenu(children=[
             dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
             dbc.DropdownMenuItem(divider=True),
-            dbc.DropdownMenuItem("Logout", id=None, href=PATH_LOGIN),
+            dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
         ], label=user.email.split("@")[0], class_name="me-1"),
         dbc.Badge(5, id=id_badge, color="danger", href="#", class_name="text-decoration-none"),
     ], class_name="d-flex align-items-center justify-content-start")
