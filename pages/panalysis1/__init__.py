@@ -80,9 +80,9 @@ def layout(pathname, search, **kwargs):
     ], width=12, md=2, class_name="bg-primary px-4 py-2 h-100-scroll d-flex flex-column")
 
     # define components
-    col_right = dbc.Col(children=[
-        dbc.Container(id=f"id-{TAG}-content", fluid=True, class_name=None),
-    ], width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll")
+    col_right = dbc.Col(dbc.Spinner(children=[
+        html.Div(id=f"id-{TAG}-content", className=None),
+    ]), width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll")
 
     # return result
     return dbc.Row([col_left, col_right], class_name="bg-light vh-100 overflow-auto mx-0")
@@ -98,11 +98,11 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=False)
 def _update_content(n_clicks, nav_pre):
     # check trigger
-    trigger = dash.ctx.triggered_id or {"index": "intros", "type": f"id-{TAG}-catalog"}
-    trigger_string = json.dumps(trigger, separators=(",", ":"))
+    trigger_id = dash.ctx.triggered_id or {"index": "intros", "type": f"id-{TAG}-catalog"}
+    nav_cur = json.dumps(trigger_id, separators=(",", ":"))
 
     # define variables
-    js_string = FMT_EXECUTEJS.format(nav_pre=nav_pre, nav_cur=trigger_string)
+    js_string = FMT_EXECUTEJS.format(nav_pre=nav_pre, nav_cur=nav_cur)
 
     # return result
-    return trigger["index"], trigger_string, js_string
+    return trigger_id["index"], nav_cur, js_string
