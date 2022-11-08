@@ -58,13 +58,15 @@ def layout(pathname, search, **kwargs):
     ]
 
     # define components
+    id_profile = {"type": f"id-{TAG}-catalog", "index": "profile"}
+    id_badge = {"type": f"id-{TAG}-catalog", "index": "badge"}
     navitem_bottom = dbc.NavItem(children=[
         dbc.DropdownMenu(children=[
-            dbc.DropdownMenuItem("Profile", id=f"id-{TAG}-profile", href="#"),
+            dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
             dbc.DropdownMenuItem(divider=True),
             dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
         ], label=user.email.split("@")[0], class_name="me-1"),
-        dbc.Badge(5, id=f"id-{TAG}-badge", color="danger", href="#", class_name="text-decoration-none"),
+        dbc.Badge(5, id=id_badge, color="danger", href="#", class_name="text-decoration-none"),
     ], class_name="d-flex align-items-center justify-content-start")
 
     # define components
@@ -102,6 +104,8 @@ def _update_content(n_clicks, nav_pre):
     nav_cur = json.dumps(trigger_id, separators=(",", ":"))
 
     # define variables
+    if nav_cur.find("profile") >= 0 or nav_cur.find("badge") >= 0:
+        nav_cur = ""
     js_string = FMT_EXECUTEJS.format(nav_pre=nav_pre, nav_cur=nav_cur)
 
     # return result
