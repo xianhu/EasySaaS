@@ -13,6 +13,7 @@ import flask_login
 from dash import dcc, html, Input, Output, State, ALL
 
 from components import cbrand
+from utility.consts import FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN
 
 TAG = "analysis1"
@@ -105,6 +106,12 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-navpre", "data"),
 ], prevent_initial_call=False)
 def _update_content(n_clicks, vhash, id_nav_pre):
+    # check user
+    user = flask_login.current_user
+    if not user.is_authenticated:
+        js_string = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
+        return dash.no_update, js_string, dash.no_update
+
     # check trigger
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
