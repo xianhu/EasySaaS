@@ -13,7 +13,7 @@ import flask_login
 from dash import Input, Output, State
 from werkzeug import security
 
-from app import UserLogin
+from app import UserLogin, app_db
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_ROOT
 from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
@@ -88,7 +88,7 @@ def _button_click(n_clicks, email, pwd, cinput, vimage, nextpath):
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
-    user = UserLogin.query.get(_id)
+    user = app_db.session.query(UserLogin).get(_id)
     if not user:
         return dash.no_update, ERROR_EMAIL_NOTEXIST, dash.no_update
 

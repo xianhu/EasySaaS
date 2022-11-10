@@ -114,7 +114,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     pwd = security.generate_password_hash(pwd1)
 
     # check user
-    user = UserLogin.query.get(_id)
+    user = app_db.session.query(UserLogin).get(_id)
     if not user:
         user = UserLogin(_id=_id, pwd=pwd, email=email)
     else:
