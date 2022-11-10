@@ -12,6 +12,7 @@ from components import cbrand, cfooter
 from utility.paths import PATH_LOGIN
 
 TAG = "analysis0"
+TAG_CAT = f"id-{TAG}-catalog"
 
 
 def layout(pathname, search, **kwargs):
@@ -24,19 +25,19 @@ def layout(pathname, search, **kwargs):
     # define components
     class_link = "text-white mx-2 hover-success"
     navlink_list = [
-        dbc.NavLink("Intros", id=f"id-{TAG}-intros", href="#", class_name=class_link),
-        dbc.NavLink("Products", id=f"id-{TAG}-products", href="#", class_name=class_link),
-        dbc.NavLink("Prices", id=f"id-{TAG}-prices", href="#", class_name=class_link),
-        dbc.NavLink("Contacts", id=f"id-{TAG}-contacts", href="#", class_name=class_link),
+        dbc.NavLink("Intros", id=f"id-{TAG}-intros", href="#intros", class_name=class_link),
+        dbc.NavLink("Products", id=f"id-{TAG}-products", href="#products", class_name=class_link),
+        dbc.NavLink("Prices", id=f"id-{TAG}-prices", href="#prices", class_name=class_link),
+        dbc.NavLink("Contacts", id=f"id-{TAG}-contacts", href="#contacts", class_name=class_link),
     ]
 
     # define components
     id_badge = f"id-{TAG}-badge"
     id_profile = f"id-{TAG}-profile"
     navitem_right = dbc.NavItem(children=[
-        dbc.Badge(5, id=id_badge, color="danger", href="#", class_name="text-decoration-none"),
+        dbc.Badge(5, id=id_badge, href="#badge", color="danger", class_name="text-decoration-none"),
         dbc.DropdownMenu(children=[
-            dbc.DropdownMenuItem("Profile", id=id_profile, href="#"),
+            dbc.DropdownMenuItem("Profile", id=id_profile, href="#profile"),
             dbc.DropdownMenuItem(divider=True),
             dbc.DropdownMenuItem("Logout", href=PATH_LOGIN),
         ], align_end=True, label=user.email.split("@")[0], class_name="ms-1"),
@@ -54,4 +55,4 @@ def layout(pathname, search, **kwargs):
     footer = cfooter.layout(fluid=False, class_name="sticky-bottom py-2 border-top")
 
     # return result
-    return html.Div([navbar, content, footer], className="bg-light vh-100 overflow-auto d-flex flex-column")
+    return html.Div([navbar, content, footer], className="d-flex flex-column vh-100 overflow-auto bg-light")

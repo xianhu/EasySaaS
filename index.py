@@ -13,14 +13,12 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app, server
-from config import config_app_name
 from pages import palert, panalysis0, panalysis1
 from pages.dsign import plogin, pemail, psetpwd
 from utility.consts import *
 from utility.paths import *
 
 # application layout
-app.title = config_app_name
 app.layout = html.Div(children=[
     html.Div(id="id-content", className=None),
     # define components

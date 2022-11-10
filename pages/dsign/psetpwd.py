@@ -115,10 +115,10 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
 
     # check user
     user = UserLogin.query.get(_id)
-    if user:
-        user.pwd = pwd
-    else:
+    if not user:
         user = UserLogin(_id=_id, pwd=pwd, email=email)
+    else:
+        user.pwd = pwd
 
     # commit user
     app_db.session.merge(user)

@@ -43,19 +43,23 @@ class User(app_db.Model):
     addr_city = sqlalchemy.Column(sqlalchemy.String(255), doc="city of address")
     addr_detail = sqlalchemy.Column(sqlalchemy.String(255), doc="detail of address")
 
+    # authentication
+    auth_session = sqlalchemy.Column(sqlalchemy.String(255), doc="session of user")
+    auth_github = sqlalchemy.Column(sqlalchemy.String(255), doc="token of github")
+    auth_google = sqlalchemy.Column(sqlalchemy.String(255), doc="token of google")
+
     # normal columns
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
-    def __init__(self, _id, pwd, name=None, avatar=None, email=None, phone=None, status=1):
+    def __init__(self, _id, pwd, name=None, email=None, phone=None, status=1):
         """
         init user
         """
         self.id = _id
         self.pwd = pwd
         self.name = name
-        self.avatar = avatar
         self.email = email
         self.phone = phone
         self.status = status
@@ -75,7 +79,6 @@ class User(app_db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "avatar": self.avatar,
             "email": self.email,
             "phone": self.phone,
             "status": self.status,
