@@ -38,8 +38,8 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # user instance
-    user = flask_login.current_user
     vhash = kwargs.get("vhash")
+    user = flask_login.current_user
 
     # define components
     class_link = "fs-6 text-white px-0 hover-success"
@@ -48,17 +48,6 @@ def layout(pathname, search, **kwargs):
         dbc.NavLink("Products", id={"type": TAG_CAT, "index": "products"}, href="#products", class_name=class_link),
         dbc.NavLink("Prices", id={"type": TAG_CAT, "index": "prices"}, href="#prices", class_name=class_link),
         dbc.NavLink("Contacts", id={"type": TAG_CAT, "index": "contacts"}, href="#contacts", class_name=class_link),
-
-        dbc.NavItem("HOME", class_name="small text-white-50 mt-4 mb-1"),
-        dbc.NavLink("Overview", id={"type": TAG_CAT, "index": "hm-overview"}, href="#hm-overview", class_name=class_link),
-        dbc.NavLink("Updates", id={"type": TAG_CAT, "index": "hm-updates"}, href="#hm-updates", class_name=class_link),
-        dbc.NavLink("Reports", id={"type": TAG_CAT, "index": "hm-reports"}, href="#hm-reports", class_name=class_link),
-
-        dbc.NavItem("DASHBOARD", class_name="small text-white-50 mt-4 mb-1"),
-        dbc.NavLink("Overview", id={"type": TAG_CAT, "index": "db-overview"}, href="#db-overview", class_name=class_link),
-        dbc.NavLink("Weekly", id={"type": TAG_CAT, "index": "db-weekly"}, href="#db-weekly", class_name=class_link),
-        dbc.NavLink("Monthly", id={"type": TAG_CAT, "index": "db-monthly"}, href="#db-monthly", class_name=class_link),
-        dbc.NavLink("Annually", id={"type": TAG_CAT, "index": "db-annually"}, href="#db-annually", class_name=class_link),
 
         dbc.NavItem("HOME", class_name="small text-white-50 mt-4 mb-1"),
         dbc.NavLink("Overview", id={"type": TAG_CAT, "index": "hm-overview"}, href="#hm-overview", class_name=class_link),
@@ -95,15 +84,15 @@ def layout(pathname, search, **kwargs):
         dcc.Store(id=f"id-{TAG}-vhash", data=vhash),
         dcc.Store(id=f"id-{TAG}-navpre", data=None),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-    ], width=12, md=2, class_name="d-flex flex-column bg-primary vh-100 overflow-auto px-4 py-2")
+    ], width=12, md=2, class_name="d-flex flex-column vh-100 overflow-auto px-4 py-2 bg-primary")
 
     # define components
     col_right = dbc.Col(dbc.Spinner(children=[
         html.Div(id=f"id-{TAG}-content", className=None),
-    ]), width=12, md=10, class_name="d-flex flex-column bg-light vh-100 overflow-auto px-4 py-2")
+    ]), width=12, md=10, class_name="d-flex flex-column vh-100 overflow-auto px-4 py-2 bg-light")
 
     # return result
-    return dbc.Row([col_left, col_right], class_name="bg-light vh-100 overflow-auto mx-0")
+    return dbc.Row([col_left, col_right], class_name="vh-100 overflow-auto mx-0 bg-light")
 
 
 @dash.callback([
@@ -119,15 +108,13 @@ def _update_content(n_clicks, vhash, id_nav_pre):
     # check trigger
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
-        vhash = vhash.strip("#")
-        trigger_id = {"index": vhash or "intros", "type": TAG_CAT}
+        vhash = vhash.strip("#") or "intros"
+        trigger_id = {"index": vhash, "type": TAG_CAT}
 
     # define variables
     id_nav_pre = id_nav_pre or ""
-    if trigger_id["index"] in ("profile", "badge"):
-        id_nav_cur = ""
-    else:
-        id_nav_cur = json.dumps(trigger_id, separators=(",", ":"))
+    id_nav_cur = "" if trigger_id["index"] in ("profile", "badge") else \
+        json.dumps(trigger_id, separators=(",", ":"))
     js_string = FMT_EXECUTEJS.format(id_nav_pre=id_nav_pre, id_nav_cur=id_nav_cur)
 
     # define components

@@ -55,4 +55,4 @@ def layout(pathname, search, **kwargs):
     footer = cfooter.layout(fluid=False, class_name="sticky-bottom py-2 border-top")
 
     # return result
-    return html.Div([navbar, content, footer], className="bg-light vh-100 overflow-auto d-flex flex-column")
+    return html.Div([navbar, content, footer], className="d-flex flex-column vh-100 overflow-auto bg-light")
