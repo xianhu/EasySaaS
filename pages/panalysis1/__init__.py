@@ -59,6 +59,17 @@ def layout(pathname, search, **kwargs):
         dbc.NavLink("Weekly", id={"type": TAG_CAT, "index": "db-weekly"}, href="#db-weekly", class_name=class_link),
         dbc.NavLink("Monthly", id={"type": TAG_CAT, "index": "db-monthly"}, href="#db-monthly", class_name=class_link),
         dbc.NavLink("Annually", id={"type": TAG_CAT, "index": "db-annually"}, href="#db-annually", class_name=class_link),
+
+        dbc.NavItem("HOME", class_name="small text-white-50 mt-4 mb-1"),
+        dbc.NavLink("Overview", id={"type": TAG_CAT, "index": "hm-overview"}, href="#hm-overview", class_name=class_link),
+        dbc.NavLink("Updates", id={"type": TAG_CAT, "index": "hm-updates"}, href="#hm-updates", class_name=class_link),
+        dbc.NavLink("Reports", id={"type": TAG_CAT, "index": "hm-reports"}, href="#hm-reports", class_name=class_link),
+
+        dbc.NavItem("DASHBOARD", class_name="small text-white-50 mt-4 mb-1"),
+        dbc.NavLink("Overview", id={"type": TAG_CAT, "index": "db-overview"}, href="#db-overview", class_name=class_link),
+        dbc.NavLink("Weekly", id={"type": TAG_CAT, "index": "db-weekly"}, href="#db-weekly", class_name=class_link),
+        dbc.NavLink("Monthly", id={"type": TAG_CAT, "index": "db-monthly"}, href="#db-monthly", class_name=class_link),
+        dbc.NavLink("Annually", id={"type": TAG_CAT, "index": "db-annually"}, href="#db-annually", class_name=class_link),
     ]
 
     # define components
@@ -84,12 +95,12 @@ def layout(pathname, search, **kwargs):
         dcc.Store(id=f"id-{TAG}-vhash", data=vhash),
         dcc.Store(id=f"id-{TAG}-navpre", data=None),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-    ], width=12, md=2, class_name="bg-primary px-4 py-2 h-100-scroll d-flex flex-column")
+    ], width=12, md=2, class_name="d-flex flex-column bg-primary vh-100 overflow-auto px-4 py-2")
 
     # define components
     col_right = dbc.Col(dbc.Spinner(children=[
         html.Div(id=f"id-{TAG}-content", className=None),
-    ]), width=12, md=10, class_name="bg-light px-4 py-2 h-100-scroll d-flex flex-column")
+    ]), width=12, md=10, class_name="d-flex flex-column bg-light vh-100 overflow-auto px-4 py-2")
 
     # return result
     return dbc.Row([col_left, col_right], class_name="bg-light vh-100 overflow-auto mx-0")
