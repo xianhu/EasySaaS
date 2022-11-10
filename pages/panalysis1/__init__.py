@@ -43,7 +43,7 @@ def layout(pathname, search, **kwargs):
     user = flask_login.current_user
 
     # define components
-    class_link = "fs-6 text-white px-0 hover-success"
+    class_link = "text-white hover-success px-0"
     navlink_list = [
         dbc.NavLink("Intros", id={"type": TAG_CAT, "index": "intros"}, href="#intros", class_name=class_link),
         dbc.NavLink("Products", id={"type": TAG_CAT, "index": "products"}, href="#products", class_name=class_link),
@@ -85,12 +85,12 @@ def layout(pathname, search, **kwargs):
         dcc.Store(id=f"id-{TAG}-vhash", data=vhash),
         dcc.Store(id=f"id-{TAG}-navpre", data=None),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-    ], width=12, md=2, class_name="d-flex flex-column vh-100 overflow-auto px-4 py-2 bg-primary")
+    ], width=2, class_name="d-flex flex-column vh-100 overflow-auto px-4 py-2 bg-primary")
 
     # define components
-    col_right = dbc.Col(dbc.Spinner(children=[
+    col_right = dbc.Col(children=[
         html.Div(id=f"id-{TAG}-content", className=None),
-    ]), width=12, md=10, class_name="d-flex flex-column vh-100 overflow-auto px-4 py-2 bg-light")
+    ], width=10, class_name="d-flex flex-column vh-100 overflow-auto px-4 py-2 bg-light")
 
     # return result
     return dbc.Row([col_left, col_right], class_name="vh-100 overflow-auto mx-0 bg-light")
