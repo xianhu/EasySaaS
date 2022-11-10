@@ -15,12 +15,14 @@ def layout(pathname, search, tag, **kwargs):
     layout of template
     """
     # define components
-    src_image = dash.get_asset_url(kwargs["src_image"])
-    left = html.Img(src=src_image, className="img-fluid")
+    src_image = kwargs["src_image"]
+    col_left = dbc.Col(children=[
+        html.Img(src=dash.get_asset_url(src_image), className="img-fluid")
+    ], width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0")
 
     # define components
     kwargs_button = dict(size="lg", class_name="w-100 mt-4")
-    right = html.Div(children=[
+    col_right = dbc.Col(children=[
         html.Div(kwargs["text_hd"], className="text-center fs-2"),
         html.Div(kwargs["text_sub"], className="text-center text-muted"),
 
@@ -29,15 +31,11 @@ def layout(pathname, search, tag, **kwargs):
 
         dbc.Button(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
         html.Div(kwargs["other_list"], className="d-flex justify-content-between"),
-    ], className=None)
+    ], width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0")
 
     # return result
     return dbc.Container(children=[
-        dbc.Row(children=[
-            dbc.Col(left, width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0"),
-            dbc.Col(right, width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0"),
-        ], align="center", justify="center", class_name="vh-100"),
-        # define components
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
-    ], fluid=True, class_name=None)
+        dbc.Row([col_left, col_right], align="center", justify="center", class_name="vh-100"),
+    ], fluid=True, class_name="vh-100")
