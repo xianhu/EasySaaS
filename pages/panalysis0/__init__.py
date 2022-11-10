@@ -12,6 +12,7 @@ from components import cbrand, cfooter
 from utility.paths import PATH_LOGIN
 
 TAG = "analysis0"
+TAG_CAT = f"id-{TAG}-catalog"
 
 
 def layout(pathname, search, **kwargs):
