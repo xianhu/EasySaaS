@@ -43,6 +43,11 @@ class User(app_db.Model):
     addr_city = sqlalchemy.Column(sqlalchemy.String(255), doc="city of address")
     addr_detail = sqlalchemy.Column(sqlalchemy.String(255), doc="detail of address")
 
+    # authentication
+    auth_session = sqlalchemy.Column(sqlalchemy.String(255), doc="session of authentication")
+    auth_github = sqlalchemy.Column(sqlalchemy.String(255), doc="token of github")
+    auth_google = sqlalchemy.Column(sqlalchemy.String(255), doc="token of google")
+
     # normal columns
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())

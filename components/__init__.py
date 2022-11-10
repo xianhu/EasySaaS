@@ -3,5 +3,3 @@
 """
 components module
 """
-
-from . import cbrand, cfooter
