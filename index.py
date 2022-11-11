@@ -72,7 +72,7 @@ def _init_page(pathname, search, vhash):
         return pathname, search, js_str, psetpwd.layout_result(pathname, search, **kwargs)
 
     # =============================================================================================
-    if pathname == PATH_ANALYSIS0 or pathname == PATH_ROOT:
+    if pathname == PATH_ANALYSIS0:
         if not flask_login.current_user.is_authenticated:
             return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
         return pathname, search, js_str, panalysis0.layout(pathname, search, **kwargs)
@@ -82,6 +82,12 @@ def _init_page(pathname, search, vhash):
         if not flask_login.current_user.is_authenticated:
             return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
         return pathname, search, js_str, panalysis1.layout(pathname, search, **kwargs)
+
+    # =============================================================================================
+    if pathname == PATH_ROOT:
+        if not flask_login.current_user.is_authenticated:
+            return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
+        return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS1), dash.no_update
 
     # =============================================================================================
     return pathname, search, js_str, palert.layout_404(pathname, search, return_href=PATH_ROOT)
