@@ -47,11 +47,11 @@ def layout(pathname, search, **kwargs):
     email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
 
     # define components
-    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", size="large", mode="password", passwordUseMd5=True)
+    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", size="large", mode="password")
     pwd1_form = fac.AntdFormItem(pwd1_input, id=f"id-{TAG}-pwd1-form", required=True)
 
     # define components
-    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Confirm password", size="large", mode="password", passwordUseMd5=True)
+    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Confirm password", size="large", mode="password")
     pwd2_form = fac.AntdFormItem(pwd2_input, id=f"id-{TAG}-pwd2-form", required=True)
 
     # define args
@@ -98,11 +98,9 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd1", "value"),
     State(f"id-{TAG}-pwd2", "value"),
-    State(f"id-{TAG}-pwd1", "md5Value"),
-    State(f"id-{TAG}-pwd2", "md5Value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, pwd1_md5, pwd2_md5, pathname):
+def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # define outputs
     out_status_help = dict(
         pwd1_status=None, pwd1_help=None,
@@ -111,7 +109,6 @@ def _button_click(n_clicks, email, pwd1, pwd2, pwd1_md5, pwd2_md5, pathname):
     out_others = dict(button_loading=False, js_string=None)
 
     # check password
-    print(email, pwd1, pwd2, pwd1_md5, pwd2_md5)
     if (not pwd1) or (len(pwd1) < 6):
         out_status_help["pwd1_status"] = "error"
         out_status_help["pwd1_help"] = "Password is too short"
@@ -125,8 +122,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pwd1_md5, pwd2_md5, pathname):
         out_status_help["pwd2_help"] = "Passwords are inconsistent"
         return out_status_help, out_others
     _id = hashlib.md5(email.encode()).hexdigest()
-    assert pwd1_md5 == pwd2_md5, (pwd1_md5, pwd2_md5)
-    pwd = security.generate_password_hash(pwd1_md5)
+    pwd = security.generate_password_hash(pwd1)
 
     # check user
     user = app_db.session.query(UserLogin).get(_id)

@@ -30,7 +30,7 @@ def layout(pathname, search, **kwargs):
     email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
 
     # define components
-    pwd_input = fac.AntdInput(id=f"id-{TAG}-pwd", placeholder="Password", size="large", mode="password", passwordUseMd5=True)
+    pwd_input = fac.AntdInput(id=f"id-{TAG}-pwd", placeholder="Password", size="large", mode="password")
     pwd_form = fac.AntdFormItem(pwd_input, id=f"id-{TAG}-pwd-form", required=True)
 
     # define components
@@ -74,12 +74,12 @@ def layout(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-button", "nClicks"),
     State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd", "md5Value"),
+    State(f"id-{TAG}-pwd", "value"),
     State(f"id-{TAG}-cpc", "value"),
     State(f"id-{TAG}-cpc-image", "captcha"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd_md5, cinput, vimage, nextpath):
+def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     # define outputs
     out_status_help = dict(
         email_status=None, email_help=None,
@@ -89,7 +89,7 @@ def _button_click(n_clicks, email, pwd_md5, cinput, vimage, nextpath):
     out_others = dict(cpc_refresh=False, button_loading=False, js_string=None)
 
     # check captcha
-    if (cinput != vimage) or (not cinput):
+    if (vcpc != vimage) or (not vcpc):
         out_status_help["cpc_status"] = "error"
         out_status_help["cpc_help"] = "Captcha is incorrect"
         return out_status_help, out_others
@@ -110,7 +110,7 @@ def _button_click(n_clicks, email, pwd_md5, cinput, vimage, nextpath):
         return out_status_help, out_others
 
     # check password
-    if not security.check_password_hash(user.pwd, pwd_md5 or ""):
+    if not security.check_password_hash(user.pwd, pwd or ""):
         out_status_help["pwd_status"] = "error"
         out_status_help["pwd_help"] = "Password is incorrect"
         return out_status_help, out_others

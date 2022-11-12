@@ -27,19 +27,18 @@ def layout(pathname, search, tag, **kwargs):
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
         html.Div(kwargs["form_items"], className="mt-4"),
-
         fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
-        html.Div(kwargs["other_list"], className="d-flex justify-content-between mt-2"),
-    ], span=20, md=dict(span=6, offset=0), className=None)
 
-    # define components
-    col_other = fac.AntdCol(className="vh-100")
+        html.Div(kwargs["other_list"], className="d-flex justify-content-between mt-1"),
+    ], span=20, md=dict(span=6, offset=0), className=None)
 
     # return result
     return html.Div(children=[
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
         fac.AntdRow(children=[
-            col_other, col_left, col_right, col_other,
-        ], justify="center", align="middle", gutter=60),
+            fac.AntdCol(span=1, className="vh-100"),
+            col_left, col_right,
+            fac.AntdCol(span=1, className="vh-100"),
+        ], align="middle", justify="center", gutter=60),
     ], className=None)

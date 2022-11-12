@@ -99,7 +99,7 @@ if __name__ == "__main__":
     with orm.sessionmaker(engine)() as session:
         _email = "admin@easysaas.com"
         _id = hashlib.md5(_email.encode()).hexdigest()
-        _pwd = security.generate_password_hash(_id)
+        _pwd = security.generate_password_hash(_email)
         _user = User(_id=_id, pwd=_pwd, email=_email)
 
         session.add(_user)
