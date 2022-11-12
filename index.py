@@ -12,14 +12,14 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app, server
-from pages import palert, panalysis0, panalysis1
+from pages import palert, panalysis
 from pages.dsign import plogin, pemail, psetpwd
 from utility.consts import *
 from utility.paths import *
 
 # application layout
 app.layout = html.Div(children=[
-    html.Div(id="id-content", className=None),
+    html.Div(id="id-content"),
     # define components
     fuc.FefferyExecuteJs(id="id-executejs"),
     dcc.Location(id="id-location", refresh=False),
@@ -72,19 +72,13 @@ def _init_page(pathname, search, vhash):
     if pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
             return pathname, search, dash.no_update, js_str_login
-        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS1)
+        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS)
 
     # =============================================================================================
-    if pathname == PATH_ANALYSIS0:
+    if pathname == PATH_ANALYSIS:
         if not flask_login.current_user.is_authenticated:
             return pathname, search, dash.no_update, js_str_login
-        return pathname, search, panalysis0.layout(pathname, search, **kwargs), js_str_title
-
-    # =============================================================================================
-    if pathname == PATH_ANALYSIS1:
-        if not flask_login.current_user.is_authenticated:
-            return pathname, search, dash.no_update, js_str_login
-        return pathname, search, panalysis1.layout(pathname, search, **kwargs), js_str_title
+        return pathname, search, panalysis.layout(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
     return pathname, search, palert.layout_404(pathname, search, return_href=PATH_ROOT), js_str_title

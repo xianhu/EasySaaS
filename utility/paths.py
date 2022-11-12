@@ -10,5 +10,4 @@ PATH_LOGIN = "/login"
 PATH_SIGNUP = "/signup"
 PATH_FORGOTPWD = "/forgotpwd"
 
-PATH_ANALYSIS0 = "/analysis0"
-PATH_ANALYSIS1 = "/analysis1"
+PATH_ANALYSIS = "/analysis"
