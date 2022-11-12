@@ -60,10 +60,10 @@ def _update_content(current_key, clicked_key):
         current_key = ROUTER_MENU[0]["props"]["key"]
 
     # define components
-    empty = fac.AntdEmpty(locale="en_US", description="No Content")
+    content = fac.AntdEmpty(locale="en_US", description="No Content")
 
     # return result
     if (not trigger_id) or (trigger_id == f"id-{TAG}-menu"):
-        return current_key, dash.no_update, current_key, empty
+        return current_key, dash.no_update, current_key, content
     else:
-        return None, None, clicked_key, empty
+        return None, None, clicked_key, content
