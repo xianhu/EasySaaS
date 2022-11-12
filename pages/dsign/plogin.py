@@ -7,18 +7,15 @@ login page
 import hashlib
 
 import dash
-import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 from werkzeug import security
 
 from app import UserLogin, app_db
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
-from utility.paths import PATH_ROOT
-from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_NOTEXIST, ERROR_PWD_INCORRECT
-from . import LABEL_EMAIL, LABEL_PWD, A_SIGNUP, A_FORGOTPWD, ERROR_CPC_INCORRECT
-from . import LOGIN_TEXT_HD, LOGIN_TEXT_SUB, LOGIN_TEXT_BUTTON
+from utility.paths import PATH_ROOT, PATH_SIGNUP, PATH_FORGOTPWD
 from . import tsign
 
 TAG = "login"
@@ -29,29 +26,30 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    form_items = dbc.Form(children=[
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email"),
-            dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
-        ], class_name=None),
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-pwd", type="password"),
-            dbc.Label(f"{LABEL_PWD}:", html_for=f"id-{TAG}-pwd"),
-        ], class_name="mt-4"),
-        dbc.Row(children=[
-            dbc.Col(dbc.Input(id=f"id-{TAG}-cpcinput", placeholder="captcha"), width=6),
-            dbc.Col(fuc.FefferyCaptcha(id=f"id-{TAG}-cpcimage", charNum=4), width=6),
-        ], align="center", class_name="mt-4"),
-    ], class_name=None)
+    email_input = fac.AntdInput(id=f"id-{TAG}-email", placeholder="Email", size="large")
+    email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
+
+    # define components
+    pwd_input = fac.AntdInput(id=f"id-{TAG}-pwd", placeholder="Password", mode="password", size="large")
+    pwd_form = fac.AntdFormItem(pwd_input, id=f"id-{TAG}-pwd-form", required=True)
+
+    # define components
+    cpc_input = fac.AntdInput(id=f"id-{TAG}-cpc", placeholder="Captcha", size="large")
+    cpc_form = fac.AntdFormItem(cpc_input, id=f"id-{TAG}-cpc-form", required=True)
+    cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
+    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image, span=12)], gutter=30)
 
     # define args
     kwargs_temp = dict(
         src_image="illustrations/login.svg",
-        text_hd=LOGIN_TEXT_HD,
-        text_sub=LOGIN_TEXT_SUB,
-        form_items=form_items,
-        text_button=LOGIN_TEXT_BUTTON,
-        other_list=[A_SIGNUP, A_FORGOTPWD],
+        text_title="Welcome back",
+        text_subtitle="Login to analysis your data.",
+        form_items=fac.AntdForm([email_form, pwd_form, cpc_row]),
+        text_button="Log in",
+        other_list=[
+            html.A("Sign up", href=PATH_SIGNUP),
+            html.A("Forgot password?", href=PATH_FORGOTPWD),
+        ],
         data=kwargs.get("nextpath") or PATH_ROOT,
     )
 
@@ -59,45 +57,67 @@ def layout(pathname, search, **kwargs):
     return tsign.layout(pathname, search, TAG, **kwargs_temp)
 
 
-@dash.callback([
-    Output(f"id-{TAG}-cpcimage", "refresh"),
-    Output(f"id-{TAG}-feedback", "children"),
-    Output(f"id-{TAG}-executejs", "jsString"),
-], [
-    Input(f"id-{TAG}-button", "n_clicks"),
-    Input(f"id-{TAG}-email", "value"),
-    Input(f"id-{TAG}-pwd", "value"),
-    Input(f"id-{TAG}-cpcinput", "value"),
-    State(f"id-{TAG}-cpcimage", "captcha"),
+@dash.callback([dict(
+    email_status=Output(f"id-{TAG}-email-form", "validateStatus"),
+    email_help=Output(f"id-{TAG}-email-form", "help"),
+    pwd_status=Output(f"id-{TAG}-pwd-form", "validateStatus"),
+    pwd_help=Output(f"id-{TAG}-pwd-form", "help"),
+    cpc_status=Output(f"id-{TAG}-cpc-form", "validateStatus"),
+    cpc_help=Output(f"id-{TAG}-cpc-form", "help"),
+), dict(
+    cpc_refresh=Output(f"id-{TAG}-cpc-image", "refresh"),
+    button_loading=Output(f"id-{TAG}-button", "loading"),
+    js_string=Output(f"id-{TAG}-executejs", "jsString"),
+)], [
+    Input(f"id-{TAG}-button", "nClicks"),
+    State(f"id-{TAG}-email", "value"),
+    State(f"id-{TAG}-pwd", "value"),
+    State(f"id-{TAG}-cpc", "value"),
+    State(f"id-{TAG}-cpc-image", "captcha"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, cinput, vimage, nextpath):
-    # check trigger
-    trigger = dash.ctx.triggered_id
-    if trigger in (f"id-{TAG}-email", f"id-{TAG}-pwd", f"id-{TAG}-cpcinput"):
-        return dash.no_update, None, dash.no_update
-
-    # check captcha
-    if (cinput != vimage) or (not cinput):
-        return True, ERROR_CPC_INCORRECT, dash.no_update
+def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
+    # define outputs
+    out_status_help = dict(
+        email_status="", email_help="",
+        pwd_status="", pwd_help="",
+        cpc_status="", cpc_help="",
+    )
+    out_others = dict(cpc_refresh=False, button_loading=False, js_string=None)
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return dash.no_update, ERROR_EMAIL_FORMAT, dash.no_update
-    _id = hashlib.md5(email.encode()).hexdigest()
+        out_status_help["email_status"] = "error"
+        out_status_help["email_help"] = "Format of email is invalid"
+        return out_status_help, out_others
+
+    # check captcha
+    if (vcpc != vimage) or (not vcpc):
+        out_status_help["cpc_status"] = "error"
+        out_status_help["cpc_help"] = "Captcha is incorrect"
+        out_others["cpc_refresh"] = True if vcpc else False
+        return out_status_help, out_others
 
     # check user
+    _id = hashlib.md5(email.encode()).hexdigest()
     user = app_db.session.query(UserLogin).get(_id)
     if not user:
-        return dash.no_update, ERROR_EMAIL_NOTEXIST, dash.no_update
+        out_status_help["email_status"] = "error"
+        out_status_help["email_help"] = "This email hasn't been registered"
+        out_others["cpc_refresh"] = True
+        return out_status_help, out_others
 
     # check password
     if not security.check_password_hash(user.pwd, pwd or ""):
-        return dash.no_update, ERROR_PWD_INCORRECT, dash.no_update
+        out_status_help["pwd_status"] = "error"
+        out_status_help["pwd_help"] = "Password is incorrect"
+        out_others["cpc_refresh"] = True
+        return out_status_help, out_others
 
     # login user
     flask_login.login_user(user, remember=True)
 
     # return result
-    return dash.no_update, None, FMT_EXECUTEJS_HREF.format(href=nextpath)
+    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
+    return out_status_help, out_others

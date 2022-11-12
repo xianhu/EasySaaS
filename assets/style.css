@@ -5,26 +5,13 @@
 /* ----------------------------------------------------- */
 
 :root {
-    --color-primary: #2c3e50;
-    --color-success: #18bc9c;
+
 }
 
 /* ----------------------------------------------------- */
 
-.hover-primary:hover {
-    color: var(--color-primary) !important;
-}
-
-.hover-primary:focus {
-    color: var(--color-primary) !important;
-}
-
-.hover-success:hover {
-    color: var(--color-success) !important;
-}
-
-.hover-success:focus {
-    color: var(--color-success) !important;
+.ant-menu-item-icon {
+    display: flex !important;
 }
 
 /* ----------------------------------------------------- */

@@ -4,54 +4,39 @@
 alert page
 """
 
-import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
 from dash import html
 
 from utility.paths import PATH_ROOT
 
 
-def layout(pathname, search, text_hd, text_sub, text_button, return_href):
-    """
-    layout of page, only text and button, no image
-    """
-    return dbc.Row(dbc.Col(children=[
-        html.Div(text_hd, className="text-center fs-2"),
-        html.Div(text_sub, className="text-center text-muted mt-2"),
-        dbc.Button(text_button, href=return_href, size="lg", class_name="w-100 mt-4"),
-    ], width=10, md=3), align="center", justify="center", class_name="vh-100 w-100 mx-auto")
-
-
-def layout_403(pathname, search, return_href=PATH_ROOT):
+def layout(pathname, search, status, text_title, text_subtitle, text_button, return_href):
     """
     layout of page
     """
-    text_hd = "No authorization"
-    text_sub = "You have no authorization, click button to safe page."
-    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
+    kwargs = dict(type="primary", size="large", className="mt-2")
+    return html.Div(fac.AntdResult(
+        status=status, title=text_title,
+        subTitle=[
+            fac.AntdText(text_subtitle), html.Br(),
+            fac.AntdButton(text_button, href=return_href, **kwargs),
+        ]
+    ), className="d-flex align-items-center justify-content-center vh-100")
 
 
 def layout_404(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
     """
-    text_hd = "Page not found"
-    text_sub = "This page is not found, click button to safe page."
-    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
-
-
-def layout_500(pathname, search, return_href=PATH_ROOT):
-    """
-    layout of page
-    """
-    text_hd = "Error occurred"
-    text_sub = "An error has occurred, click button to safe page."
-    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
+    text_title = "Page not found"
+    text_subtitle = "This page is not found, click button to safe page."
+    return layout(pathname, search, "404", text_title, text_subtitle, "Back to safety", return_href)
 
 
 def layout_expired(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
     """
-    text_hd = "Link expired"
-    text_sub = "The link has expired, click button to safe page."
-    return layout(pathname, search, text_hd, text_sub, "Back to safety", return_href)
+    text_title = "Link expired"
+    text_subtitle = "The link has expired, click button to safe page."
+    return layout(pathname, search, "error", text_title, text_subtitle, "Back to safety", return_href)
