@@ -10,20 +10,16 @@ import urllib.parse
 import uuid
 
 import dash
-import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask
 import flask_mail
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 
 from app import UserLogin, app_db, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
-from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
-from . import ERROR_EMAIL_FORMAT, ERROR_EMAIL_EXIST, ERROR_EMAIL_NOTEXIST
-from . import FORGOTPWD_TEXT_HD, FORGOTPWD_TEXT_SUB, FORGOTPWD_TEXT_BUTTON
-from . import LABEL_EMAIL, A_LOGIN, A_SIGNUP, A_FORGOTPWD, ERROR_CPC_INCORRECT
-from . import SIGNUP_TEXT_HD, SIGNUP_TEXT_SUB, SIGNUP_TEXT_BUTTON
+from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD
 from . import tsign
 from .. import palert
 
@@ -35,33 +31,37 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    form_items = dbc.Form(children=[
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email"),
-            dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
-        ], class_name=None),
-        dbc.Row(children=[
-            dbc.Col(dbc.Input(id=f"id-{TAG}-cpcinput", placeholder="captcha"), width=6),
-            dbc.Col(fuc.FefferyCaptcha(id=f"id-{TAG}-cpcimage", charNum=4), width=6),
-        ], align="center", class_name="mt-4"),
-    ], class_name=None)
+    email_input = fac.AntdInput(id=f"id-{TAG}-email", placeholder="Email", size="large")
+    email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
+
+    # define components
+    cpc_input = fac.AntdInput(id=f"id-{TAG}-cpc", placeholder="Captcha", size="large")
+    cpc_form = fac.AntdFormItem(cpc_input, id=f"id-{TAG}-cpc-form", required=True)
+    cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
+    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image, span=12)], gutter=30)
 
     # define args
     kwargs_temp = dict(
         src_image="illustrations/signup.svg",
-        text_hd=SIGNUP_TEXT_HD,
-        text_sub=SIGNUP_TEXT_SUB,
-        form_items=form_items,
-        text_button=SIGNUP_TEXT_BUTTON,
-        other_list=[A_LOGIN, A_FORGOTPWD],
+        text_title="Welcome to ES",
+        text_subtitle="Fill out the email to get started.",
+        form_items=fac.AntdForm([email_form, cpc_row]),
+        text_button="Verify the email",
+        other_list=[
+            html.A("Log in", href=PATH_LOGIN),
+            html.A("Forgot password?", href=PATH_FORGOTPWD),
+        ],
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         src_image="illustrations/forgotpwd.svg",
-        text_hd=FORGOTPWD_TEXT_HD,
-        text_sub=FORGOTPWD_TEXT_SUB,
-        form_items=form_items,
-        text_button=FORGOTPWD_TEXT_BUTTON,
-        other_list=[A_LOGIN, A_SIGNUP],
+        text_title="Forgot password?",
+        text_subtitle="Fill out the email to reset password.",
+        form_items=fac.AntdForm([email_form, cpc_row]),
+        text_button="Verify the email",
+        other_list=[
+            html.A("Log in", href=PATH_LOGIN),
+            html.A("Sign up", href=PATH_SIGNUP),
+        ],
         data=PATH_FORGOTPWD,
     )
 
@@ -75,46 +75,65 @@ def layout_result(pathname, search, **kwargs):
     """
     email = flask.session.get("email")
     return palert.layout(pathname, search, **dict(
-        text_hd="Sending success",
-        text_sub=f"An email has sent to {email}.",
+        status="success",
+        text_title="Sending success",
+        text_subtitle=f"An email has sent to {email}.",
         text_button="Now, go to mailbox!",
         return_href=None,
     ))
 
 
 @dash.callback([
-    Output(f"id-{TAG}-cpcimage", "refresh"),
-    Output(f"id-{TAG}-feedback", "children"),
-    Output(f"id-{TAG}-executejs", "jsString"),
+    dict(
+        email_status=Output(f"id-{TAG}-email-form", "validateStatus"),
+        email_help=Output(f"id-{TAG}-email-form", "help"),
+        cpc_status=Output(f"id-{TAG}-cpc-form", "validateStatus"),
+        cpc_help=Output(f"id-{TAG}-cpc-form", "help"),
+    ),
+    dict(
+        cpc_refresh=Output(f"id-{TAG}-cpc-image", "refresh"),
+        button_loading=Output(f"id-{TAG}-button", "loading"),
+        js_string=Output(f"id-{TAG}-executejs", "jsString"),
+    ),
 ], [
-    Input(f"id-{TAG}-button", "n_clicks"),
-    Input(f"id-{TAG}-email", "value"),
-    Input(f"id-{TAG}-cpcinput", "value"),
-    State(f"id-{TAG}-cpcimage", "captcha"),
+    Input(f"id-{TAG}-button", "nClicks"),
+    State(f"id-{TAG}-email", "value"),
+    State(f"id-{TAG}-cpc", "value"),
+    State(f"id-{TAG}-cpc-image", "captcha"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, cinput, vimage, pathname):
-    # check trigger
-    trigger = dash.ctx.triggered_id
-    if trigger == f"id-{TAG}-email" or trigger == f"id-{TAG}-cpcinput":
-        return dash.no_update, None, dash.no_update
+    # define outputs
+    out_status_help = dict(
+        email_status=None, email_help=None,
+        cpc_status=None, cpc_help=None,
+    )
+    out_others = dict(cpc_refresh=False, button_loading=False, js_string=None)
 
     # check captcha
     if (cinput != vimage) or (not cinput):
-        return True, ERROR_CPC_INCORRECT, dash.no_update
+        out_status_help["cpc_status"] = "error"
+        out_status_help["cpc_help"] = "Captcha is incorrect"
+        return out_status_help, out_others
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        return dash.no_update, ERROR_EMAIL_FORMAT, dash.no_update
+        out_status_help["email_status"] = "error"
+        out_status_help["email_help"] = "Format of email is invalid"
+        return out_status_help, out_others
     _id = hashlib.md5(email.encode()).hexdigest()
 
     # check user
     user = app_db.session.query(UserLogin).get(_id)
     if pathname == PATH_SIGNUP and user:
-        return dash.no_update, ERROR_EMAIL_EXIST, dash.no_update
+        out_status_help["email_status"] = "error"
+        out_status_help["email_help"] = "This email has been registered"
+        return out_status_help, out_others
     if pathname == PATH_FORGOTPWD and (not user):
-        return dash.no_update, ERROR_EMAIL_NOTEXIST, dash.no_update
+        out_status_help["email_status"] = "error"
+        out_status_help["email_help"] = "This email hasn't been registered"
+        return out_status_help, out_others
 
     # send email and cache
     if not app_redis.get(_id):
@@ -139,4 +158,5 @@ def _button_click(n_clicks, email, cinput, vimage, pathname):
     flask.session["email"] = email
 
     # return result
-    return dash.no_update, None, FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
+    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
+    return out_status_help, out_others

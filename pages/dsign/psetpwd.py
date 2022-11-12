@@ -10,16 +10,13 @@ import logging
 import urllib.parse
 
 import dash
-import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
 from dash import Input, Output, State
 from werkzeug import security
 
 from app import UserLogin, app_db, app_redis
 from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_ROOT
-from . import ERROR_PWD_SHORT, ERROR_PWD_FORMAT, ERROR_PWD_INCONSISTENT
-from . import LABEL_EMAIL, LABEL_PWD, LABEL_PWD_CFM
-from . import SETPWD_TEXT_HD, SETPWD_TEXT_SUB, SETPWD_TEXT_BUTTON
 from . import tsign
 from .. import palert
 
@@ -45,28 +42,25 @@ def layout(pathname, search, **kwargs):
         return palert.layout_expired(pathname, search, return_href=PATH_ROOT)
 
     # define components
-    form_items = dbc.Form(children=[
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-email", type="email", value=email, readonly=True),
-            dbc.Label(f"{LABEL_EMAIL}:", html_for=f"id-{TAG}-email"),
-        ], class_name=None),
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-pwd1", type="password"),
-            dbc.Label(f"{LABEL_PWD}:", html_for=f"id-{TAG}-pwd1"),
-        ], class_name="mt-4"),
-        dbc.FormFloating(children=[
-            dbc.Input(id=f"id-{TAG}-pwd2", type="password"),
-            dbc.Label(f"{LABEL_PWD_CFM}:", html_for=f"id-{TAG}-pwd2"),
-        ], class_name="mt-4"),
-    ], class_name=None)
+    # define components
+    email_input = fac.AntdInput(id=f"id-{TAG}-email", value=email, size="large", readOnly=True)
+    email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
+
+    # define components
+    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", size="large", mode="password", passwordUseMd5=True)
+    pwd1_form = fac.AntdFormItem(pwd1_input, id=f"id-{TAG}-pwd1-form", required=True)
+
+    # define components
+    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Confirm password", size="large", mode="password", passwordUseMd5=True)
+    pwd2_form = fac.AntdFormItem(pwd2_input, id=f"id-{TAG}-pwd2-form", required=True)
 
     # define args
     kwargs_temp = dict(
         src_image="illustrations/setpwd.svg",
-        text_hd=SETPWD_TEXT_HD,
-        text_sub=SETPWD_TEXT_SUB,
-        form_items=form_items,
-        text_button=SETPWD_TEXT_BUTTON,
+        text_title="Set password",
+        text_subtitle="Set the password of this email please.",
+        form_items=fac.AntdForm([email_form, pwd1_form, pwd2_form]),
+        text_button="Set password",
         other_list=[],
         data=pathname,
     )
@@ -80,38 +74,59 @@ def layout_result(pathname, search, **kwargs):
     layout of page
     """
     return palert.layout(pathname, search, **dict(
-        text_hd="Setting success",
-        text_sub="The password was set successfully.",
+        status="success",
+        text_title="Setting success",
+        text_subtitle="The password was set successfully.",
         text_button="Go to login",
         return_href=PATH_LOGIN,
     ))
 
 
 @dash.callback([
-    Output(f"id-{TAG}-feedback", "children"),
-    Output(f"id-{TAG}-executejs", "jsString"),
+    dict(
+        pwd1_status=Output(f"id-{TAG}-pwd1-form", "validateStatus"),
+        pwd1_help=Output(f"id-{TAG}-pwd1-form", "help"),
+        pwd2_status=Output(f"id-{TAG}-pwd2-form", "validateStatus"),
+        pwd2_help=Output(f"id-{TAG}-pwd2-form", "help"),
+    ),
+    dict(
+        button_loading=Output(f"id-{TAG}-button", "loading"),
+        js_string=Output(f"id-{TAG}-executejs", "jsString"),
+    ),
 ], [
-    Input(f"id-{TAG}-button", "n_clicks"),
-    Input(f"id-{TAG}-email", "value"),
-    Input(f"id-{TAG}-pwd1", "value"),
-    Input(f"id-{TAG}-pwd2", "value"),
+    Input(f"id-{TAG}-button", "nClicks"),
+    State(f"id-{TAG}-email", "value"),
+    State(f"id-{TAG}-pwd1", "value"),
+    State(f"id-{TAG}-pwd2", "value"),
+    State(f"id-{TAG}-pwd1", "md5Value"),
+    State(f"id-{TAG}-pwd2", "md5Value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, pathname):
-    # check trigger
-    trigger = dash.ctx.triggered_id
-    if trigger in (f"id-{TAG}-email", f"id-{TAG}-pwd1", f"id-{TAG}-pwd2"):
-        return None, dash.no_update
+def _button_click(n_clicks, email, pwd1, pwd2, pwd1_md5, pwd2_md5, pathname):
+    # define outputs
+    out_status_help = dict(
+        pwd1_status=None, pwd1_help=None,
+        pwd2_status=None, pwd2_help=None,
+    )
+    out_others = dict(button_loading=False, js_string=None)
 
     # check password
+    print(email, pwd1, pwd2, pwd1_md5, pwd2_md5)
     if (not pwd1) or (len(pwd1) < 6):
-        return ERROR_PWD_SHORT, dash.no_update
+        out_status_help["pwd1_status"] = "error"
+        out_status_help["pwd1_help"] = "Password is too short"
+        return out_status_help, out_others
     if not RE_PWD.match(pwd1):
-        return ERROR_PWD_FORMAT, dash.no_update
+        out_status_help["pwd1_status"] = "error"
+        out_status_help["pwd1_help"] = "Password must contain numbers and letters"
+        return out_status_help, out_others
     if (not pwd2) or (pwd2 != pwd1):
-        return ERROR_PWD_INCONSISTENT, dash.no_update
+        out_status_help["pwd2_status"] = "error"
+        out_status_help["pwd2_help"] = "Passwords are inconsistent"
+        return out_status_help, out_others
     _id = hashlib.md5(email.encode()).hexdigest()
-    pwd = security.generate_password_hash(pwd1)
+    assert pwd1_md5 == pwd2_md5, (pwd1_md5, pwd2_md5)
+    pwd = security.generate_password_hash(pwd1_md5)
 
     # check user
     user = app_db.session.query(UserLogin).get(_id)
@@ -128,4 +143,5 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     app_redis.delete(_id)
 
     # return result
-    return None, FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
+    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
+    return out_status_help, out_others

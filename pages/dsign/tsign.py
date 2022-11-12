@@ -5,7 +5,7 @@ template of sign page
 """
 
 import dash
-import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import dcc, html
 
@@ -15,27 +15,31 @@ def layout(pathname, search, tag, **kwargs):
     layout of template
     """
     # define components
-    src_image = kwargs["src_image"]
-    col_left = dbc.Col(children=[
-        html.Img(src=dash.get_asset_url(src_image), className="img-fluid")
-    ], width=10, md={"size": 4, "offset": 0}, class_name="mt-auto mt-md-0")
+    src_image = dash.get_asset_url(kwargs.get("src_image"))
+    col_left = fac.AntdCol(children=[
+        fac.AntdImage(src=src_image, preview=False)
+    ], span=20, md=dict(span=8, offset=0), className=None)
 
     # define components
-    kwargs_button = dict(size="lg", class_name="w-100 mt-4")
-    col_right = dbc.Col(children=[
-        html.Div(kwargs["text_hd"], className="text-center fs-2"),
-        html.Div(kwargs["text_sub"], className="text-center text-muted"),
+    kwargs_button = dict(type="primary", size="large", autoSpin=True, className="w-100")
+    col_right = fac.AntdCol(children=[
+        html.Div(kwargs["text_title"], className="text-center fs-2"),
+        html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
         html.Div(kwargs["form_items"], className="mt-4"),
-        html.Div(id=f"id-{tag}-feedback", className="text-center text-danger"),
 
-        dbc.Button(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
-        html.Div(kwargs["other_list"], className="d-flex justify-content-between"),
-    ], width=10, md={"size": 3, "offset": 1}, class_name="mb-auto mb-md-0")
+        fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
+        html.Div(kwargs["other_list"], className="d-flex justify-content-between mt-2"),
+    ], span=20, md=dict(span=6, offset=0), className=None)
+
+    # define components
+    col_other = fac.AntdCol(className="vh-100")
 
     # return result
-    return dbc.Container(children=[
+    return html.Div(children=[
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
-        dbc.Row([col_left, col_right], align="center", justify="center", class_name="vh-100"),
-    ], fluid=True, class_name="vh-100")
+        fac.AntdRow(children=[
+            col_other, col_left, col_right, col_other,
+        ], justify="center", align="middle", gutter=60),
+    ], className=None)
