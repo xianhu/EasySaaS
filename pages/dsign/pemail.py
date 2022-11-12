@@ -118,7 +118,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     if (vcpc != vimage) or (not vcpc):
         out_status_help["cpc_status"] = "error"
         out_status_help["cpc_help"] = "Captcha is incorrect"
-        out_others["cpc_refresh"] = True
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_status_help, out_others
 
     # check user

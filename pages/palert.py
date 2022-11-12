@@ -21,7 +21,7 @@ def layout(pathname, search, status, text_title, text_subtitle, text_button, ret
             fac.AntdText(text_subtitle), html.Br(),
             fac.AntdButton(text_button, href=return_href, **kwargs),
         ]
-    ), className="d-flex justify-content-center align-items-center vh-100")
+    ), className="d-flex align-items-center justify-content-center vh-100")
 
 
 def layout_404(pathname, search, return_href=PATH_ROOT):
