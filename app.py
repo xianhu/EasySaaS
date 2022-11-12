@@ -8,7 +8,6 @@ import logging
 
 import celery
 import dash
-import dash_bootstrap_components as dbc
 import flask_login
 import flask_mail
 import flask_redis
@@ -46,7 +45,7 @@ app = dash.Dash(
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
-    external_stylesheets=[dbc.icons.BOOTSTRAP, ],
+    external_stylesheets=[],
     external_scripts=[],
     assets_folder="assets",
     assets_ignore="favicon1.*",

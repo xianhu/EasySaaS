@@ -25,14 +25,12 @@ app.layout = html.Div(children=[
     dcc.Location(id="id-location", refresh=False),
 ])
 
-# complete layout
-
 
 @dash.callback([
     Output("id-location", "pathname"),
     Output("id-location", "search"),
-    Output("id-executejs", "jsString"),
     Output("id-content", "children"),
+    Output("id-executejs", "jsString"),
 ], [
     Input("id-location", "pathname"),
     State("id-location", "search"),
@@ -43,52 +41,53 @@ def _init_page(pathname, search, vhash):
 
     # define variables
     kwargs = dict(vhash=vhash, nextpath=None)
-    js_str = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
+    js_str_login = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
+    js_str_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
     # =============================================================================================
     if pathname == PATH_LOGIN:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, js_str, plogin.layout(pathname, search, **kwargs)
+        return pathname, search, plogin.layout(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
     if pathname == PATH_SIGNUP or pathname == PATH_FORGOTPWD:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, js_str, pemail.layout(pathname, search, **kwargs)
+        return pathname, search, pemail.layout(pathname, search, **kwargs), js_str_title
 
     if pathname == f"{PATH_SIGNUP}/result" or pathname == f"{PATH_FORGOTPWD}/result":
-        return pathname, search, js_str, pemail.layout_result(pathname, search, **kwargs)
+        return pathname, search, pemail.layout_result(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
     if pathname == f"{PATH_SIGNUP}-setpwd" or pathname == f"{PATH_FORGOTPWD}-setpwd":
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
-        return pathname, search, js_str, psetpwd.layout(pathname, search, **kwargs)
+        return pathname, search, psetpwd.layout(pathname, search, **kwargs), js_str_title
 
     if pathname == f"{PATH_SIGNUP}-setpwd/result" or pathname == f"{PATH_FORGOTPWD}-setpwd/result":
-        return pathname, search, js_str, psetpwd.layout_result(pathname, search, **kwargs)
-
-    # =============================================================================================
-    if pathname == PATH_ANALYSIS0:
-        if not flask_login.current_user.is_authenticated:
-            return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
-        return pathname, search, js_str, panalysis0.layout(pathname, search, **kwargs)
-
-    # =============================================================================================
-    if pathname == PATH_ANALYSIS1:
-        if not flask_login.current_user.is_authenticated:
-            return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
-        return pathname, search, js_str, panalysis1.layout(pathname, search, **kwargs)
+        return pathname, search, psetpwd.layout_result(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
     if pathname == PATH_ROOT:
         if not flask_login.current_user.is_authenticated:
-            return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN), dash.no_update
-        return pathname, search, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS1), dash.no_update
+            return pathname, search, dash.no_update, js_str_login
+        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS1)
 
     # =============================================================================================
-    return pathname, search, js_str, palert.layout_404(pathname, search, return_href=PATH_ROOT)
+    if pathname == PATH_ANALYSIS0:
+        if not flask_login.current_user.is_authenticated:
+            return pathname, search, dash.no_update, js_str_login
+        return pathname, search, panalysis0.layout(pathname, search, **kwargs), js_str_title
+
+    # =============================================================================================
+    if pathname == PATH_ANALYSIS1:
+        if not flask_login.current_user.is_authenticated:
+            return pathname, search, dash.no_update, js_str_login
+        return pathname, search, panalysis1.layout(pathname, search, **kwargs), js_str_title
+
+    # =============================================================================================
+    return pathname, search, palert.layout_404(pathname, search, return_href=PATH_ROOT), js_str_title
 
 
 if __name__ == "__main__":
