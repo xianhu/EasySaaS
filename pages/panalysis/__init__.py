@@ -46,7 +46,7 @@ def layout(pathname, search, **kwargs):
 
 @dash.callback([
     Output(f"id-{TAG}-menu", "currentKey"),
-    Output(f"id-{TAG}-menu", "openKeys"),
+    Output(f"id-{TAG}-user", "clickedKey"),
     Output(f"id-{TAG}-header", "children"),
     Output(f"id-{TAG}-content", "children"),
 ], [
@@ -57,13 +57,14 @@ def _update_content(current_key, clicked_key):
     # check trigger
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
+        trigger_id = f"id-{TAG}-menu"
         current_key = ROUTER_MENU[0]["props"]["key"]
 
     # define components
     content = fac.AntdEmpty(locale="en_US", description="No Content")
 
     # return result
-    if (not trigger_id) or (trigger_id == f"id-{TAG}-menu"):
-        return current_key, dash.no_update, current_key, content
+    if trigger_id == f"id-{TAG}-menu":
+        return current_key, None, current_key, content
     else:
         return None, None, clicked_key, content
