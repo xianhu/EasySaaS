@@ -42,16 +42,13 @@ def layout(pathname, search, **kwargs):
         return palert.layout_expired(pathname, search, return_href=PATH_ROOT)
 
     # define components
-    # define components
     email_input = fac.AntdInput(id=f"id-{TAG}-email", value=email, size="large", readOnly=True)
     email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
 
     # define components
-    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", size="large", mode="password")
+    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", mode="password", size="large")
     pwd1_form = fac.AntdFormItem(pwd1_input, id=f"id-{TAG}-pwd1-form", required=True)
-
-    # define components
-    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Confirm password", size="large", mode="password")
+    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Password", mode="password", size="large")
     pwd2_form = fac.AntdFormItem(pwd2_input, id=f"id-{TAG}-pwd2-form", required=True)
 
     # define args
@@ -82,18 +79,15 @@ def layout_result(pathname, search, **kwargs):
     ))
 
 
-@dash.callback([
-    dict(
-        pwd1_status=Output(f"id-{TAG}-pwd1-form", "validateStatus"),
-        pwd1_help=Output(f"id-{TAG}-pwd1-form", "help"),
-        pwd2_status=Output(f"id-{TAG}-pwd2-form", "validateStatus"),
-        pwd2_help=Output(f"id-{TAG}-pwd2-form", "help"),
-    ),
-    dict(
-        button_loading=Output(f"id-{TAG}-button", "loading"),
-        js_string=Output(f"id-{TAG}-executejs", "jsString"),
-    ),
-], [
+@dash.callback([dict(
+    pwd1_status=Output(f"id-{TAG}-pwd1-form", "validateStatus"),
+    pwd1_help=Output(f"id-{TAG}-pwd1-form", "help"),
+    pwd2_status=Output(f"id-{TAG}-pwd2-form", "validateStatus"),
+    pwd2_help=Output(f"id-{TAG}-pwd2-form", "help"),
+), dict(
+    button_loading=Output(f"id-{TAG}-button", "loading"),
+    js_string=Output(f"id-{TAG}-executejs", "jsString"),
+)], [
     Input(f"id-{TAG}-button", "nClicks"),
     State(f"id-{TAG}-email", "value"),
     State(f"id-{TAG}-pwd1", "value"),
@@ -103,8 +97,8 @@ def layout_result(pathname, search, **kwargs):
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # define outputs
     out_status_help = dict(
-        pwd1_status=None, pwd1_help=None,
-        pwd2_status=None, pwd2_help=None,
+        pwd1_status="", pwd1_help="",
+        pwd2_status="", pwd2_help="",
     )
     out_others = dict(button_loading=False, js_string=None)
 
@@ -121,10 +115,10 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
         out_status_help["pwd2_status"] = "error"
         out_status_help["pwd2_help"] = "Passwords are inconsistent"
         return out_status_help, out_others
-    _id = hashlib.md5(email.encode()).hexdigest()
     pwd = security.generate_password_hash(pwd1)
 
     # check user
+    _id = hashlib.md5(email.encode()).hexdigest()
     user = app_db.session.query(UserLogin).get(_id)
     if not user:
         user = UserLogin(_id=_id, pwd=pwd, email=email)
