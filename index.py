@@ -7,7 +7,6 @@ Application Layout
 import logging
 
 import dash
-import dash_bootstrap_components as dbc
 import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
@@ -27,7 +26,6 @@ app.layout = html.Div(children=[
 ])
 
 # complete layout
-app.validation_layout = dbc.Container([])
 
 
 @dash.callback([
