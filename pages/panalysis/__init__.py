@@ -6,6 +6,7 @@ analysis page
 
 import dash
 import feffery_antd_components as fac
+import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output
 
@@ -36,8 +37,8 @@ def layout(pathname, search, **kwargs):
                 {"isDivider": True},
                 {"title": "Logout", "href": "/login"},
             ], id=f"id-{TAG}-user", title=user_title, buttonMode=True)),
-        ], align="middle", justify="space-between", className="px-4 py-2 bg-white sticky-top"),
-        fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4"),
+        ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
+        fuc.FefferyTopProgress(fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4")),
     ], className="vh-100 overflow-auto")
 
     # return result
