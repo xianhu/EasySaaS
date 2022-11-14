@@ -34,11 +34,11 @@ def layout(pathname, search, tag, **kwargs):
 
     # return result
     return html.Div(children=[
-        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
-        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
         fac.AntdRow(children=[
             fac.AntdCol(span=1, className="vh-100"),
             col_left, col_right,
             fac.AntdCol(span=1, className="vh-100"),
         ], align="middle", justify="center", gutter=60),
+        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
+        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
     ], className=None)

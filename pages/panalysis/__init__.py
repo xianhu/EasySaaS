@@ -6,6 +6,7 @@ analysis page
 
 import dash
 import feffery_antd_components as fac
+import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output
 
@@ -36,8 +37,8 @@ def layout(pathname, search, **kwargs):
                 {"isDivider": True},
                 {"title": "Logout", "href": "/login"},
             ], id=f"id-{TAG}-user", title=user_title, buttonMode=True)),
-        ], align="middle", justify="space-between", className="bg-white px-4 py-2"),
-        fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4"),
+        ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
+        fuc.FefferyTopProgress(fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4")),
     ], className="vh-100 overflow-auto")
 
     # return result
@@ -61,10 +62,14 @@ def _update_content(current_key, clicked_key):
         current_key = ROUTER_MENU[0]["props"]["key"]
 
     # define components
-    content = fac.AntdEmpty(locale="en_US", description="No Content")
+    if trigger_id == f"id-{TAG}-menu":
+        # current_key = current_key
+        header = current_key
+        content = fac.AntdEmpty(locale="en_US")
+    else:
+        current_key = None
+        header = clicked_key
+        content = fac.AntdEmpty(locale="en_US")
 
     # return result
-    if trigger_id == f"id-{TAG}-menu":
-        return current_key, None, current_key, content
-    else:
-        return None, None, clicked_key, content
+    return current_key, None, header, content
