@@ -30,15 +30,14 @@ def layout(pathname, search, tag, **kwargs):
         fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
 
         html.Div(kwargs["other_list"], className="d-flex justify-content-between mt-1"),
+
+        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
+        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
     ], span=20, md=dict(span=6, offset=0), className=None)
 
     # return result
-    return html.Div(children=[
-        fac.AntdRow(children=[
-            fac.AntdCol(span=1, className="vh-100"),
-            col_left, col_right,
-            fac.AntdCol(span=1, className="vh-100"),
-        ], align="middle", justify="center", gutter=60),
-        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
-        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
-    ], className=None)
+    return fac.AntdRow(children=[
+        fac.AntdCol(span=1, className="vh-100"),
+        col_left, col_right,
+        fac.AntdCol(span=1, className="vh-100"),
+    ], align="middle", justify="center", gutter=60)
