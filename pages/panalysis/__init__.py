@@ -8,7 +8,7 @@ import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
-from dash import Input, Output
+from dash import Input, Output, State
 
 from .routers import ROUTER_MENU
 
@@ -31,14 +31,15 @@ def layout(pathname, search, **kwargs):
     content = fac.AntdContent(children=[
         fac.AntdRow(children=[
             fac.AntdCol(id=f"id-{TAG}-header", className="fs-6"),
-            fac.AntdCol(fac.AntdDropdown(menuItems=[
+            fac.AntdCol(fac.AntdBadge(fac.AntdDropdown(menuItems=[
                 {"title": "Profile", "key": "Profile"},
                 {"title": "Settings", "key": "Settings"},
                 {"isDivider": True},
                 {"title": "Logout", "href": "/login"},
-            ], id=f"id-{TAG}-user", title=user_title, buttonMode=True)),
+            ], id=f"id-{TAG}-user", title=user_title, buttonMode=True), dot=True)),
         ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
         fuc.FefferyTopProgress(fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4")),
+        fuc.FefferyWindowSize(id=f"id-{TAG}-window-size"),
     ], className="vh-100 overflow-auto")
 
     # return result
@@ -53,8 +54,10 @@ def layout(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-menu", "currentKey"),
     Input(f"id-{TAG}-user", "clickedKey"),
+    State(f"id-{TAG}-window-size", "_width"),
+    State(f"id-{TAG}-window-size", "_height"),
 ], prevent_initial_call=False)
-def _update_content(current_key, clicked_key):
+def _update_content(current_key, clicked_key, width, height):
     # check trigger
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
@@ -64,11 +67,11 @@ def _update_content(current_key, clicked_key):
     # define components
     if trigger_id == f"id-{TAG}-menu":
         # current_key = current_key
-        header = current_key
+        header = f"{current_key}({width}x{height})"
         content = fac.AntdEmpty(locale="en_US")
     else:
         current_key = None
-        header = clicked_key
+        header = f"{clicked_key}({width}x{height})"
         content = fac.AntdEmpty(locale="en_US")
 
     # return result

@@ -30,16 +30,18 @@ def layout(pathname, search, **kwargs):
     email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
 
     # define components
-    pwd_input = fac.AntdInput(id=f"id-{TAG}-pwd", placeholder="Password", mode="password", size="large")
+    pwd_input = fac.AntdInput(id=f"id-{TAG}-pwd", placeholder="Password", size="large", mode="password")
     pwd_form = fac.AntdFormItem(pwd_input, id=f"id-{TAG}-pwd-form", required=True)
 
     # define components
     cpc_input = fac.AntdInput(id=f"id-{TAG}-cpc", placeholder="Captcha", size="large")
     cpc_form = fac.AntdFormItem(cpc_input, id=f"id-{TAG}-cpc-form", required=True)
-    cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
-    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image, span=12)], gutter=30)
 
-    # define args
+    # define components
+    cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
+    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image, span="auto")], justify="space-between")
+
+    # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/login.svg",
         text_title="Welcome back",
@@ -93,7 +95,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_status_help, out_others
 
     # check captcha
-    if (vcpc != vimage) or (not vcpc):
+    if (not vcpc) or (vcpc != vimage):
         out_status_help["cpc_status"] = "error"
         out_status_help["cpc_help"] = "Captcha is incorrect"
         out_others["cpc_refresh"] = True if vcpc else False

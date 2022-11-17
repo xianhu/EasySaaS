@@ -46,19 +46,19 @@ def layout(pathname, search, **kwargs):
     email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
 
     # define components
-    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", mode="password", size="large")
+    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", size="large", mode="password")
     pwd1_form = fac.AntdFormItem(pwd1_input, id=f"id-{TAG}-pwd1-form", required=True)
-    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Password", mode="password", size="large")
+    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Password", size="large", mode="password")
     pwd2_form = fac.AntdFormItem(pwd2_input, id=f"id-{TAG}-pwd2-form", required=True)
 
-    # define args
+    # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/setpwd.svg",
         text_title="Set password",
         text_subtitle="Set the password of this email please.",
         form_items=fac.AntdForm([email_form, pwd1_form, pwd2_form]),
         text_button="Set password",
-        other_list=[],
+        other_list=[None, None],
         data=pathname,
     )
 
@@ -70,8 +70,7 @@ def layout_result(pathname, search, **kwargs):
     """
     layout of page
     """
-    return palert.layout(pathname, search, **dict(
-        status="success",
+    return palert.layout(pathname, search, status="success", **dict(
         text_title="Setting success",
         text_subtitle="The password was set successfully.",
         text_button="Go to login",
