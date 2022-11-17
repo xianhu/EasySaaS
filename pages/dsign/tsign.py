@@ -29,7 +29,10 @@ def layout(pathname, search, tag, **kwargs):
         html.Div(kwargs["form_items"], className="mt-4"),
         fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
 
-        html.Div(kwargs["other_list"], className="d-flex justify-content-between mt-1"),
+        fac.AntdRow(children=[
+            fac.AntdCol(kwargs["other_list"][0], span="auto"),
+            fac.AntdCol(kwargs["other_list"][1], span="auto"),
+        ], align="middle", justify="space-between", className="mt-1"),
 
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
