@@ -10,6 +10,8 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State
 
+from utility.consts import FMT_EXECUTEJS_HREF
+from utility.paths import PATH_LOGIN
 from .routers import ROUTER_MENU
 
 TAG = "analysis"
@@ -30,7 +32,7 @@ def layout(pathname, search, **kwargs):
     # define components
     content = fac.AntdContent(children=[
         fac.AntdRow(children=[
-            fac.AntdCol(id=f"id-{TAG}-header", className="fs-6"),
+            fac.AntdCol(id=f"id-{TAG}-header", className="fs-6 fw-bold"),
             fac.AntdCol(fac.AntdBadge(fac.AntdDropdown(menuItems=[
                 {"title": "Profile", "key": "Profile"},
                 {"title": "Settings", "key": "Settings"},
@@ -39,7 +41,9 @@ def layout(pathname, search, **kwargs):
             ], id=f"id-{TAG}-user", title=user_title, buttonMode=True), dot=True)),
         ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
         fuc.FefferyTopProgress(fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4")),
-        fuc.FefferyWindowSize(id=f"id-{TAG}-window-size"),
+        # define components
+        fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
     ], className="vh-100 overflow-auto")
 
     # return result
@@ -51,13 +55,23 @@ def layout(pathname, search, **kwargs):
     Output(f"id-{TAG}-user", "clickedKey"),
     Output(f"id-{TAG}-header", "children"),
     Output(f"id-{TAG}-content", "children"),
+    Output(f"id-{TAG}-executejs", "jsString"),
 ], [
     Input(f"id-{TAG}-menu", "currentKey"),
     Input(f"id-{TAG}-user", "clickedKey"),
-    State(f"id-{TAG}-window-size", "_width"),
-    State(f"id-{TAG}-window-size", "_height"),
+    State(f"id-{TAG}-windowsize", "_width"),
+    State(f"id-{TAG}-windowsize", "_height"),
 ], prevent_initial_call=False)
 def _update_content(current_key, clicked_key, width, height):
+    # check user
+    user = flask_login.current_user
+    if not user.is_authenticated:
+        return [
+            dash.no_update, dash.no_update,
+            dash.no_update, dash.no_update,
+            FMT_EXECUTEJS_HREF.format(PATH_LOGIN),
+        ]
+
     # check trigger
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
@@ -75,4 +89,4 @@ def _update_content(current_key, clicked_key, width, height):
         content = fac.AntdEmpty(locale="en_US")
 
     # return result
-    return current_key, None, header, content
+    return current_key, None, header, content, dash.no_update
