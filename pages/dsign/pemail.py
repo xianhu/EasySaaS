@@ -40,7 +40,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
-    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image, span="auto")], justify="space-between")
+    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image)], justify="space-between")
 
     # define kwargs
     kwargs_temp = dict(

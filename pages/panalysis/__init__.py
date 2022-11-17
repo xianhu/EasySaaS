@@ -50,12 +50,13 @@ def layout(pathname, search, **kwargs):
     return fac.AntdLayout([sider, content], className="vh-100 overflow-auto")
 
 
-@dash.callback([
-    Output(f"id-{TAG}-menu", "currentKey"),
-    Output(f"id-{TAG}-user", "clickedKey"),
-    Output(f"id-{TAG}-header", "children"),
-    Output(f"id-{TAG}-content", "children"),
-    Output(f"id-{TAG}-executejs", "jsString"),
+@dash.callback([dict(
+    current_key=Output(f"id-{TAG}-menu", "currentKey"),
+    clicked_key=Output(f"id-{TAG}-user", "clickedKey"),
+), dict(
+    header=Output(f"id-{TAG}-header", "children"),
+    content=Output(f"id-{TAG}-content", "children"),
+), Output(f"id-{TAG}-executejs", "jsString"),
 ], [
     Input(f"id-{TAG}-menu", "currentKey"),
     Input(f"id-{TAG}-user", "clickedKey"),
@@ -63,14 +64,16 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-windowsize", "_height"),
 ], prevent_initial_call=False)
 def _update_content(current_key, clicked_key, width, height):
+    # define outputs
+    out_key = dict(current_key=current_key, clicked_key=None)
+    out_content = dict(header="", content=fac.AntdEmpty(locale="en_US"))
+    out_executejs = dash.no_update
+
     # check user
     user = flask_login.current_user
     if not user.is_authenticated:
-        return [
-            dash.no_update, dash.no_update,
-            dash.no_update, dash.no_update,
-            FMT_EXECUTEJS_HREF.format(PATH_LOGIN),
-        ]
+        out_executejs = FMT_EXECUTEJS_HREF.format(PATH_LOGIN)
+        return out_key, out_content, out_executejs
 
     # check trigger
     trigger_id = dash.ctx.triggered_id
@@ -80,13 +83,11 @@ def _update_content(current_key, clicked_key, width, height):
 
     # define components
     if trigger_id == f"id-{TAG}-menu":
-        # current_key = current_key
-        header = f"{current_key}({width}x{height})"
-        content = fac.AntdEmpty(locale="en_US")
+        out_key["current_key"] = current_key
+        out_content["header"] = f"{current_key}({width}x{height})"
     else:
-        current_key = None
-        header = f"{clicked_key}({width}x{height})"
-        content = fac.AntdEmpty(locale="en_US")
+        out_key["current_key"] = None
+        out_content["header"] = f"{clicked_key}({width}x{height})"
 
     # return result
-    return current_key, None, header, content, dash.no_update
+    return out_key, out_content, out_executejs
