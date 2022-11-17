@@ -22,7 +22,6 @@ def layout(pathname, search, **kwargs):
     # user instance
     user = flask_login.current_user
     user_title = user.email.split("@")[0]
-    user_badge = True
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
@@ -37,11 +36,10 @@ def layout(pathname, search, **kwargs):
                 {"title": "Settings", "key": "Settings"},
                 {"isDivider": True},
                 {"title": "Logout", "href": "/login"},
-            ], id=f"id-{TAG}-user", title=user_title, buttonMode=True), dot=user_badge)),
+            ], id=f"id-{TAG}-user", title=user_title, buttonMode=True), dot=True)),
         ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
-        # define components
-        fuc.FefferyWindowSize(id=f"id-{TAG}-window-size"),
         fuc.FefferyTopProgress(fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4")),
+        fuc.FefferyWindowSize(id=f"id-{TAG}-window-size"),
     ], className="vh-100 overflow-auto")
 
     # return result
