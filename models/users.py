@@ -5,6 +5,7 @@ user model
 """
 
 import hashlib
+import logging
 
 import sqlalchemy
 from sqlalchemy import Index, func, orm
@@ -94,6 +95,7 @@ if __name__ == "__main__":
     # create all tables
     User.__table__.drop(engine, checkfirst=True)
     User.__table__.create(engine, checkfirst=True)
+    logging.warning("create table success: %s", User.__tablename__)
 
     # create session and add data
     with orm.sessionmaker(engine)() as session:

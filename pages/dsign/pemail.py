@@ -42,7 +42,7 @@ def layout(pathname, search, **kwargs):
     cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
     cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image, span="auto")], justify="space-between")
 
-    # define args
+    # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/signup.svg",
         text_title="Welcome to ES",
@@ -76,8 +76,7 @@ def layout_result(pathname, search, **kwargs):
     layout of page
     """
     email = flask.session.get("email")
-    return palert.layout(pathname, search, **dict(
-        status="success",
+    return palert.layout(pathname, search, status="success", **dict(
         text_title="Sending success",
         text_subtitle=f"An email has sent to {email}.",
         text_button="Now, go to mailbox!",
@@ -117,7 +116,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         return out_status_help, out_others
 
     # check captcha
-    if (vcpc != vimage) or (not vcpc):
+    if (not vcpc) or (vcpc != vimage):
         out_status_help["cpc_status"] = "error"
         out_status_help["cpc_help"] = "Captcha is incorrect"
         out_others["cpc_refresh"] = True if vcpc else False
