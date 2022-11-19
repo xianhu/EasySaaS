@@ -120,7 +120,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     _id = hashlib.md5(email.encode()).hexdigest()
     user = app_db.session.query(UserLogin).get(_id)
     if not user:
-        user = UserLogin(_id=_id, pwd=pwd, email=email)
+        user = UserLogin(id=_id, pwd=pwd, email=email)
     else:
         user.pwd = pwd
 

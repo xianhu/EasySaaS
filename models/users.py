@@ -54,36 +54,12 @@ class User(app_db.Model):
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
-    def __init__(self, _id, pwd, name=None, email=None, phone=None, status=1):
-        """
-        init user
-        """
-        self.id = _id
-        self.pwd = pwd
-        self.name = name
-        self.email = email
-        self.phone = phone
-        self.status = status
-        return
-
     def __repr__(self) -> str:
         """
         to string
         """
         col_list = [self.id, self.name, self.email, self.phone]
         return f"User <{' - '.join(map(str, col_list))}>"
-
-    def to_json(self) -> dict:
-        """
-        to json
-        """
-        return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email,
-            "phone": self.phone,
-            "status": self.status,
-        }
 
 
 if __name__ == "__main__":
