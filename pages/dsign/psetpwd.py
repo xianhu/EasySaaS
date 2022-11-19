@@ -14,7 +14,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State
 from werkzeug import security
 
-from app import UserLogin, app_db, app_redis
+from app import User, app_db, app_redis
 from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import tsign
@@ -118,9 +118,9 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
 
     # check user
     _id = hashlib.md5(email.encode()).hexdigest()
-    user = app_db.session.query(UserLogin).get(_id)
+    user = app_db.session.query(User).get(_id)
     if not user:
-        user = UserLogin(id=_id, pwd=pwd, email=email)
+        user = User(id=_id, pwd=pwd, email=email)
     else:
         user.pwd = pwd
 
