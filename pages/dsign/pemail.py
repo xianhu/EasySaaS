@@ -16,7 +16,7 @@ import flask
 import flask_mail
 from dash import Input, Output, State, html
 
-from app import UserLogin, app_db, app_mail, app_redis
+from app import User, app_db, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD
@@ -124,7 +124,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
     # check user
     _id = hashlib.md5(email.encode()).hexdigest()
-    user = app_db.session.query(UserLogin).get(_id)
+    user = app_db.session.query(User).get(_id)
     if pathname == PATH_SIGNUP and user:
         out_status_help["email_status"] = "error"
         out_status_help["email_help"] = "This email has been registered"
