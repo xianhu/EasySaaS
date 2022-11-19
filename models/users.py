@@ -8,7 +8,7 @@ import hashlib
 import logging
 
 import sqlalchemy
-from sqlalchemy import Index, func, orm
+from sqlalchemy import func
 from werkzeug import security
 
 try:
@@ -20,9 +20,9 @@ except ImportError:
 class User(app_db.Model):
     __tablename__ = "users"
     __table_args__ = (
-        Index("index_u_1", "name"),
-        Index("index_u_2", "email"),
-        Index("index_u_3", "phone"),
+        sqlalchemy.Index("index_u_1", "name"),
+        sqlalchemy.Index("index_u_2", "email"),
+        sqlalchemy.Index("index_u_3", "phone"),
     )
 
     # basic
@@ -63,6 +63,7 @@ class User(app_db.Model):
 
 
 if __name__ == "__main__":
+    from sqlalchemy import orm
     from config import config_database_uri
 
     # create engine
@@ -78,8 +79,8 @@ if __name__ == "__main__":
         _email = "admin@easysaas.com"
         _id = hashlib.md5(_email.encode()).hexdigest()
         _pwd = security.generate_password_hash(_email)
-        _user = User(_id=_id, pwd=_pwd, email=_email)
+        _user = User(id=_id, pwd=_pwd, email=_email)
 
         session.add(_user)
         session.commit()
-        print(session.query(User).get(_id))
+        logging.warning("create user success: %s", _user)
