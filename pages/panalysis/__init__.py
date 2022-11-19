@@ -26,8 +26,9 @@ def layout(pathname, search, **kwargs):
     user_title = user.email.split("@")[0]
 
     # define components
-    menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
-    sider = fac.AntdSider(children=menu, collapsible=True, theme="dark", className="vh-100 overflow-auto")
+    sider = fac.AntdSider(children=[
+        fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark"),
+    ], collapsible=True, theme="dark", className="vh-100 overflow-auto")
 
     # define components
     content = fac.AntdContent(children=[
@@ -70,8 +71,7 @@ def _update_content(current_key, clicked_key, width, height):
     out_executejs = dash.no_update
 
     # check user
-    user = flask_login.current_user
-    if not user.is_authenticated:
+    if not flask_login.current_user.is_authenticated:
         out_executejs = FMT_EXECUTEJS_HREF.format(PATH_LOGIN)
         return out_key, out_content, out_executejs
 

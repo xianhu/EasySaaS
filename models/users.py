@@ -8,7 +8,7 @@ import hashlib
 import logging
 
 import sqlalchemy
-from sqlalchemy import Index, func, orm
+from sqlalchemy import func
 from werkzeug import security
 
 try:
@@ -20,9 +20,9 @@ except ImportError:
 class User(app_db.Model):
     __tablename__ = "users"
     __table_args__ = (
-        Index("index_u_1", "name"),
-        Index("index_u_2", "email"),
-        Index("index_u_3", "phone"),
+        sqlalchemy.Index("index_u_1", "name"),
+        sqlalchemy.Index("index_u_2", "email"),
+        sqlalchemy.Index("index_u_3", "phone"),
     )
 
     # basic
@@ -54,18 +54,6 @@ class User(app_db.Model):
     datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
-    def __init__(self, _id, pwd, name=None, email=None, phone=None, status=1):
-        """
-        init user
-        """
-        self.id = _id
-        self.pwd = pwd
-        self.name = name
-        self.email = email
-        self.phone = phone
-        self.status = status
-        return
-
     def __repr__(self) -> str:
         """
         to string
@@ -73,20 +61,9 @@ class User(app_db.Model):
         col_list = [self.id, self.name, self.email, self.phone]
         return f"User <{' - '.join(map(str, col_list))}>"
 
-    def to_json(self) -> dict:
-        """
-        to json
-        """
-        return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email,
-            "phone": self.phone,
-            "status": self.status,
-        }
-
 
 if __name__ == "__main__":
+    from sqlalchemy import orm
     from config import config_database_uri
 
     # create engine
@@ -102,8 +79,8 @@ if __name__ == "__main__":
         _email = "admin@easysaas.com"
         _id = hashlib.md5(_email.encode()).hexdigest()
         _pwd = security.generate_password_hash(_email)
-        _user = User(_id=_id, pwd=_pwd, email=_email)
+        _user = User(id=_id, pwd=_pwd, email=_email)
 
         session.add(_user)
         session.commit()
-        print(session.query(User).get(_id))
+        logging.warning("create user success: %s", _user)

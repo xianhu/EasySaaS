@@ -16,13 +16,13 @@ def layout(pathname, search, tag, **kwargs):
     """
     # define components
     src_image = dash.get_asset_url(kwargs.get("src_image"))
-    col_left = fac.AntdCol(children=[
-        fac.AntdImage(src=src_image, preview=False)
-    ], span=20, md=dict(span=8, offset=0), className=None)
+    col_left = fac.AntdCol(html.Div(children=[
+        fac.AntdImage(src=src_image, preview=False),
+    ]), span=20, md=8, className="d-flex align-items-center")
 
     # define components
     kwargs_button = dict(type="primary", size="large", autoSpin=True, className="w-100")
-    col_right = fac.AntdCol(children=[
+    col_right = fac.AntdCol(html.Div(children=[
         html.Div(kwargs["text_title"], className="text-center fs-2"),
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
@@ -36,11 +36,7 @@ def layout(pathname, search, tag, **kwargs):
 
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
-    ], span=20, md=dict(span=6, offset=0), className=None)
+    ]), span=20, md=6, className="d-flex align-items-center")
 
     # return result
-    return fac.AntdRow(children=[
-        fac.AntdCol(span=1, className="vh-100"),
-        col_left, col_right,
-        fac.AntdCol(span=1, className="vh-100"),
-    ], align="middle", justify="center", gutter=60)
+    return fac.AntdRow([col_left, col_right], align="middle", justify="center", gutter=60, className="vh-100")
