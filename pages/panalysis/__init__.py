@@ -8,7 +8,7 @@ import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 
 from utility.consts import FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN
@@ -41,7 +41,7 @@ def layout(pathname, search, **kwargs):
                 {"title": "Logout", "href": "/login"},
             ], id=f"id-{TAG}-user", title=user_title, buttonMode=True), dot=True)),
         ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
-        fuc.FefferyTopProgress(fac.AntdContent(id=f"id-{TAG}-content", className="px-4 py-4")),
+        fuc.FefferyTopProgress(html.Div(id=f"id-{TAG}-content", className="px-4 py-4")),
         # define components
         fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
