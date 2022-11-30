@@ -31,9 +31,12 @@ class User(app_db.Model):
 
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+
+    # informations
+    avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    datetime_expired = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
 
     # company
     company_name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
@@ -51,8 +54,8 @@ class User(app_db.Model):
 
     # normal columns
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
-    datetime_create = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
-    datetime_update = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
+    datetime_created = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
+    datetime_updated = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
     def __repr__(self) -> str:
         """

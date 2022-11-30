@@ -34,8 +34,8 @@ def layout(pathname, search, tag, **kwargs):
             fac.AntdCol(kwargs["other_list"][1], span="auto"),
         ], align="middle", justify="space-between", className="mt-1"),
 
-        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
+        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
     ]), span=20, md=6, className="d-flex align-items-center")
 
     # return result

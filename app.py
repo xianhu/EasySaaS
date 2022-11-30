@@ -34,12 +34,14 @@ callback_manager = dash.CeleryManager(app_celery)
 app = dash.Dash(
     __name__,
     server=True,
-    compress=True,
     serve_locally=True,
+    compress=True,
     show_undo_redo=False,
     url_base_pathname="/",
     # routes_pathname_prefix="/",
     # requests_pathname_prefix="/",
+    assets_folder="assets",
+    assets_ignore="favicon1.*",
     title=config_app_name,
     update_title="Updating...",
     prevent_initial_callbacks=False,
@@ -47,8 +49,6 @@ app = dash.Dash(
     background_callback_manager=callback_manager,
     external_stylesheets=[],
     external_scripts=[],
-    assets_folder="assets",
-    assets_ignore="favicon1.*",
     meta_tags=[{
         "charset": "utf-8",
     }, {
@@ -57,7 +57,7 @@ app = dash.Dash(
     }],
 )
 
-# create server
+# config server
 server = app.server
 server.config.update(
     SECRET_KEY=config_secret_key,
@@ -101,7 +101,7 @@ def load_user(user_id):
     return UserLogin.query.get(user_id)
 
 
-# define before_request
+# func before_request
 @server.before_request
 def before_request():
     logging.debug(f"request.headers = {request.headers}")
@@ -109,7 +109,7 @@ def before_request():
     return None
 
 
-# define after_request
+# func after_request
 @server.after_request
 def after_request(response):
     logging.debug(f"response.headers = {response.headers}")
