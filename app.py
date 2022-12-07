@@ -18,10 +18,10 @@ from models import app_db
 from models.users import User
 
 # logging config
-log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(message)s"
+log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING)
 
-# celery -A app.app_celery worker -l INFO
+# celery -A app.app_celery worker -l INFO --purge
 broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
 app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
     "pages.dsign.plogin", "pages.dsign.pemail", "pages.dsign.psetpwd",
