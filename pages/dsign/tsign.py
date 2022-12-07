@@ -33,10 +33,12 @@ def layout(pathname, search, tag, **kwargs):
             fac.AntdCol(kwargs["other_list"][0], span="auto"),
             fac.AntdCol(kwargs["other_list"][1], span="auto"),
         ], align="middle", justify="space-between", className="mt-1"),
-
-        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
-        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
     ]), span=20, md=6, className="d-flex align-items-center")
 
     # return result
-    return fac.AntdRow([col_left, col_right], align="middle", justify="center", gutter=60, className="vh-100")
+    return fac.AntdRow(children=[
+        col_left, col_right,
+        # define components
+        fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
+        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
+    ], align="middle", justify="center", gutter=60, className="vh-100")

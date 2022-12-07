@@ -119,7 +119,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
 
     # login user
     flask_login.login_user(user, remember=True)
+    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
 
     # return result
-    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
     return out_status_help, out_others
