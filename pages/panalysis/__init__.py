@@ -41,14 +41,18 @@ def layout(pathname, search, **kwargs):
                 {"title": "Logout", "href": "/login"},
             ], id=f"id-{TAG}-user", title=user_title, buttonMode=True), dot=True)),
         ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
-        fuc.FefferyTopProgress(html.Div(id=f"id-{TAG}-content", className="px-4 py-4")),
-        # define components
-        fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
-        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        fuc.FefferyTopProgress(children=[
+            html.Div(id=f"id-{TAG}-content", className="px-4 py-4"),
+        ], listenPropsMode="include", includeProps=[f"id-{TAG}-content.children"]),
     ], className="vh-100 overflow-auto")
 
     # return result
-    return fac.AntdLayout([sider, content], className="vh-100 overflow-auto")
+    return fac.AntdLayout(children=[
+        sider, content,
+        # define components
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
+    ], className="vh-100 overflow-auto")
 
 
 @dash.callback([dict(
@@ -71,7 +75,8 @@ def _update_content(current_key, clicked_key, width, height):
     out_executejs = dash.no_update
 
     # check user
-    if not flask_login.current_user.is_authenticated:
+    user = flask_login.current_user
+    if not user.is_authenticated:
         out_executejs = FMT_EXECUTEJS_HREF.format(PATH_LOGIN)
         return out_key, out_content, out_executejs
 
