@@ -18,10 +18,10 @@ def layout(pathname, search, tag, **kwargs):
     src_image = dash.get_asset_url(kwargs.get("src_image"))
     col_left = fac.AntdCol(html.Div(children=[
         fac.AntdImage(src=src_image, preview=False),
-    ]), span=20, md=8, className="d-flex align-items-center")
+    ], className="w-100"), span=20, md=8, className="d-flex align-items-center")
 
     # define components
-    kwargs_button = dict(type="primary", size="large", autoSpin=True, className="w-100")
+    kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
     col_right = fac.AntdCol(html.Div(children=[
         html.Div(kwargs["text_title"], className="text-center fs-2"),
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
@@ -33,7 +33,7 @@ def layout(pathname, search, tag, **kwargs):
             fac.AntdCol(kwargs["other_list"][0], span="auto"),
             fac.AntdCol(kwargs["other_list"][1], span="auto"),
         ], align="middle", justify="space-between", className="mt-1"),
-    ]), span=20, md=6, className="d-flex align-items-center")
+    ], className="w-100"), span=20, md=6, className="d-flex align-items-center")
 
     # return result
     return fac.AntdRow(children=[
