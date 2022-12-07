@@ -36,7 +36,7 @@ class User(app_db.Model):
 
     # informations
     avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
-    datetime_expired = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
+    ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
     # company
     company_name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
@@ -58,10 +58,7 @@ class User(app_db.Model):
     datetime_updated = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
     def __repr__(self) -> str:
-        """
-        to string
-        """
-        col_list = [self.id, self.name, self.email, self.phone]
+        col_list = [self.id, self.name, self.email, self.phone, self.status]
         return f"User <{' - '.join(map(str, col_list))}>"
 
 
