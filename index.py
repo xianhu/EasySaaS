@@ -45,10 +45,6 @@ def _init_page(pathname, search, vhash):
     js_str_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
     # =============================================================================================
-    if pathname == PATH_ROOT:
-        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS)
-
-    # =============================================================================================
     if pathname == PATH_LOGIN:
         if flask_login.current_user.is_authenticated:
             flask_login.logout_user()
@@ -73,6 +69,9 @@ def _init_page(pathname, search, vhash):
         return pathname, search, psetpwd.layout_result(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
+    if pathname == PATH_ROOT:
+        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS)
+
     if pathname == PATH_ANALYSIS:
         if not flask_login.current_user.is_authenticated:
             return pathname, search, dash.no_update, js_str_login
