@@ -24,7 +24,7 @@ logging.basicConfig(format=log_format, level=logging.WARNING)
 # celery -A app.app_celery worker -l INFO --purge
 broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
 app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
-    "pages.dsign.plogin", "pages.dsign.pemail", "pages.dsign.psetpwd",
+    "pages.dsign.pemail", "pages.dsign.plogin", "pages.dsign.psetpwd",
 ])
 
 # define callback manager
@@ -50,7 +50,7 @@ app = dash.Dash(
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
-    external_stylesheets=[cdn_bs],
+    external_stylesheets=[cdn_bs, ],
     external_scripts=[],
     meta_tags=[{
         "charset": "utf-8",

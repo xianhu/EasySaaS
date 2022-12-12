@@ -33,9 +33,10 @@ class User(app_db.Model):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
 
     # informations
-    avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
     # company
