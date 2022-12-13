@@ -51,8 +51,8 @@ app = dash.Dash(
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
-    external_stylesheets=[cdn_bs, cdn_ec],
-    external_scripts=[],
+    external_stylesheets=[cdn_bs, ],
+    external_scripts=[cdn_ec, ],
     meta_tags=[{
         "charset": "utf-8",
     }, {
