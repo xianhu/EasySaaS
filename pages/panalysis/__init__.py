@@ -30,7 +30,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
-    sider = fac.AntdSider(children=[menu, ], collapsible=True, theme="dark", className="vh-100 overflow-auto")
+    sider = fac.AntdSider([menu, ], collapsible=True, theme="dark", className="vh-100 overflow-auto")
 
     # define components
     kwargs_switch = dict(checkedChildren="Open", unCheckedChildren="Close")
@@ -50,7 +50,7 @@ def layout(pathname, search, **kwargs):
         # define components
         fac.AntdRow(children=[
             fac.AntdCol(id=f"id-{TAG}-header", className="fs-6 fw-bold"),
-            fac.AntdCol(children=[switch, dropdown_user], className=None),
+            fac.AntdCol([switch, dropdown_user], className=None),
         ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
 
         # define components
@@ -59,15 +59,15 @@ def layout(pathname, search, **kwargs):
         ], listenPropsMode="include", includeProps=[f"id-{TAG}-content.children"]),
 
         # define components (test echarts)
-        html.Div(id=f"id-{TAG}-graph-div", style={"height": "400px"}),
         dcc.Store(id=f"id-{TAG}-graph-data", data=None),
-        fuc.FefferySessionStorage(id=f"id-{TAG}-graph-data-click"),
+        fuc.FefferySessionStorage(id=f"id-{TAG}-graph-click"),
+        html.Div(id=f"id-{TAG}-graph-div", style={"height": "400px"}),
     ], className="vh-100 overflow-auto")
 
     # return result
     return fac.AntdLayout(children=[
         sider, content,
-        html.Div(id=f"id-{TAG}-message-container"),
+        html.Div(id=f"id-{TAG}-message"),
 
         # define components
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
@@ -115,13 +115,24 @@ def _update_content(current_key, clicked_key, switch_checked, _width, _height, s
 
     # return result
     return out_key, out_content, dict(js_string=dash.no_update, graph_data=dict(
-        id_chart=f"id-{TAG}-graph-div",
-        id_click=f"id-{TAG}-graph-data-click",
+        id_graph_div=f"id-{TAG}-graph-div",
+        id_graph_click=f"id-{TAG}-graph-click",
         x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         y_data=[random.randint(50, 100) for _ in range(10)],
     ))
 
 
+@dash.callback(
+    Output(f"id-{TAG}-message", "children"),
+    Input(f"id-{TAG}-graph-click", "data"),
+    prevent_initial_call=True,
+)
+def _display_message(graph_data_click):
+    content = f"click: {graph_data_click}"
+    return fac.AntdMessage(content=content, top=50)
+
+
+# client side callback
 dash.clientside_callback(
     ClientsideFunction(
         namespace="clientside",
@@ -130,13 +141,3 @@ dash.clientside_callback(
     Output(f"id-{TAG}-graph-div", "children"),
     Input(f"id-{TAG}-graph-data", "data"),
 )
-
-
-@dash.callback(
-    Output(f"id-{TAG}-message-container", "children"),
-    Input(f"id-{TAG}-graph-data-click", "data"),
-    prevent_initial_call=True,
-)
-def _display_message(graph_data_click):
-    content = f"click: {graph_data_click}"
-    return fac.AntdMessage(content=content, top=50)

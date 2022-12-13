@@ -58,6 +58,7 @@ class User(app_db.Model):
     datetime_created = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_updated = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
+    # to dictionary
     def to_dict(self) -> dict:
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
