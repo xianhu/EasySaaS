@@ -58,9 +58,8 @@ class User(app_db.Model):
     datetime_created = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_updated = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
 
-    def __repr__(self) -> str:
-        col_list = [self.id, self.name, self.email, self.phone, self.status]
-        return f"User <{' - '.join(map(str, col_list))}>"
+    def to_dict(self) -> dict:
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 if __name__ == "__main__":
@@ -84,4 +83,6 @@ if __name__ == "__main__":
 
         session.add(_user)
         session.commit()
-        logging.warning("create user success: %s", _user)
+
+        _user_dict = _user.to_dict()
+        logging.warning("create user success: %s", _user_dict)
