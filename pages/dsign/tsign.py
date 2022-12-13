@@ -30,8 +30,8 @@ def layout(pathname, search, tag, **kwargs):
         fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
 
         fac.AntdRow(children=[
-            fac.AntdCol(kwargs["other_list"][0], span="auto"),
-            fac.AntdCol(kwargs["other_list"][1], span="auto"),
+            fac.AntdCol(kwargs["other_list"][0]),
+            fac.AntdCol(kwargs["other_list"][1]),
         ], align="middle", justify="space-between", className="mt-1"),
     ], className="w-100"), span=20, md=6, className="d-flex align-items-center")
 

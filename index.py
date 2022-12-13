@@ -82,5 +82,5 @@ def _init_page(pathname, search, vhash):
 
 
 if __name__ == "__main__":
-    # app.run_server(host="0.0.0.0", port=8088)
+    # app.run_server(host="0.0.0.0", port=8088, debug=True)
     server.run(host="0.0.0.0", port=8088, debug=True)
