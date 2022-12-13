@@ -32,6 +32,7 @@ callback_manager = dash.CeleryManager(app_celery)
 
 # define cdn list
 cdn_bs = "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+cdn_ec = "https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"
 
 # create app
 app = dash.Dash(
@@ -50,7 +51,7 @@ app = dash.Dash(
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
-    external_stylesheets=[cdn_bs, ],
+    external_stylesheets=[cdn_bs, cdn_ec],
     external_scripts=[],
     meta_tags=[{
         "charset": "utf-8",
