@@ -19,7 +19,7 @@ from models.users import User
 
 # logging config
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
-logging.basicConfig(format=log_format, level=logging.WARNING)
+logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
 # celery -A app.app_celery worker -l INFO --purge
 broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"

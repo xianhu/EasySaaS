@@ -20,7 +20,7 @@ from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import tsign
 from .. import palert
 
-TAG = "set-pwd"
+TAG = "setpwd"
 
 
 def layout(pathname, search, **kwargs):
