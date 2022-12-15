@@ -18,6 +18,7 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    # define data
     chart_data = dict(
         id_chart_div=f"id-{TAG}-chart-div",
         id_chart_click=f"id-{TAG}-chart-click",
