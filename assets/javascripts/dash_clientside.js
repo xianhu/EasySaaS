@@ -5,9 +5,12 @@
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     clientside: {
         render_chart: function (data) {
+            console.log(data);
+
+            // create a new chart
             let chart = echarts.init(document.getElementById(data['id_chart_div']));
 
-            // option data
+            // define option
             const option = {
                 xAxis: {
                     data: data['x_data'],

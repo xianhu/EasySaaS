@@ -27,9 +27,10 @@ def layout(pathname, search, **kwargs):
     )
 
     # return result
+    style = {"height": "500px"}
     return html.Div(children=[
         html.Div(id=f"id-{TAG}-message"),
-        html.Div(id=f"id-{TAG}-chart-div", style={"height": "500px"}),
+        html.Div(id=f"id-{TAG}-chart-div", style=style),
         dcc.Store(id=f"id-{TAG}-chart-data", data=chart_data),
         fuc.FefferySessionStorage(id=f"id-{TAG}-chart-click"),
     ], className=None)
@@ -43,6 +44,7 @@ dash.clientside_callback(
     ),
     Output(f"id-{TAG}-chart-div", "children"),
     Input(f"id-{TAG}-chart-data", "data"),
+    prevent_initial_call=False,
 )
 
 
