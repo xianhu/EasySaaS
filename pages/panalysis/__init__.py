@@ -45,12 +45,13 @@ def layout(pathname, search, **kwargs):
     ], title=user_title, buttonMode=True), dot=True)
 
     # define components
+    class_top = "bg-white border-bottom sticky-top px-4 py-2"
     content = fac.AntdContent(children=[
         # define components
         fac.AntdRow(children=[
-            fac.AntdCol(id=f"id-{TAG}-header", className="fs-6 fw-bold"),
-            fac.AntdCol([switch, dropdown_user], className=None),
-        ], align="middle", justify="space-between", className="bg-white sticky-top px-4 py-2"),
+            fac.AntdCol(id=f"id-{TAG}-header"),
+            fac.AntdCol([switch, dropdown_user]),
+        ], align="middle", justify="space-between", className=class_top),
 
         # define components
         fuc.FefferyTopProgress(children=[
@@ -88,17 +89,18 @@ def _update_content(current_key, clicked_key, switch_checked, _width, _height, s
         trigger_id = f"id-{TAG}-menu"
         current_key = ROUTER_MENU[0]["props"]["key"]
 
-    # define components
+    # check current_key and clicked_key
     if (trigger_id == f"id-{TAG}-switch" and current_key) or \
             trigger_id == f"id-{TAG}-menu":
         clicked_key = None
     elif (trigger_id == f"id-{TAG}-switch" and clicked_key) or \
             trigger_id == f"id-{TAG}-user":
         current_key = None
+    _title_temp = f"{current_key}-{clicked_key}-{switch_checked}"
     out_key = dict(current_key=current_key, clicked_key=clicked_key)
 
     # define components
-    header = f"{current_key}-{clicked_key}-{switch_checked}({_width}x{_height})"
+    header = fac.AntdTitle(_title_temp, level=4, className="mb-0")
     out_content = dict(header=header, content=fac.AntdEmpty(locale="en-us"))
 
     # define components
