@@ -4,14 +4,13 @@
 analysis page
 """
 
-import random
-
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
-from dash import Input, Output, State, ClientsideFunction, dcc, html
+from dash import Input, Output, State, dcc, html
 
+from . import pintros
 from .routers import ROUTER_MENU
 
 TAG = "analysis"
@@ -57,19 +56,11 @@ def layout(pathname, search, **kwargs):
         fuc.FefferyTopProgress(children=[
             html.Div(id=f"id-{TAG}-content", className="px-4 py-4"),
         ], listenPropsMode="include", includeProps=[f"id-{TAG}-content.children"]),
-
-        # define components (test echarts)
-        dcc.Store(id=f"id-{TAG}-graph-data", data=None),
-        fuc.FefferySessionStorage(id=f"id-{TAG}-graph-click"),
-        html.Div(id=f"id-{TAG}-graph-div", style={"height": "400px"}),
     ], className="vh-100 overflow-auto")
 
     # return result
     return fac.AntdLayout(children=[
         sider, content,
-        html.Div(id=f"id-{TAG}-message"),
-
-        # define components
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
@@ -82,10 +73,7 @@ def layout(pathname, search, **kwargs):
 ), dict(
     header=Output(f"id-{TAG}-header", "children"),
     content=Output(f"id-{TAG}-content", "children"),
-), dict(
-    js_string=Output(f"id-{TAG}-executejs", "jsString"),
-    graph_data=Output(f"id-{TAG}-graph-data", "data"),
-)], [
+), Output(f"id-{TAG}-executejs", "jsString")], [
     Input(f"id-{TAG}-menu", "currentKey"),
     Input(f"id-{TAG}-user", "clickedKey"),
     Input(f"id-{TAG}-switch", "checked"),
@@ -113,31 +101,9 @@ def _update_content(current_key, clicked_key, switch_checked, _width, _height, s
     header = f"{current_key}-{clicked_key}-{switch_checked}({_width}x{_height})"
     out_content = dict(header=header, content=fac.AntdEmpty(locale="en-us"))
 
+    # define components
+    if current_key == "Intros":
+        out_content["content"] = pintros.layout(None, None)
+
     # return result
-    return out_key, out_content, dict(js_string=dash.no_update, graph_data=dict(
-        id_graph_div=f"id-{TAG}-graph-div",
-        id_graph_click=f"id-{TAG}-graph-click",
-        x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        y_data=[random.randint(50, 100) for _ in range(10)],
-    ))
-
-
-@dash.callback(
-    Output(f"id-{TAG}-message", "children"),
-    Input(f"id-{TAG}-graph-click", "data"),
-    prevent_initial_call=True,
-)
-def _display_message(graph_data_click):
-    content = f"click: {graph_data_click}"
-    return fac.AntdMessage(content=content, top=50)
-
-
-# client side callback
-dash.clientside_callback(
-    ClientsideFunction(
-        namespace="clientside",
-        function_name="render_chart",
-    ),
-    Output(f"id-{TAG}-graph-div", "children"),
-    Input(f"id-{TAG}-graph-data", "data"),
-)
+    return out_key, out_content, dash.no_update
