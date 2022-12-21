@@ -18,8 +18,8 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 vim .bash_profile
-# export ES_APP_DOMAIN=http://0.0.0.0:8088
-# export ES_APP_SECRET_KEY=fejiadhjfehuhad
+# export ES_APP_DOMAIN=http://0.0.0.0
+# export ES_SECRET_KEY=fejiadhjfefeiu
 # export ES_MAIL_SERVER=smtp.feishu.cn
 # export ES_MAIL_PORT=465
 # export ES_MAIL_USERNAME=noreply@databai.com
@@ -51,7 +51,7 @@ pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 ```
 docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \ 
-                        -v /tmp/:/tmp/ -p 8088:8088 -p 80:80 -p 443:443 -d nginx
+                        -v /tmp/:/tmp/ -p 80:80 -p 443:443 -d nginx
 ```
 
 ## Others

@@ -37,7 +37,11 @@ app.layout = html.Div(children=[
     State("id-location", "hash"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
-    logging.warning("pathname=%s, search=%s, hash=%s", pathname, search, vhash)
+    current_user = flask_login.current_user
+
+    # logging current_user email
+    xwho = current_user.email if current_user.is_authenticated else "Anonymous"
+    logging.warning("[%s] pathname=%s, search=%s, hash=%s", xwho, pathname, search, vhash)
 
     # define variables
     kwargs = dict(vhash=vhash, nextpath=None)
@@ -46,13 +50,13 @@ def _init_page(pathname, search, vhash):
 
     # =============================================================================================
     if pathname == PATH_LOGIN:
-        if flask_login.current_user.is_authenticated:
+        if current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, plogin.layout(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
     if pathname == PATH_SIGNUP or pathname == PATH_FORGOTPWD:
-        if flask_login.current_user.is_authenticated:
+        if current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, pemail.layout(pathname, search, **kwargs), js_str_title
 
@@ -61,7 +65,7 @@ def _init_page(pathname, search, vhash):
 
     # =============================================================================================
     if pathname == f"{PATH_SIGNUP}-setpwd" or pathname == f"{PATH_FORGOTPWD}-setpwd":
-        if flask_login.current_user.is_authenticated:
+        if current_user.is_authenticated:
             flask_login.logout_user()
         return pathname, search, psetpwd.layout(pathname, search, **kwargs), js_str_title
 
@@ -73,7 +77,7 @@ def _init_page(pathname, search, vhash):
         return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_ANALYSIS)
 
     if pathname == PATH_ANALYSIS:
-        if not flask_login.current_user.is_authenticated:
+        if not current_user.is_authenticated:
             return pathname, search, dash.no_update, js_str_login
         return pathname, search, panalysis.layout(pathname, search, **kwargs), js_str_title
 
@@ -82,5 +86,5 @@ def _init_page(pathname, search, vhash):
 
 
 if __name__ == "__main__":
-    # app.run_server(host="0.0.0.0", port=8088, debug=True)
-    server.run(host="0.0.0.0", port=8088, debug=True)
+    # app.run_server(port=80, debug=True)
+    server.run(host="0.0.0.0", port=80, debug=True)
