@@ -4,6 +4,8 @@
 analysis page
 """
 
+import logging
+
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
@@ -21,10 +23,10 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # user instance
-    user = flask_login.current_user
+    current_user = flask_login.current_user
     store_data = dict(
         pathname=pathname, search=search,
-        user_id=user.id, user_email=user.email,
+        user_id=current_user.id, user_email=current_user.email,
     )
 
     # define components
@@ -36,7 +38,7 @@ def layout(pathname, search, **kwargs):
     switch = fac.AntdSwitch(id=f"id-{TAG}-switch", **kwargs_switch, className="me-2")
 
     # define components
-    user_title = user.email.split("@")[0]
+    user_title = current_user.email.split("@")[0]
     dropdown_user = fac.AntdBadge(fac.AntdDropdown(id=f"id-{TAG}-user", menuItems=[
         {"title": "Profile", "key": "Profile"},
         {"title": "Settings", "key": "Settings"},
@@ -83,6 +85,10 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=False)
 def _update_content(current_key, clicked_key, switch_checked, _width, _height, store_data):
+    # logging current_user email
+    xwho = store_data.get("user_email", "Anonymous")
+    logging.warning("[%s] update content: %s, %s, %s", xwho, current_key, clicked_key, switch_checked)
+
     # check trigger (default)
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
