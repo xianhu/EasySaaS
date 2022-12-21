@@ -30,7 +30,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
                 sessionStorage.setItem(data['id_chart_click'], JSON.stringify({
                     name: params.name,
                     value: params.value,
-                    _date: new Date().getTime(),
+                    _timestamp: new Date().getTime(),
                 }));
             });
         },
