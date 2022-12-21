@@ -5,6 +5,7 @@ Dash Application
 """
 
 import logging
+from uuid import uuid4
 
 import celery
 import dash
@@ -28,7 +29,7 @@ app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
 ])
 
 # define callback manager
-callback_manager = dash.CeleryManager(app_celery)
+callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid4()], expire=60)
 
 # define cdn list
 cdn_bs = "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
@@ -42,8 +43,6 @@ app = dash.Dash(
     compress=True,
     show_undo_redo=False,
     url_base_pathname="/",
-    # routes_pathname_prefix="/",
-    # requests_pathname_prefix="/",
     assets_folder="assets",
     assets_ignore="favicon1.*",
     title=config_app_name,
