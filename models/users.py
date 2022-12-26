@@ -11,13 +11,10 @@ import sqlalchemy
 from sqlalchemy import func
 from werkzeug import security
 
-try:
-    from . import app_db
-except ImportError:
-    from models import app_db
+from models import BaseModel
 
 
-class User(app_db.Model):
+class User(BaseModel):
     __tablename__ = "users"
     __table_args__ = (
         sqlalchemy.Index("index_u_1", "name"),
@@ -46,10 +43,9 @@ class User(app_db.Model):
     # address
     addr_state = sqlalchemy.Column(sqlalchemy.String(255), doc="state of address")
     addr_city = sqlalchemy.Column(sqlalchemy.String(255), doc="city of address")
-    addr_detail = sqlalchemy.Column(sqlalchemy.String(255), doc="detail of address")
+    addr_detail = sqlalchemy.Column(sqlalchemy.String(1024), doc="detail of address")
 
     # authentication
-    auth_session = sqlalchemy.Column(sqlalchemy.String(255), doc="session of user")
     auth_github = sqlalchemy.Column(sqlalchemy.String(255), doc="token of github")
     auth_google = sqlalchemy.Column(sqlalchemy.String(255), doc="token of google")
 
@@ -57,10 +53,6 @@ class User(app_db.Model):
     status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
     datetime_created = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_updated = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())
-
-    # to dictionary
-    def to_dict(self) -> dict:
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 if __name__ == "__main__":
@@ -84,6 +76,10 @@ if __name__ == "__main__":
 
         session.add(_user)
         session.commit()
+        logging.warning("create user success: %s", _user.get("email"))
 
+        _user = session.query(User).filter(
+            User.email == _email
+        ).first()
         _user_dict = _user.to_dict()
-        logging.warning("create user success: %s", _user_dict)
+        logging.warning("get user success: %s", _user_dict)
