@@ -25,7 +25,7 @@ def layout(pathname, search, **kwargs):
     # user instance
     current_user = flask_login.current_user
     store_data = dict(
-        pathname=pathname, search=search,
+        pathname=pathname, search=search, test=kwargs.get("test"),
         user_id=current_user.id, user_email=current_user.email,
     )
 

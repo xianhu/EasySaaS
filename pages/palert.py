@@ -22,6 +22,15 @@ def layout(pathname, search, status, text_title, text_subtitle, text_button, ret
     ], status=status, title=text_title), className=class_div)
 
 
+def layout_403(pathname, search, return_href=PATH_ROOT):
+    """
+    layout of page
+    """
+    text_title = "No permission to access"
+    text_subtitle = "You have no permission to access this page, click button to safe page."
+    return layout(pathname, search, "403", text_title, text_subtitle, "Back to safety", return_href)
+
+
 def layout_404(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
@@ -31,10 +40,19 @@ def layout_404(pathname, search, return_href=PATH_ROOT):
     return layout(pathname, search, "404", text_title, text_subtitle, "Back to safety", return_href)
 
 
+def layout_500(pathname, search, return_href=PATH_ROOT):
+    """
+    layout of page
+    """
+    text_title = "Server error"
+    text_subtitle = "An error occurred on the server, click button to safe page."
+    return layout(pathname, search, "500", text_title, text_subtitle, "Back to safety", return_href)
+
+
 def layout_expired(pathname, search, return_href=PATH_ROOT):
     """
     layout of page
     """
     text_title = "Link expired"
-    text_subtitle = "The link has expired, click button to safe page."
+    text_subtitle = "This link is expired, click button to safe page."
     return layout(pathname, search, "error", text_title, text_subtitle, "Back to safety", return_href)
