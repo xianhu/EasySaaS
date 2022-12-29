@@ -11,6 +11,7 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, ClientsideFunction, dcc, html
 
+TAG_BASE = "analysis"
 TAG = "analysis-intros"
 
 
