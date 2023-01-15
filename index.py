@@ -41,11 +41,10 @@ def _init_page(pathname, search, vhash):
 
     # logging current_user email
     xwho = current_user.email if current_user.is_authenticated else "Anonymous"
-    logging.warning("[%s] pathname=%s, search=%s, hash=%s", xwho, pathname, search, vhash)
+    logging.warning("[%s]: pathname=%s, search=%s, hash=%s", xwho, pathname, search, vhash)
 
     # define variables
     kwargs = dict(vhash=vhash, nextpath=None)
-    js_str_login = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
     js_str_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
     # =============================================================================================
@@ -78,7 +77,7 @@ def _init_page(pathname, search, vhash):
 
     if pathname == PATH_ANALYSIS:
         if not current_user.is_authenticated:
-            return pathname, search, dash.no_update, js_str_login
+            return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
         return pathname, search, panalysis.layout(pathname, search, **kwargs), js_str_title
 
     # =============================================================================================
