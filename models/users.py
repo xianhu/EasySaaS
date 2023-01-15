@@ -35,11 +35,21 @@ class User(BaseModel):
     auth_github = sqlalchemy.Column(sqlalchemy.String(512), doc="token of github")
     auth_google = sqlalchemy.Column(sqlalchemy.String(512), doc="token of google")
 
+    # relationshiops
+    projects = sqlalchemy.orm.relationship("Project", secondary="project_users", back_populates="users")
 
-class Team(BaseModel):
-    __tablename__ = "teams"
+    @staticmethod
+    def get_id(email):
+        """
+        get id by email
+        """
+        return hashlib.md5(email.encode()).hexdigest()
+
+
+class Project(BaseModel):
+    __tablename__ = "projects"
     __table_args__ = (
-        sqlalchemy.Index("index_t_1", "name"),
+        sqlalchemy.Index("index_p_1", "name"),
     )
 
     # basic
@@ -54,20 +64,30 @@ class Team(BaseModel):
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
+    # relationshiops
+    users = sqlalchemy.orm.relationship("User", secondary="project_users", back_populates="projects")
 
-class TeamUser(BaseModel):
-    __tablename__ = "team_users"
+    @staticmethod
+    def get_id(name):
+        """
+        get id by name
+        """
+        return hashlib.md5(name.encode()).hexdigest()
+
+
+class ProjectUser(BaseModel):
+    __tablename__ = "project_users"
     __table_args__ = (
-        sqlalchemy.Index("index_tu_1", "user_id"),
-        sqlalchemy.Index("index_tu_2", "team_id"),
+        sqlalchemy.Index("index_pu_1", "user_id"),
+        sqlalchemy.Index("index_pu_2", "project_id"),
     )
 
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
     # relations
-    user_id = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    team_id = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
+    user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("users.id"))
+    project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"))
 
     # informations
     role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/member")
@@ -81,25 +101,15 @@ if __name__ == "__main__":
     # create engine
     engine = sqlalchemy.create_engine(config_database_uri)
 
-    # create all tables
-    User.__table__.drop(engine, checkfirst=True)
-    User.__table__.create(engine, checkfirst=True)
-    logging.warning("create table success: %s", User.__tablename__)
-
-    Team.__table__.drop(engine, checkfirst=True)
-    Team.__table__.create(engine, checkfirst=True)
-    logging.warning("create table success: %s", Team.__tablename__)
-
-    TeamUser.__table__.drop(engine, checkfirst=True)
-    TeamUser.__table__.create(engine, checkfirst=True)
-    logging.warning("create table success: %s", TeamUser.__tablename__)
+    # initialize database
+    BaseModel.metadata.drop_all(engine, checkfirst=True)
+    BaseModel.metadata.create_all(engine, checkfirst=True)
 
     # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as session:
-        _id = hashlib.md5(_email.encode()).hexdigest()
         _pwd = security.generate_password_hash(_email)
-        _user = User(id=_id, pwd=_pwd, email=_email, name="admin")
+        _user = User(id=User.get_id(_email), pwd=_pwd, email=_email, name="admin")
 
         try:
             session.add(_user)
@@ -110,19 +120,26 @@ if __name__ == "__main__":
             session.rollback()
 
     # create session and add data
-    _name = "demo team"
+    _project_name = "demo project"
     with orm.sessionmaker(engine)() as session:
         _user = session.query(User).filter(User.email == _email).first()
-
-        _id = hashlib.md5(_name.encode()).hexdigest()
-        _team = Team(id=_id, name=_name, ts_start=None, ts_expired=None)
-        _team_user = TeamUser(user_id=_user.get("id"), team_id=_team.get("id"), role="admin")
+        _project = Project(id=Project.get_id(_project_name), name=_project_name)
+        _project_user = ProjectUser(user_id=_user.id, project_id=_project.id, role="admin")
 
         try:
-            session.add(_team)
-            session.add(_team_user)
+            session.add(_project)
+            session.add(_project_user)
             session.commit()
-            logging.warning("add team success: %s", _team.to_dict())
+            logging.warning("add project success: %s", _project.to_dict())
+            logging.warning("add project_user success: %s", _project_user.to_dict())
         except Exception as excep:
-            logging.error("add team failed: %s", excep)
+            logging.error("add project[_user] failed: %s", excep)
             session.rollback()
+
+    # create session and select data
+    with orm.sessionmaker(engine)() as session:
+        _user = session.query(User).filter(User.email == _email).first()
+        logging.warning("user.projects: %s", _user.projects)
+
+        _project = session.query(Project).filter(Project.name == _project_name).first()
+        logging.warning("project.users: %s", _project.users)

@@ -45,7 +45,7 @@ def layout(pathname, search, **kwargs):
     # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/signup.svg",
-        text_title="Welcome to ES",
+        text_title=f"Welcome to {config_app_name}",
         text_subtitle="Fill out the email to get started.",
         form_items=fac.AntdForm([email_form, cpc_row]),
         text_button="Verify the email",
