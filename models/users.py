@@ -39,7 +39,7 @@ class User(BaseModel):
     projects = sqlalchemy.orm.relationship("Project", secondary="project_users", back_populates="users")
 
     @staticmethod
-    def get_id(email):
+    def get_id_by_email(email):
         """
         get id by email
         """
@@ -68,7 +68,7 @@ class Project(BaseModel):
     users = sqlalchemy.orm.relationship("User", secondary="project_users", back_populates="projects")
 
     @staticmethod
-    def get_id(name):
+    def get_id_by_name(name):
         """
         get id by name
         """
@@ -108,8 +108,9 @@ if __name__ == "__main__":
     # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as session:
+        _id = User.get_id_by_email(_email)
         _pwd = security.generate_password_hash(_email)
-        _user = User(id=User.get_id(_email), pwd=_pwd, email=_email, name="admin")
+        _user = User(id=_id, pwd=_pwd, name="admin", email=_email)
 
         try:
             session.add(_user)
@@ -123,7 +124,9 @@ if __name__ == "__main__":
     _project_name = "demo project"
     with orm.sessionmaker(engine)() as session:
         _user = session.query(User).filter(User.email == _email).first()
-        _project = Project(id=Project.get_id(_project_name), name=_project_name)
+
+        _id = Project.get_id_by_name(_project_name)
+        _project = Project(id=_id, name=_project_name)
         _project_user = ProjectUser(user_id=_user.id, project_id=_project.id, role="admin")
 
         try:

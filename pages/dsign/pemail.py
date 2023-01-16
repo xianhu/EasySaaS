@@ -122,7 +122,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         return out_status_help, out_others
 
     # check user
-    _id = User.get_id(email)
+    _id = User.get_id_by_email(email)
     user = app_db.session.query(User).get(_id)
     if pathname == PATH_SIGNUP and user:
         out_status_help["email_status"] = "error"
