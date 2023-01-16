@@ -38,6 +38,19 @@ class User(BaseModel):
     # relationshiops
     projects = sqlalchemy.orm.relationship("Project", secondary="project_users", back_populates="users")
 
+    def check_password_hash(self, password):
+        """
+        check password hash
+        """
+        return security.check_password_hash(self.pwd, password)
+
+    @staticmethod
+    def get_password_hash(password):
+        """
+        get password hash
+        """
+        return security.generate_password_hash(password)
+
     @staticmethod
     def get_id_by_email(email):
         """
