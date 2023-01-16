@@ -9,7 +9,6 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, html
-from werkzeug import security
 
 from app import UserLogin, app_db
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
@@ -109,7 +108,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_status_help, out_others
 
     # check password
-    if not security.check_password_hash(user.pwd, pwd or ""):
+    if not user.check_password_hash(pwd or ""):
         out_status_help["pwd_status"] = "error"
         out_status_help["pwd_help"] = "Password is incorrect"
         out_others["cpc_refresh"] = True

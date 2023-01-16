@@ -86,7 +86,7 @@ class Project(BaseModel):
         """
         get id by name and user id
         """
-        str_encode = f"{name}-{user_id}".encode()
+        str_encode = f"{user_id}{name}".encode()
         return hashlib.md5(str_encode).hexdigest()
 
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as session:
         _id = User.get_id_by_email(_email)
-        _pwd = security.generate_password_hash(_email)
+        _pwd = User.get_password_hash("a123456")
         _user = User(id=_id, pwd=_pwd, email=_email, name="admin")
 
         try:
@@ -157,6 +157,7 @@ if __name__ == "__main__":
     with orm.sessionmaker(engine)() as session:
         _user = session.query(User).filter(User.email == _email).first()
         logging.warning("user.projects: %s", _user.projects)
+        logging.warning("check password: %s", _user.check_password_hash("a123456"))
 
         _project = session.query(Project).filter(Project.name == _project_name).first()
         logging.warning("project.users: %s", _project.users)

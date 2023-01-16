@@ -11,7 +11,6 @@ import urllib.parse
 import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
-from werkzeug import security
 
 from app import User, app_db, app_redis
 from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
@@ -113,7 +112,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
         out_status_help["pwd2_status"] = "error"
         out_status_help["pwd2_help"] = "Passwords are inconsistent"
         return out_status_help, out_others
-    pwd = security.generate_password_hash(pwd1)
+    pwd = User.get_password_hash(pwd1)
 
     # check user
     _id = User.get_id_by_email(email)
