@@ -4,7 +4,6 @@
 email[signup/forgotpwd] page
 """
 
-import hashlib
 import json
 import urllib.parse
 import uuid
@@ -123,7 +122,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         return out_status_help, out_others
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
+    _id = User.get_id(email)
     user = app_db.session.query(User).get(_id)
     if pathname == PATH_SIGNUP and user:
         out_status_help["email_status"] = "error"

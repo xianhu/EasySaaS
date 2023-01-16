@@ -4,7 +4,6 @@
 set password page
 """
 
-import hashlib
 import json
 import logging
 import urllib.parse
@@ -117,12 +116,12 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     pwd = security.generate_password_hash(pwd1)
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
+    _id = User.get_id(email)
     user = app_db.session.query(User).get(_id)
-    if not user:
-        user = User(id=_id, pwd=pwd, email=email)
-    else:
+    if user:
         user.pwd = pwd
+    else:
+        user = User(id=_id, pwd=pwd, email=email)
 
     # commit user
     app_db.session.merge(user)

@@ -4,8 +4,6 @@
 login page
 """
 
-import hashlib
-
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
@@ -102,7 +100,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_status_help, out_others
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
+    _id = UserLogin.get_id(email)
     user = app_db.session.query(UserLogin).get(_id)
     if not user:
         out_status_help["email_status"] = "error"
