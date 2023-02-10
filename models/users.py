@@ -4,7 +4,6 @@
 user model
 """
 
-import hashlib
 import logging
 
 import sqlalchemy
@@ -44,20 +43,12 @@ class User(BaseModel):
         """
         return security.check_password_hash(self.pwd, password)
 
-    @staticmethod
-    def get_password_hash(password):
+    def set_password_hash(self, password):
         """
-        get password hash
+        set password hash
         """
-        return security.generate_password_hash(password)
-
-    @staticmethod
-    def get_id_by_email(email):
-        """
-        get id by email
-        """
-        str_encode = email.encode()
-        return hashlib.md5(str_encode).hexdigest()
+        self.pwd = security.generate_password_hash(password)
+        return self
 
 
 class Project(BaseModel):
@@ -72,7 +63,7 @@ class Project(BaseModel):
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
-    address = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
+    description = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # informations
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
@@ -80,14 +71,6 @@ class Project(BaseModel):
 
     # relationshiops
     users = sqlalchemy.orm.relationship("User", secondary="project_users", back_populates="projects")
-
-    @staticmethod
-    def get_id_by_name(name, user_id):
-        """
-        get id by name and user id
-        """
-        str_encode = f"{user_id}{name}".encode()
-        return hashlib.md5(str_encode).hexdigest()
 
 
 class ProjectUser(BaseModel):
@@ -112,6 +95,7 @@ class ProjectUser(BaseModel):
 if __name__ == "__main__":
     from sqlalchemy import orm
     from config import config_database_uri
+    from utility import get_md5
 
     # create engine
     engine = sqlalchemy.create_engine(config_database_uri)
@@ -123,9 +107,8 @@ if __name__ == "__main__":
     # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as session:
-        _id = User.get_id_by_email(_email)
-        _pwd = User.get_password_hash("a123456")
-        _user = User(id=_id, pwd=_pwd, email=_email, name="admin")
+        _user = User(id=get_md5(_email), email=_email, name="admin")
+        _user.set_password_hash("a123456")
 
         try:
             session.add(_user)
@@ -134,14 +117,14 @@ if __name__ == "__main__":
         except Exception as excep:
             logging.error("add user failed: %s", excep)
             session.rollback()
+            exit()
 
     # create session and add data
     _project_name = "demo project"
     with orm.sessionmaker(engine)() as session:
         _user = session.query(User).filter(User.email == _email).first()
 
-        _id = Project.get_id_by_name(_project_name, _user.id)
-        _project = Project(id=_id, name=_project_name, avatar=None)
+        _project = Project(id=get_md5(_user.id + _project_name), name=_project_name)
         _project_user = ProjectUser(user_id=_user.id, project_id=_project.id, role="admin")
 
         try:
@@ -152,12 +135,12 @@ if __name__ == "__main__":
         except Exception as excep:
             logging.error("add project/project_user failed: %s", excep)
             session.rollback()
+            exit()
 
     # create session and select data
     with orm.sessionmaker(engine)() as session:
         _user = session.query(User).filter(User.email == _email).first()
         logging.warning("user.projects: %s", _user.projects)
-        logging.warning("check password: %s", _user.check_password_hash("a123456"))
 
         _project = session.query(Project).filter(Project.name == _project_name).first()
         logging.warning("project.users: %s", _project.users)
