@@ -4,16 +4,14 @@
 login page
 """
 
-import hashlib
-
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, html
-from werkzeug import security
 
 from app import UserLogin, app_db
+from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_ROOT, PATH_SIGNUP, PATH_FORGOTPWD
 from . import tsign
@@ -102,7 +100,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_status_help, out_others
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
+    _id = get_md5(email)
     user = app_db.session.query(UserLogin).get(_id)
     if not user:
         out_status_help["email_status"] = "error"
@@ -111,7 +109,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_status_help, out_others
 
     # check password
-    if not security.check_password_hash(user.pwd, pwd or ""):
+    if not user.check_password_hash(pwd or ""):
         out_status_help["pwd_status"] = "error"
         out_status_help["pwd_help"] = "Password is incorrect"
         out_others["cpc_refresh"] = True

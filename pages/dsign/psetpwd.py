@@ -4,7 +4,6 @@
 set password page
 """
 
-import hashlib
 import json
 import logging
 import urllib.parse
@@ -12,9 +11,9 @@ import urllib.parse
 import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
-from werkzeug import security
 
 from app import User, app_db, app_redis
+from utility import get_md5
 from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_ROOT
 from . import tsign
@@ -114,15 +113,13 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
         out_status_help["pwd2_status"] = "error"
         out_status_help["pwd2_help"] = "Passwords are inconsistent"
         return out_status_help, out_others
-    pwd = security.generate_password_hash(pwd1)
 
     # check user
-    _id = hashlib.md5(email.encode()).hexdigest()
+    _id = get_md5(email)
     user = app_db.session.query(User).get(_id)
     if not user:
-        user = User(id=_id, pwd=pwd, email=email)
-    else:
-        user.pwd = pwd
+        user = User(id=_id, email=email)
+    user.set_password_hash(pwd1)
 
     # commit user
     app_db.session.merge(user)
