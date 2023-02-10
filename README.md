@@ -1,7 +1,7 @@
 # EasySaaS
 
 This project will be attempted to make a great starting point for your next big business as easy and efficent as possible. This project will create an easy way to build a SaaS
-application using Python and Dash.
+application using Python、Dash and feffery-xxx-components.
 
 ## Install For Development
 
