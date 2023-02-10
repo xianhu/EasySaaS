@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-common compontents
+compontents of header
 """
 
 import dash
@@ -41,12 +41,10 @@ def get_component_header(title, user_title, dot=True):
     layout of component
     """
     # define components
-    title = title or get_component_header_brand()
-    dropdown_user = get_component_header_user(user_title, dot=dot)
+    col_title = fac.AntdCol(title or get_component_header_brand())
+    col_dropdown = fac.AntdCol(get_component_header_user(user_title, dot=dot))
 
     # return result
-    _class = "bg-white border-bottom sticky-top px-4 py-2"
-    return fac.AntdRow(children=[
-        fac.AntdCol(title),
-        fac.AntdCol(dropdown_user),
-    ], align="middle", justify="space-between", className=_class)
+    class_row = "bg-white border-bottom sticky-top px-4 py-2"
+    kwargs_row = dict(align="middle", justify="space-between")
+    return fac.AntdRow([col_title, col_dropdown], **kwargs_row, className=class_row)
