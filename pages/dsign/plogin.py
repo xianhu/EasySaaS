@@ -11,6 +11,7 @@ import flask_login
 from dash import Input, Output, State, html
 
 from app import UserLogin, app_db
+from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_ROOT, PATH_SIGNUP, PATH_FORGOTPWD
 from . import tsign
@@ -99,7 +100,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_status_help, out_others
 
     # check user
-    _id = UserLogin.get_id_by_email(email)
+    _id = get_md5(email)
     user = app_db.session.query(UserLogin).get(_id)
     if not user:
         out_status_help["email_status"] = "error"

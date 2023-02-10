@@ -17,6 +17,7 @@ from dash import Input, Output, State, html
 
 from app import User, app_db, app_mail, app_redis
 from config import config_app_domain, config_app_name
+from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD
 from . import tsign
@@ -122,7 +123,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         return out_status_help, out_others
 
     # check user
-    _id = User.get_id_by_email(email)
+    _id = get_md5(email)
     user = app_db.session.query(User).get(_id)
     if pathname == PATH_SIGNUP and user:
         out_status_help["email_status"] = "error"
@@ -143,11 +144,13 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
         href_verify = f"{config_app_domain}{pathname}-setpwd?{query_string}"
 
-        # send email
+        # define subject
         if pathname == PATH_SIGNUP:
             subject = f"Registration of {config_app_name}"
         else:
             subject = f"Resetting password of {config_app_name}"
+
+        # send email
         body = f"please click link in 10 minutes: {href_verify}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
 
