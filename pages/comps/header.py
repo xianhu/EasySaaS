@@ -16,12 +16,16 @@ def get_component_header_brand(logo="favicon1.svg"):
     """
     layout of component
     """
+    # define components
     src_logo = dash.get_asset_url(logo)
     kwargs_logo = dict(width="30px", height="30px", preview=False)
-    return fac.AntdRow(children=[
-        fac.AntdCol(fac.AntdImage(src=src_logo, **kwargs_logo)),
-        fac.AntdCol(html.Span(config_app_name, className="fs-4 ms-1")),
-    ], align="middle", justify="start", className=None)
+    col_logo = fac.AntdCol(fac.AntdImage(src=src_logo, **kwargs_logo))
+
+    # define components
+    col_text = fac.AntdCol(html.Span(config_app_name, className="fs-4 ms-1"))
+
+    # return result
+    return fac.AntdRow([col_logo, col_text], align="middle", justify="start", className=None)
 
 
 def get_component_header_user(user_title, dot=True):
