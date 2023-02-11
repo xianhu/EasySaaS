@@ -41,21 +41,21 @@ def layout(pathname, search, **kwargs):
         return palert.layout_expired(pathname, search, return_href=PATH_ROOT)
 
     # define components
-    email_input = fac.AntdInput(id=f"id-{TAG}-email", value=email, size="large", readOnly=True)
-    email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
+    input_email = fac.AntdInput(id=f"id-{TAG}-input-email", value=email, size="large", readOnly=True)
+    form_email = fac.AntdFormItem(input_email, id=f"id-{TAG}-form-email", required=True)
 
     # define components
-    pwd1_input = fac.AntdInput(id=f"id-{TAG}-pwd1", placeholder="Password", size="large", mode="password")
-    pwd1_form = fac.AntdFormItem(pwd1_input, id=f"id-{TAG}-pwd1-form", required=True)
-    pwd2_input = fac.AntdInput(id=f"id-{TAG}-pwd2", placeholder="Password", size="large", mode="password")
-    pwd2_form = fac.AntdFormItem(pwd2_input, id=f"id-{TAG}-pwd2-form", required=True)
+    input_pwd1 = fac.AntdInput(id=f"id-{TAG}-input-pwd1", placeholder="Enter Password", size="large", mode="password")
+    form_pwd1 = fac.AntdFormItem(input_pwd1, id=f"id-{TAG}-form-pwd1", required=True)
+    input_pwd2 = fac.AntdInput(id=f"id-{TAG}-input-pwd2", placeholder="Confirm Password", size="large", mode="password")
+    form_pwd2 = fac.AntdFormItem(input_pwd2, id=f"id-{TAG}-form-pwd2", required=True)
 
     # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/setpwd.svg",
         text_title="Set password",
         text_subtitle="Set the password of this email please.",
-        form_items=fac.AntdForm([email_form, pwd1_form, pwd2_form]),
+        form_items=fac.AntdForm([form_email, form_pwd1, form_pwd2]),
         text_button="Set password",
         other_list=[None, None],
         data=pathname,
@@ -78,41 +78,38 @@ def layout_result(pathname, search, **kwargs):
 
 
 @dash.callback([dict(
-    pwd1_status=Output(f"id-{TAG}-pwd1-form", "validateStatus"),
-    pwd1_help=Output(f"id-{TAG}-pwd1-form", "help"),
-    pwd2_status=Output(f"id-{TAG}-pwd2-form", "validateStatus"),
-    pwd2_help=Output(f"id-{TAG}-pwd2-form", "help"),
+    status1=Output(f"id-{TAG}-form-pwd1", "validateStatus"),
+    help1=Output(f"id-{TAG}-form-pwd1", "help"),
+    status2=Output(f"id-{TAG}-form-pwd2", "validateStatus"),
+    help2=Output(f"id-{TAG}-form-pwd2", "help"),
 ), dict(
     button_loading=Output(f"id-{TAG}-button", "loading"),
     js_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-button", "nClicks"),
-    State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-pwd1", "value"),
-    State(f"id-{TAG}-pwd2", "value"),
+    State(f"id-{TAG}-input-email", "value"),
+    State(f"id-{TAG}-input-pwd1", "value"),
+    State(f"id-{TAG}-input-pwd2", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # define outputs
-    out_status_help = dict(
-        pwd1_status="", pwd1_help="",
-        pwd2_status="", pwd2_help="",
-    )
+    out_pwd = dict(status1="", help1="", status2="", help2="")
     out_others = dict(button_loading=False, js_string=None)
 
     # check password
     if (not pwd1) or (len(pwd1) < 6):
-        out_status_help["pwd1_status"] = "error"
-        out_status_help["pwd1_help"] = "Password is too short"
-        return out_status_help, out_others
+        out_pwd["status1"] = "error"
+        out_pwd["help1"] = "Password is too short"
+        return out_pwd, out_others
     if not RE_PWD.match(pwd1):
-        out_status_help["pwd1_status"] = "error"
-        out_status_help["pwd1_help"] = "Password must contain numbers and letters"
-        return out_status_help, out_others
+        out_pwd["status1"] = "error"
+        out_pwd["help1"] = "Password must contain numbers and letters"
+        return out_pwd, out_others
     if (not pwd2) or (pwd2 != pwd1):
-        out_status_help["pwd2_status"] = "error"
-        out_status_help["pwd2_help"] = "Passwords are inconsistent"
-        return out_status_help, out_others
+        out_pwd["status2"] = "error"
+        out_pwd["help2"] = "Passwords are inconsistent"
+        return out_pwd, out_others
 
     # check user
     _id = get_md5(email)
@@ -130,4 +127,4 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
-    return out_status_help, out_others
+    return out_pwd, out_others

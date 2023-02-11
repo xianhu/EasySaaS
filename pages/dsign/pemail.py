@@ -31,23 +31,23 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    email_input = fac.AntdInput(id=f"id-{TAG}-email", placeholder="Email", size="large")
-    email_form = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
+    input_email = fac.AntdInput(id=f"id-{TAG}-input-email", placeholder="Email", size="large")
+    form_email = fac.AntdFormItem(input_email, id=f"id-{TAG}-form-email", required=True)
 
     # define components
-    cpc_input = fac.AntdInput(id=f"id-{TAG}-cpc", placeholder="Captcha", size="large")
-    cpc_form = fac.AntdFormItem(cpc_input, id=f"id-{TAG}-cpc-form", required=True)
+    input_cpc = fac.AntdInput(id=f"id-{TAG}-input-cpc", placeholder="Captcha", size="large")
+    form_cpc = fac.AntdFormItem(input_cpc, id=f"id-{TAG}-form-cpc", required=True)
 
     # define components
-    cpc_image = fuc.FefferyCaptcha(id=f"id-{TAG}-cpc-image", charNum=4)
-    cpc_row = fac.AntdRow([fac.AntdCol(cpc_form, span=12), fac.AntdCol(cpc_image)], justify="space-between")
+    image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
+    row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/signup.svg",
         text_title=f"Welcome to {config_app_name}",
         text_subtitle="Fill out the email to get started.",
-        form_items=fac.AntdForm([email_form, cpc_row]),
+        form_items=fac.AntdForm([form_email, row_cpc]),
         text_button="Verify the email",
         other_list=[
             html.A("Log in", href=PATH_LOGIN),
@@ -58,7 +58,7 @@ def layout(pathname, search, **kwargs):
         src_image="illustrations/forgotpwd.svg",
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
-        form_items=fac.AntdForm([email_form, cpc_row]),
+        form_items=fac.AntdForm([form_email, row_cpc]),
         text_button="Verify the email",
         other_list=[
             html.A("Log in", href=PATH_LOGIN),
@@ -85,56 +85,55 @@ def layout_result(pathname, search, **kwargs):
 
 
 @dash.callback([dict(
-    email_status=Output(f"id-{TAG}-email-form", "validateStatus"),
-    email_help=Output(f"id-{TAG}-email-form", "help"),
-    cpc_status=Output(f"id-{TAG}-cpc-form", "validateStatus"),
-    cpc_help=Output(f"id-{TAG}-cpc-form", "help"),
+    status=Output(f"id-{TAG}-form-email", "validateStatus"),
+    help=Output(f"id-{TAG}-form-email", "help"),
 ), dict(
-    cpc_refresh=Output(f"id-{TAG}-cpc-image", "refresh"),
+    status=Output(f"id-{TAG}-form-cpc", "validateStatus"),
+    help=Output(f"id-{TAG}-form-cpc", "help"),
+    refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
+), dict(
     button_loading=Output(f"id-{TAG}-button", "loading"),
     js_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-button", "nClicks"),
-    State(f"id-{TAG}-email", "value"),
-    State(f"id-{TAG}-cpc", "value"),
-    State(f"id-{TAG}-cpc-image", "captcha"),
+    State(f"id-{TAG}-input-email", "value"),
+    State(f"id-{TAG}-input-cpc", "value"),
+    State(f"id-{TAG}-image-cpc", "captcha"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, vcpc, vimage, pathname):
     # define outputs
-    out_status_help = dict(
-        email_status="", email_help="",
-        cpc_status="", cpc_help="",
-    )
-    out_others = dict(cpc_refresh=False, button_loading=False, js_string=None)
+    out_email = dict(status="", help="")
+    out_cpc = dict(status="", help="", refresh=False)
+    out_others = dict(button_loading=False, js_string=None)
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
-        out_status_help["email_status"] = "error"
-        out_status_help["email_help"] = "Format of email is invalid"
-        return out_status_help, out_others
+        out_email["status"] = "error"
+        out_email["help"] = "Format of email is invalid"
+        return out_email, out_cpc, out_others
 
     # check captcha
     if (not vcpc) or (vcpc != vimage):
-        out_status_help["cpc_status"] = "error"
-        out_status_help["cpc_help"] = "Captcha is incorrect"
-        out_others["cpc_refresh"] = True if vcpc else False
-        return out_status_help, out_others
+        out_cpc["status"] = "error"
+        out_cpc["help"] = "Captcha is incorrect"
+        out_cpc["refresh"] = True if vcpc else False
+        return out_email, out_cpc, out_others
 
     # check user
     _id = get_md5(email)
     user = app_db.session.query(User).get(_id)
     if pathname == PATH_SIGNUP and user:
-        out_status_help["email_status"] = "error"
-        out_status_help["email_help"] = "This email has been registered"
-        out_others["cpc_refresh"] = True
-        return out_status_help, out_others
+        out_email["status"] = "error"
+        out_email["help"] = "This email has been registered"
+        out_cpc["refresh"] = True
+        return out_email, out_cpc, out_others
     if pathname == PATH_FORGOTPWD and (not user):
-        out_status_help["email_status"] = "error"
-        out_status_help["email_help"] = "This email hasn't been registered"
-        out_others["cpc_refresh"] = True
-        return out_status_help, out_others
+        out_email["status"] = "error"
+        out_email["help"] = "This email hasn't been registered"
+        out_cpc["refresh"] = True
+        return out_email, out_cpc, out_others
 
     # send email and cache
     if not app_redis.get(_id):
@@ -162,4 +161,4 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
-    return out_status_help, out_others
+    return out_email, out_cpc, out_others
