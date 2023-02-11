@@ -7,10 +7,11 @@ project page
 import dash
 import feffery_antd_components as fac
 import flask_login
-from dash import Input, Output, dcc, html
+from dash import Input, Output, State, dcc, html
 
 from app import app_db
 from models.users import User
+from . import pnewp
 from ..comps import header as comps_header
 
 TAG = "project"
@@ -23,62 +24,43 @@ def layout(pathname, search, **kwargs):
     # user instance
     current_user = flask_login.current_user
 
-    # define components
+    # define variables
+    user_id = current_user.id
     user_title = current_user.email.split("@")[0]
-    header = comps_header.get_component_header(None, user_title, dot=True)
 
     # define components
-    button_new = fac.AntdButton("Add New Project", id=f"id-{TAG}-new", type="primary")
+    header_page = comps_header.get_component_header(None, user_title, dot=True)
+
+    # define components
+    button_new = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", type="primary")
     col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_new)]
     row_header = fac.AntdRow(col_list, align="middle", justify="space-between")
 
     # define components
-    div_list = html.Div(id=f"id-{TAG}-list", className="bg-white mt-2 p-4")
+    div_list = html.Div(id=f"id-{TAG}-div-list", className="bg-white mt-2 p-4")
     div_main = html.Div([row_header, div_list], className="w-75 m-auto mt-4")
 
     # define components
-    input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="Email", size="large")
-    form_name = fac.AntdFormItem(email_input, id=f"id-{TAG}-email-form", required=True)
+    modal_newp = pnewp.layout(pathname, search, user_id=user_id)
 
-
-    form_project = fac.AntdForm(children=[
-        fac.AntdFormItem(fac.AntdInput(), label="project name:"),
-        fac.AntdFormItem(fac.AntdInput(), label="project description:"),
-    ], layout="vertical")
-    div_modal = fac.AntdModal(
-        form_project,
-        id=f"id-{TAG}-modal", bodyStyle={},
-        visible=False, closable=False, maskClosable=False,
-        okText="Add New Project", okClickClose=False, okButtonProps=dict(autoSpin=True, type="danger"),
-        cancelText="Cancel", renderFooter=True,
-        title=html.Span("Add New Project"),
-    )
-
-    # define store data
-    store_data = dcc.Store(id=f"id-{TAG}-store", data=dict(user_id=current_user.id))
-    main_list = [header, div_main, store_data, div_modal]
+    # define components
+    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=user_id)
+    data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
 
     # return result
-    return html.Div(main_list, className="vh-100 overflow-auto bg-main")
-
-
-@dash.callback(
-    Output(f"id-{TAG}-modal", "visible"),
-    Input(f"id-{TAG}-new", "nClicks"),
-    prevent_initial_call=False,
-)
-def add_new_project(n_clicks):
-    return True
+    class_div = "bg-main vh-100 overflow-auto"
+    return html.Div([header_page, div_main, modal_newp, data_uid, data_newp], className=class_div)
 
 
 @dash.callback([
-    Output(f"id-{TAG}-list", "children"),
+    Output(f"id-{TAG}-div-list", "children"),
+    Output(f"id-{TAG}-button-new", "disabled"),
 ], [
-    Input(f"id-{TAG}-store", "data"),
+    Input(f"id-{TAG}-data-newp", "data"),
+    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
-def update_list(store_data):
-    user = app_db.session.query(User).get(store_data["user_id"])
-
+def _update_content(_, user_id):
+    user = app_db.session.query(User).get(user_id)
     if not user.projects:
-        return fac.AntdEmpty(locale="en-US", description="No Project"),
-    return html.Span(user.projects),
+        return fac.AntdEmpty(locale="en-US", description="No Project"), False
+    return html.Span(", ".join([p.name for p in user.projects])), False
