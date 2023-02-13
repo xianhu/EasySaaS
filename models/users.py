@@ -62,8 +62,8 @@ class Project(BaseModel):
 
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
+    desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
-    description = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # informations
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
