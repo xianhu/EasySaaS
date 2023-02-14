@@ -23,23 +23,22 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
+    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=kwargs["user_id"])
+
+    # define components
     input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large")
-    form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", label="project name:")
+    form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", required=True, label="project name:")
 
     # define components
     input_desc = fac.AntdInput(id=f"id-{TAG}-input-desc", placeholder="project description", size="large")
-    form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", label="project description:")
-
-    # define components
-    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=kwargs["user_id"])
-    form_project = fac.AntdForm([form_name, form_desc, data_uid], layout="vertical")
+    form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", required=True, label="project description:")
 
     # return result
     return fac.AntdModal(
-        form_project, id=f"id-{TAG}-modal-new", visible=False,
-        closable=False, maskClosable=False, renderFooter=True,
-        okText="Add New Project", okClickClose=False, confirmAutoSpin=True,
-        cancelText="Cancel", title=html.Span("Add New Project"),
+        fac.AntdForm([form_name, form_desc, data_uid], layout="vertical"),
+        id=f"id-{TAG}-modal-new", title=html.Span("Add New Project"),
+        visible=False, closable=False, maskClosable=False, renderFooter=True,
+        okText="Add New Project", okClickClose=False, confirmAutoSpin=True, cancelText="Cancel",
     )
 
 
@@ -47,13 +46,13 @@ def layout(pathname, search, **kwargs):
     visible=Output(f"id-{TAG}-modal-new", "visible"),
     loading=Output(f"id-{TAG}-modal-new", "confirmLoading"),
 ), dict(
-    value=Output(f"id-{TAG}-input-name", "value"),
     status=Output(f"id-{TAG}-form-name", "validateStatus"),
     help=Output(f"id-{TAG}-form-name", "help"),
+    value=Output(f"id-{TAG}-input-name", "value"),
 ), dict(
-    value=Output(f"id-{TAG}-input-desc", "value"),
     status=Output(f"id-{TAG}-form-desc", "validateStatus"),
     help=Output(f"id-{TAG}-form-desc", "help"),
+    value=Output(f"id-{TAG}-input-desc", "value"),
 ), Output(f"id-{TAG_BASE}-data-newp", "data")], [
     Input(f"id-{TAG_BASE}-button-new", "nClicks"),
     Input(f"id-{TAG}-modal-new", "okCounts"),
@@ -64,39 +63,35 @@ def layout(pathname, search, **kwargs):
 def _button_click(n_clicks, ok_counts, name, desc, user_id):
     # define outputs
     out_modal = dict(visible=dash.no_update, loading=False)
-    out_name = dict(value=dash.no_update, status="", help="")
-    out_desc = dict(value=dash.no_update, status="", help="")
+    out_name = dict(status="", help="", value=dash.no_update)
+    out_desc = dict(status="", help="", value=dash.no_update)
     out_data_newp = dash.no_update
 
     # check trigger
     trigger_id = dash.ctx.triggered_id
     if trigger_id == f"id-{TAG_BASE}-button-new":
         out_modal["visible"] = True
-        out_name["value"] = ""
-        out_desc["value"] = ""
+        out_name = dict(status="", help="", value="")
+        out_desc = dict(status="", help="", value="")
         return out_modal, out_name, out_desc, out_data_newp
 
     # check trigger
     if trigger_id == f"id-{TAG}-modal-new":
-        name = (name or "").strip()
-        if not name:
-            out_name["status"] = "error"
-            out_name["help"] = "project name is required"
-            return out_modal, out_name, out_desc, out_data_newp
-
         desc = (desc or "").strip()
-        if not desc:
-            out_desc["status"] = "error"
-            out_desc["help"] = "project description is required"
+
+        # check project name
+        name = (name or "").strip()
+        if len(name) < 4:
+            out_name["status"] = "error"
+            out_name["help"] = "project name is too short"
             return out_modal, out_name, out_desc, out_data_newp
 
         # check project name
         user = app_db.session.query(User).get(user_id)
-        for project in user.projects:
-            if project.name == name:
-                out_name["status"] = "error"
-                out_name["help"] = "project name already exists"
-                return out_modal, out_name, out_desc, out_data_newp
+        if name in set([project.name for project in user.projects]):
+            out_name["status"] = "error"
+            out_name["help"] = "project name already exists"
+            return out_modal, out_name, out_desc, out_data_newp
 
         # add new project
         project_id = get_md5(user_id + name)

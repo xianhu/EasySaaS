@@ -11,6 +11,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app_db
 from models.users import User
+from utility.paths import PATH_ANALYSIS
 from . import pnewp
 from ..comps import header as comps_header
 
@@ -27,40 +28,57 @@ def layout(pathname, search, **kwargs):
     # define variables
     user_id = current_user.id
     user_title = current_user.email.split("@")[0]
+    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=user_id)
 
     # define components
-    header_page = comps_header.get_component_header(None, user_title, dot=True)
+    data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
+    modal_newp = pnewp.layout(pathname, search, user_id=user_id)
 
     # define components
     button_new = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", type="primary")
     col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_new)]
-    row_header = fac.AntdRow(col_list, align="middle", justify="space-between")
-
-    # define components
-    div_list = html.Div(id=f"id-{TAG}-div-list", className="bg-white mt-2 p-4")
-    div_main = html.Div([row_header, div_list], className="w-75 m-auto mt-4")
-
-    # define components
-    modal_newp = pnewp.layout(pathname, search, user_id=user_id)
-
-    # define components
-    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=user_id)
-    data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
 
     # return result
-    class_div = "bg-main vh-100 overflow-auto"
-    return html.Div([header_page, div_main, modal_newp, data_uid, data_newp], className=class_div)
+    return html.Div(children=[
+        comps_header.get_component_header(None, user_title, dot=True),
+        html.Div(children=[
+            fac.AntdRow(col_list, align="middle", justify="space-between"),
+            html.Div(id=f"id-{TAG}-div-main", className="bg-white mt-2 p-4"),
+        ], className="w-75 m-auto mt-4"),
+        modal_newp, data_newp, data_uid,
+    ], className="bg-main vh-100 overflow-auto")
 
 
 @dash.callback([
-    Output(f"id-{TAG}-div-list", "children"),
+    Output(f"id-{TAG}-div-main", "children"),
     Output(f"id-{TAG}-button-new", "disabled"),
 ], [
     Input(f"id-{TAG}-data-newp", "data"),
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
-def _update_content(_, user_id):
+def _update_page(_, user_id):
     user = app_db.session.query(User).get(user_id)
     if not user.projects:
         return fac.AntdEmpty(locale="en-US", description="No Project"), False
-    return html.Span(", ".join([p.name for p in user.projects])), False
+
+    # define components
+    div_list = [fac.AntdRow(children=[
+        fac.AntdCol(html.Span("Project Name", className="fw-bold"), span=6),
+        fac.AntdCol(html.Span("Project Description", className="fw-bold"), span=10),
+        fac.AntdCol(html.Span("Project Status", className="fw-bold"), span=4),
+        fac.AntdCol(html.Span("Operation", className="fw-bold"), span=4),
+    ]), fac.AntdDivider(className="my-3")]
+
+    # define components
+    for project in user.projects:
+        href = f"{PATH_ANALYSIS}?project_id={project.id}"
+        div_list.append(fac.AntdRow(children=[
+            fac.AntdCol(html.Span(project.name), span=6),
+            fac.AntdCol(html.Span(project.desc), span=10),
+            fac.AntdCol(html.Span(project.status), span=4),
+            fac.AntdCol(html.A("Detail", href=href), span=4),
+        ]))
+        div_list.append(fac.AntdDivider(className="my-3"))
+
+    # return result
+    return div_list, False if len(user.projects) < 3 else True
