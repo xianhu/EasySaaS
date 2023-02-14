@@ -54,6 +54,6 @@ dash.clientside_callback(
     Input(f"id-{TAG}-chart-click", "data"),
     prevent_initial_call=True,
 )
-def _display_message(chart_data_click):
-    content = f"click: {chart_data_click}"
+def _update_page(chart_click_data):
+    content = f"click: {chart_click_data}"
     return fac.AntdMessage(content=content, top=50)

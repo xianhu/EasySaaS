@@ -39,7 +39,7 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         comps_header.get_component_header(user_title=user_title, dot=True),
         html.Div(children=[
-            fac.AntdRow(col_list, align="middle", justify="space-between"),
+            fac.AntdRow(col_list, align="bottom", justify="space-between"),
             html.Div(id=f"id-{TAG}-div-main", className="bg-white mt-2 p-4"),
         ], className="w-75 m-auto mt-4"),
         modal_newp, data_newp, data_uid,

@@ -9,7 +9,7 @@ import feffery_antd_components as fac
 from dash import html
 
 from config import config_app_name
-from utility.paths import PATH_USER, PATH_PROJECTS, PATH_LOGIN
+from utility.paths import *
 
 
 def get_component_header_brand(path_logo="favicon1.svg"):
@@ -25,7 +25,8 @@ def get_component_header_brand(path_logo="favicon1.svg"):
     col_text = fac.AntdCol(html.Span(config_app_name, className="fs-4 ms-1"))
 
     # return result
-    return fac.AntdRow([col_logo, col_text], align="middle", justify="start", className=None)
+    kwargs_a = dict(href=PATH_ROOT, className="text-dark text-decoration-none")
+    return html.A(fac.AntdRow([col_logo, col_text], align="middle", justify="start"), **kwargs_a)
 
 
 def get_component_header_user(user_title, dot=True):

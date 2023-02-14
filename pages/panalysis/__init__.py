@@ -4,6 +4,7 @@
 analysis page
 """
 
+import logging
 import urllib.parse
 
 import dash
@@ -14,6 +15,7 @@ from dash import Input, Output, State, dcc, html
 
 from . import pintros
 from .routers import ROUTER_MENU
+from .. import palert
 from ..comps import header as comps_header
 
 TAG = "analysis"
@@ -23,20 +25,20 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    try:
+        search = urllib.parse.parse_qs(search.lstrip("?").strip())
+        project_id = search["project_id"][0]
+    except Exception as excep:
+        logging.error("get project_id error: %s", excep)
+        return palert.layout_500(pathname, search)
+
     # user instance
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
 
-    # project instance
-    project_id = urllib.parse.parse_qs(search.strip("?"))["project_id"][0]
-    store_data = dict(user_id=current_user.id, project_id=project_id)
-
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
     sider = fac.AntdSider([menu, ], collapsible=True, theme="dark", className="vh-100 overflow-auto")
-
-    # define components
-    span_header = html.Span("Analysis", id=f"id-{TAG}-header", className=None)
 
     # define components
     kwargs_switch = dict(checkedChildren="Open", unCheckedChildren="Close")
@@ -46,7 +48,7 @@ def layout(pathname, search, **kwargs):
     # define components
     content = fac.AntdContent(children=[
         comps_header.get_component_header(
-            chilren_left=span_header,
+            chilren_left=html.Span("Analysis", id=f"id-{TAG}-header"),
             children_right=[switch, dropdown_user],
         ),
         fuc.FefferyTopProgress(children=[
@@ -55,6 +57,7 @@ def layout(pathname, search, **kwargs):
     ], className="vh-100 overflow-auto")
 
     # return result
+    store_data = dict(user_id=current_user.id, project_id=project_id)
     return fac.AntdLayout(children=[
         sider, content,
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
@@ -79,9 +82,9 @@ def layout(pathname, search, **kwargs):
 def _update_page(current_key, switch_checked, _width, _height, store_data):
     # define outputs
     out_content = dict(header=fac.AntdTitle(), content=fac.AntdEmpty(locale="en-us"))
-    out_others = dict(current_key=None, executejs_string=dash.no_update)
+    out_others = dict(current_key=current_key, executejs_string=dash.no_update)
 
-    # check trigger (default)
+    # check trigger_id (default)
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
         trigger_id = f"id-{TAG}-menu"
@@ -91,11 +94,12 @@ def _update_page(current_key, switch_checked, _width, _height, store_data):
     # define components
     project_id = store_data["project_id"]
     text_title = f"{current_key}-{switch_checked}-{project_id}"
-    out_content["header"] = fac.AntdTitle(text_title, level=4, className="mb-0")
+    out_content["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define components
-    if trigger_id == f"id-{TAG}-menu" and current_key == "Intros":
-        out_content["content"] = pintros.layout(None, None)
+    if trigger_id == f"id-{TAG}-menu":
+        if current_key == "Intros":
+            out_content["content"] = pintros.layout(None, None)
 
     # return result
     return out_content, out_others
