@@ -22,7 +22,7 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return html.Div(children=[
-        comps_header.get_component_header(None, user_title, dot=True),
+        comps_header.get_component_header(user_title=user_title, dot=True),
         html.Div(children=[
             html.Span("coming soon"), html.Br(),
             html.A("back to home", href="/"),

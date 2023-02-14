@@ -24,15 +24,14 @@ def layout(pathname, search, **kwargs):
     """
     # user instance
     current_user = flask_login.current_user
-
-    # define variables
-    user_id = current_user.id
     user_title = current_user.email.split("@")[0]
-    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=user_id)
+
+    # define components
+    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id)
 
     # define components
     data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
-    modal_newp = pnewp.layout(pathname, search, user_id=user_id)
+    modal_newp = pnewp.layout(pathname, search)
 
     # define components
     button_new = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", type="primary")
@@ -40,7 +39,7 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return html.Div(children=[
-        comps_header.get_component_header(None, user_title, dot=True),
+        comps_header.get_component_header(user_title=user_title, dot=True),
         html.Div(children=[
             fac.AntdRow(col_list, align="middle", justify="space-between"),
             html.Div(id=f"id-{TAG}-div-main", className="bg-white mt-2 p-4"),

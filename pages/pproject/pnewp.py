@@ -8,7 +8,7 @@ import time
 
 import dash
 import feffery_antd_components as fac
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, html
 
 from app import app_db
 from models.users import User, Project, ProjectUser
@@ -23,9 +23,6 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=kwargs["user_id"])
-
-    # define components
     input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large")
     form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", required=True, label="project name:")
 
@@ -35,7 +32,7 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return fac.AntdModal(
-        fac.AntdForm([form_name, form_desc, data_uid], layout="vertical"),
+        fac.AntdForm([form_name, form_desc], layout="vertical"),
         id=f"id-{TAG}-modal-new", title=html.Span("Add New Project"),
         visible=False, closable=False, maskClosable=False, renderFooter=True,
         okText="Add New Project", okClickClose=False, confirmAutoSpin=True, cancelText="Cancel",
@@ -58,9 +55,9 @@ def layout(pathname, search, **kwargs):
     Input(f"id-{TAG}-modal-new", "okCounts"),
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
-    State(f"id-{TAG}-data-uid", "data"),
+    State(f"id-{TAG_BASE}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, ok_counts, name, desc, user_id):
+def _update_page(n_clicks, ok_counts, name, desc, user_id):
     # define outputs
     out_modal = dict(visible=dash.no_update, loading=False)
     out_name = dict(status="", help="", value=dash.no_update)

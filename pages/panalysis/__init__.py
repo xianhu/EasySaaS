@@ -5,6 +5,7 @@ analysis page
 """
 
 import logging
+import urllib.parse
 
 import dash
 import feffery_antd_components as fac
@@ -22,12 +23,10 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    # user instance
+    # user instance and project id
     current_user = flask_login.current_user
-    store_data = dict(
-        pathname=pathname, search=search, test=kwargs.get("test"),
-        user_id=current_user.id, user_email=current_user.email,
-    )
+    project_id = urllib.parse.parse_qs(search)["project_id"][0]
+    store_data = dict(user_id=current_user.id, project_id=project_id)
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
@@ -38,13 +37,6 @@ def layout(pathname, search, **kwargs):
     switch = fac.AntdSwitch(id=f"id-{TAG}-switch", **kwargs_switch, className="me-2")
 
     # define components
-    user_title = current_user.email.split("@")[0]
-    dropdown_user = fac.AntdBadge(fac.AntdDropdown(id=f"id-{TAG}-user", menuItems=[
-        {"title": "Profile", "key": "Profile"},
-        {"title": "Settings", "key": "Settings"},
-        {"isDivider": True},
-        {"title": "Logout", "href": "/login"},
-    ], title=user_title, buttonMode=True), dot=True)
 
     # define components
     class_top = "bg-white border-bottom sticky-top px-4 py-2"

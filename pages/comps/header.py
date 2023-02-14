@@ -40,15 +40,26 @@ def get_component_header_user(user_title, dot=True):
     ], title=user_title, buttonMode=True), dot=dot)
 
 
-def get_component_header(title, user_title, dot=True):
+def get_component_header(
+        chilren_left=None, logo="favicon1.svg",
+        children_right=None, user_title=None, dot=True,
+):
     """
     layout of component
     """
     # define components
-    col_title = fac.AntdCol(title or get_component_header_brand())
-    col_dropdown = fac.AntdCol(get_component_header_user(user_title, dot=dot))
+    if chilren_left:
+        col_left = fac.AntdCol(chilren_left)
+    else:
+        col_left = fac.AntdCol(get_component_header_brand(logo=logo))
+
+    # define components
+    if children_right:
+        col_right = fac.AntdCol(children_right)
+    else:
+        col_right = fac.AntdCol(get_component_header_user(user_title, dot=dot))
 
     # return result
     class_row = "bg-white border-bottom sticky-top px-4 py-2"
     kwargs_row = dict(align="middle", justify="space-between")
-    return fac.AntdRow([col_title, col_dropdown], **kwargs_row, className=class_row)
+    return fac.AntdRow([col_left, col_right], **kwargs_row, className=class_row)
