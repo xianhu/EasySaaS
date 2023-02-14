@@ -69,7 +69,7 @@ def layout(pathname, search, **kwargs):
     refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
 ), dict(
     button_loading=Output(f"id-{TAG}-button", "loading"),
-    js_string=Output(f"id-{TAG}-executejs", "jsString"),
+    executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-button", "nClicks"),
     State(f"id-{TAG}-input-email", "value"),
@@ -83,7 +83,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     out_email = dict(status="", help="")
     out_pwd = dict(status="", help="")
     out_cpc = dict(status="", help="", refresh=False)
-    out_others = dict(button_loading=False, js_string=None)
+    out_others = dict(button_loading=False, executejs_string=None)
 
     # check email
     email = (email or "").strip()
@@ -93,6 +93,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_email, out_pwd, out_cpc, out_others
 
     # check captcha
+    vcpc = (vcpc or "").strip()
     if (not vcpc) or (vcpc != vimage):
         out_cpc["status"] = "error"
         out_cpc["help"] = "Captcha is incorrect"
@@ -109,7 +110,8 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_email, out_pwd, out_cpc, out_others
 
     # check password
-    if not user.check_password_hash(pwd or ""):
+    pwd = (pwd or "").strip()
+    if not user.check_password_hash(pwd):
         out_pwd["status"] = "error"
         out_pwd["help"] = "Password is incorrect"
         out_cpc["refresh"] = True
@@ -117,7 +119,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
 
     # login user
     flask_login.login_user(user, remember=True)
-    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
+    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
 
     # return result
     return out_email, out_pwd, out_cpc, out_others

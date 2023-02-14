@@ -93,7 +93,7 @@ def layout_result(pathname, search, **kwargs):
     refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
 ), dict(
     button_loading=Output(f"id-{TAG}-button", "loading"),
-    js_string=Output(f"id-{TAG}-executejs", "jsString"),
+    executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-button", "nClicks"),
     State(f"id-{TAG}-input-email", "value"),
@@ -105,7 +105,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     # define outputs
     out_email = dict(status="", help="")
     out_cpc = dict(status="", help="", refresh=False)
-    out_others = dict(button_loading=False, js_string=None)
+    out_others = dict(button_loading=False, executejs_string=None)
 
     # check email
     email = (email or "").strip()
@@ -115,6 +115,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         return out_email, out_cpc, out_others
 
     # check captcha
+    vcpc = (vcpc or "").strip()
     if (not vcpc) or (vcpc != vimage):
         out_cpc["status"] = "error"
         out_cpc["help"] = "Captcha is incorrect"
@@ -158,7 +159,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
     # set session
     flask.session["email"] = email
-    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
+    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
     return out_email, out_cpc, out_others

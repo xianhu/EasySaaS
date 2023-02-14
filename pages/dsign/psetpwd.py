@@ -84,7 +84,7 @@ def layout_result(pathname, search, **kwargs):
     help2=Output(f"id-{TAG}-form-pwd2", "help"),
 ), dict(
     button_loading=Output(f"id-{TAG}-button", "loading"),
-    js_string=Output(f"id-{TAG}-executejs", "jsString"),
+    executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-button", "nClicks"),
     State(f"id-{TAG}-input-email", "value"),
@@ -95,9 +95,11 @@ def layout_result(pathname, search, **kwargs):
 def _button_click(n_clicks, email, pwd1, pwd2, pathname):
     # define outputs
     out_pwd = dict(status1="", help1="", status2="", help2="")
-    out_others = dict(button_loading=False, js_string=None)
+    out_others = dict(button_loading=False, executejs_string=None)
 
     # check password
+    pwd1 = (pwd1 or "").strip()
+    pwd2 = (pwd2 or "").strip()
     if (not pwd1) or (len(pwd1) < 6):
         out_pwd["status1"] = "error"
         out_pwd["help1"] = "Password is too short"
@@ -124,7 +126,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname):
 
     # delete cache
     app_redis.delete(_id)
-    out_others["js_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
+    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
     return out_pwd, out_others
