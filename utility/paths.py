@@ -11,5 +11,5 @@ PATH_SIGNUP = "/signup"
 PATH_FORGOTPWD = "/forgotpwd"
 
 PATH_USER = "/user"
-PATH_PROJECT = "/project"
+PATH_PROJECTS = "/projects"
 PATH_ANALYSIS = "/analysis"

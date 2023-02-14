@@ -14,12 +14,16 @@ def layout(pathname, search, status, text_title, text_subtitle, text_button, ret
     """
     layout of page
     """
-    class_div = "d-flex align-items-center justify-content-center vh-100"
+    # define components
     kwargs_button = dict(type="primary", size="large", className="mt-2")
-    return html.Div(fac.AntdResult(subTitle=[
-        fac.AntdText(text_subtitle), html.Br(),
-        fac.AntdButton(text_button, href=return_href, **kwargs_button),
-    ], status=status, title=text_title), className=class_div)
+    button = fac.AntdButton(text_button, href=return_href, **kwargs_button)
+
+    # define components
+    sub_title = [fac.AntdText(text_subtitle), html.Br(), button]
+    result_div = fac.AntdResult(status=status, title=text_title, subTitle=sub_title)
+
+    # return result
+    return html.Div(result_div, className="d-flex align-items-center justify-content-center vh-100")
 
 
 def layout_403(pathname, search, return_href=PATH_ROOT):

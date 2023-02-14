@@ -4,11 +4,10 @@
 user page
 """
 
-import feffery_antd_components as fac
 import flask_login
-from dash import html, dcc
+from dash import html
 
-from .. import comps
+from ..comps import header as comps_header
 
 TAG = "user"
 
@@ -21,38 +20,10 @@ def layout(pathname, search, **kwargs):
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
 
-    # return layout
-    return fac.AntdContent(children=[
-        comps.get_component_header(None, user_title, dot=True),
-
-        fac.AntdTabs(
-            [
-                fac.AntdTabPane(
-                    html.Div(
-                        '标签页1测试',
-
-                    ),
-                    tab='标签页1',
-                    key='标签页1'
-                ),
-                fac.AntdTabPane(
-                    html.Div(
-                        fac.AntdButton('标签页2测试', type='primary'),
-
-                    ),
-                    tab='标签页2',
-                    key='标签页2'
-                ),
-                fac.AntdTabPane(
-                    html.Div(
-                        fac.AntdButton('标签页3测试', type='dashed'),
-
-                    ),
-                    tab='标签页3',
-                    key='标签页3'
-                )
-            ], className="w-75 m-auto mt-4"
-        ),
-
-        dcc.Store(id=f"id-{TAG}-store", data=dict(user_id=current_user.id)),
-    ], className="vh-100 overflow-auto bg-main")
+    # return result
+    return html.Div(children=[
+        comps_header.get_component_header(user_title=user_title, dot=True),
+        html.Div(children=[
+            html.Span("coming soon..."),
+        ], className="w-75 m-auto mt-4"),
+    ], className="bg-main vh-100 overflow-auto")

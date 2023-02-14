@@ -12,7 +12,7 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app, server
-from pages import palert, puser, pproject, panalysis
+from pages import palert, puser, pprojects, panalysis
 from pages.dsign import plogin, pemail, psetpwd
 from utility.consts import *
 from utility.paths import *
@@ -37,6 +37,7 @@ app.layout = html.Div(children=[
     State("id-location", "hash"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
+    # user instance
     current_user = flask_login.current_user
 
     # logging current_user
@@ -74,17 +75,17 @@ def _init_page(pathname, search, vhash):
 
     # =============================================================================================
     if pathname == PATH_ROOT:
-        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECT)
+        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
 
     if pathname == PATH_USER:
         if not current_user.is_authenticated:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, puser.layout(pathname, search, **kwargs), jsstr_title
 
-    if pathname == PATH_PROJECT:
+    if pathname == PATH_PROJECTS:
         if not current_user.is_authenticated:
             return pathname, search, dash.no_update, jsstr_login
-        return pathname, search, pproject.layout(pathname, search, **kwargs), jsstr_title
+        return pathname, search, pprojects.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == PATH_ANALYSIS:
         if not current_user.is_authenticated:
