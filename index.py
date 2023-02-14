@@ -37,6 +37,7 @@ app.layout = html.Div(children=[
     State("id-location", "hash"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
+    # user instance
     current_user = flask_login.current_user
 
     # logging current_user
