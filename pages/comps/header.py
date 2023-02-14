@@ -9,19 +9,19 @@ import feffery_antd_components as fac
 from dash import html
 
 from config import config_app_name
-from utility.paths import PATH_USER, PATH_LOGIN
+from utility.paths import PATH_USER, PATH_PROJECT, PATH_LOGIN
 
 
-def get_component_header_brand(logo="favicon1.svg"):
+def get_component_header_brand(path_logo="favicon1.svg"):
     """
     layout of component
     """
     # define components
-    src_logo = dash.get_asset_url(logo)
+    src_logo = dash.get_asset_url(path_logo)
     kwargs_logo = dict(width="30px", height="30px", preview=False)
-    col_logo = fac.AntdCol(fac.AntdImage(src=src_logo, **kwargs_logo))
 
     # define components
+    col_logo = fac.AntdCol(fac.AntdImage(src=src_logo, **kwargs_logo))
     col_text = fac.AntdCol(html.Span(config_app_name, className="fs-4 ms-1"))
 
     # return result
@@ -36,12 +36,14 @@ def get_component_header_user(user_title, dot=True):
         {"title": "Profile", "href": f"{PATH_USER}?tab=profile"},
         {"title": "Settings", "href": f"{PATH_USER}?tab=settings"},
         {"isDivider": True},
+        {"title": "Projects", "href": PATH_PROJECT},
+        {"isDivider": True},
         {"title": "Logout", "href": PATH_LOGIN},
-    ], title=user_title, buttonMode=True), dot=dot)
+    ], title=user_title, buttonMode=True), dot=dot, className=None)
 
 
 def get_component_header(
-        chilren_left=None, logo="favicon1.svg",
+        chilren_left=None, path_logo="favicon1.svg",
         children_right=None, user_title=None, dot=True,
 ):
     """
@@ -51,7 +53,7 @@ def get_component_header(
     if chilren_left:
         col_left = fac.AntdCol(chilren_left)
     else:
-        col_left = fac.AntdCol(get_component_header_brand(logo=logo))
+        col_left = fac.AntdCol(get_component_header_brand(path_logo=path_logo))
 
     # define components
     if children_right:
