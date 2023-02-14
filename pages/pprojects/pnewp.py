@@ -14,8 +14,8 @@ from app import app_db
 from models.users import User, Project, ProjectUser
 from utility import get_md5
 
-TAG_BASE = "project"
-TAG = "project-newp"
+TAG_BASE = "projects"
+TAG = "projects-newp"
 
 
 def layout(pathname, search, **kwargs):
@@ -64,7 +64,7 @@ def _update_page(n_clicks, ok_counts, name, desc, user_id):
     out_desc = dict(status="", help="", value=dash.no_update)
     out_data_newp = dash.no_update
 
-    # check trigger
+    # check trigger_id
     trigger_id = dash.ctx.triggered_id
     if trigger_id == f"id-{TAG_BASE}-button-new":
         out_modal["visible"] = True
@@ -72,7 +72,7 @@ def _update_page(n_clicks, ok_counts, name, desc, user_id):
         out_desc = dict(status="", help="", value="")
         return out_modal, out_name, out_desc, out_data_newp
 
-    # check trigger
+    # check trigger_id
     if trigger_id == f"id-{TAG}-modal-new":
         desc = (desc or "").strip()
 

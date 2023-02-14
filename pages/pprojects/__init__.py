@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-project page
+projects page
 """
 
 import dash
@@ -15,7 +15,7 @@ from utility.paths import PATH_ANALYSIS
 from . import pnewp
 from ..comps import header as comps_header
 
-TAG = "project"
+TAG = "projects"
 
 
 def layout(pathname, search, **kwargs):
@@ -27,17 +27,15 @@ def layout(pathname, search, **kwargs):
     user_title = current_user.email.split("@")[0]
 
     # define components
-    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id)
-
-    # define components
-    data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
     modal_newp = pnewp.layout(pathname, search)
+    data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
 
     # define components
     button_new = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", type="primary")
     col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_new)]
 
     # return result
+    data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id)
     return html.Div(children=[
         comps_header.get_component_header(user_title=user_title, dot=True),
         html.Div(children=[
@@ -58,7 +56,7 @@ def layout(pathname, search, **kwargs):
 def _update_page(_, user_id):
     user = app_db.session.query(User).get(user_id)
     if not user.projects:
-        return fac.AntdEmpty(locale="en-US", description="No Project"), False
+        return fac.AntdEmpty(description="No Project"), False
 
     # define components
     div_list = [fac.AntdRow(children=[

@@ -9,7 +9,7 @@ import feffery_antd_components as fac
 from dash import html
 
 from config import config_app_name
-from utility.paths import PATH_USER, PATH_PROJECT, PATH_LOGIN
+from utility.paths import PATH_USER, PATH_PROJECTS, PATH_LOGIN
 
 
 def get_component_header_brand(path_logo="favicon1.svg"):
@@ -36,7 +36,7 @@ def get_component_header_user(user_title, dot=True):
         {"title": "Profile", "href": f"{PATH_USER}?tab=profile"},
         {"title": "Settings", "href": f"{PATH_USER}?tab=settings"},
         {"isDivider": True},
-        {"title": "Projects", "href": PATH_PROJECT},
+        {"title": "Projects", "href": PATH_PROJECTS},
         {"isDivider": True},
         {"title": "Logout", "href": PATH_LOGIN},
     ], title=user_title, buttonMode=True), dot=dot, className=None)
