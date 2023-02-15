@@ -7,7 +7,7 @@ utility module
 import hashlib
 
 
-def get_md5(source: str) -> str:
+def get_md5(source):
     """
     get md5 of source
     """
