@@ -53,9 +53,12 @@ def layout(pathname, search, **kwargs):
     Input(f"id-{TAG}-data-newp", "data"),
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
-def _update_page(_, user_id):
+def _update_page(_newp_data, user_id):
     user = app_db.session.query(User).get(user_id)
-    if not user.projects:
+    projects_list = [p for p in user.projects if p.status == 1]
+
+    # check projects
+    if not projects_list:
         return fac.AntdEmpty(description="No Project"), False
 
     # define components
@@ -67,7 +70,7 @@ def _update_page(_, user_id):
     ]), fac.AntdDivider(className="my-3")]
 
     # define components
-    for project in user.projects:
+    for project in projects_list:
         href = f"{PATH_ANALYSIS}?project_id={project.id}"
         div_list.append(fac.AntdRow(children=[
             fac.AntdCol(html.Span(project.name), span=6),
@@ -78,4 +81,4 @@ def _update_page(_, user_id):
         div_list.append(fac.AntdDivider(className="my-3"))
 
     # return result
-    return div_list, False if len(user.projects) < 3 else True
+    return div_list, False if len(projects_list) < 3 else True

@@ -7,6 +7,7 @@ user model
 import logging
 
 import sqlalchemy
+from sqlalchemy import orm
 from werkzeug import security
 
 from models import BaseModel
@@ -34,8 +35,8 @@ class User(BaseModel):
     auth_github = sqlalchemy.Column(sqlalchemy.String(512), doc="token of github")
     auth_google = sqlalchemy.Column(sqlalchemy.String(512), doc="token of google")
 
-    # relationshiops
-    projects = sqlalchemy.orm.relationship("Project", secondary="project_users", back_populates="users")
+    # relationship
+    projects = orm.relationship("Project", secondary="project_users", back_populates="users")
 
     def check_password_hash(self, password):
         """
@@ -69,8 +70,8 @@ class Project(BaseModel):
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
-    # relationshiops
-    users = sqlalchemy.orm.relationship("User", secondary="project_users", back_populates="projects")
+    # relationship
+    users = orm.relationship("User", secondary="project_users", back_populates="projects")
 
 
 class ProjectUser(BaseModel):
@@ -83,7 +84,7 @@ class ProjectUser(BaseModel):
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
-    # relations
+    # relationships
     user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("users.id"))
     project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"))
 
@@ -93,7 +94,6 @@ class ProjectUser(BaseModel):
 
 
 if __name__ == "__main__":
-    from sqlalchemy import orm
     from config import config_database_uri
     from utility import get_md5
 

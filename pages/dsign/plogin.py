@@ -109,6 +109,13 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         out_cpc["refresh"] = True
         return out_email, out_pwd, out_cpc, out_others
 
+    # check status
+    if user.status != 1:
+        out_email["status"] = "error"
+        out_email["help"] = "This email has been disabled"
+        out_cpc["refresh"] = True
+        return out_email, out_pwd, out_cpc, out_others
+
     # check password
     pwd = (pwd or "").strip()
     if not user.check_password_hash(pwd):

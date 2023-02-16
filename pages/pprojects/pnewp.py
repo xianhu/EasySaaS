@@ -24,11 +24,11 @@ def layout(pathname, search, **kwargs):
     """
     # define components
     input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large")
-    form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", required=True, label="project name:")
+    form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", label="project name:", required=True)
 
     # define components
     input_desc = fac.AntdInput(id=f"id-{TAG}-input-desc", placeholder="project description", size="large")
-    form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", required=True, label="project description:")
+    form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", label="project description:")
 
     # return result
     return fac.AntdModal(
@@ -74,8 +74,6 @@ def _update_page(n_clicks, ok_counts, name, desc, user_id):
 
     # check trigger_id
     if trigger_id == f"id-{TAG}-modal-new":
-        desc = (desc or "").strip()
-
         # check project name
         name = (name or "").strip()
         if len(name) < 4:
@@ -85,14 +83,14 @@ def _update_page(n_clicks, ok_counts, name, desc, user_id):
 
         # check project name
         user = app_db.session.query(User).get(user_id)
-        if name in set([project.name for project in user.projects]):
+        if name in set([p.name for p in user.projects]):
             out_name["status"] = "error"
             out_name["help"] = "project name already exists"
             return out_modal, out_name, out_desc, out_data_newp
 
         # add new project
         project_id = get_md5(user_id + name)
-        project = Project(id=project_id, name=name, desc=desc)
+        project = Project(id=project_id, name=name, desc=(desc or "").strip())
         project_user = ProjectUser(project_id=project_id, user_id=user_id)
 
         # add to database
