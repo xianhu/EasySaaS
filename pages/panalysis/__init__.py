@@ -84,19 +84,19 @@ def _update_page(current_key, switch_checked, _width, _height, store_data):
     out_content = dict(header=fac.AntdTitle(), content=fac.AntdEmpty(locale="en-us"))
     out_others = dict(current_key=current_key, executejs_string=dash.no_update)
 
-    # check trigger_id (default)
+    # check trigger_id
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
         trigger_id = f"id-{TAG}-menu"
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
-    # define components
+    # define header
     project_id = store_data["project_id"]
     text_title = f"{current_key}-{switch_checked}-{project_id}"
     out_content["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
-    # define components
+    # define content
     if trigger_id == f"id-{TAG}-menu":
         if current_key == "Intros":
             out_content["content"] = pintros.layout(None, None)
