@@ -77,21 +77,65 @@ class Project(BaseModel):
 
 class ProjectUser(BaseModel):
     __tablename__ = "project_users"
-    __table_args__ = (
-        sqlalchemy.Index("index_pu_1", "user_id"),
-        sqlalchemy.Index("index_pu_2", "project_id"),
-    )
-
-    # basic
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
     # relationships
-    user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("users.id"))
-    project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"))
+    user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("users.id"), primary_key=True)
+    project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"), primary_key=True)
 
     # informations
     role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/member")
     role_json = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, doc="json of role")
+
+
+def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
+    """
+    add user, and add project-user relationship
+    :return user or None
+    """
+    # add user if necessary
+    user = session.query(User).filter(User.email == email).first()
+    if not user:
+        user = User(id=get_md5(email), email=email)
+        user.set_password_hash(pwd)
+        session.add(user)
+
+    # add project-user relationship if necessary
+    if project_id:
+        project_user = ProjectUser(user_id=user.id, project_id=project_id, role=project_role)
+        session.add(project_user)
+
+    # commit session
+    try:
+        session.commit()
+        return user
+    except Exception as excep:
+        logging.error(excep)
+        session.rollback()
+        return None
+
+
+def add_project(session, name, desc=None, user_id=None, project_role="admin"):
+    """
+    add project, and add project-user relationship
+    :return project or None
+    """
+    # add project if necessary
+    project = Project(id=get_md5(name + str(time.time())), name=name, desc=desc)
+    session.add(project)
+
+    # add project-user relationship if necessary
+    if user_id:
+        project_user = ProjectUser(user_id=user_id, project_id=project.id, role=project_role)
+        session.add(project_user)
+
+    # commit session
+    try:
+        session.commit()
+        return project
+    except Exception as excep:
+        logging.error(excep)
+        session.rollback()
+        return None
 
 
 if __name__ == "__main__":
@@ -107,42 +151,22 @@ if __name__ == "__main__":
 
     # create session and add data
     _email = "admin@easysaas.com"
-    with orm.sessionmaker(engine)() as session:
-        _user = User(id=get_md5(_email), email=_email, name="admin")
-        _user.set_password_hash("a123456")
-
-        try:
-            session.add(_user)
-            session.commit()
-            logging.warning("add user success: %s", _user.to_dict())
-        except Exception as excep:
-            logging.error("add user failed: %s", excep)
-            session.rollback()
-            exit()
+    with orm.sessionmaker(engine)() as _session:
+        _user = add_user(_session, _email, "a123456", project_id=None)
+        logging.warning("add user: %s", _user.to_dict() if _user else None)
+    _user_id = _user.id
 
     # create session and add data
     _project_name = "demo project"
-    with orm.sessionmaker(engine)() as session:
-        _user = session.query(User).filter(User.email == _email).first()
-
-        _id = get_md5(_user.id + _project_name + str(time.time()))
-        _project = Project(id=_id, name=_project_name, desc="demo project")
-        _project_user = ProjectUser(user_id=_user.id, project_id=_project.id, role="admin")
-
-        try:
-            session.add_all([_project, _project_user])
-            session.commit()
-            logging.warning("add project success: %s", _project.to_dict())
-            logging.warning("add project_user success: %s", _project_user.to_dict())
-        except Exception as excep:
-            logging.error("add project/project_user failed: %s", excep)
-            session.rollback()
-            exit()
+    with orm.sessionmaker(engine)() as _session:
+        _project = add_project(_session, _project_name, user_id=_user_id)
+        logging.warning("add project: %s", _project.to_dict() if _project else None)
+    _project_id = _project.id
 
     # create session and select data
-    with orm.sessionmaker(engine)() as session:
-        _user = session.query(User).filter(User.email == _email).first()
+    with orm.sessionmaker(engine)() as _session:
+        _user = _session.query(User).get(_user_id)
         logging.warning("user.projects: %s", _user.projects)
 
-        _project = session.query(Project).filter(Project.name == _project_name).first()
+        _project = _session.query(Project).get(_project_id)
         logging.warning("project.users: %s", _project.users)
