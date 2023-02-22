@@ -95,7 +95,6 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
             return out_name, out_desc, out_modal, out_others
 
         # add new project
-
         _id = get_md5(name + str(time.time()))
         project = Project(id=_id, name=name, desc=(desc or "").strip())
         project_user = ProjectUser(user_id=user.id, project_id=project.id)
@@ -108,3 +107,6 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
         out_modal["visible"] = False
         out_others["close"] = time.time()
         return out_name, out_desc, out_modal, out_others
+
+    # return result
+    return out_name, out_desc, out_modal, out_others

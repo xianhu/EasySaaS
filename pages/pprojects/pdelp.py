@@ -22,6 +22,7 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    # define components
     kwargs_modal = dict(
         title="Delete Project", visible=False, closable=False, maskClosable=False, renderFooter=True,
         okText="Delete Project", okClickClose=False, confirmAutoSpin=True, cancelText="Cancel",
@@ -52,13 +53,11 @@ def _update_page(_open_data, _ok_counts, project_id, user_id):
     # user = app_db.session.query(User).get(user_id)
     project = app_db.session.query(Project).get(project_id)
 
-    # get trigger_id
-    trigger_id = dash.ctx.triggered_id
-
     # check trigger_id
+    trigger_id = dash.ctx.triggered_id
     if trigger_id == f"id-{TAG_BASE}-{TYPE}-open":
-        out_modal["visible"] = True
         out_modal["children"] = f"Are you sure to delete project: {project.name}?"
+        out_modal["visible"] = True
         return out_modal, out_others
 
     # check trigger_id

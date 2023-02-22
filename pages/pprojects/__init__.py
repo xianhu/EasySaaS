@@ -91,7 +91,7 @@ def _update_page(_add, _edit, _del, user_id):
     div_list = [fac.AntdRow(children=[
         fac.AntdCol(html.Span("Project Name", className="fw-bold"), span=5),
         fac.AntdCol(html.Span("Project Description", className="fw-bold"), span=12),
-        fac.AntdCol(html.Span("Project Status", className="fw-bold"), span=2),
+        fac.AntdCol(html.Span("Status", className="fw-bold"), span=2),
         fac.AntdCol(html.Span("Operation", className="fw-bold"), span=5),
     ]), fac.AntdDivider(className="my-3")]
 
