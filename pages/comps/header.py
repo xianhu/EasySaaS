@@ -23,10 +23,10 @@ def get_component_header_brand(path_logo="favicon1.svg"):
     # define components
     col_logo = fac.AntdCol(fac.AntdImage(src=src_logo, **kwargs_logo))
     col_text = fac.AntdCol(html.Span(config_app_name, className="fs-4 ms-1"))
+    row_brand = fac.AntdRow([col_logo, col_text], align="middle", justify="start")
 
     # return result
-    kwargs_a = dict(href=PATH_ROOT, className="text-dark text-decoration-none")
-    return html.A(fac.AntdRow([col_logo, col_text], align="middle", justify="start"), **kwargs_a)
+    return html.A(row_brand, href=PATH_ROOT, className="text-dark text-decoration-none")
 
 
 def get_component_header_user(user_title, dot=True):

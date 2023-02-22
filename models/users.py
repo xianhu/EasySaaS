@@ -5,6 +5,7 @@ user model
 """
 
 import logging
+import time
 
 import sqlalchemy
 from sqlalchemy import orm
@@ -124,7 +125,8 @@ if __name__ == "__main__":
     with orm.sessionmaker(engine)() as session:
         _user = session.query(User).filter(User.email == _email).first()
 
-        _project = Project(id=get_md5(_user.id + _project_name), name=_project_name)
+        _id = get_md5(_user.id + _project_name + str(time.time()))
+        _project = Project(id=_id, name=_project_name, desc="demo project")
         _project_user = ProjectUser(user_id=_user.id, project_id=_project.id, role="admin")
 
         try:

@@ -12,7 +12,7 @@ from dash import Input, Output, State, dcc, html
 from app import app_db
 from models.users import User
 from utility.paths import PATH_ANALYSIS
-from . import pnewp
+from . import paddp
 from ..comps import header as comps_header
 
 TAG = "projects"
@@ -27,12 +27,12 @@ def layout(pathname, search, **kwargs):
     user_title = current_user.email.split("@")[0]
 
     # define components
-    modal_newp = pnewp.layout(pathname, search)
-    data_newp = dcc.Store(id=f"id-{TAG}-data-newp", data=0)
+    modal_addp = paddp.layout(pathname, search)
+    data_addp = dcc.Store(id=f"id-{TAG}-data-addp", data=0)
 
     # define components
-    button_new = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", type="primary")
-    col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_new)]
+    button_add = fac.AntdButton("Add New Project", href=f"#add", type="primary", disabled=True)
+    col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_add)]
 
     # return result
     data_uid = dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id)
@@ -42,7 +42,7 @@ def layout(pathname, search, **kwargs):
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
             html.Div(id=f"id-{TAG}-div-main", className="bg-white mt-2 p-4"),
         ], className="w-75 m-auto mt-4"),
-        modal_newp, data_newp, data_uid,
+        modal_addp, data_addp, data_uid,
     ], className="bg-main vh-100 overflow-auto")
 
 

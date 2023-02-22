@@ -125,14 +125,14 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     # check user
     _id = get_md5(email)
     user = app_db.session.query(User).get(_id)
+    if user and (user.status != 1):
+        out_email["status"] = "error"
+        out_email["help"] = "This email has been disabled"
+        out_cpc["refresh"] = True
+        return out_email, out_cpc, out_others
     if pathname == PATH_SIGNUP and user:
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
-        out_cpc["refresh"] = True
-        return out_email, out_cpc, out_others
-    if pathname == PATH_FORGOTPWD and user and (user.status != 1):
-        out_email["status"] = "error"
-        out_email["help"] = "This email has been disabled"
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
     if pathname == PATH_FORGOTPWD and (not user):

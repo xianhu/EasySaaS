@@ -25,16 +25,18 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    try:
-        search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        project_id = search["project_id"][0]
-    except Exception as excep:
-        logging.error("get project_id error: %s", excep)
-        return palert.layout_500(pathname, search)
-
     # user instance
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
+
+    # check project.id
+    try:
+        search = urllib.parse.parse_qs(search.lstrip("?").strip())
+        assert search["id"][0] in set([p.id for p in current_user.projects if p.status == 1])
+    except Exception as excep:
+        logging.error("get project.id error: %s", excep)
+        return palert.layout_500(pathname, search)
+    _id = search["id"][0]
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
@@ -57,7 +59,7 @@ def layout(pathname, search, **kwargs):
     ], className="vh-100 overflow-auto")
 
     # return result
-    store_data = dict(user_id=current_user.id, project_id=project_id)
+    store_data = dict(user_id=current_user.id, project_id=_id)
     return fac.AntdLayout(children=[
         sider, content,
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
