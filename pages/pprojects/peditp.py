@@ -33,8 +33,8 @@ def layout(pathname, search, **kwargs):
     # define components
     form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
     kwargs_modal = dict(
-        title="Update Project", visible=False, closable=False, maskClosable=False, renderFooter=True,
-        okText="Update Project", okClickClose=False, confirmAutoSpin=True, cancelText="Cancel",
+        title="Update Project", visible=False, closable=False, renderFooter=True,
+        okText="Update Project", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
     )
 
     # return result
@@ -70,12 +70,14 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
     out_modal = dict(visible=dash.no_update, loading=False)
     out_others = dict(close=dash.no_update)
 
-    # get user and project
+    # get user and project instances
     # user = app_db.session.query(User).get(user_id)
     project = app_db.session.query(Project).get(project_id)
 
-    # check trigger_id
+    # get trigger_id
     trigger_id = dash.ctx.triggered_id
+
+    # check trigger_id
     if trigger_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["value"] = project.name
         out_desc["value"] = project.desc
@@ -84,6 +86,7 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
 
     # check trigger_id
     if trigger_id == f"id-{TAG}-modal-project":
+        # update project
         project.desc = (desc or "").strip()
         app_db.session.commit()
 
@@ -92,5 +95,5 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
         out_others["close"] = time.time()
         return out_name, out_desc, out_modal, out_others
 
-    # return result
+    # return result (never reach here)
     return out_name, out_desc, out_modal, out_others

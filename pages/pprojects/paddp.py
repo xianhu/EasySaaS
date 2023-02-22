@@ -34,8 +34,8 @@ def layout(pathname, search, **kwargs):
     # define components
     form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
     kwargs_modal = dict(
-        title="Add New Project", visible=False, closable=False, maskClosable=False, renderFooter=True,
-        okText="Add New Project", okClickClose=False, confirmAutoSpin=True, cancelText="Cancel",
+        title="Add New Project", visible=False, closable=False, renderFooter=True,
+        okText="Add New Project", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
     )
 
     # return result
