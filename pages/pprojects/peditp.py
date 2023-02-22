@@ -57,6 +57,7 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
+], [
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
     State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),

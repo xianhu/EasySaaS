@@ -58,6 +58,7 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
+], [
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
     State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
@@ -70,8 +71,10 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
     out_modal = dict(visible=dash.no_update, loading=False)
     out_others = dict(close=dash.no_update)
 
-    # check trigger_id
+    # get trigger_id
     trigger_id = dash.ctx.triggered_id
+
+    # check trigger_id
     if trigger_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["value"] = ""
         out_desc["value"] = ""
@@ -108,5 +111,5 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
         out_others["close"] = time.time()
         return out_name, out_desc, out_modal, out_others
 
-    # return result
+    # return result (never reach here)
     return out_name, out_desc, out_modal, out_others

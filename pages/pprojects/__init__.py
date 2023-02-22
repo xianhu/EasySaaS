@@ -18,6 +18,7 @@ from . import paddp, peditp, pdelp
 from ..comps import header as comps_header
 
 TAG = "projects"
+COUNT_PROJECTS_MAX = 3
 
 
 def layout(pathname, search, **kwargs):
@@ -79,7 +80,7 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
 def _update_page(_add, _edit, _del, user_id):
-    # get user and projects
+    # get user and projects_list
     user = app_db.session.query(User).get(user_id)
     projects_list = [p for p in user.projects if p.status == 1]
 
@@ -89,28 +90,28 @@ def _update_page(_add, _edit, _del, user_id):
 
     # define components
     div_list = [fac.AntdRow(children=[
-        fac.AntdCol(html.Span("Project Name", className="fw-bold"), span=5),
-        fac.AntdCol(html.Span("Project Description", className="fw-bold"), span=12),
-        fac.AntdCol(html.Span("Status", className="fw-bold"), span=2),
-        fac.AntdCol(html.Span("Operation", className="fw-bold"), span=5),
+        fac.AntdCol(html.Span("Name", className="fw-bold"), span=5),
+        fac.AntdCol(html.Span("Description", className="fw-bold"), span=10),
+        fac.AntdCol(html.Span("Status", className="fw-bold"), span=3),
+        fac.AntdCol(html.Span("Operation", className="fw-bold"), span=6),
     ]), fac.AntdDivider(className="my-3")]
 
     # define components
     for project in projects_list:
         div_list.append(fac.AntdRow(children=[
             fac.AntdCol(html.Span(project.name), span=5),
-            fac.AntdCol(html.Span(project.desc), span=12),
-            fac.AntdCol(html.Span(project.status), span=2),
+            fac.AntdCol(html.Span(project.desc), span=10),
+            fac.AntdCol(html.Span(project.status), span=3),
             fac.AntdCol(children=[
                 html.A("Detail", href=f"{PATH_ANALYSIS}?id={project.id}"),
                 html.A("Edit", href=f"#edit#{project.id}", className="ms-3"),
                 html.A("Delete", href=f"#del#{project.id}", className="ms-3 text-danger"),
-            ], span=5),
+            ], span=6),
         ]))
         div_list.append(fac.AntdDivider(className="my-3"))
 
     # return result
-    return False if len(projects_list) < 3 else True, div_list
+    return False if len(projects_list) < COUNT_PROJECTS_MAX else True, div_list
 
 
 @dash.callback([dict(
@@ -135,25 +136,33 @@ def _update_page(vhash, user_id):
     out_delp = dict(open=dash.no_update, pid=None)
     out_others = dict(vhash="")
 
+    # get user and projects instances
+    user = app_db.session.query(User).get(user_id)
+    projects_list = [p for p in user.projects if p.status == 1]
+    projects_id_set = set([p.id for p in projects_list])
+
     # get fragments of vhash
     frags = vhash.lstrip("#").split("#")
 
     # check hash for add
     if len(frags) >= 1 and frags[0] == "add":
-        out_addp["open"] = time.time()
-        return out_addp, out_editp, out_delp, out_others
+        if len(projects_list) < COUNT_PROJECTS_MAX:
+            out_addp["open"] = time.time()
+            return out_addp, out_editp, out_delp, out_others
 
     # check hash for edit
     if len(frags) >= 2 and frags[0] == "edit":
-        out_editp["open"] = time.time()
-        out_editp["pid"] = frags[1]
-        return out_addp, out_editp, out_delp, out_others
+        if frags[1] in projects_id_set:
+            out_editp["open"] = time.time()
+            out_editp["pid"] = frags[1]
+            return out_addp, out_editp, out_delp, out_others
 
     # check hash for delete
     if len(frags) >= 2 and frags[0] == "del":
-        out_delp["open"] = time.time()
-        out_delp["pid"] = frags[1]
-        return out_addp, out_editp, out_delp, out_others
+        if frags[1] in projects_id_set:
+            out_delp["open"] = time.time()
+            out_delp["pid"] = frags[1]
+            return out_addp, out_editp, out_delp, out_others
 
     # return result
     return out_addp, out_editp, out_delp, out_others
