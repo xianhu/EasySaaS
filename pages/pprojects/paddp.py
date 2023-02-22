@@ -58,22 +58,20 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
-], [
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
+    State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
     State(f"id-{TAG_BASE}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(_open_data, _ok_counts, name, desc, user_id):
+def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
     # define outputs
     out_name = dict(value=dash.no_update, status="", help="")
     out_desc = dict(value=dash.no_update, status="", help="")
     out_modal = dict(visible=dash.no_update, loading=False)
     out_others = dict(close=dash.no_update)
 
-    # get trigger_id
-    trigger_id = dash.ctx.triggered_id
-
     # check trigger_id
+    trigger_id = dash.ctx.triggered_id
     if trigger_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["value"] = ""
         out_desc["value"] = ""
@@ -97,6 +95,7 @@ def _update_page(_open_data, _ok_counts, name, desc, user_id):
             return out_name, out_desc, out_modal, out_others
 
         # add new project
+
         _id = get_md5(name + str(time.time()))
         project = Project(id=_id, name=name, desc=(desc or "").strip())
         project_user = ProjectUser(user_id=user.id, project_id=project.id)

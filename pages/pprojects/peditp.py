@@ -22,13 +22,23 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    # define components
+    input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large")
+    form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", label="project name:", required=True)
+
+    # define components
+    input_desc = fac.AntdInput(id=f"id-{TAG}-input-desc", placeholder="project description", size="large")
+    form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", label="project description:", required=False)
+
+    # define components
+    form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
     kwargs_modal = dict(
         title="Update Project", visible=False, closable=False, maskClosable=False, renderFooter=True,
         okText="Update Project", okClickClose=False, confirmAutoSpin=True, cancelText="Cancel",
     )
 
     # return result
-    return fac.AntdModal(id=f"id-{TAG}-modal-project", **kwargs_modal)
+    return fac.AntdModal(form_item, id=f"id-{TAG}-modal-project", **kwargs_modal)
 
 
 @dash.callback([dict(

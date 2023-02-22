@@ -90,6 +90,7 @@ class ProjectUser(BaseModel):
 def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
     """
     add user, and add project-user relationship
+    :return user or None
     """
     # add user if necessary
     user = session.query(User).filter(User.email == email).first()
@@ -97,35 +98,44 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
         user = User(id=get_md5(email), email=email)
         user.set_password_hash(pwd)
         session.add(user)
-        session.commit()
 
     # add project-user relationship if necessary
     if project_id:
         project_user = ProjectUser(user_id=user.id, project_id=project_id, role=project_role)
         session.add(project_user)
-        session.commit()
 
-    # return
-    return user
+    # commit session
+    try:
+        session.commit()
+        return user
+    except Exception as excep:
+        logging.error(excep)
+        session.rollback()
+        return None
 
 
 def add_project(session, name, desc=None, user_id=None, project_role="admin"):
     """
     add project, and add project-user relationship
+    :return project or None
     """
     # add project if necessary
     project = Project(id=get_md5(name + str(time.time())), name=name, desc=desc)
     session.add(project)
-    session.commit()
 
     # add project-user relationship if necessary
     if user_id:
         project_user = ProjectUser(user_id=user_id, project_id=project.id, role=project_role)
         session.add(project_user)
-        session.commit()
 
-    # return
-    return project
+    # commit session
+    try:
+        session.commit()
+        return project
+    except Exception as excep:
+        logging.error(excep)
+        session.rollback()
+        return None
 
 
 if __name__ == "__main__":
@@ -142,7 +152,7 @@ if __name__ == "__main__":
     # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as _session:
-        _user = add_user(_session, _email, "a123456")
+        _user = add_user(_session, _email, "a123456", project_id=None)
         logging.warning("add user success: %s", _user.to_dict())
     _user_id = _user.id
 

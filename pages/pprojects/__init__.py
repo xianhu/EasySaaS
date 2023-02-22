@@ -3,6 +3,7 @@
 """
 projects page
 """
+
 import time
 
 import dash
@@ -46,7 +47,8 @@ def layout(pathname, search, **kwargs):
     data_delp_pid = dcc.Store(id=f"id-{TAG}-delp-pid", data=None)
 
     # define components
-    button_add = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", href=f"#add", type="primary")
+    kwargs_button = dict(href=f"#add", type="primary", disabled=True)
+    button_add = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", **kwargs_button)
     col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_add, className=None)]
 
     # return result
@@ -62,8 +64,8 @@ def layout(pathname, search, **kwargs):
         modal_editp, data_editp_open, data_editp_close, data_editp_pid,
         modal_delp, data_delp_open, data_delp_close, data_delp_pid,
         # define components of others
-        dcc.Location(id=f"id-{TAG}-location-current", refresh=False),
         dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
+        dcc.Location(id=f"id-{TAG}-location-current", refresh=False),
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -124,8 +126,9 @@ def _update_page(_add, _edit, _del, user_id):
     vhash=Output(f"id-{TAG}-location-current", "hash"),
 )], [
     Input(f"id-{TAG}-location-current", "hash"),
+    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(vhash):
+def _update_page(vhash, user_id):
     # define outputs
     out_addp = dict(open=dash.no_update, pid=None)
     out_editp = dict(open=dash.no_update, pid=None)
@@ -138,7 +141,6 @@ def _update_page(vhash):
     # check hash for add
     if len(frags) >= 1 and frags[0] == "add":
         out_addp["open"] = time.time()
-        # out_addp["pid"] = None
         return out_addp, out_editp, out_delp, out_others
 
     # check hash for edit
