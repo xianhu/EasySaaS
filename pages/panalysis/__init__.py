@@ -29,14 +29,18 @@ def layout(pathname, search, **kwargs):
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
 
+    # get projects_list and projects_id_set
+    projects_list = [p for p in current_user.projects if p.status == 1]
+    projects_id_set = set([p.id for p in projects_list])
+
     # check project.id
     try:
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        assert search["id"][0] in set([p.id for p in current_user.projects if p.status == 1])
+        assert search["id"][0] in projects_id_set, "project not found"
     except Exception as excep:
-        logging.error("get project.id error: %s", excep)
+        logging.error("get project.id failed: %s", excep)
         return palert.layout_500(pathname, search)
-    _id = search["id"][0]
+    project_id = search["id"][0]
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
@@ -50,7 +54,7 @@ def layout(pathname, search, **kwargs):
     # define components
     content = fac.AntdContent(children=[
         comps_header.get_component_header(
-            chilren_left=html.Span("Analysis", id=f"id-{TAG}-header"),
+            chilren_left=html.Div("Analysis", id=f"id-{TAG}-header"),
             children_right=[switch, dropdown_user],
         ),
         fuc.FefferyTopProgress(children=[
@@ -59,7 +63,7 @@ def layout(pathname, search, **kwargs):
     ], className="vh-100 overflow-auto")
 
     # return result
-    store_data = dict(user_id=current_user.id, project_id=_id)
+    store_data = dict(user_id=current_user.id, project_id=project_id)
     return fac.AntdLayout(children=[
         sider, content,
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
@@ -77,16 +81,17 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG}-menu", "currentKey"),
     Input(f"id-{TAG}-switch", "checked"),
+], [
     State(f"id-{TAG}-windowsize", "_width"),
     State(f"id-{TAG}-windowsize", "_height"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=False)
 def _update_page(current_key, switch_checked, _width, _height, store_data):
     # define outputs
-    out_content = dict(header=fac.AntdTitle(), content=fac.AntdEmpty(locale="en-us"))
+    out_content = dict(header=dash.no_update, content=fac.AntdEmpty(locale="en-us"))
     out_others = dict(current_key=current_key, executejs_string=dash.no_update)
 
-    # check trigger_id
+    # check trigger_id and current_key
     trigger_id = dash.ctx.triggered_id
     if not trigger_id:
         trigger_id = f"id-{TAG}-menu"
