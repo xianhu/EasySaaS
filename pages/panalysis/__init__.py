@@ -88,26 +88,23 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=False)
 def _update_page(current_key, switch_checked, _width, _height, store_data):
     # define outputs
-    out_main = dict(
-        header=dash.no_update,
-        content=fac.AntdEmpty(description="No Content"),
-    )
+    out_main = dict(header=dash.no_update, content=fac.AntdEmpty(locale="en-us"))
     out_others = dict(current_key=current_key, executejs_string=dash.no_update)
 
-    # check trigger_id and current_key
-    trigger_id = dash.ctx.triggered_id
-    if not trigger_id:
-        trigger_id = f"id-{TAG}-menu"
+    # check triggered_id and current_key
+    triggered_id = dash.ctx.triggered_id
+    if not triggered_id:
+        triggered_id = f"id-{TAG}-menu"
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
-    # define header
+    # define header of main
     project_id = store_data["project_id"]
     text_title = f"{current_key}-{switch_checked}-{project_id}"
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
-    # define content
-    if trigger_id == f"id-{TAG}-menu":
+    # define content of main
+    if triggered_id == f"id-{TAG}-menu":
         if current_key == "Intros":
             out_main["content"] = pintros.layout(None, None)
 
