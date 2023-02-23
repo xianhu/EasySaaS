@@ -14,6 +14,7 @@ from dash import Input, Output, State, dcc, html
 
 from app import app_db
 from models.users import User
+from utility.paths import PATH_ANALYSIS
 from . import paddp, peditp, pdelp
 from ..comps import header as comps_header
 
@@ -49,7 +50,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     button_add = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-add", type="primary", disabled=True)
-    col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_add, className=None)]
+    col_list = [fac.AntdCol(html.Span("Project List"), className=None), fac.AntdCol(button_add, className=None)]
 
     # return result
     return html.Div(children=[
@@ -65,6 +66,7 @@ def layout(pathname, search, **kwargs):
         modal_delp, data_delp_open, data_delp_close, data_delp_pid,
         # define components of others
         dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         fuc.FefferyStyle(rawStyle="""
             .ant-table-cell {
                 padding: 20px !important;
@@ -94,7 +96,7 @@ def _update_page(_add, _edit, _del, user_id):
         "desc": project.desc,
         "status": project.status,
         "operation": [
-            {"content": "Detail", "type": "link"},
+            {"content": "Detail", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
             {"content": "Edit", "type": "link"},
             {"content": "Delete", "type": "link", "danger": True},
         ]
@@ -103,7 +105,7 @@ def _update_page(_add, _edit, _del, user_id):
     # define components
     table_project = fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
         {"title": "Name", "dataIndex": "name", "width": "20%"},
-        {"title": "Description", "dataIndex": "desc", "width": "40%", "ellipsis": True},
+        {"title": "Description", "dataIndex": "desc", "width": "40%"},
         {"title": "Status", "dataIndex": "status", "width": "10%"},
         {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
     ], data=data_table, locale="en-us", bordered=False, pagination=dict(hideOnSinglePage=True))
