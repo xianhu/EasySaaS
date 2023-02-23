@@ -52,7 +52,7 @@ def layout(pathname, search, **kwargs):
     dropdown_user = comps_header.get_component_header_user(user_title, dot=True)
 
     # define components
-    content = fac.AntdContent(children=[
+    main = fac.AntdContent(children=[
         comps_header.get_component_header(
             chilren_left=html.Div("Analysis", id=f"id-{TAG}-header"),
             children_right=[switch, dropdown_user],
@@ -65,7 +65,7 @@ def layout(pathname, search, **kwargs):
     # return result
     store_data = dict(user_id=current_user.id, project_id=project_id)
     return fac.AntdLayout(children=[
-        sider, content,
+        sider, main,
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
@@ -88,7 +88,10 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=False)
 def _update_page(current_key, switch_checked, _width, _height, store_data):
     # define outputs
-    out_content = dict(header=dash.no_update, content=fac.AntdEmpty(locale="en-us"))
+    out_main = dict(
+        header=dash.no_update,
+        content=fac.AntdEmpty(description="No Content"),
+    )
     out_others = dict(current_key=current_key, executejs_string=dash.no_update)
 
     # check trigger_id and current_key
@@ -101,12 +104,12 @@ def _update_page(current_key, switch_checked, _width, _height, store_data):
     # define header
     project_id = store_data["project_id"]
     text_title = f"{current_key}-{switch_checked}-{project_id}"
-    out_content["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
+    out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content
     if trigger_id == f"id-{TAG}-menu":
         if current_key == "Intros":
-            out_content["content"] = pintros.layout(None, None)
+            out_main["content"] = pintros.layout(None, None)
 
     # return result
-    return out_content, out_others
+    return out_main, out_others

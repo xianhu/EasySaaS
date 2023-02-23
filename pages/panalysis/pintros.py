@@ -30,10 +30,10 @@ def layout(pathname, search, **kwargs):
     # return result
     style = {"height": "500px"}
     return html.Div(children=[
+        html.Div(id=f"id-{TAG}-message"),
         html.Div(id=f"id-{TAG}-chart-div", style=style),  # show chart
         fuc.FefferySessionStorage(id=f"id-{TAG}-chart-click"),  # store click data
         dcc.Store(id=f"id-{TAG}-chart-data", data=chart_data),  # trigger clientside callback
-        html.Div(id=f"id-{TAG}-message"),
     ], className=None)
 
 
