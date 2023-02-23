@@ -98,20 +98,16 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
         user = User(id=get_md5(email), email=email)
         user.set_password_hash(pwd)
         session.add(user)
+        session.commit()
 
     # add project-user relationship if necessary
     if project_id:
         project_user = ProjectUser(user_id=user.id, project_id=project_id, role=project_role)
         session.add(project_user)
-
-    # commit session
-    try:
         session.commit()
-        return user
-    except Exception as excep:
-        logging.error(excep)
-        session.rollback()
-        return None
+
+    # return
+    return user
 
 
 def add_project(session, name, desc=None, user_id=None, project_role="admin"):
@@ -122,20 +118,16 @@ def add_project(session, name, desc=None, user_id=None, project_role="admin"):
     # add project if necessary
     project = Project(id=get_md5(name + str(time.time())), name=name, desc=desc)
     session.add(project)
+    session.commit()
 
     # add project-user relationship if necessary
     if user_id:
         project_user = ProjectUser(user_id=user_id, project_id=project.id, role=project_role)
         session.add(project_user)
-
-    # commit session
-    try:
         session.commit()
-        return project
-    except Exception as excep:
-        logging.error(excep)
-        session.rollback()
-        return None
+
+    # return
+    return project
 
 
 if __name__ == "__main__":

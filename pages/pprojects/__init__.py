@@ -8,6 +8,7 @@ import time
 
 import dash
 import feffery_antd_components as fac
+import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
@@ -48,9 +49,8 @@ def layout(pathname, search, **kwargs):
     data_delp_pid = dcc.Store(id=f"id-{TAG}-delp-pid", data=None)
 
     # define components
-    kwargs_button = dict(href=f"#add", type="primary", disabled=True)
-    button_add = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-new", **kwargs_button)
-    col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_add, className=None)]
+    button_add = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-add", type="primary", disabled=True)
+    col_list = [fac.AntdCol(html.Span("Project List"), className=None), fac.AntdCol(button_add, className=None)]
 
     # return result
     return html.Div(children=[
@@ -58,7 +58,7 @@ def layout(pathname, search, **kwargs):
         comps_header.get_component_header(user_title=user_title, dot=True),
         html.Div(children=[
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
-            html.Div(id=f"id-{TAG}-div-main", className="bg-white mt-2 p-4"),
+            html.Div(id=f"id-{TAG}-div-main", className="bg-white mt-2"),
         ], className="w-75 m-auto mt-4"),
         # define components of modal
         modal_addp, data_addp_open, data_addp_close, data_addp_pid,
@@ -66,12 +66,17 @@ def layout(pathname, search, **kwargs):
         modal_delp, data_delp_open, data_delp_close, data_delp_pid,
         # define components of others
         dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
-        dcc.Location(id=f"id-{TAG}-location-current", refresh=False),
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        fuc.FefferyStyle(rawStyle="""
+            .ant-table-cell {
+                padding: 20px !important;
+            }
+        """)
     ], className="bg-main vh-100 overflow-auto")
 
 
 @dash.callback([
-    Output(f"id-{TAG}-button-new", "disabled"),
+    Output(f"id-{TAG}-button-add", "disabled"),
     Output(f"id-{TAG}-div-main", "children"),
 ], [
     Input(f"id-{TAG}-addp-close", "data"),
@@ -84,34 +89,29 @@ def _update_page(_add, _edit, _del, user_id):
     user = app_db.session.query(User).get(user_id)
     projects_list = [p for p in user.projects if p.status == 1]
 
-    # check projects
-    if not projects_list:
-        return False, fac.AntdEmpty(description="No Project")
+    # define data
+    data_table = [{
+        "key": project.id,
+        "name": project.name,
+        "desc": project.desc,
+        "status": project.status,
+        "operation": [
+            {"content": "Detail", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
+            {"content": "Edit", "type": "link"},
+            {"content": "Delete", "type": "link", "danger": True},
+        ]
+    } for project in projects_list]
 
     # define components
-    div_list = [fac.AntdRow(children=[
-        fac.AntdCol(html.Span("Name", className="fw-bold"), span=5),
-        fac.AntdCol(html.Span("Description", className="fw-bold"), span=10),
-        fac.AntdCol(html.Span("Status", className="fw-bold"), span=3),
-        fac.AntdCol(html.Span("Operation", className="fw-bold"), span=6),
-    ]), fac.AntdDivider(className="my-3")]
-
-    # define components
-    for project in projects_list:
-        div_list.append(fac.AntdRow(children=[
-            fac.AntdCol(html.Span(project.name), span=5),
-            fac.AntdCol(html.Span(project.desc), span=10),
-            fac.AntdCol(html.Span(project.status), span=3),
-            fac.AntdCol(children=[
-                html.A("Detail", href=f"{PATH_ANALYSIS}?id={project.id}"),
-                html.A("Edit", href=f"#edit#{project.id}", className="ms-3"),
-                html.A("Delete", href=f"#del#{project.id}", className="ms-3 text-danger"),
-            ], span=6),
-        ]))
-        div_list.append(fac.AntdDivider(className="my-3"))
+    table_project = fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
+        {"title": "Name", "dataIndex": "name", "width": "20%"},
+        {"title": "Description", "dataIndex": "desc", "width": "40%"},
+        {"title": "Status", "dataIndex": "status", "width": "10%"},
+        {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
+    ], data=data_table, locale="en-us", bordered=False, pagination=dict(hideOnSinglePage=True))
 
     # return result
-    return False if len(projects_list) < COUNT_PROJECTS_MAX else True, div_list
+    return False if len(projects_list) < COUNT_PROJECTS_MAX else True, table_project
 
 
 @dash.callback([dict(
@@ -123,46 +123,47 @@ def _update_page(_add, _edit, _del, user_id):
 ), dict(
     open=Output(f"id-{TAG}-delp-open", "data"),
     pid=Output(f"id-{TAG}-delp-pid", "data"),
-), dict(
-    vhash=Output(f"id-{TAG}-location-current", "hash"),
 )], [
-    Input(f"id-{TAG}-location-current", "hash"),
+    Input(f"id-{TAG}-button-add", "nClicks"),
+    Input(f"id-{TAG}-table-project", "nClicksButton"),
+], [
+    State(f"id-{TAG}-table-project", "clickedContent"),
+    State(f"id-{TAG}-table-project", "recentlyButtonClickedRow"),
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(vhash, user_id):
+def _update_page(n_clicks, n_clicks_button, clicked_content, clicked_row, user_id):
     # define outputs
     out_addp = dict(open=dash.no_update, pid=None)
     out_editp = dict(open=dash.no_update, pid=None)
     out_delp = dict(open=dash.no_update, pid=None)
-    out_others = dict(vhash="")
 
     # get user and projects instances
     user = app_db.session.query(User).get(user_id)
     projects_list = [p for p in user.projects if p.status == 1]
     projects_id_set = set([p.id for p in projects_list])
 
-    # get fragments of vhash
-    frags = vhash.lstrip("#").split("#")
+    # get triggered_id
+    triggered_id = dash.ctx.triggered_id
 
-    # check hash for add
-    if len(frags) >= 1 and frags[0] == "add":
+    # check triggered_id
+    if triggered_id == f"id-{TAG}-button-add":
         if len(projects_list) < COUNT_PROJECTS_MAX:
             out_addp["open"] = time.time()
-            return out_addp, out_editp, out_delp, out_others
+            return out_addp, out_editp, out_delp
 
-    # check hash for edit
-    if len(frags) >= 2 and frags[0] == "edit":
-        if frags[1] in projects_id_set:
+    # check triggered_id
+    if triggered_id == f"id-{TAG}-table-project":
+        # check clicked_content
+        if clicked_content == "Edit" and (clicked_row["key"] in projects_id_set):
             out_editp["open"] = time.time()
-            out_editp["pid"] = frags[1]
-            return out_addp, out_editp, out_delp, out_others
+            out_editp["pid"] = clicked_row["key"]
+            return out_addp, out_editp, out_delp
 
-    # check hash for delete
-    if len(frags) >= 2 and frags[0] == "del":
-        if frags[1] in projects_id_set:
+        # check clicked_content
+        if clicked_content == "Delete" and (clicked_row["key"] in projects_id_set):
             out_delp["open"] = time.time()
-            out_delp["pid"] = frags[1]
-            return out_addp, out_editp, out_delp, out_others
+            out_delp["pid"] = clicked_row["key"]
+            return out_addp, out_editp, out_delp
 
     # return result
-    return out_addp, out_editp, out_delp, out_others
+    return out_addp, out_editp, out_delp

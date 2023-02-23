@@ -71,18 +71,18 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
     out_modal = dict(visible=dash.no_update, loading=False)
     out_others = dict(close=dash.no_update)
 
-    # get trigger_id
-    trigger_id = dash.ctx.triggered_id
+    # get triggered_id
+    triggered_id = dash.ctx.triggered_id
 
-    # check trigger_id
-    if trigger_id == f"id-{TAG_BASE}-{TYPE}-open":
+    # check triggered_id
+    if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["value"] = ""
         out_desc["value"] = ""
         out_modal["visible"] = True
         return out_name, out_desc, out_modal, out_others
 
-    # check trigger_id
-    if trigger_id == f"id-{TAG}-modal-project":
+    # check triggered_id
+    if triggered_id == f"id-{TAG}-modal-project":
         # check project name
         name = (name or "").strip()
         if len(name) < 4:
