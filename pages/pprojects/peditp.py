@@ -74,18 +74,18 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
     # user = app_db.session.query(User).get(user_id)
     project = app_db.session.query(Project).get(project_id)
 
-    # get trigger_id
-    trigger_id = dash.ctx.triggered_id
+    # get triggered_id
+    triggered_id = dash.ctx.triggered_id
 
-    # check trigger_id
-    if trigger_id == f"id-{TAG_BASE}-{TYPE}-open":
+    # check triggered_id
+    if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["value"] = project.name
         out_desc["value"] = project.desc
         out_modal["visible"] = True
         return out_name, out_desc, out_modal, out_others
 
-    # check trigger_id
-    if trigger_id == f"id-{TAG}-modal-project":
+    # check triggered_id
+    if triggered_id == f"id-{TAG}-modal-project":
         # update project
         project.desc = (desc or "").strip()
         app_db.session.commit()

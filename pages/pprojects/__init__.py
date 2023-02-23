@@ -154,18 +154,16 @@ def _update_page(n_clicks, n_clicks_button, clicked_content, clicked_row, user_i
     # check triggered_id
     if triggered_id == f"id-{TAG}-table-project":
         # check clicked_content
-        if clicked_content == "Edit":
-            if clicked_row["key"] in projects_id_set:
-                out_editp["open"] = time.time()
-                out_editp["pid"] = clicked_row["key"]
-                return out_addp, out_editp, out_delp
+        if clicked_content == "Edit" and (clicked_row["key"] in projects_id_set):
+            out_editp["open"] = time.time()
+            out_editp["pid"] = clicked_row["key"]
+            return out_addp, out_editp, out_delp
 
-        # check hash for delete
-        if clicked_content == "Delete":
-            if clicked_row["key"] in projects_id_set:
-                out_delp["open"] = time.time()
-                out_delp["pid"] = clicked_row["key"]
-                return out_addp, out_editp, out_delp
+        # check clicked_content
+        if clicked_content == "Delete" and (clicked_row["key"] in projects_id_set):
+            out_delp["open"] = time.time()
+            out_delp["pid"] = clicked_row["key"]
+            return out_addp, out_editp, out_delp
 
     # return result
     return out_addp, out_editp, out_delp
