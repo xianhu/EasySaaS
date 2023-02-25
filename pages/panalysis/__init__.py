@@ -29,14 +29,14 @@ def layout(pathname, search, **kwargs):
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
 
-    # get projects_list and projects_id_set
-    projects_list = [p for p in current_user.projects if p.status == 1]
-    projects_id_set = set([p.id for p in projects_list])
+    # get project_list and project_id_set
+    project_list = [p for p in current_user.projects if p.status == 1]
+    project_id_set = set([p.id for p in project_list])
 
     # check project.id
     try:
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        assert search["id"][0] in projects_id_set, "project not found"
+        assert search["id"][0] in project_id_set, "project not found"
     except Exception as excep:
         logging.error("get project.id failed: %s", excep)
         return palert.layout_500(pathname, search)
