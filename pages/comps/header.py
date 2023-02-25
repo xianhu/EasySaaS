@@ -46,6 +46,7 @@ def get_component_header_user(user_title, dot=True):
 def get_component_header(
         chilren_left=None, path_logo="favicon1.svg",
         children_right=None, user_title=None, dot=True,
+        children_middle=None, class_row=None,
 ):
     """
     layout of component
@@ -62,7 +63,10 @@ def get_component_header(
     else:
         col_right = fac.AntdCol(get_component_header_user(user_title, dot=dot))
 
+    # define components
+    col_middle = fac.AntdCol(children_middle)
+
     # return result
-    class_row = "bg-white border-bottom sticky-top px-4 py-2"
     kwargs_row = dict(align="middle", justify="space-between")
-    return fac.AntdRow([col_left, col_right], **kwargs_row, className=class_row)
+    class_row = class_row or "bg-white border-bottom sticky-top px-4 py-2"
+    return fac.AntdRow([col_left, col_middle, col_right], **kwargs_row, className=class_row)

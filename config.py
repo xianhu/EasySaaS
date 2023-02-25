@@ -21,7 +21,7 @@ config_mail_username = os.environ.get(f"{ENV_PREFIX}_MAIL_USERNAME")
 config_mail_password = os.environ.get(f"{ENV_PREFIX}_MAIL_PASSWORD")
 config_mail_sender = (config_app_name, config_mail_username)
 
-# define uri of database
+# define uri of database (use 10/11/12 of redis)
 config_redis_uri = os.environ.get(f"{ENV_PREFIX}_REDIS_URI")
 config_database_uri = os.environ.get(f"{ENV_PREFIX}_DATABASE_URI")
 

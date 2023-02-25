@@ -21,6 +21,12 @@ from ..comps import header as comps_header
 TAG = "projects"
 COUNT_PROJECTS_MAX = 3
 
+# define style
+STYLE_PAGE = """
+.ant-table .ant-btn {font-size: 16px !important;}
+.ant-table .ant-table-cell {font-size: 16px !important; padding: 20px !important;}
+"""
+
 
 def layout(pathname, search, **kwargs):
     """
@@ -67,11 +73,7 @@ def layout(pathname, search, **kwargs):
         # define components of others
         dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        fuc.FefferyStyle(rawStyle="""
-            .ant-table-cell {
-                padding: 20px !important;
-            }
-        """)
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE)
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -85,9 +87,9 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
 def _update_page(_add, _edit, _del, user_id):
-    # get user and projects_list
+    # get user and project_list
     user = app_db.session.query(User).get(user_id)
-    projects_list = [p for p in user.projects if p.status == 1]
+    project_list = [p for p in user.projects if p.status == 1]
 
     # define data
     data_table = [{
@@ -100,7 +102,7 @@ def _update_page(_add, _edit, _del, user_id):
             {"content": "Edit", "type": "link"},
             {"content": "Delete", "type": "link", "danger": True},
         ]
-    } for project in projects_list]
+    } for project in project_list]
 
     # define components
     table_project = fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
@@ -108,10 +110,10 @@ def _update_page(_add, _edit, _del, user_id):
         {"title": "Description", "dataIndex": "desc", "width": "40%"},
         {"title": "Status", "dataIndex": "status", "width": "10%"},
         {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
-    ], data=data_table, locale="en-us", bordered=False, pagination=dict(hideOnSinglePage=True))
+    ], data=data_table, bordered=False, pagination=dict(hideOnSinglePage=True), locale="en-us")
 
     # return result
-    return False if len(projects_list) < COUNT_PROJECTS_MAX else True, table_project
+    return False if len(project_list) < COUNT_PROJECTS_MAX else True, table_project
 
 
 @dash.callback([dict(
@@ -137,30 +139,31 @@ def _update_page(n_clicks, n_clicks_button, clicked_content, clicked_row, user_i
     out_editp = dict(open=dash.no_update, pid=None)
     out_delp = dict(open=dash.no_update, pid=None)
 
-    # get user and projects instances
+    # get user and project_list
     user = app_db.session.query(User).get(user_id)
-    projects_list = [p for p in user.projects if p.status == 1]
-    projects_id_set = set([p.id for p in projects_list])
+    project_list = [p for p in user.projects if p.status == 1]
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-button-add":
-        if len(projects_list) < COUNT_PROJECTS_MAX:
+        if len(project_list) < COUNT_PROJECTS_MAX:
             out_addp["open"] = time.time()
             return out_addp, out_editp, out_delp
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-table-project":
+        project_id_set = set([p.id for p in project_list])
+
         # check clicked_content
-        if clicked_content == "Edit" and (clicked_row["key"] in projects_id_set):
+        if clicked_content == "Edit" and (clicked_row["key"] in project_id_set):
             out_editp["open"] = time.time()
             out_editp["pid"] = clicked_row["key"]
             return out_addp, out_editp, out_delp
 
         # check clicked_content
-        if clicked_content == "Delete" and (clicked_row["key"] in projects_id_set):
+        if clicked_content == "Delete" and (clicked_row["key"] in project_id_set):
             out_delp["open"] = time.time()
             out_delp["pid"] = clicked_row["key"]
             return out_addp, out_editp, out_delp
