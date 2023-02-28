@@ -133,7 +133,7 @@ def _update_page(_add, _edit, _del, user_id):
     State(f"id-{TAG}-table-project", "recentlyButtonClickedRow"),
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(n_clicks, n_clicks_button, clicked_content, clicked_row, user_id):
+def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id):
     # define outputs
     out_addp = dict(open=dash.no_update, pid=None)
     out_editp = dict(open=dash.no_update, pid=None)

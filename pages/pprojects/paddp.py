@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
     State(f"id-{TAG_BASE}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
+def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
     # define outputs
     out_name = dict(value=dash.no_update, status="", help="")
     out_desc = dict(value=dash.no_update, status="", help="")
