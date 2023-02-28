@@ -90,14 +90,16 @@ class ProjectUser(BaseModel):
 def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
     """
     add user, and add project-user relationship
-    :return user or None
     """
-    # add user if necessary
+    # add user if necessary, or update password
     user = session.query(User).filter(User.email == email).first()
     if not user:
         user = User(id=get_md5(email), email=email)
         user.set_password_hash(pwd)
         session.add(user)
+        session.commit()
+    elif pwd:
+        user.set_password_hash(pwd)
         session.commit()
 
     # add project-user relationship if necessary
@@ -113,7 +115,6 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
 def add_project(session, name, desc=None, user_id=None, project_role="admin"):
     """
     add project, and add project-user relationship
-    :return project or None
     """
     # add project if necessary
     project = Project(id=get_md5(name + str(time.time())), name=name, desc=desc)
