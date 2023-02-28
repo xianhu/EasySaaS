@@ -89,7 +89,7 @@ class UserProject(BaseModel):
 
 def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
     """
-    add user, and add user-project relationship
+    add user, and add user-project relationship if necessary
     """
     # add user if necessary, or update password
     user = session.query(User).filter(User.email == email).first()
@@ -131,6 +131,30 @@ def add_project(session, name, desc=None, user_id=None, project_role="admin"):
     return project
 
 
+def select_projects_from_user(session, user_id):
+    """
+    select projects from user
+    """
+    return session.query(Project, UserProject.role).join(
+        UserProject, UserProject.project_id == Project.id,
+    ).filter(
+        Project.status == 1,
+        UserProject.user_id == user_id,
+    ).all()
+
+
+def select_users_from_project(session, project_id):
+    """
+    select users from project
+    """
+    return session.query(User, UserProject.role).join(
+        UserProject, UserProject.user_id == User.id,
+    ).filter(
+        User.status == 1,
+        UserProject.project_id == project_id,
+    ).all()
+
+
 if __name__ == "__main__":
     from config import config_database_uri
     from utility import get_md5
@@ -163,25 +187,10 @@ if __name__ == "__main__":
         logging.warning("add project: %s", _project.to_dict())
     _project_id = _project.id
 
-    # =============================== test ===============================
     # create session and select data
     with orm.sessionmaker(engine)() as _session:
-        # check user
-        _user = _session.query(User).get(_user_id)
-        logging.warning("user: %s", _user.to_dict())
+        for _project, _role in select_projects_from_user(_session, _user_id):
+            logging.warning("project and role: %s, %s", _project.to_dict(), _role)
 
-        # check user's projects and roles
-        _user_project_list = _session.query(Project, UserProject.role).join(
-            UserProject, UserProject.project_id == Project.id,
-        ).filter(UserProject.user_id == _user.id).all()
-        for _project, _role in _user_project_list:
-            logging.warning("====project: %s", _project.to_dict())
-            logging.warning("====role of project: %s", _role)
-
-        # check project's users and roles
-        _project_user_list = _session.query(User, UserProject.role).join(
-            UserProject, UserProject.user_id == User.id,
-        ).filter(UserProject.project_id == _project_id).all()
-        for _user, _role in _project_user_list:
-            logging.warning("====user: %s", _user.to_dict())
-            logging.warning("====role of user: %s", _role)
+        for _user, _role in select_users_from_project(_session, _project_id):
+            logging.warning("user and role: %s, %s", _user.to_dict(), _role)
