@@ -96,7 +96,7 @@ def _update_page(_add, _edit, _del, user_id):
         "key": project.id,
         "name": project.name,
         "desc": project.desc,
-        "status": project.status,
+        "role": project.role,
         "operation": [
             {"content": "Detail", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
             {"content": "Edit", "type": "link"},
@@ -108,7 +108,7 @@ def _update_page(_add, _edit, _del, user_id):
     table_project = fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
         {"title": "Name", "dataIndex": "name", "width": "20%"},
         {"title": "Description", "dataIndex": "desc", "width": "40%"},
-        {"title": "Status", "dataIndex": "status", "width": "10%"},
+        {"title": "Role", "dataIndex": "role", "width": "10%"},
         {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
     ], data=data_table, bordered=False, pagination=dict(hideOnSinglePage=True), locale="en-us")
 

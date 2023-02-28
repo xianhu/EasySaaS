@@ -37,7 +37,7 @@ class User(BaseModel):
     auth_google = sqlalchemy.Column(sqlalchemy.String(512), doc="token of google")
 
     # relationship
-    projects = orm.relationship("Project", secondary="project_users", back_populates="users")
+    projects = orm.relationship("Project", secondary="user_projects", back_populates="users")
 
     def check_password_hash(self, password):
         """
@@ -72,24 +72,24 @@ class Project(BaseModel):
     ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
     # relationship
-    users = orm.relationship("User", secondary="project_users", back_populates="projects")
+    users = orm.relationship("User", secondary="user_projects", back_populates="projects")
 
 
-class ProjectUser(BaseModel):
-    __tablename__ = "project_users"
+class UserProject(BaseModel):
+    __tablename__ = "user_projects"
 
     # relationships
     user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("users.id"), primary_key=True)
     project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"), primary_key=True)
 
-    # informations
+    # role and role_json of project
     role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/member")
     role_json = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, doc="json of role")
 
 
 def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
     """
-    add user, and add project-user relationship
+    add user, and add user-project relationship
     """
     # add user if necessary, or update password
     user = session.query(User).filter(User.email == email).first()
@@ -102,10 +102,10 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
         user.set_password_hash(pwd)
         session.commit()
 
-    # add project-user relationship if necessary
+    # add user-project relationship if necessary
     if project_id:
-        project_user = ProjectUser(user_id=user.id, project_id=project_id, role=project_role)
-        session.add(project_user)
+        user_project = UserProject(user_id=user.id, project_id=project_id, role=project_role)
+        session.add(user_project)
         session.commit()
 
     # return
@@ -114,17 +114,17 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
 
 def add_project(session, name, desc=None, user_id=None, project_role="admin"):
     """
-    add project, and add project-user relationship
+    add project, and add user-project relationship
     """
     # add project if necessary
     project = Project(id=get_md5(name + str(time.time())), name=name, desc=desc)
     session.add(project)
     session.commit()
 
-    # add project-user relationship if necessary
+    # add user-project relationship if necessary
     if user_id:
-        project_user = ProjectUser(user_id=user_id, project_id=project.id, role=project_role)
-        session.add(project_user)
+        user_project = UserProject(user_id=user_id, project_id=project.id, role=project_role)
+        session.add(user_project)
         session.commit()
 
     # return
@@ -142,6 +142,7 @@ if __name__ == "__main__":
     BaseModel.metadata.drop_all(engine, checkfirst=True)
     BaseModel.metadata.create_all(engine, checkfirst=True)
 
+    # =============================== test ===============================
     # create session and add data
     _email = "test1@easysaas.com"
     with orm.sessionmaker(engine)() as _session:
@@ -162,10 +163,25 @@ if __name__ == "__main__":
         logging.warning("add project: %s", _project.to_dict())
     _project_id = _project.id
 
+    # =============================== test ===============================
     # create session and select data
     with orm.sessionmaker(engine)() as _session:
+        # check user
         _user = _session.query(User).get(_user_id)
-        logging.warning("user.projects: %s", _user.projects)
+        logging.warning("user: %s", _user.to_dict())
 
-        _project = _session.query(Project).get(_project_id)
-        logging.warning("project.users: %s", _project.users)
+        # check user's projects and roles
+        _user_project_list = _session.query(Project, UserProject.role).join(
+            UserProject, UserProject.project_id == Project.id,
+        ).filter(UserProject.user_id == _user.id).all()
+        for _project, _role in _user_project_list:
+            logging.warning("====project: %s", _project.to_dict())
+            logging.warning("====role of project: %s", _role)
+
+        # check project's users and roles
+        _project_user_list = _session.query(User, UserProject.role).join(
+            UserProject, UserProject.user_id == User.id,
+        ).filter(UserProject.project_id == _project_id).all()
+        for _user, _role in _project_user_list:
+            logging.warning("====user: %s", _user.to_dict())
+            logging.warning("====role of user: %s", _role)
