@@ -143,17 +143,23 @@ if __name__ == "__main__":
     BaseModel.metadata.create_all(engine, checkfirst=True)
 
     # create session and add data
+    _email = "test1@easysaas.com"
+    with orm.sessionmaker(engine)() as _session:
+        _user = add_user(_session, _email, "a123456")
+        logging.warning("add user: %s", _user.to_dict())
+
+    # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as _session:
-        _user = add_user(_session, _email, "a123456", project_id=None)
-        logging.warning("add user: %s", _user.to_dict() if _user else None)
+        _user = add_user(_session, _email, "a123456")
+        logging.warning("add user: %s", _user.to_dict())
     _user_id = _user.id
 
     # create session and add data
     _project_name = "demo project"
     with orm.sessionmaker(engine)() as _session:
         _project = add_project(_session, _project_name, user_id=_user_id)
-        logging.warning("add project: %s", _project.to_dict() if _project else None)
+        logging.warning("add project: %s", _project.to_dict())
     _project_id = _project.id
 
     # create session and select data
