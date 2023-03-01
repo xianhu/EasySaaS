@@ -13,7 +13,7 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app_db
-from models.users import User
+from models.users import User, Project, UserProject
 from utility.paths import PATH_ANALYSIS
 from . import paddp, peditp, pdelp
 from ..comps import header as comps_header
@@ -89,20 +89,25 @@ def layout(pathname, search, **kwargs):
 def _update_page(_add, _edit, _del, user_id):
     # get user and project_list
     user = app_db.session.query(User).get(user_id)
-    project_list = [p for p in user.projects if p.status == 1]
+    project_role_list = app_db.session.query(Project, UserProject.role).join(
+        UserProject, UserProject.project_id == Project.id,
+    ).filter(
+        Project.status == 1,
+        UserProject.user_id == user_id,
+    ).all()
 
     # define data
     data_table = [{
         "key": project.id,
         "name": project.name,
         "desc": project.desc,
-        "role": project.role,
+        "role": project_role,
         "operation": [
             {"content": "Detail", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
             {"content": "Edit", "type": "link"},
             {"content": "Delete", "type": "link", "danger": True},
         ]
-    } for project in project_list]
+    } for project, project_role in project_role_list]
 
     # define components
     table_project = fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
@@ -113,7 +118,7 @@ def _update_page(_add, _edit, _del, user_id):
     ], data=data_table, bordered=False, pagination=dict(hideOnSinglePage=True), locale="en-us")
 
     # return result
-    return False if len(project_list) < COUNT_PROJECTS_MAX else True, table_project
+    return False if len(project_role_list) < COUNT_PROJECTS_MAX else True, table_project
 
 
 @dash.callback([dict(

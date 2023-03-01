@@ -187,6 +187,7 @@ if __name__ == "__main__":
         logging.warning("add project: %s", _project.to_dict())
     _project_id = _project.id
 
+    # =============================== test ===============================
     # create session and select data
     with orm.sessionmaker(engine)() as _session:
         for _project, _role in select_projects_from_user(_session, _user_id):
