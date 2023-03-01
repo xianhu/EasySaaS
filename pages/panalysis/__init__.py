@@ -65,10 +65,9 @@ def layout(pathname, search, **kwargs):
     # return result
     store_data = dict(user_id=current_user.id, project_id=project_id)
     return fac.AntdLayout(children=[
-        sider, main,
+        sider, main, dcc.Store(id=f"id-{TAG}-data", data=store_data),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
-        dcc.Store(id=f"id-{TAG}-data", data=store_data),
     ], className="vh-100 overflow-auto")
 
 

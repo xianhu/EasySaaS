@@ -51,14 +51,13 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
     State(f"id-{TAG_BASE}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(_open_data, _ok_counts, project_id, user_id):
+def _update_page(open_data, ok_counts, project_id, user_id):
     # define outputs
     out_name = dict(children=dash.no_update)
     out_modal = dict(visible=dash.no_update, loading=False)
     out_others = dict(close=dash.no_update)
 
-    # get user and project instances
-    # user = app_db.session.query(User).get(user_id)
+    # get project instance
     project = app_db.session.query(Project).get(project_id)
 
     # get triggered_id

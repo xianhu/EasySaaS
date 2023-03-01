@@ -11,7 +11,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State
 
 from app import app_db
-from models.users import User, Project, ProjectUser
+from models.users import User, Project, UserProject
 from utility import get_md5
 
 TAG_BASE = "projects"
@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
     State(f"id-{TAG_BASE}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
+def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
     # define outputs
     out_name = dict(value=dash.no_update, status="", help="")
     out_desc = dict(value=dash.no_update, status="", help="")
@@ -100,7 +100,7 @@ def _update_page(_open_data, _ok_counts, name, desc, project_id, user_id):
         # add new project
         _id = get_md5(name + str(time.time()))
         project = Project(id=_id, name=name, desc=(desc or "").strip())
-        project_user = ProjectUser(user_id=user.id, project_id=project.id)
+        project_user = UserProject(user_id=user.id, project_id=project.id)
 
         # add to database
         app_db.session.add_all([project, project_user])
