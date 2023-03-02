@@ -14,8 +14,8 @@ from app import app_db
 from models.users import Project
 
 TAG_BASE = "projects"
-TAG = "projects-delp"
-TYPE = "delp"
+TAG = "projects-delete"
+TYPE = "delete"
 
 
 def layout(pathname, search, **kwargs):
@@ -47,32 +47,29 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
-], [
-    State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
-    State(f"id-{TAG_BASE}-data-uid", "data"),
+    State(f"id-{TAG_BASE}-{TYPE}-project", "data"),
 ], prevent_initial_call=True)
-def _update_page(open_data, ok_counts, project_id, user_id):
+def _update_page(open_data, ok_counts, project):
     # define outputs
     out_name = dict(children=dash.no_update)
     out_modal = dict(visible=dash.no_update, loading=False)
     out_others = dict(close=dash.no_update)
-
-    # get project instance
-    project = app_db.session.query(Project).get(project_id)
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
 
     # check triggered_id
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
-        out_name["children"] = project.name
+        out_name["children"] = project["name"]
         out_modal["visible"] = True
         return out_name, out_modal, out_others
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
         # delete project
-        project.status = 0
+        app_db.session.query(Project).filter(
+            Project.id == project["key"],
+        ).update({"status": 0})
         app_db.session.commit()
 
         # update page

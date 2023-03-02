@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-add project
+add or edit project
 """
 
 import time
@@ -15,8 +15,8 @@ from models.users import User, Project, UserProject
 from utility import get_md5
 
 TAG_BASE = "projects"
-TAG = "projects-addp"
-TYPE = "addp"
+TAG = "projects-addedit"
+TYPE = "addedit"
 
 
 def layout(pathname, search, **kwargs):
@@ -24,7 +24,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large")
+    input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large", readOnly=True)
     form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", label="project name:", required=True)
 
     # define components
@@ -34,8 +34,8 @@ def layout(pathname, search, **kwargs):
     # define components
     form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
     kwargs_modal = dict(
-        title="Add New Project", visible=False, closable=False, renderFooter=True,
-        okText="Add New Project", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
+        title="loading...", visible=False, closable=False, renderFooter=True,
+        okText="loading...", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
     )
 
     # return result
@@ -44,15 +44,19 @@ def layout(pathname, search, **kwargs):
 
 @dash.callback([dict(
     value=Output(f"id-{TAG}-input-name", "value"),
+    readonly=Output(f"id-{TAG}-input-name", "readOnly"),
     status=Output(f"id-{TAG}-form-name", "validateStatus"),
     help=Output(f"id-{TAG}-form-name", "help"),
 ), dict(
     value=Output(f"id-{TAG}-input-desc", "value"),
+    readonly=Output(f"id-{TAG}-input-desc", "readOnly"),
     status=Output(f"id-{TAG}-form-desc", "validateStatus"),
     help=Output(f"id-{TAG}-form-desc", "help"),
 ), dict(
     visible=Output(f"id-{TAG}-modal-project", "visible"),
     loading=Output(f"id-{TAG}-modal-project", "confirmLoading"),
+    title=Output(f"id-{TAG}-modal-project", "title"),
+    oktext=Output(f"id-{TAG}-modal-project", "okText"),
 ), dict(
     close=Output(f"id-{TAG_BASE}-{TYPE}-close", "data"),
 )], [
@@ -66,9 +70,18 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=True)
 def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
     # define outputs
-    out_name = dict(value=dash.no_update, status="", help="")
-    out_desc = dict(value=dash.no_update, status="", help="")
-    out_modal = dict(visible=dash.no_update, loading=False)
+    out_name = dict(
+        value=dash.no_update, readonly=dash.no_update,
+        status="", help="",
+    )
+    out_desc = dict(
+        value=dash.no_update, readonly=dash.no_update,
+        status="", help="",
+    )
+    out_modal = dict(
+        visible=dash.no_update, loading=False,
+        title=dash.no_update, oktext=dash.no_update,
+    )
     out_others = dict(close=dash.no_update)
 
     # get triggered_id
@@ -76,8 +89,20 @@ def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
 
     # check triggered_id
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
-        out_name["value"] = ""
-        out_desc["value"] = ""
+        if project_id:
+            # edit project
+            project = app_db.session.query(Project).get(project_id)
+            out_name["value"] = project.name
+            out_name["readonly"] = True
+            out_desc["value"] = project.desc
+            out_modal["title"] = "Edit Project"
+            out_modal["oktext"] = "Confirm"
+        else:
+            out_name["value"] = ""
+            out_name["readonly"] = False
+            out_desc["value"] = ""
+            out_modal["title"] = "Add Project"
+            out_modal["oktext"] = "Confirm"
         out_modal["visible"] = True
         return out_name, out_desc, out_modal, out_others
 
