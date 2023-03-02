@@ -7,6 +7,7 @@ user page
 import logging
 import urllib.parse
 
+import feffery_antd_components as fac
 import flask_login
 from dash import html
 
@@ -33,10 +34,15 @@ def layout(pathname, search, **kwargs):
         return palert.layout_500(pathname, search)
     tab = search["tab"][0]
 
+    # define components
+    div_profile = html.Div("Profile", className="bg-white p-3", style={"minHeight": "300px"})
+    div_settings = html.Div("Settings", className="bg-white p-3", style={"minHeight": "300px"})
+
     # return result
     return html.Div(children=[
         comps_header.get_component_header(user_title=user_title, dot=True),
-        html.Div(children=[
-            html.Span(f"[{tab}] coming soon..."),
-        ], className="w-75 m-auto mt-4"),
+        fac.AntdTabs(children=[
+            fac.AntdTabPane(div_profile, key="profile", tab="Profile"),
+            fac.AntdTabPane(div_settings, key="settings", tab="Settings"),
+        ], defaultActiveKey=tab, tabPosition="left", className="w-75 m-auto mt-4"),
     ], className="bg-main vh-100 overflow-auto")
