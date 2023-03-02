@@ -83,7 +83,7 @@ class UserProject(BaseModel):
     project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"), primary_key=True)
 
     # role and role_json of project
-    role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/member")
+    role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/writer/reader")
     role_json = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, doc="json of role")
 
 
@@ -138,8 +138,9 @@ def select_projects_from_user(session, user_id):
     return session.query(Project, UserProject.role).join(
         UserProject, UserProject.project_id == Project.id,
     ).filter(
-        Project.status == 1,
         UserProject.user_id == user_id,
+        UserProject.status == 1,
+        Project.status == 1,
     ).all()
 
 
@@ -150,8 +151,9 @@ def select_users_from_project(session, project_id):
     return session.query(User, UserProject.role).join(
         UserProject, UserProject.user_id == User.id,
     ).filter(
-        User.status == 1,
         UserProject.project_id == project_id,
+        UserProject.status == 1,
+        User.status == 1,
     ).all()
 
 
