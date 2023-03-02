@@ -29,7 +29,7 @@ def layout(pathname, search, **kwargs):
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
 
-    # get project_id_role_dict
+    # get project_role_dict
     up_list = [up for up in current_user.user_projects if up.project.status == 1]
     project_role_dict = {up.project.id: (up.role, up.project) for up in up_list}
 

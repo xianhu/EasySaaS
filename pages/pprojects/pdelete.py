@@ -66,7 +66,7 @@ def _update_page(open_data, ok_counts, project):
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
-        # delete user_projects
+        # delete user_project
         app_db.session.query(UserProject).filter(
             UserProject.user_id == project["user_id"],
             UserProject.project_id == project["id"],
