@@ -24,7 +24,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large", readOnly=True)
+    input_name = fac.AntdInput(id=f"id-{TAG}-input-name", placeholder="project name", size="large")
     form_name = fac.AntdFormItem(input_name, id=f"id-{TAG}-form-name", label="project name:", required=True)
 
     # define components
@@ -34,8 +34,8 @@ def layout(pathname, search, **kwargs):
     # define components
     form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
     kwargs_modal = dict(
-        title="loading...", visible=False, closable=False, renderFooter=True,
-        okText="loading...", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
+        title="", visible=False, closable=False, renderFooter=True,
+        okText="Confirm", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
     )
 
     # return result
@@ -56,10 +56,7 @@ def layout(pathname, search, **kwargs):
     visible=Output(f"id-{TAG}-modal-project", "visible"),
     loading=Output(f"id-{TAG}-modal-project", "confirmLoading"),
     title=Output(f"id-{TAG}-modal-project", "title"),
-    oktext=Output(f"id-{TAG}-modal-project", "okText"),
-), dict(
-    close=Output(f"id-{TAG_BASE}-{TYPE}-close", "data"),
-)], [
+), Output(f"id-{TAG_BASE}-{TYPE}-close", "data")], [
     Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
 ], [
@@ -71,8 +68,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
     # define outputs
     out_name = dict(value=dash.no_update, readonly=dash.no_update, status="", help="")
     out_desc = dict(value=dash.no_update, readonly=dash.no_update, status="", help="")
-    out_modal = dict(visible=dash.no_update, loading=False, title=dash.no_update, oktext=dash.no_update)
-    out_others = dict(close=dash.no_update)
+    out_modal = dict(visible=dash.no_update, loading=False, title=dash.no_update)
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
@@ -89,10 +85,9 @@ def _update_page(open_data, ok_counts, name, desc, project):
         # update modal
         out_modal["visible"] = True
         out_modal["title"] = f"{'Add' if is_add else 'Edit'} Project"
-        out_modal["oktext"] = "Confirm"
 
         # return result
-        return out_name, out_desc, out_modal, out_others
+        return out_name, out_desc, out_modal, dash.no_update
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
@@ -101,7 +96,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
         if len(name) < 4:
             out_name["status"] = "error"
             out_name["help"] = "project name is too short"
-            return out_name, out_desc, out_modal, out_others
+            return out_name, out_desc, out_modal, dash.no_update
         desc = (desc or "").strip()
 
         # check project id
@@ -126,8 +121,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
 
         # update page
         out_modal["visible"] = False
-        out_others["close"] = time.time()
-        return out_name, out_desc, out_modal, out_others
+        return out_name, out_desc, out_modal, time.time()
 
     # return result (never reach here)
-    return out_name, out_desc, out_modal, out_others
+    return out_name, out_desc, out_modal, dash.no_update
