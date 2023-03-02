@@ -102,20 +102,26 @@ def _update_page(open_data, ok_counts, name, desc, project):
             out_name["status"] = "error"
             out_name["help"] = "project name is too short"
             return out_name, out_desc, out_modal, out_others
+        desc = (desc or "").strip()
 
-        # add project
+        # check project id
         if not project.get("id"):
-            _id = get_md5(name + str(time.time()))
-            project = Project(id=_id, name=name, desc=(desc or "").strip())
-            user_project = UserProject(user_id=project["user_id"], project_id=project["id"])
+            # add project
+            user_id = project["user_id"]
+            project_id = get_md5(name + str(time.time()))
+
+            # define project and user_project instances
+            project = Project(id=project_id, name=name, desc=desc)
+            user_project = UserProject(user_id=user_id, project_id=project_id)
+
+            # commit to database
             app_db.session.add_all([project, user_project])
             app_db.session.commit()
-
-        # edit project
-        if project.get("id"):
+        else:
+            # edit project
             app_db.session.query(Project).filter(
                 Project.id == project["id"],
-            ).update({Project.desc: (desc or "").strip()})
+            ).update({Project.desc: desc})
             app_db.session.commit()
 
         # update page

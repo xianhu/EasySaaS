@@ -85,8 +85,8 @@ def _update_page(addedit, delete, user_id):
     for up in user.user_projects:
         if up.project.status == 0:
             continue
-        project = up.project
         project_role = up.role
+        project = up.project
 
         # define operation of button column
         href_analysis = f"{PATH_ANALYSIS}?id={project.id}"
@@ -97,7 +97,8 @@ def _update_page(addedit, delete, user_id):
 
         # append data
         data_table.append({
-            "user_id": user_id, "id": project.id, "key": project.id,
+            "user_id": user_id,
+            "id": project.id, "key": project.id,
             "name": project.name, "desc": project.desc,
             "role": project_role, "operation": operation,
         })
