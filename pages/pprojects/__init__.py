@@ -48,7 +48,7 @@ def layout(pathname, search, **kwargs):
     data_delete_project = dcc.Store(id=f"id-{TAG}-delete-project", data=None)
 
     # define components
-    button_add = fac.AntdButton("Add New Project", id=f"id-{TAG}-button-add", type="primary", disabled=True)
+    button_add = fac.AntdButton("Add Project", id=f"id-{TAG}-button-add", type="primary", disabled=True)
     col_list = [fac.AntdCol(html.Span("Project List"), className=None), fac.AntdCol(button_add, className=None)]
 
     # return result

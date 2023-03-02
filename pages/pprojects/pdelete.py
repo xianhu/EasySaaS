@@ -29,7 +29,7 @@ def layout(pathname, search, **kwargs):
     # define components
     kwargs_modal = dict(
         title="Delete Project", visible=False, closable=False, renderFooter=True,
-        okText="Delete Project", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
+        okText="Confirm", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
         okButtonProps=dict(danger=True),
     )
 
@@ -42,9 +42,7 @@ def layout(pathname, search, **kwargs):
 ), dict(
     visible=Output(f"id-{TAG}-modal-project", "visible"),
     loading=Output(f"id-{TAG}-modal-project", "confirmLoading"),
-), dict(
-    close=Output(f"id-{TAG_BASE}-{TYPE}-close", "data"),
-)], [
+), Output(f"id-{TAG_BASE}-{TYPE}-close", "data")], [
     Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
     State(f"id-{TAG_BASE}-{TYPE}-project", "data"),
@@ -53,7 +51,6 @@ def _update_page(open_data, ok_counts, project):
     # define outputs
     out_name = dict(children=dash.no_update)
     out_modal = dict(visible=dash.no_update, loading=False)
-    out_others = dict(close=dash.no_update)
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
@@ -62,13 +59,12 @@ def _update_page(open_data, ok_counts, project):
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["children"] = project["name"]
         out_modal["visible"] = True
-        return out_name, out_modal, out_others
+        return out_name, out_modal, dash.no_update
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
-        # delete user_project
+        # delete user_project (all users)
         app_db.session.query(UserProject).filter(
-            UserProject.user_id == project["user_id"],
             UserProject.project_id == project["id"],
         ).delete()
 
@@ -82,8 +78,7 @@ def _update_page(open_data, ok_counts, project):
 
         # update page
         out_modal["visible"] = False
-        out_others["close"] = time.time()
-        return out_name, out_modal, out_others
+        return out_name, out_modal, time.time()
 
     # return result (never reach here)
-    return out_name, out_modal, out_others
+    return out_name, out_modal, dash.no_update
