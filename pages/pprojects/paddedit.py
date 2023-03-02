@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-add or edit project
+add/edit project
 """
 
 import time
@@ -69,18 +69,9 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=True)
 def _update_page(open_data, ok_counts, name, desc, project):
     # define outputs
-    out_name = dict(
-        value=dash.no_update, readonly=dash.no_update,
-        status="", help="",
-    )
-    out_desc = dict(
-        value=dash.no_update, readonly=dash.no_update,
-        status="", help="",
-    )
-    out_modal = dict(
-        visible=dash.no_update, loading=False,
-        title=dash.no_update, oktext=dash.no_update,
-    )
+    out_name = dict(value=dash.no_update, readonly=dash.no_update, status="", help="")
+    out_desc = dict(value=dash.no_update, readonly=dash.no_update, status="", help="")
+    out_modal = dict(visible=dash.no_update, loading=False, title=dash.no_update, oktext=dash.no_update)
     out_others = dict(close=dash.no_update)
 
     # get triggered_id
@@ -88,21 +79,19 @@ def _update_page(open_data, ok_counts, name, desc, project):
 
     # check triggered_id
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
-        if project:
-            # edit project
-            out_name["value"] = project["name"]
-            out_name["readonly"] = True
-            out_desc["value"] = project["desc"]
-            out_modal["title"] = "Edit Project"
-            out_modal["oktext"] = "Confirm"
-        else:
-            # add project
-            out_name["value"] = ""
-            out_name["readonly"] = False
-            out_desc["value"] = ""
-            out_modal["title"] = "Add Project"
-            out_modal["oktext"] = "Confirm"
+        is_add = not project.get("id")
+
+        # update name and desc
+        out_name["value"] = "" if is_add else project["name"]
+        out_name["readonly"] = False if is_add else True
+        out_desc["value"] = "" if is_add else project["desc"]
+
+        # update modal
         out_modal["visible"] = True
+        out_modal["title"] = f"{'Add' if is_add else 'Edit'} Project"
+        out_modal["oktext"] = "Confirm"
+
+        # return result
         return out_name, out_desc, out_modal, out_others
 
     # check triggered_id
@@ -114,22 +103,19 @@ def _update_page(open_data, ok_counts, name, desc, project):
             out_name["help"] = "project name is too short"
             return out_name, out_desc, out_modal, out_others
 
-        if project.get("id"):
-            # edit project
-            project["name"] = name
-            project["desc"] = (desc or "").strip()
-
-            # update database
-            app_db.session.query(Project).filter_by(id=project["id"]).update(project)
-            app_db.session.commit()
-        else:
-            # add new project
+        # add project
+        if not project.get("id"):
             _id = get_md5(name + str(time.time()))
             project = Project(id=_id, name=name, desc=(desc or "").strip())
-            project_user = UserProject(user_id=user.id, project_id=project.id)
+            user_project = UserProject(user_id=project["user_id"], project_id=project["id"])
+            app_db.session.add_all([project, user_project])
+            app_db.session.commit()
 
-            # add to database
-            app_db.session.add_all([project, project_user])
+        # edit project
+        if project.get("id"):
+            app_db.session.query(Project).filter(
+                Project.id == project["id"],
+            ).update({Project.desc: (desc or "").strip()})
             app_db.session.commit()
 
         # update page

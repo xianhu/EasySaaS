@@ -86,7 +86,7 @@ class UserProject(BaseModel):
     role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/writer/reader")
     role_json = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, doc="json of role")
 
-    # relationships: user_projects.user, user_projects.project
+    # relationships: up.user, up.project
     user = orm.relationship("User", back_populates="user_projects")
     project = orm.relationship("Project", back_populates="user_projects")
 

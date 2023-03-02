@@ -123,11 +123,12 @@ def _update_page(addedit, delete, user_id):
 ], [
     State(f"id-{TAG}-table-project", "clickedContent"),
     State(f"id-{TAG}-table-project", "recentlyButtonClickedRow"),
+    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row):
+def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id):
     # define outputs
-    out_addedit = dict(open=dash.no_update, project=None)
-    out_delete = dict(open=dash.no_update, project=None)
+    out_addedit = dict(open=dash.no_update, project=dict(user_id=user_id))
+    out_delete = dict(open=dash.no_update, project=dict(user_id=user_id))
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
@@ -135,7 +136,6 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row):
     # check triggered_id
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
-        out_addedit["project"] = None
         return out_addedit, out_delete
 
     # check triggered_id
