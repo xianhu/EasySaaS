@@ -29,7 +29,7 @@ def layout(pathname, search, **kwargs):
     # define components
     kwargs_modal = dict(
         title="Delete Project", visible=False, closable=False, renderFooter=True,
-        okText="Delete Project", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
+        okText="Confirm", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
         okButtonProps=dict(danger=True),
     )
 
