@@ -25,6 +25,6 @@ class BaseModel(app_db.Model):
         return {c.name: getattr(self, c.name) for c in columns}
 
     # normal columns
-    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="-1 0 1")
+    status = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="1/0")
     datetime_created = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now())
     datetime_updated = sqlalchemy.Column(sqlalchemy.DateTime, server_default=func.now(), server_onupdate=func.now())

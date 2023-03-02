@@ -29,18 +29,27 @@ def layout(pathname, search, **kwargs):
     current_user = flask_login.current_user
     user_title = current_user.email.split("@")[0]
 
-    # get project_list and project_id_set
-    project_list = [p for p in current_user.projects if p.status == 1]
-    project_id_set = set([p.id for p in project_list])
+    # get project_role_dict
+    up_list = [up for up in current_user.user_projects if up.project.status == 1]
+    project_role_dict = {up.project.id: (up.role, up.project) for up in up_list}
 
-    # check project.id
+    # check project id
     try:
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        assert search["id"][0] in project_id_set, "project not found"
+        assert search["id"][0] in project_role_dict, "project not found"
     except Exception as excep:
         logging.error("get project.id failed: %s", excep)
         return palert.layout_500(pathname, search)
     project_id = search["id"][0]
+    project_role, project = project_role_dict[project_id]
+
+    # define store_data
+    store_data = dict(
+        user_id=current_user.id,
+        project_id=project_id,
+        project_role=project_role,
+        project_name=project.name,
+    )
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
@@ -63,11 +72,10 @@ def layout(pathname, search, **kwargs):
     ], className="vh-100 overflow-auto")
 
     # return result
-    store_data = dict(user_id=current_user.id, project_id=project_id)
     return fac.AntdLayout(children=[
-        sider, main, dcc.Store(id=f"id-{TAG}-data", data=store_data),
+        sider, main,
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        fuc.FefferyWindowSize(id=f"id-{TAG}-windowsize"),
+        dcc.Store(id=f"id-{TAG}-data", data=store_data),
     ], className="vh-100 overflow-auto")
 
 
@@ -80,12 +88,9 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG}-menu", "currentKey"),
     Input(f"id-{TAG}-switch", "checked"),
-], [
-    State(f"id-{TAG}-windowsize", "_width"),
-    State(f"id-{TAG}-windowsize", "_height"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=False)
-def _update_page(current_key, switch_checked, _width, _height, store_data):
+def _update_page(current_key, switch_checked, store_data):
     # define outputs
     out_main = dict(header=dash.no_update, content=fac.AntdEmpty(locale="en-us"))
     out_others = dict(current_key=current_key, executejs_string=dash.no_update)
@@ -98,8 +103,9 @@ def _update_page(current_key, switch_checked, _width, _height, store_data):
     out_others["current_key"] = current_key
 
     # define header of main
-    project_id = store_data["project_id"]
-    text_title = f"{current_key}-{switch_checked}-{project_id}"
+    project_name = store_data["project_name"]
+    project_role = store_data["project_role"]
+    text_title = f"{current_key}-{switch_checked}-{project_name}-{project_role}"
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content of main

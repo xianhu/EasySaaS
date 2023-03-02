@@ -36,8 +36,8 @@ class User(BaseModel):
     auth_github = sqlalchemy.Column(sqlalchemy.String(512), doc="token of github")
     auth_google = sqlalchemy.Column(sqlalchemy.String(512), doc="token of google")
 
-    # relationship
-    projects = orm.relationship("Project", secondary="user_projects", back_populates="users")
+    # relationship: user.user_projects
+    user_projects = orm.relationship("UserProject", back_populates="user")
 
     def check_password_hash(self, password):
         """
@@ -71,8 +71,8 @@ class Project(BaseModel):
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
-    # relationship
-    users = orm.relationship("User", secondary="user_projects", back_populates="projects")
+    # relationship: project.user_projects
+    user_projects = orm.relationship("UserProject", back_populates="project")
 
 
 class UserProject(BaseModel):
@@ -83,8 +83,12 @@ class UserProject(BaseModel):
     project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"), primary_key=True)
 
     # role and role_json of project
-    role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/member")
+    role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/writer/reader")
     role_json = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, doc="json of role")
+
+    # relationships: up.user, up.project
+    user = orm.relationship("User", back_populates="user_projects")
+    project = orm.relationship("Project", back_populates="user_projects")
 
 
 def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
@@ -131,30 +135,6 @@ def add_project(session, name, desc=None, user_id=None, project_role="admin"):
     return project
 
 
-def select_projects_from_user(session, user_id):
-    """
-    select projects from user
-    """
-    return session.query(Project, UserProject.role).join(
-        UserProject, UserProject.project_id == Project.id,
-    ).filter(
-        Project.status == 1,
-        UserProject.user_id == user_id,
-    ).all()
-
-
-def select_users_from_project(session, project_id):
-    """
-    select users from project
-    """
-    return session.query(User, UserProject.role).join(
-        UserProject, UserProject.user_id == User.id,
-    ).filter(
-        User.status == 1,
-        UserProject.project_id == project_id,
-    ).all()
-
-
 if __name__ == "__main__":
     from config import config_database_uri
     from utility import get_md5
@@ -190,8 +170,14 @@ if __name__ == "__main__":
     # =============================== test ===============================
     # create session and select data
     with orm.sessionmaker(engine)() as _session:
-        for _project, _role in select_projects_from_user(_session, _user_id):
-            logging.warning("project and role: %s, %s", _project.to_dict(), _role)
+        _user = _session.query(User).get(_user_id)
+        logging.warning("get user: %s", _user.to_dict())
+        for up in _user.user_projects:
+            logging.warning("\tuser-project: %s", up.to_dict())
+            logging.warning("\tproject: %s", up.project.to_dict())
 
-        for _user, _role in select_users_from_project(_session, _project_id):
-            logging.warning("user and role: %s, %s", _user.to_dict(), _role)
+        _project = _session.query(Project).get(_project_id)
+        logging.warning("get project: %s", _project.to_dict())
+        for up in _project.user_projects:
+            logging.warning("\tuser-project: %s", up.to_dict())
+            logging.warning("\tuser: %s", up.user.to_dict())
