@@ -95,11 +95,8 @@ def _update_page(addedit, delete, user_id):
             operation.append({"content": "Edit", "type": "link"})
             operation.append({"content": "Delete", "type": "link", "danger": True})
         data_table.append({
-            "key": project.id,
-            "name": project.name,
-            "desc": project.desc,
-            "role": project_role,
-            "operation": operation,
+            "id": project.id, "user_id": user_id, "key": project.id,
+            "name": project.name, "desc": project.desc, "role": project_role, "operation": operation,
         })
 
     # define components

@@ -11,7 +11,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State, html
 
 from app import app_db
-from models.users import Project
+from models.users import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-delete"
@@ -66,10 +66,14 @@ def _update_page(open_data, ok_counts, project):
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
-        # delete project
+        # delete project and user-project
         app_db.session.query(Project).filter(
-            Project.id == project["key"],
-        ).update({"status": 0})
+            Project.id == project["id"],
+        ).update({Project.status: 0})
+        app_db.session.query(UserProject).filter(
+            UserProject.user_id == project["user_id"],
+            UserProject.project_id == project["id"],
+        ).update({UserProject.status: 0})
         app_db.session.commit()
 
         # update page

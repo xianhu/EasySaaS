@@ -11,7 +11,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State
 
 from app import app_db
-from models.users import User, Project, UserProject
+from models.users import Project, UserProject
 from utility import get_md5
 
 TAG_BASE = "projects"
@@ -65,10 +65,9 @@ def layout(pathname, search, **kwargs):
 ], [
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
-    State(f"id-{TAG_BASE}-{TYPE}-pid", "data"),
-    State(f"id-{TAG_BASE}-data-uid", "data"),
+    State(f"id-{TAG_BASE}-{TYPE}-project", "data"),
 ], prevent_initial_call=True)
-def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
+def _update_page(open_data, ok_counts, name, desc, project):
     # define outputs
     out_name = dict(
         value=dash.no_update, readonly=dash.no_update,
@@ -89,15 +88,15 @@ def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
 
     # check triggered_id
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
-        if project_id:
+        if project:
             # edit project
-            project = app_db.session.query(Project).get(project_id)
-            out_name["value"] = project.name
+            out_name["value"] = project["name"]
             out_name["readonly"] = True
-            out_desc["value"] = project.desc
+            out_desc["value"] = project["desc"]
             out_modal["title"] = "Edit Project"
             out_modal["oktext"] = "Confirm"
         else:
+            # add project
             out_name["value"] = ""
             out_name["readonly"] = False
             out_desc["value"] = ""
@@ -115,21 +114,23 @@ def _update_page(open_data, ok_counts, name, desc, project_id, user_id):
             out_name["help"] = "project name is too short"
             return out_name, out_desc, out_modal, out_others
 
-        # check project name
-        user = app_db.session.query(User).get(user_id)
-        if name in set([p.name for p in user.projects if p.status == 1]):
-            out_name["status"] = "error"
-            out_name["help"] = "project name already exists"
-            return out_name, out_desc, out_modal, out_others
+        if project.get("id"):
+            # edit project
+            project["name"] = name
+            project["desc"] = (desc or "").strip()
 
-        # add new project
-        _id = get_md5(name + str(time.time()))
-        project = Project(id=_id, name=name, desc=(desc or "").strip())
-        project_user = UserProject(user_id=user.id, project_id=project.id)
+            # update database
+            app_db.session.query(Project).filter_by(id=project["id"]).update(project)
+            app_db.session.commit()
+        else:
+            # add new project
+            _id = get_md5(name + str(time.time()))
+            project = Project(id=_id, name=name, desc=(desc or "").strip())
+            project_user = UserProject(user_id=user.id, project_id=project.id)
 
-        # add to database
-        app_db.session.add_all([project, project_user])
-        app_db.session.commit()
+            # add to database
+            app_db.session.add_all([project, project_user])
+            app_db.session.commit()
 
         # update page
         out_modal["visible"] = False
