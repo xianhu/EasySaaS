@@ -13,7 +13,7 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app_db
-from models.users import Project, UserProject
+from models.users import User
 from utility.paths import PATH_ANALYSIS
 from . import paddedit, pdelete
 from ..comps import header as comps_header
@@ -77,38 +77,38 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
 def _update_page(addedit, delete, user_id):
-    # get project_role_list (all projects)
-    project_role_list = app_db.session.query(Project, UserProject.role).join(
-        UserProject, UserProject.project_id == Project.id,
-    ).filter(
-        UserProject.user_id == user_id,
-        UserProject.status == 1,
-        Project.status == 1,
-    ).all()
+    # user instance
+    user = app_db.session.query(User).get(user_id)
 
     # define data
     data_table = []
-    for project, project_role in project_role_list:
+    for up in user.user_projects:
+        if up.project.status == 0:
+            continue
+        project = up.project
+        project_role = up.role
+
+        # define operation of button column
         href_analysis = f"{PATH_ANALYSIS}?id={project.id}"
         operation = [{"content": "Analysis", "type": "link", "href": href_analysis}]
         if project_role == "admin":
             operation.append({"content": "Edit", "type": "link"})
             operation.append({"content": "Delete", "type": "link", "danger": True})
+
+        # append data
         data_table.append({
-            "id": project.id, "user_id": user_id, "key": project.id,
-            "name": project.name, "desc": project.desc, "role": project_role, "operation": operation,
+            "user_id": user_id, "id": project.id, "key": project.id,
+            "name": project.name, "desc": project.desc,
+            "role": project_role, "operation": operation,
         })
 
-    # define components
-    table_project = fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
+    # return result
+    return False, fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
         {"title": "Name", "dataIndex": "name", "width": "20%"},
         {"title": "Description", "dataIndex": "desc", "width": "40%"},
         {"title": "Role", "dataIndex": "role", "width": "10%"},
         {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
     ], data=data_table, bordered=False, pagination=dict(hideOnSinglePage=True), locale="en-us")
-
-    # return result
-    return False, table_project
 
 
 @dash.callback([dict(

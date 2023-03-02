@@ -66,14 +66,18 @@ def _update_page(open_data, ok_counts, project):
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
-        # delete project and user-project
-        app_db.session.query(Project).filter(
-            Project.id == project["id"],
-        ).update({Project.status: 0})
+        # delete user_projects
         app_db.session.query(UserProject).filter(
             UserProject.user_id == project["user_id"],
             UserProject.project_id == project["id"],
-        ).update({UserProject.status: 0})
+        ).delete()
+
+        # delete project (set status to 0)
+        app_db.session.query(Project).filter(
+            Project.id == project["id"],
+        ).update({Project.status: 0})
+
+        # commit to database
         app_db.session.commit()
 
         # update page
