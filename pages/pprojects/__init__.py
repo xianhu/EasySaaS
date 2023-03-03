@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define components of others
         dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE)
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -108,7 +108,7 @@ def _update_page(addedit, delete, user_id):
         {"title": "Name", "dataIndex": "name", "width": "20%"},
         {"title": "Description", "dataIndex": "desc", "width": "40%"},
         {"title": "Role", "dataIndex": "role", "width": "10%"},
-        {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
+        {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}},
     ], data=data_table, bordered=False, pagination=dict(hideOnSinglePage=True), locale="en-us")
 
 
