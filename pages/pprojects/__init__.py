@@ -64,7 +64,7 @@ def layout(pathname, search, **kwargs):
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define components of others
         dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE)
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -85,13 +85,13 @@ def _update_page(addedit, delete, user_id):
     for up in user.user_projects:
         if up.project.status == 0:
             continue
-        project_role = up.role
+        up_role = up.role
         project = up.project
 
         # define operation of button column
         href_analysis = f"{PATH_ANALYSIS}?id={project.id}"
         operation = [{"content": "Analysis", "type": "link", "href": href_analysis}]
-        if project_role == "admin":
+        if up_role == "admin":
             operation.append({"content": "Edit", "type": "link"})
             operation.append({"content": "Delete", "type": "link", "danger": True})
 
@@ -100,7 +100,7 @@ def _update_page(addedit, delete, user_id):
             "user_id": user_id,
             "id": project.id, "key": project.id,
             "name": project.name, "desc": project.desc,
-            "role": project_role, "operation": operation,
+            "role": up_role, "operation": operation,
         })
 
     # return result
@@ -108,7 +108,7 @@ def _update_page(addedit, delete, user_id):
         {"title": "Name", "dataIndex": "name", "width": "20%"},
         {"title": "Description", "dataIndex": "desc", "width": "40%"},
         {"title": "Role", "dataIndex": "role", "width": "10%"},
-        {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}}
+        {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}},
     ], data=data_table, bordered=False, pagination=dict(hideOnSinglePage=True), locale="en-us")
 
 
