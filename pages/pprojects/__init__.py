@@ -85,13 +85,13 @@ def _update_page(addedit, delete, user_id):
     for up in user.user_projects:
         if up.project.status == 0:
             continue
-        project_role = up.role
+        up_role = up.role
         project = up.project
 
         # define operation of button column
         href_analysis = f"{PATH_ANALYSIS}?id={project.id}"
         operation = [{"content": "Analysis", "type": "link", "href": href_analysis}]
-        if project_role == "admin":
+        if up_role == "admin":
             operation.append({"content": "Edit", "type": "link"})
             operation.append({"content": "Delete", "type": "link", "danger": True})
 
@@ -100,7 +100,7 @@ def _update_page(addedit, delete, user_id):
             "user_id": user_id,
             "id": project.id, "key": project.id,
             "name": project.name, "desc": project.desc,
-            "role": project_role, "operation": operation,
+            "role": up_role, "operation": operation,
         })
 
     # return result

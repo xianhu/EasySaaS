@@ -41,14 +41,12 @@ def layout(pathname, search, **kwargs):
         logging.error("get project.id failed: %s", excep)
         return palert.layout_500(pathname, search)
     project_id = search["id"][0]
-    project_role, project = project_role_dict[project_id]
+    up_role, project = project_role_dict[project_id]
 
     # define store_data
     store_data = dict(
-        user_id=current_user.id,
-        project_id=project_id,
-        project_role=project_role,
-        project_name=project.name,
+        user_id=current_user.id, up_role=up_role,
+        project_id=project.id, project_name=project.name,
     )
 
     # define components
@@ -63,7 +61,7 @@ def layout(pathname, search, **kwargs):
     # define components
     main = fac.AntdContent(children=[
         comps_header.get_component_header(
-            chilren_left=html.Div("Analysis", id=f"id-{TAG}-header"),
+            chilren_left=html.Div("Loading...", id=f"id-{TAG}-header"),
             children_right=[switch, dropdown_user],
         ),
         fuc.FefferyTopProgress(children=[
@@ -103,9 +101,9 @@ def _update_page(current_key, switch_checked, store_data):
     out_others["current_key"] = current_key
 
     # define header of main
+    up_role = store_data["up_role"]
     project_name = store_data["project_name"]
-    project_role = store_data["project_role"]
-    text_title = f"{current_key}-{switch_checked}-{project_name}-{project_role}"
+    text_title = f"{current_key}-{switch_checked}-{project_name}-{up_role}"
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content of main
