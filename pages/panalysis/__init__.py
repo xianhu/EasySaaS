@@ -76,7 +76,7 @@ def layout(pathname, search, **kwargs):
         sider, main,
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
-    ], className="vh-100 overflow-auto")
+    ], className="bg-main vh-100 overflow-auto")
 
 
 @dash.callback([dict(
