@@ -35,8 +35,9 @@ def layout(pathname, search, **kwargs):
     tab = search["tab"][0]
 
     # define components
-    div_profile = html.Div("Profile", className="bg-white p-3", style={"minHeight": "300px"})
-    div_settings = html.Div("Settings", className="bg-white p-3", style={"minHeight": "300px"})
+    style = {"minHeight": "300px"}
+    div_profile = html.Div("Profile", className="bg-white p-3", style=style)
+    div_settings = html.Div("Settings", className="bg-white p-3", style=style)
 
     # return result
     return html.Div(children=[

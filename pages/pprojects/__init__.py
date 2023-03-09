@@ -89,8 +89,8 @@ def _update_page(addedit, delete, user_id):
         project = up.project
 
         # define operation of button column
-        href_analysis = f"{PATH_ANALYSIS}?id={project.id}"
-        operation = [{"content": "Analysis", "type": "link", "href": href_analysis}]
+        href = f"{PATH_ANALYSIS}?id={project.id}"
+        operation = [{"content": "Analysis", "type": "link", "href": href}]
         if up_role == "admin":
             operation.append({"content": "Edit", "type": "link"})
             operation.append({"content": "Delete", "type": "link", "danger": True})

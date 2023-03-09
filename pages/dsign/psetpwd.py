@@ -58,7 +58,7 @@ def layout(pathname, search, **kwargs):
         form_items=fac.AntdForm([form_email, form_pwd1, form_pwd2]),
         text_button="Set password",
         other_list=[None, None],
-        data=pathname,
+        data=[pathname, email],
     )
 
     # return result
@@ -92,10 +92,15 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-input-pwd2", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, pathname):
+def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
     # define outputs
     out_pwd = dict(status1="", help1="", status2="", help2="")
     out_others = dict(button_loading=False, executejs_string=None)
+
+    # check email
+    pathname, email_tmp = pathname_email
+    if email != email_tmp:
+        return out_pwd, out_others
 
     # check password
     pwd1 = (pwd1 or "").strip()
