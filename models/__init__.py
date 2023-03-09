@@ -14,6 +14,7 @@ app_db = SQLAlchemy(app=None)
 
 class BaseModel(app_db.Model):
     __abstract__ = True
+    __ignore__ = ["datetime_created", "datetime_updated"]
 
     # get function
     def get(self, column):
@@ -21,7 +22,7 @@ class BaseModel(app_db.Model):
 
     # to dict function
     def to_dict(self) -> dict:
-        columns = self.__table__.columns
+        columns = [c for c in self.__table__.columns if c.name not in self.__ignore__]
         return {c.name: getattr(self, c.name) for c in columns}
 
     # normal columns
