@@ -11,7 +11,6 @@ import feffery_antd_components as fac
 import flask_login
 from dash import html
 
-from utility.paths import PATH_ROOT
 from .. import palert
 from ..comps import header as comps_header
 
@@ -32,7 +31,7 @@ def layout(pathname, search, **kwargs):
         assert search["tab"][0] in ("profile", "settings")
     except Exception as excep:
         logging.error("get tab failed: %s", excep)
-        return palert.layout_500(pathname, search, return_href=PATH_ROOT)
+        return palert.layout_500(pathname, search)
     tab = search["tab"][0]
 
     # define components
