@@ -40,7 +40,7 @@ def layout(pathname, search, tag, **kwargs):
         html.Div(kwargs["text_title"], className="text-center fs-2"),
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
-        fac.AntdForm(kwargs["form_items"], className="mt-4"),
+        fac.AntdForm(kwargs["form_items"], id=f"id-{tag}-form", className="mt-4"),
         fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
 
         fac.AntdRow(a_list, align="middle", justify="space-between", className="mt-1"),
