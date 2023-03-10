@@ -34,13 +34,12 @@ def get_component_header_user(user_title, dot=True):
     layout of component
     """
     return fac.AntdBadge(fac.AntdDropdown(menuItems=[
-        {"title": "Profile", "href": f"{PATH_USER}?tab=profile"},
-        {"title": "Settings", "href": f"{PATH_USER}?tab=settings"},
+        {"title": "Settings", "href": PATH_USER},
         {"isDivider": True},
         {"title": "Projects", "href": PATH_PROJECTS},
         {"isDivider": True},
         {"title": "Logout", "href": PATH_LOGIN},
-    ], title=user_title, buttonMode=True), dot=dot, className=None)
+    ], title=user_title, buttonMode=True), dot=dot)
 
 
 def get_component_header(
