@@ -13,13 +13,13 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask
 import flask_mail
-from dash import Input, Output, State, html
+from dash import Input, Output, State
 
 from app import User, app_db, app_mail, app_redis
 from config import config_app_domain, config_app_name
 from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
-from utility.paths import PATH_LOGIN, PATH_SIGNUP, PATH_FORGOTPWD
+from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
 from . import tsign
 from .. import palert
 
@@ -47,23 +47,15 @@ def layout(pathname, search, **kwargs):
         src_image="illustrations/signup.svg",
         text_title=f"Welcome to {config_app_name}",
         text_subtitle="Fill out the email to get started.",
-        form_items=fac.AntdForm([form_email, row_cpc]),
+        form_items=[form_email, row_cpc],
         text_button="Verify the email",
-        other_list=[
-            html.A("Log in", href=PATH_LOGIN),
-            html.A("Forgot password?", href=PATH_FORGOTPWD),
-        ],
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         src_image="illustrations/forgotpwd.svg",
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
-        form_items=fac.AntdForm([form_email, row_cpc]),
+        form_items=[form_email, row_cpc],
         text_button="Verify the email",
-        other_list=[
-            html.A("Log in", href=PATH_LOGIN),
-            html.A("Sign up", href=PATH_SIGNUP),
-        ],
         data=PATH_FORGOTPWD,
     )
 
