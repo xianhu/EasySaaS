@@ -32,10 +32,6 @@ class User(BaseModel):
     phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
-    # authentication
-    auth_github = sqlalchemy.Column(sqlalchemy.String(512), doc="token of github")
-    auth_google = sqlalchemy.Column(sqlalchemy.String(512), doc="token of google")
-
     # relationship: user.user_projects
     user_projects = orm.relationship("UserProject", back_populates="user")
 
