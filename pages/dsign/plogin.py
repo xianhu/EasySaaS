@@ -8,12 +8,12 @@ import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_login
-from dash import Input, Output, State, html
+from dash import Input, Output, State
 
 from app import UserLogin, app_db
 from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
-from utility.paths import PATH_ROOT, PATH_SIGNUP, PATH_FORGOTPWD
+from utility.paths import PATH_ROOT
 from . import tsign
 
 TAG = "login"
@@ -44,12 +44,8 @@ def layout(pathname, search, **kwargs):
         src_image="illustrations/login.svg",
         text_title="Welcome back",
         text_subtitle="Login to analysis your data.",
-        form_items=fac.AntdForm([form_email, form_pwd, row_cpc]),
+        form_items=[form_email, form_pwd, row_cpc],
         text_button="Log in",
-        other_list=[
-            html.A("Sign up", href=PATH_SIGNUP),
-            html.A("Forgot password?", href=PATH_FORGOTPWD),
-        ],
         data=kwargs.get("nextpath") or PATH_ROOT,
     )
 

@@ -15,7 +15,7 @@ from dash import Input, Output, State
 from app import User, app_db, app_redis
 from utility import get_md5
 from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
-from utility.paths import PATH_LOGIN, PATH_ROOT
+from utility.paths import PATH_LOGIN
 from . import tsign
 from .. import palert
 
@@ -38,7 +38,7 @@ def layout(pathname, search, **kwargs):
         assert token == _token, (token, _token)
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
-        return palert.layout_expired(pathname, search, return_href=PATH_ROOT)
+        return palert.layout_expired(pathname, search)
 
     # define components
     input_email = fac.AntdInput(id=f"id-{TAG}-input-email", value=email, size="large", readOnly=True)
@@ -55,9 +55,8 @@ def layout(pathname, search, **kwargs):
         src_image="illustrations/setpwd.svg",
         text_title="Set password",
         text_subtitle="Set the password of this email please.",
-        form_items=fac.AntdForm([form_email, form_pwd1, form_pwd2]),
+        form_items=[form_email, form_pwd1, form_pwd2],
         text_button="Set password",
-        other_list=[None, None],
         data=[pathname, email],
     )
 
