@@ -49,7 +49,7 @@ def layout(pathname, search, **kwargs):
 
     # define components
     button_add = fac.AntdButton("Add Project", id=f"id-{TAG}-button-add", type="primary", disabled=True)
-    col_list = [fac.AntdCol(html.Span("Project List"), className=None), fac.AntdCol(button_add, className=None)]
+    col_list = [fac.AntdCol(html.Span("Project List", className=None)), fac.AntdCol(button_add)]
 
     # return result
     return html.Div(children=[
@@ -63,8 +63,8 @@ def layout(pathname, search, **kwargs):
         modal_addedit, data_addedit_open, data_addedit_close, data_addedit_project,
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define components of others
-        dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
+        dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
     ], className="bg-main vh-100 overflow-auto")
 
 
