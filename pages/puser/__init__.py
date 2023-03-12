@@ -32,5 +32,5 @@ def layout(pathname, search, **kwargs):
         fac.AntdTabs(children=[
             fac.AntdTabPane(div_profile, key="profile", tab="Profile"),
             fac.AntdTabPane(div_settings, key="settings", tab="Settings"),
-        ], defaultActiveKey="settings", tabPosition="left", className="w-75 m-auto mt-4"),
+        ], tabPosition="left", className="w-75 m-auto mt-4"),
     ], className="bg-main vh-100 overflow-auto")

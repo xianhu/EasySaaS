@@ -36,8 +36,9 @@ def layout(pathname, search, **kwargs):
 
     # define components
     kwargs_modal = dict(
-        title="", visible=False, closable=False, renderFooter=True,
-        okText="Confirm", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
+        title="Add/Edit", visible=False, closable=False, maskClosable=False,
+        okText="Confirm", cancelText="Cancel", okClickClose=False,
+        renderFooter=True, confirmAutoSpin=True,
     )
 
     # return result
@@ -68,8 +69,8 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=True)
 def _update_page(open_data, ok_counts, name, desc, project):
     # define outputs
-    out_name = dict(value=dash.no_update, readonly=True, status="", help="")
-    out_desc = dict(value=dash.no_update, readonly=False, status="", help="")
+    out_name = dict(value=dash.no_update, readonly=dash.no_update, status="", help="")
+    out_desc = dict(value=dash.no_update, readonly=dash.no_update, status="", help="")
     out_modal = dict(visible=dash.no_update, loading=False, title=dash.no_update)
 
     # get triggered_id
