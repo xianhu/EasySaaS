@@ -28,9 +28,9 @@ def layout(pathname, search, **kwargs):
 
     # define components
     kwargs_modal = dict(
-        title="Delete Project", visible=False, closable=False, renderFooter=True,
-        okText="Confirm", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
-        okButtonProps=dict(danger=True),
+        title="Delete Project", visible=False, closable=False, maskClosable=False,
+        okText="Confirm", cancelText="Cancel", okClickClose=False,
+        renderFooter=True, confirmAutoSpin=True, okButtonProps=dict(danger=True),
     )
 
     # return result

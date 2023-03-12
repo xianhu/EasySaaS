@@ -36,8 +36,9 @@ def layout(pathname, search, **kwargs):
 
     # define components
     kwargs_modal = dict(
-        title="", visible=False, closable=False, renderFooter=True,
-        okText="Confirm", cancelText="Cancel", okClickClose=False, confirmAutoSpin=True,
+        title="Add/Edit", visible=False, closable=False, maskClosable=False,
+        okText="Confirm", cancelText="Cancel", okClickClose=False,
+        renderFooter=True, confirmAutoSpin=True,
     )
 
     # return result
