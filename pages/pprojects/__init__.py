@@ -57,7 +57,7 @@ def layout(pathname, search, **kwargs):
         comps_header.get_component_header(user_title=user_title, dot=True),
         html.Div(children=[
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
-            html.Div(id=f"id-{TAG}-div-table", className="bg-white mt-2"),
+            fac.AntdSpin(html.Div(id=f"id-{TAG}-div-table", className="mt-2")),
         ], className="w-75 m-auto mt-4"),
         # define components of modal
         modal_addedit, data_addedit_open, data_addedit_close, data_addedit_project,
