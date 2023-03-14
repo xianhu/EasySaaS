@@ -31,18 +31,13 @@ def layout(pathname, search, **kwargs):
     input_desc = fac.AntdInput(id=f"id-{TAG}-input-desc", placeholder="project description", size="large")
     form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", label="project description:", required=False)
 
-    # define components
+    # return result
     form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
-
-    # define components
-    kwargs_modal = dict(
+    return fac.AntdModal(form_item, id=f"id-{TAG}-modal-project", **dict(
         title="Add/Edit", visible=False, closable=False, maskClosable=False,
         okText="Confirm", cancelText="Cancel", okClickClose=False,
         renderFooter=True, confirmAutoSpin=True,
-    )
-
-    # return result
-    return fac.AntdModal(form_item, id=f"id-{TAG}-modal-project", **kwargs_modal)
+    ))
 
 
 @dash.callback([dict(
@@ -96,7 +91,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
     if triggered_id == f"id-{TAG}-modal-project":
         # check project name
         name = (name or "").strip()
-        if len(name) < 4:
+        if len(name) < 6:
             out_name["status"] = "error"
             out_name["help"] = "project name is too short"
             return out_name, out_desc, out_modal, dash.no_update
