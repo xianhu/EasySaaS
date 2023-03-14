@@ -26,15 +26,13 @@ def layout(pathname, search, **kwargs):
     span_name = html.Span(id=f"id-{TAG}-span-name", className="fw-bold")
     content = html.Div(["Are you sure to delete project: ", span_name, "?"])
 
-    # define components
-    kwargs_modal = dict(
+    # return result
+    return fac.AntdModal(content, id=f"id-{TAG}-modal-project", **dict(
         title="Delete Project", visible=False, closable=False, maskClosable=False,
         okText="Confirm", cancelText="Cancel", okClickClose=False,
-        renderFooter=True, confirmAutoSpin=True, okButtonProps=dict(danger=True),
-    )
-
-    # return result
-    return fac.AntdModal(content, id=f"id-{TAG}-modal-project", **kwargs_modal)
+        renderFooter=True, confirmAutoSpin=True,
+        okButtonProps=dict(danger=True),
+    ))
 
 
 @dash.callback([dict(
