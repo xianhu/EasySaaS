@@ -13,7 +13,7 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from . import pintros
+from . import pecharts, ptables, pfiles
 from .routers import ROUTER_MENU
 from .. import palert
 from ..comps import header as comps_header
@@ -43,7 +43,7 @@ def layout(pathname, search, **kwargs):
     project_id = search["id"][0]
     up_role, project = project_role_dict[project_id]
 
-    # define store_data
+    # define data
     store_data = dict(
         user_id=current_user.id, up_role=up_role,
         project_id=project.id, project_name=project.name,
@@ -108,8 +108,12 @@ def _update_page(current_key, switch_checked, store_data):
 
     # define content of main
     if triggered_id == f"id-{TAG}-menu":
-        if current_key == "Intros":
-            out_main["content"] = pintros.layout(None, None)
+        if current_key == "Echarts":
+            out_main["content"] = pecharts.layout(None, None)
+        elif current_key == "Tables":
+            out_main["content"] = ptables.layout(None, None)
+        elif current_key == "Files":
+            out_main["content"] = pfiles.layout(None, None)
 
     # return result
     return out_main, out_others

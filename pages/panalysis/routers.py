@@ -6,13 +6,13 @@ routers of page
 
 ROUTER_MENU = [{
     "component": "Item",
-    "props": {"key": "Intros", "title": "Intros", "icon": "antd-alert"},
+    "props": {"key": "Echarts", "title": "Echarts", "icon": "antd-alert"},
 }, {
     "component": "Item",
-    "props": {"key": "Products", "title": "Products", "icon": "antd-calendar"},
+    "props": {"key": "Files", "title": "Files", "icon": "antd-calendar"},
 }, {
     "component": "Item",
-    "props": {"key": "Prices", "title": "Prices", "icon": "antd-dollar"},
+    "props": {"key": "Tables", "title": "Tables", "icon": "antd-dollar"},
 }, {
     "component": "Item",
     "props": {"key": "Contact", "title": "Contact", "icon": "antd-mail"},
