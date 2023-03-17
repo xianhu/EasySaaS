@@ -10,23 +10,23 @@ import os
 ENV_PREFIX = "ES"
 
 # define saas application
-config_app_name = "EasySaaS"
-config_app_domain = os.environ.get(f"{ENV_PREFIX}_APP_DOMAIN")
-config_secret_key = os.environ.get(f"{ENV_PREFIX}_SECRET_KEY")
+CONFIG_APP_NAME = "EasySaaS"
+CONFIG_APP_DOMAIN = os.environ.get(f"{ENV_PREFIX}_APP_DOMAIN")
+CONFIG_SECRET_KEY = os.environ.get(f"{ENV_PREFIX}_SECRET_KEY")
 
 # define mail config
-config_mail_server = os.environ.get(f"{ENV_PREFIX}_MAIL_SERVER")
-config_mail_port = os.environ.get(f"{ENV_PREFIX}_MAIL_PORT")
-config_mail_username = os.environ.get(f"{ENV_PREFIX}_MAIL_USERNAME")
-config_mail_password = os.environ.get(f"{ENV_PREFIX}_MAIL_PASSWORD")
-config_mail_sender = (config_app_name, config_mail_username)
+CONFIG_MAIL_SERVER = os.environ.get(f"{ENV_PREFIX}_MAIL_SERVER")
+CONFIG_MAIL_PORT = os.environ.get(f"{ENV_PREFIX}_MAIL_PORT")
+CONFIG_MAIL_USERNAME = os.environ.get(f"{ENV_PREFIX}_MAIL_USERNAME")
+CONFIG_MAIL_PASSWORD = os.environ.get(f"{ENV_PREFIX}_MAIL_PASSWORD")
+CONFIG_MAIL_SENDER = (CONFIG_APP_NAME, CONFIG_MAIL_USERNAME)
 
 # define uri of database (use 10/11/12 of redis)
-config_redis_uri = os.environ.get(f"{ENV_PREFIX}_REDIS_URI")
-config_database_uri = os.environ.get(f"{ENV_PREFIX}_DATABASE_URI")
+CONFIG_REDIS_URI = os.environ.get(f"{ENV_PREFIX}_REDIS_URI")
+CONFIG_DATABASE_URI = os.environ.get(f"{ENV_PREFIX}_DATABASE_URI")
 
 if __name__ == "__main__":
     for key, value in list(locals().items()):
-        if key.startswith("config_"):
+        if key.startswith("CONFIG_"):
             print(f"{key} = {value}")
             assert value, f"Please set {key} in environment variables."

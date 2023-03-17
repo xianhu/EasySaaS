@@ -132,11 +132,11 @@ def add_project(session, name, desc=None, user_id=None, project_role="admin"):
 
 
 if __name__ == "__main__":
-    from config import config_database_uri
+    from config import CONFIG_DATABASE_URI
     from utility import get_md5
 
     # create engine
-    engine = sqlalchemy.create_engine(config_database_uri)
+    engine = sqlalchemy.create_engine(CONFIG_DATABASE_URI)
 
     # initialize database
     BaseModel.metadata.drop_all(engine, checkfirst=True)

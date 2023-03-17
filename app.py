@@ -23,7 +23,7 @@ log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
 # celery -A app.app_celery worker -l INFO --purge
-broker, backend = f"{config_redis_uri}/11", f"{config_redis_uri}/12"
+broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
 app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
     "pages.dsign.pemail", "pages.dsign.plogin", "pages.dsign.psetpwd",
 ])
@@ -45,7 +45,7 @@ app = dash.Dash(
     url_base_pathname="/",
     assets_folder="assets",
     assets_ignore="favicon1.*",
-    title=config_app_name,
+    title=CONFIG_APP_NAME,
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
@@ -63,18 +63,18 @@ app = dash.Dash(
 # config server
 server = app.server
 server.config.update(
-    SECRET_KEY=config_secret_key,
+    SECRET_KEY=CONFIG_SECRET_KEY,
 
-    MAIL_SERVER=config_mail_server,
-    MAIL_PORT=config_mail_port,
-    MAIL_USERNAME=config_mail_username,
-    MAIL_PASSWORD=config_mail_password,
-    MAIL_DEFAULT_SENDER=config_mail_sender,
+    MAIL_SERVER=CONFIG_MAIL_SERVER,
+    MAIL_PORT=CONFIG_MAIL_PORT,
+    MAIL_USERNAME=CONFIG_MAIL_USERNAME,
+    MAIL_PASSWORD=CONFIG_MAIL_PASSWORD,
+    MAIL_DEFAULT_SENDER=CONFIG_MAIL_SENDER,
     MAIL_USE_TLS=False, MAIL_USE_SSL=True,
 
-    REDIS_URL=f"{config_redis_uri}/10",
+    REDIS_URL=f"{CONFIG_REDIS_URI}/10",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    SQLALCHEMY_DATABASE_URI=config_database_uri,
+    SQLALCHEMY_DATABASE_URI=CONFIG_DATABASE_URI,
 
     REMEMBER_COOKIE_NAME="remember_token",
     REMEMBER_COOKIE_DURATION=60 * 60 * 24 * 7,
