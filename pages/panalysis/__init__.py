@@ -13,7 +13,7 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from . import pecharts, pfiles, ptables
+from . import pecharts, pfiles
 from .routers import ROUTER_MENU
 from .. import palert
 from ..comps import header as comps_header
@@ -110,8 +110,6 @@ def _update_page(current_key, switch_checked, store_data):
     if triggered_id == f"id-{TAG}-menu":
         if current_key == "Echarts":
             out_main["content"] = pecharts.layout(None, None)
-        elif current_key == "Tables":
-            out_main["content"] = ptables.layout(None, None)
         elif current_key == "Files":
             out_main["content"] = pfiles.layout(None, None)
 
