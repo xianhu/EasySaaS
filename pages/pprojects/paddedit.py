@@ -79,6 +79,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
         out_name["value"] = "" if is_add else project["name"]
         out_name["readonly"] = False if is_add else True
         out_desc["value"] = "" if is_add else project["desc"]
+        out_desc["readonly"] = False if is_add else False
 
         # update modal
         out_modal["visible"] = True

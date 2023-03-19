@@ -16,7 +16,7 @@ import flask_mail
 from dash import Input, Output, State
 
 from app import User, app_db, app_mail, app_redis
-from config import config_app_domain, config_app_name
+from config import CONFIG_APP_NAME, CONFIG_APP_DOMAIN
 from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_SIGNUP, PATH_FORGOTPWD
@@ -45,7 +45,7 @@ def layout(pathname, search, **kwargs):
     # define kwargs
     kwargs_temp = dict(
         src_image="illustrations/signup.svg",
-        text_title=f"Welcome to {config_app_name}",
+        text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
         form_items=[form_email, row_cpc],
         text_button="Verify the email",
@@ -139,19 +139,19 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
         # define href of verify
         query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
-        href_verify = f"{config_app_domain}{pathname}-setpwd?{query_string}"
+        href_verify = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query_string}"
 
         # define subject
         if pathname == PATH_SIGNUP:
-            subject = f"Registration of {config_app_name}"
+            subject = f"Registration of {CONFIG_APP_NAME}"
         else:
-            subject = f"Resetting password of {config_app_name}"
+            subject = f"Resetting password of {CONFIG_APP_NAME}"
 
         # send email
         body = f"please click link in 10 minutes: {href_verify}"
         app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
 
-        # cache token and email
+        # cache token and email with 10 minutes
         app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
 
     # set session
