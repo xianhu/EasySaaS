@@ -18,15 +18,19 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 vim .bash_profile
+
 # export ES_APP_DOMAIN=http://0.0.0.0
 # export ES_SECRET_KEY=xxxxxxxxxxxxxxxxxxx
+
 # export ES_MAIL_SERVER=smtp.exmail.xx.com
 # export ES_MAIL_PORT=465
 # export ES_MAIL_USERNAME=noreply@easysaas.com
 # export ES_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxx
+
 # export ES_REDIS_URI=redis://:password@host:port
 # export ES_DATABASE_URI=sqlite:///{DIR}/main.db
 # mysql+pymysql://user:password@host:port/dbname
+
 source .bash_profile
 ```
 
