@@ -26,6 +26,35 @@ from .. import palert
 TAG = "email"
 
 
+def send_email_with_cache(pathname, _id, email):
+    """
+    send email of signup/forgotpwd, and cache token/email
+    """
+    # check redis
+    if app_redis.get(_id):
+        return None
+    token = str(uuid.uuid4())
+
+    # define href of verify
+    query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
+    href_verify = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query_string}"
+
+    # define subject
+    if pathname == PATH_SIGNUP:
+        subject = f"Registration of {CONFIG_APP_NAME}"
+    else:
+        subject = f"Resetting password of {CONFIG_APP_NAME}"
+    body = f"please click link in 10 minutes: {href_verify}"
+    html = f"please click link in 10 minutes: <a href='{href_verify}'>Verify the email</a>"
+
+    # send email
+    app_mail.send(flask_mail.Message(subject, body=body, html=html, recipients=[email, ]))
+
+    # cache token and email with 10 minutes
+    app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
+    return None
+
+
 def layout(pathname, search, **kwargs):
     """
     layout of page
@@ -48,14 +77,12 @@ def layout(pathname, search, **kwargs):
         text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
         form_items=[form_email, row_cpc],
-        text_button="Verify the email",
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         src_image="illustrations/forgotpwd.svg",
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
         form_items=[form_email, row_cpc],
-        text_button="Verify the email",
         data=PATH_FORGOTPWD,
     )
 
@@ -104,6 +131,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
+        # out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
 
     # check captcha
@@ -133,26 +161,8 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
 
-    # send email and cache
-    if not app_redis.get(_id):
-        token = str(uuid.uuid4())
-
-        # define href of verify
-        query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
-        href_verify = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query_string}"
-
-        # define subject
-        if pathname == PATH_SIGNUP:
-            subject = f"Registration of {CONFIG_APP_NAME}"
-        else:
-            subject = f"Resetting password of {CONFIG_APP_NAME}"
-
-        # send email
-        body = f"please click link in 10 minutes: {href_verify}"
-        app_mail.send(flask_mail.Message(subject, body=body, recipients=[email, ]))
-
-        # cache token and email with 10 minutes
-        app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
+    # send email with cache
+    send_email_with_cache(pathname, _id, email)
 
     # set session
     flask.session["email"] = email

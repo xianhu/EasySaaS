@@ -45,7 +45,6 @@ def layout(pathname, search, **kwargs):
         text_title="Welcome back",
         text_subtitle="Login to analysis your data.",
         form_items=[form_email, form_pwd, row_cpc],
-        text_button="Log in",
         data=kwargs.get("nextpath") or PATH_ROOT,
     )
 
@@ -86,6 +85,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
+        # out_cpc["refresh"] = True
         return out_email, out_pwd, out_cpc, out_others
 
     # check captcha

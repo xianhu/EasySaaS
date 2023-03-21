@@ -1,16 +1,16 @@
 # _*_ coding: utf-8 _*_
 
 """
-Config File
+config directory
 """
 
 import os
 
 # define prefix
 ENV_PREFIX = "ES"
+CONFIG_APP_NAME = "EasySaaS"
 
 # define saas application
-CONFIG_APP_NAME = "EasySaaS"
 CONFIG_APP_DOMAIN = os.environ.get(f"{ENV_PREFIX}_APP_DOMAIN")
 CONFIG_SECRET_KEY = os.environ.get(f"{ENV_PREFIX}_SECRET_KEY")
 

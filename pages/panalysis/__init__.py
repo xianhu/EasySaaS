@@ -20,6 +20,13 @@ from ..comps import header as comps_header
 
 TAG = "analysis"
 
+# define style
+STYLE_PAGE = """
+    .ant-menu-item-icon {
+        display: flex !important;
+    }
+"""
+
 
 def layout(pathname, search, **kwargs):
     """
@@ -55,14 +62,13 @@ def layout(pathname, search, **kwargs):
 
     # define components
     kwargs_switch = dict(checkedChildren="Open", unCheckedChildren="Close")
-    switch = fac.AntdSwitch(id=f"id-{TAG}-switch", **kwargs_switch, className="me-2")
-    dropdown_user = comps_header.get_component_header_user(user_title, dot=True)
-
-    # define components
     main = fac.AntdContent(children=[
         comps_header.get_component_header(
             chilren_left=html.Div("Loading...", id=f"id-{TAG}-header"),
-            children_right=html.Div([switch, dropdown_user]),
+            children_right=html.Div(children=[
+                fac.AntdSwitch(id=f"id-{TAG}-switch", **kwargs_switch, className="me-2"),
+                comps_header.get_component_header_user(user_title, dot=True),
+            ]),
         ),
         fuc.FefferyTopProgress(children=[
             html.Div(id=f"id-{TAG}-content", className="px-4 py-4"),
@@ -72,6 +78,7 @@ def layout(pathname, search, **kwargs):
     # return result
     return fac.AntdLayout(children=[
         sider, main,
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
     ], className="bg-main vh-100 overflow-auto")
