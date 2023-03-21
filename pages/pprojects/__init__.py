@@ -22,8 +22,13 @@ TAG = "projects"
 
 # define style
 STYLE_PAGE = """
-.ant-table .ant-btn {font-size: 16px !important;}
-.ant-table .ant-table-cell {font-size: 16px !important; padding: 20px !important;}
+    .ant-table .ant-btn {
+        font-size: 16px !important;
+    }
+    .ant-table .ant-table-cell {
+        font-size: 16px !important; 
+        padding: 20px !important;
+    }
 """
 
 
