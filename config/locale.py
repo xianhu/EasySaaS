@@ -3,3 +3,10 @@
 """
 config of locale
 """
+
+locale = {
+    "zh_CN": {
+    },
+    "en_US": {
+    },
+}
