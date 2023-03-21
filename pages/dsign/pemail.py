@@ -48,14 +48,12 @@ def layout(pathname, search, **kwargs):
         text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
         form_items=[form_email, row_cpc],
-        text_button="Verify the email",
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         src_image="illustrations/forgotpwd.svg",
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
         form_items=[form_email, row_cpc],
-        text_button="Verify the email",
         data=PATH_FORGOTPWD,
     )
 
@@ -104,6 +102,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
+        # out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
 
     # check captcha

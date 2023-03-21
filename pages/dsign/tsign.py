@@ -17,7 +17,6 @@ def layout(pathname, search, tag, **kwargs):
     layout of template
     """
     # define components
-    text_button, a_list = "Set password", []
     if pathname == PATH_LOGIN:
         text_button, a_list = "Log in", [
             html.A("Sign up", href=PATH_SIGNUP),
@@ -33,6 +32,8 @@ def layout(pathname, search, tag, **kwargs):
             html.A("Log in", href=PATH_LOGIN),
             html.A("Sign up", href=PATH_SIGNUP),
         ]
+    else:
+        text_button, a_list = "Set password", []
 
     # define components
     src_image = dash.get_asset_url(kwargs.get("src_image"))
