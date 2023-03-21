@@ -1,12 +1,13 @@
-dash==2.9.0
+dash==2.9.1
 feffery-antd-components==0.2.0
-feffery-utils-components==0.1.21
+feffery-utils-components==0.1.22
 
 Flask[compose]==2.2.3
 Flask-Mail==0.9.1
 Flask-Login==0.6.2
 Flask-Redis==0.4.0
 Flask-SQLAlchemy==3.0.3
+Flask-JWT==0.3.2
 
 uWSGI==2.0.21
 celery==5.2.7
