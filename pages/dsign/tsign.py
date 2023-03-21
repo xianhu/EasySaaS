@@ -17,16 +17,22 @@ def layout(pathname, search, tag, **kwargs):
     layout of template
     """
     # define components
-    a_login = html.A("Log in", href=PATH_LOGIN)
-    a_signup = html.A("Sign up", href=PATH_SIGNUP)
-    a_forgotpwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
-
-    # define components
-    a_list = [a_signup, a_forgotpwd] if pathname == PATH_LOGIN else (
-        [a_login, a_forgotpwd] if pathname == PATH_SIGNUP else (
-            [a_login, a_signup] if pathname == PATH_FORGOTPWD else []
-        )
-    )
+    text_button, a_list = "Set password", []
+    if pathname == PATH_LOGIN:
+        text_button, a_list = "Log in", [
+            html.A("Sign up", href=PATH_SIGNUP),
+            html.A("Forgot password?", href=PATH_FORGOTPWD),
+        ]
+    elif pathname == PATH_SIGNUP:
+        text_button, a_list = "Verify the email", [
+            html.A("Log in", href=PATH_LOGIN),
+            html.A("Forgot password?", href=PATH_FORGOTPWD),
+        ]
+    elif pathname == PATH_FORGOTPWD:
+        text_button, a_list = "Verify the email", [
+            html.A("Log in", href=PATH_LOGIN),
+            html.A("Sign up", href=PATH_SIGNUP),
+        ]
 
     # define components
     src_image = dash.get_asset_url(kwargs.get("src_image"))
@@ -41,7 +47,7 @@ def layout(pathname, search, tag, **kwargs):
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
         fac.AntdForm(kwargs["form_items"], id=f"id-{tag}-form", className="mt-4"),
-        fac.AntdButton(kwargs["text_button"], id=f"id-{tag}-button", **kwargs_button),
+        fac.AntdButton(text_button, id=f"id-{tag}-button", **kwargs_button),
 
         fac.AntdRow(a_list, align="middle", justify="space-between", className="mt-1"),
     ], className="w-100"), span=20, md=6, className="d-flex align-items-center")

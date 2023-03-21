@@ -23,10 +23,9 @@ log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
 # celery -A app.app_celery worker -l INFO --purge
+# celery -A app.app_celery flower --port=5555 -l INFO
 broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
-app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
-    "pages.dsign.pemail", "pages.dsign.plogin", "pages.dsign.psetpwd",
-])
+app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[])
 
 # define callback manager
 callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid4()], expire=60)
@@ -44,7 +43,6 @@ app = dash.Dash(
     show_undo_redo=False,
     url_base_pathname="/",
     assets_folder="assets",
-    assets_ignore="favicon1.*",
     title=CONFIG_APP_NAME,
     update_title="Updating...",
     prevent_initial_callbacks=False,
