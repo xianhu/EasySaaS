@@ -97,16 +97,14 @@ def _update_page(addedit, delete, user_id):
 
         # append data
         data_table.append({
-            "user_id": user_id,
-            "id": project.id, "key": project.id,
-            "name": project.name, "desc": project.desc,
-            "role": up_role, "operation": operation,
+            "user_id": user_id, "id": project.id, "key": project.id,
+            "name": project.name, "desc": project.desc, "role": up_role, "operation": operation,
         })
 
     # return result
     return False, fac.AntdTable(id=f"id-{TAG}-table-project", columns=[
         {"title": "Name", "dataIndex": "name", "width": "20%"},
-        {"title": "Description", "dataIndex": "desc", "width": "40%"},
+        {"title": "Description", "dataIndex": "desc", "width": "40%", "renderOptions": {"renderType": "ellipsis"}},
         {"title": "Role", "dataIndex": "role", "width": "10%"},
         {"title": "Operation", "dataIndex": "operation", "width": "30%", "renderOptions": {"renderType": "button"}},
     ], data=data_table, bordered=False, emptyContent="No Projects", pagination=dict(pageSize=10, hideOnSinglePage=True))
@@ -128,8 +126,8 @@ def _update_page(addedit, delete, user_id):
 ], prevent_initial_call=True)
 def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id):
     # define outputs
-    out_addedit = dict(open=dash.no_update, project=dict(user_id=user_id))
-    out_delete = dict(open=dash.no_update, project=dict(user_id=user_id))
+    out_addedit = dict(open=dash.no_update, project=dash.no_update)
+    out_delete = dict(open=dash.no_update, project=dash.no_update)
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
@@ -137,6 +135,7 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id
     # check triggered_id
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
+        out_addedit["project"] = dict(user_id=user_id)
         return out_addedit, out_delete
 
     # check triggered_id
