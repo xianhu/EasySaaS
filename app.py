@@ -58,6 +58,36 @@ app = dash.Dash(
     }],
 )
 
+# add ga code
+app.index_string = """<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-xxxx"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-xxxx');
+        </script>
+    </head>
+    <body>
+        <!--[if IE]><script>
+        alert("Dash v2.7+ does not support Internet Explorer. Please use a newer browser.");
+        </script><![endif]-->
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>"""
+
 # config server
 server = app.server
 server.config.update(
