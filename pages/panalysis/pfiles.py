@@ -16,7 +16,7 @@ from app import server
 TAG_BASE = "analysis"
 TAG = "analysis-files"
 
-# define style
+# style of page
 STYLE_PAGE = """
     .ant-btn {
         display: flex !important;

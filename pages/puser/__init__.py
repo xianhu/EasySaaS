@@ -5,12 +5,16 @@ user page
 """
 
 import feffery_antd_components as fac
+import feffery_utils_components as fuc
 import flask_login
 from dash import html
 
 from ..comps import header as comps_header
 
 TAG = "user"
+
+# style of page
+STYLE_PAGE = ""
 
 
 def layout(pathname, search, **kwargs):
@@ -33,4 +37,5 @@ def layout(pathname, search, **kwargs):
             fac.AntdTabPane(div_profile, key="profile", tab="Profile"),
             fac.AntdTabPane(div_settings, key="settings", tab="Settings"),
         ], tabPosition="left", className="w-75 m-auto mt-4"),
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")

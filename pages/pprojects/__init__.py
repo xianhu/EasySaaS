@@ -20,7 +20,7 @@ from ..comps import header as comps_header
 
 TAG = "projects"
 
-# define style
+# style of page
 STYLE_PAGE = """
     .ant-table .ant-btn {
         font-size: 16px !important;
