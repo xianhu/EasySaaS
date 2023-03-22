@@ -20,7 +20,7 @@ from ..comps import header as comps_header
 
 TAG = "analysis"
 
-# define style
+# style of page
 STYLE_PAGE = """
     .ant-menu-item-icon {
         display: flex !important;

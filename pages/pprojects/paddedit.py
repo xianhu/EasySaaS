@@ -16,6 +16,8 @@ from utility import get_md5
 
 TAG_BASE = "projects"
 TAG = "projects-addedit"
+
+# type of page
 TYPE = "addedit"
 
 

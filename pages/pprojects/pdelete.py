@@ -15,6 +15,8 @@ from models.users import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-delete"
+
+# type of page
 TYPE = "delete"
 
 
