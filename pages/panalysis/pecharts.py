@@ -14,6 +14,9 @@ from dash import Input, Output, ClientsideFunction, dcc, html
 TAG_BASE = "analysis"
 TAG = "analysis-echarts"
 
+# style of page
+STYLE_PAGE = ""
+
 
 def layout(pathname, search, **kwargs):
     """
