@@ -39,7 +39,8 @@ def layout(pathname, search, **kwargs):
             fac.AntdIcon(icon="antd-plus"),
             html.Span("Upload", className="ms-2"),
         ]), id=f"id-{TAG}-upload", className="mt-2"),
-        fac.AntdSpin(html.Div(id=f"id-{TAG}-result", className="mt-2")),
+        html.Div(id=f"id-{TAG}-result", className="mt-2"),
+        # define style
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="w-50")
 
