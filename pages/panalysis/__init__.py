@@ -114,11 +114,10 @@ def _update_page(current_key, switch_checked, store_data):
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content of main
-    if triggered_id == f"id-{TAG}-menu":
-        if current_key == "Echarts":
-            out_main["content"] = pecharts.layout(None, None)
-        elif current_key == "Files":
-            out_main["content"] = pfiles.layout(None, None)
+    if current_key == "Echarts":
+        out_main["content"] = pecharts.layout(None, None, switch_checked=switch_checked)
+    elif current_key == "Files":
+        out_main["content"] = pfiles.layout(None, None, switch_checked=switch_checked)
 
     # return result
     return out_main, out_others

@@ -4,11 +4,13 @@
 files page
 """
 
+import base64
 import os
 
+import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import html
+from dash import dcc, html, Input, Output, State
 from flask import request
 
 from app import server
@@ -18,7 +20,7 @@ TAG = "analysis-files"
 
 # style of page
 STYLE_PAGE = """
-    .ant-btn {
+    .ant-btn, .ant-btn > span {
         display: flex !important;
         align-items: center !important;
     }
@@ -30,8 +32,16 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     return html.Div(children=[
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
+        # upload with fac.AntdUpload
         fac.AntdUpload(buttonContent="upload", apiUrl="/upload/"),
+        # upload with dcc.Upload
+        dcc.Upload(fac.AntdButton(children=[
+            fac.AntdIcon(icon="antd-plus"),
+            html.Span("Upload", className="ms-2"),
+        ]), id=f"id-{TAG}-upload", className="mt-2"),
+        html.Div(id=f"id-{TAG}-result", className="mt-2"),
+        # define style
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="w-50")
 
 
@@ -54,3 +64,23 @@ def _route_upload():
 
     # return result
     return {"filename": filename}
+
+
+@dash.callback(
+    Output(f"id-{TAG}-result", "children"),
+    Input(f"id-{TAG}-upload", "contents"),
+    State(f"id-{TAG}-upload", "filename"),
+    State(f"id-{TAG}-upload", "last_modified"),
+)
+def _upload_file(contents, filename, last_modified):
+    if contents is None:
+        return None
+
+    # parse contents
+    content_type, content_string = contents.split(",")
+    content_decoded = base64.b64decode(content_string)
+    with open(f"/tmp/{filename}", "wb") as file_out:
+        file_out.write(content_decoded)
+
+    # return result
+    return html.Span(f"filename: {filename}, last_modified: {last_modified}")

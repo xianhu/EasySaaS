@@ -4,7 +4,6 @@
 email[signup/forgotpwd] page
 """
 
-import json
 import urllib.parse
 import uuid
 
@@ -15,7 +14,7 @@ import flask
 import flask_mail
 from dash import Input, Output, State
 
-from app import User, app_db, app_mail, app_redis
+from app import User, app_db, app_mail
 from config import CONFIG_APP_NAME, CONFIG_APP_DOMAIN
 from utility import get_md5
 from utility.consts import RE_EMAIL, FMT_EXECUTEJS_HREF
@@ -24,35 +23,6 @@ from . import tsign
 from .. import palert
 
 TAG = "email"
-
-
-def send_email_with_cache(pathname, _id, email):
-    """
-    send email of signup/forgotpwd, and cache token/email
-    """
-    # check redis
-    if app_redis.get(_id):
-        return None
-    token = str(uuid.uuid4())
-
-    # define href of verify
-    query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
-    href_verify = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query_string}"
-
-    # define subject
-    if pathname == PATH_SIGNUP:
-        subject = f"Registration of {CONFIG_APP_NAME}"
-    else:
-        subject = f"Resetting password of {CONFIG_APP_NAME}"
-    body = f"please click link in 10 minutes: {href_verify}"
-    html = f"please click link in 10 minutes: <a href='{href_verify}'>Verify the email</a>"
-
-    # send email
-    app_mail.send(flask_mail.Message(subject, body=body, html=html, recipients=[email, ]))
-
-    # cache token and email with 10 minutes
-    app_redis.set(_id, json.dumps([token, email]), ex=60 * 10)
-    return None
 
 
 def layout(pathname, search, **kwargs):
@@ -131,7 +101,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        # out_cpc["refresh"] = True
+        # out_cpc["refresh"] = True if email else False
         return out_email, out_cpc, out_others
 
     # check captcha
@@ -145,24 +115,45 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     # check user
     _id = get_md5(email)
     user = app_db.session.query(User).get(_id)
-    if user and (user.status != 1):
-        out_email["status"] = "error"
-        out_email["help"] = "This email has been disabled"
-        out_cpc["refresh"] = True
-        return out_email, out_cpc, out_others
-    if pathname == PATH_SIGNUP and user:
+    if pathname == PATH_SIGNUP and (user and (user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
-    if pathname == PATH_FORGOTPWD and (not user):
+    if pathname == PATH_FORGOTPWD and ((not user) or (user.status != 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
 
-    # send email with cache
-    send_email_with_cache(pathname, _id, email)
+    # send email and save user with token =========================================================
+    token = user.token_verify if user and user.token_verify else str(uuid.uuid4())
+
+    # define query and href of verify
+    query = urllib.parse.urlencode(dict(_id=_id, token=token))
+    href = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query}"
+
+    # define subject and body
+    if pathname == PATH_SIGNUP:
+        subject = f"Registration of {CONFIG_APP_NAME}"
+    else:
+        subject = f"Resetting password of {CONFIG_APP_NAME}"
+    body = f"please click link: {href}"
+    html = f"please click link: <a href='{href}'>Verify the email</a>"
+
+    # send email
+    app_mail.send(flask_mail.Message(subject, body=body, html=html, recipients=[email, ]))
+
+    # save user
+    if not user:
+        user = User(id=_id, email=email, token_verify=token, status=0)
+        app_db.session.add(user)
+        app_db.session.commit()
+    else:
+        user.token_verify = token
+        # user.status = 0
+        app_db.session.commit()
+    # ==============================================================================================
 
     # set session
     flask.session["email"] = email

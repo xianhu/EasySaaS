@@ -24,13 +24,16 @@ class User(BaseModel):
 
     # basic
     id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
-    pwd = sqlalchemy.Column(sqlalchemy.String(512), nullable=False)
+    pwd = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
+
+    # others columns
+    token_verify = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # relationship: user.user_projects
     user_projects = orm.relationship("UserProject", back_populates="user")
@@ -94,7 +97,7 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
     # add user if necessary, or update password
     user = session.query(User).filter(User.email == email).first()
     if not user:
-        user = User(id=get_md5(email), email=email)
+        user = User(id=get_md5(email), email=email, status=1)
         user.set_password_hash(pwd)
         session.add(user)
         session.commit()
@@ -143,12 +146,6 @@ if __name__ == "__main__":
     BaseModel.metadata.create_all(engine, checkfirst=True)
 
     # =============================== test ===============================
-    # create session and add data
-    _email = "test1@easysaas.com"
-    with orm.sessionmaker(engine)() as _session:
-        _user = add_user(_session, _email, "a123456")
-        logging.warning("add user: %s", _user.to_dict())
-
     # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as _session:

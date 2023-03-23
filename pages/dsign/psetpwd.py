@@ -4,7 +4,6 @@
 set password page
 """
 
-import json
 import logging
 import urllib.parse
 
@@ -12,7 +11,7 @@ import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
 
-from app import User, app_db, app_redis
+from app import User, app_db
 from utility import get_md5
 from utility.consts import RE_PWD, FMT_EXECUTEJS_HREF
 from utility.paths import PATH_LOGIN
@@ -29,16 +28,15 @@ def layout(pathname, search, **kwargs):
     try:
         # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        _id, _token = search.get("_id")[0], search.get("token")[0]
+        _id, token = search.get("_id")[0], search.get("token")[0]
 
-        # get values from redis
-        token, email = json.loads(app_redis.get(_id))
-
-        # verify token values
-        assert token == _token, (token, _token)
+        # get user from database
+        user = app_db.session.query(User).get(_id)
+        assert user and user.token_verify == token
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         return palert.layout_expired(pathname, search)
+    email = user.email
 
     # define components
     input_email = fac.AntdInput(id=f"id-{TAG}-input-email", value=email, size="large", readOnly=True)
@@ -97,8 +95,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
 
     # check email
     pathname, email_tmp = pathname_email
-    if email != email_tmp:
-        return out_pwd, out_others
+    assert email == email_tmp, "email is not consistent"
 
     # check password
     pwd1 = (pwd1 or "").strip()
@@ -115,20 +112,15 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
         out_pwd["status2"] = "error"
         out_pwd["help2"] = "Passwords are inconsistent"
         return out_pwd, out_others
-
-    # check user
-    _id = get_md5(email)
-    user = app_db.session.query(User).get(_id)
-    if not user:
-        user = User(id=_id, email=email)
+    user = app_db.session.query(User).get(get_md5(email))
     user.set_password_hash(pwd1)
 
-    # commit user
-    app_db.session.merge(user)
+    # update and save user
+    user.token_verify = None
+    user.status = 1
     app_db.session.commit()
 
     # delete cache
-    app_redis.delete(_id)
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
