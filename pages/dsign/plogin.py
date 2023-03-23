@@ -113,7 +113,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         out_cpc["refresh"] = True
         return out_email, out_pwd, out_cpc, out_others
 
-    # login user
+    # login user and go nextpath
     flask_login.login_user(user, remember=True)
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
 

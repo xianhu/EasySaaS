@@ -126,7 +126,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
 
-    # send email and save user with token =========================================================
+    # send email and add/update user ==============================================================
     token = user.token_verify if user and user.token_verify else str(uuid.uuid4())
 
     # define query and href of verify
@@ -138,24 +138,25 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         subject = f"Registration of {CONFIG_APP_NAME}"
     else:
         subject = f"Resetting password of {CONFIG_APP_NAME}"
-    body = f"please click link: {href}"
-    html = f"please click link: <a href='{href}'>Verify the email</a>"
+    mail_body = f"please click link: {href}"
+    mail_html = f"please click link: <a href='{href}'>Verify the email</a>"
 
     # send email
-    app_mail.send(flask_mail.Message(subject, body=body, html=html, recipients=[email, ]))
+    kwargs = dict(body=mail_body, html=mail_html)
+    app_mail.send(flask_mail.Message(subject, **kwargs, recipients=[email, ]))
 
-    # save user
+    # add/update user
     if not user:
         user = User(id=_id, email=email, token_verify=token, status=0)
         app_db.session.add(user)
         app_db.session.commit()
     else:
         user.token_verify = token
-        # user.status = 0
+        # user.status = 0 !!!
         app_db.session.commit()
-    # ==============================================================================================
+    # =============================================================================================
 
-    # set session
+    # set session and go result
     flask.session["email"] = email
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
