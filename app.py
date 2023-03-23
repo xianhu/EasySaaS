@@ -5,13 +5,10 @@ Dash Application
 """
 
 import logging
-from uuid import uuid4
 
-import celery
 import dash
 import flask_login
 import flask_mail
-import flask_redis
 from flask import request
 
 from config import *
@@ -24,11 +21,11 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
 # celery -A app.app_celery worker -l INFO --purge
 # celery -A app.app_celery flower --port=5555 -l INFO
-broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
-app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[])
+# broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
+# app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[])
 
 # define callback manager
-callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid4()], expire=60)
+# callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid4()], expire=60)
 
 # define cdn list
 cdn_bs = "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
@@ -47,7 +44,6 @@ app = dash.Dash(
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
-    background_callback_manager=callback_manager,
     external_stylesheets=[cdn_bs, ],
     external_scripts=[cdn_ec, ],
     meta_tags=[{
@@ -100,7 +96,7 @@ server.config.update(
     MAIL_DEFAULT_SENDER=CONFIG_MAIL_SENDER,
     MAIL_USE_TLS=False, MAIL_USE_SSL=True,
 
-    REDIS_URL=f"{CONFIG_REDIS_URI}/10",
+    # REDIS_URL=f"{CONFIG_REDIS_URI}/10",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_DATABASE_URI=CONFIG_DATABASE_URI,
 
@@ -115,7 +111,7 @@ app_db.init_app(server)
 app_mail = flask_mail.Mail(server)
 
 # initial redis
-app_redis = flask_redis.FlaskRedis(server)
+# app_redis = flask_redis.FlaskRedis(server)
 
 # initial login_manager
 login_manager = flask_login.LoginManager(server)
