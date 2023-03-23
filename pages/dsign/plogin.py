@@ -85,7 +85,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        # out_cpc["refresh"] = True
+        # out_cpc["refresh"] = True if email else False
         return out_email, out_pwd, out_cpc, out_others
 
     # check captcha

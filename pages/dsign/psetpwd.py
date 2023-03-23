@@ -113,11 +113,11 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
         out_pwd["status2"] = "error"
         out_pwd["help2"] = "Passwords are inconsistent"
         return out_pwd, out_others
+    user = app_db.session.query(User).get(get_md5(email))
 
-    # check user
-    _id = get_md5(email)
-    user = app_db.session.query(User).get(_id)
+    # update user
     user.set_password_hash(pwd1)
+    user.token_verify = None
     user.status = 1
 
     # commit user

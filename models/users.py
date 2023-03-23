@@ -24,7 +24,7 @@ class User(BaseModel):
 
     # basic
     id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
-    pwd = sqlalchemy.Column(sqlalchemy.String(512), nullable=False)
+    pwd = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)

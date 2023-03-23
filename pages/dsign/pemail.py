@@ -101,7 +101,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        # out_cpc["refresh"] = True
+        # out_cpc["refresh"] = True if email else False
         return out_email, out_cpc, out_others
 
     # check captcha
@@ -126,20 +126,20 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
 
-    # send email and save user with token
+    # send email and save user with token =========================================================
     token = str(uuid.uuid4()) if not user else user.token_verify
 
-    # define href of verify
-    query_string = urllib.parse.urlencode(dict(_id=_id, token=token))
-    href_verify = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query_string}"
+    # define query and href of verify
+    query = urllib.parse.urlencode(dict(_id=_id, token=token))
+    href = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query}"
 
-    # define subject
+    # define subject and body
     if pathname == PATH_SIGNUP:
         subject = f"Registration of {CONFIG_APP_NAME}"
     else:
         subject = f"Resetting password of {CONFIG_APP_NAME}"
-    body = f"please click link in 10 minutes: {href_verify}"
-    html = f"please click link in 10 minutes: <a href='{href_verify}'>Verify the email</a>"
+    body = f"please click link: {href}"
+    html = f"please click link: <a href='{href}'>Verify the email</a>"
 
     # send email
     app_mail.send(flask_mail.Message(subject, body=body, html=html, recipients=[email, ]))
