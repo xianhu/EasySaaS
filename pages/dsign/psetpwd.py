@@ -95,8 +95,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
 
     # check email
     pathname, email_tmp = pathname_email
-    if email != email_tmp:
-        return out_pwd, out_others
+    assert email == email_tmp, "email is not consistent"
 
     # check password
     pwd1 = (pwd1 or "").strip()
@@ -114,14 +113,11 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
         out_pwd["help2"] = "Passwords are inconsistent"
         return out_pwd, out_others
     user = app_db.session.query(User).get(get_md5(email))
-
-    # update user
     user.set_password_hash(pwd1)
+
+    # update and save user
     user.token_verify = None
     user.status = 1
-
-    # commit user
-    app_db.session.merge(user)
     app_db.session.commit()
 
     # delete cache

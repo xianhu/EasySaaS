@@ -127,7 +127,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         return out_email, out_cpc, out_others
 
     # send email and save user with token =========================================================
-    token = str(uuid.uuid4()) if not user else user.token_verify
+    token = user.token_verify if user and user.token_verify else str(uuid.uuid4())
 
     # define query and href of verify
     query = urllib.parse.urlencode(dict(_id=_id, token=token))
@@ -144,10 +144,14 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     # send email
     app_mail.send(flask_mail.Message(subject, body=body, html=html, recipients=[email, ]))
 
-    # save user if necessary
+    # save user
     if not user:
         user = User(id=_id, email=email, token_verify=token, status=0)
         app_db.session.add(user)
+        app_db.session.commit()
+    else:
+        user.token_verify = token
+        # user.status = 0
         app_db.session.commit()
     # ==============================================================================================
 
