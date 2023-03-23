@@ -147,12 +147,6 @@ if __name__ == "__main__":
 
     # =============================== test ===============================
     # create session and add data
-    _email = "test1@easysaas.com"
-    with orm.sessionmaker(engine)() as _session:
-        _user = add_user(_session, _email, "a123456")
-        logging.warning("add user: %s", _user.to_dict())
-
-    # create session and add data
     _email = "admin@easysaas.com"
     with orm.sessionmaker(engine)() as _session:
         _user = add_user(_session, _email, "a123456")

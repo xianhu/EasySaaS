@@ -149,6 +149,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         user = User(id=_id, email=email, token_verify=token, status=0)
         app_db.session.add(user)
         app_db.session.commit()
+    # ==============================================================================================
 
     # set session
     flask.session["email"] = email
