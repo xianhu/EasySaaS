@@ -28,8 +28,9 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 # callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid4()], expire=60)
 
 # define cdn list
-cdn_bs = "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-cdn_ec = "https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"
+cdn_js_flowjs = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.js"
+cdn_js_echarts = "https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"
+cdn_css_bootstrap = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css"
 
 # create app
 app = dash.Dash(
@@ -44,8 +45,13 @@ app = dash.Dash(
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
-    external_stylesheets=[cdn_bs, ],
-    external_scripts=[cdn_ec, ],
+    external_stylesheets=[
+        cdn_css_bootstrap,
+    ],
+    external_scripts=[
+        cdn_js_flowjs,
+        cdn_js_echarts,
+    ],
     meta_tags=[{
         "charset": "utf-8",
     }, {
