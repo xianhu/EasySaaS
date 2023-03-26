@@ -67,7 +67,6 @@ def layout(pathname, search, **kwargs):
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define components of others
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-        dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -78,11 +77,11 @@ def layout(pathname, search, **kwargs):
     Input(f"id-{TAG}-addedit-close", "data"),
     Input(f"id-{TAG}-delete-close", "data"),
 ], prevent_initial_call=False)
-def _update_page(addedit, delete):
+def _update_page(data_addedit, data_delete):
     # user instance
     current_user = flask_login.current_user
 
-    # define data
+    # table data
     data_table = []
     for up in current_user.user_projects:
         if up.project.status == 0:
@@ -125,9 +124,8 @@ def _update_page(addedit, delete):
 ], [
     State(f"id-{TAG}-table-project", "clickedContent"),
     State(f"id-{TAG}-table-project", "recentlyButtonClickedRow"),
-    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id):
+def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row):
     # define outputs
     out_addedit = dict(open=dash.no_update, project=dash.no_update)
     out_delete = dict(open=dash.no_update, project=dash.no_update)

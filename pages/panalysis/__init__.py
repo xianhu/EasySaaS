@@ -46,7 +46,7 @@ def layout(pathname, search, **kwargs):
         assert search["id"][0] in project_role_dict, "project not found"
     except Exception as excep:
         logging.error("get project.id failed: %s", excep)
-        return palert.layout_500(pathname, search)
+        return palert.layout_expired(pathname, search)
     project_id = search["id"][0]
     up_role, project = project_role_dict[project_id]
 
