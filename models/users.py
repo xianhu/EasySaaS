@@ -163,13 +163,13 @@ if __name__ == "__main__":
     # =============================== test ===============================
     # create session and select data
     with orm.sessionmaker(engine)() as _session:
-        _user = _session.query(User).get(_user_id)
+        _user = _session.get(User, _user_id)
         logging.warning("get user: %s", _user.to_dict())
         for up in _user.user_projects:
             logging.warning("\tuser-project: %s", up.to_dict())
             logging.warning("\tproject: %s", up.project.to_dict())
 
-        _project = _session.query(Project).get(_project_id)
+        _project = _session.get(Project, _project_id)
         logging.warning("get project: %s", _project.to_dict())
         for up in _project.user_projects:
             logging.warning("\tuser-project: %s", up.to_dict())
