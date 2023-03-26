@@ -115,7 +115,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
 
     # check user
     _id = get_md5(email)
-    user = app_db.session.query(User).get(_id)
+    user = app_db.session.get(User, _id)
 
     # update user
     user.set_password_hash(pwd1)
