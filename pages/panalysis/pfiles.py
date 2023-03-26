@@ -28,7 +28,7 @@ STYLE_PAGE = """
 """
 
 
-def _get_js_flow(id_div_input, id_button_upload, id_output):
+def _get_js_flow(id_div_input, id_button_upload, id_storage):
     """
     get js according to flow.js
     """
@@ -48,19 +48,49 @@ def _get_js_flow(id_div_input, id_button_upload, id_output):
             testChunks: false,
             uploadMethod: 'POST',
             chunkSize: 1024 * 1024,
-            simultaneousUploads: 1,          
+            simultaneousUploads: 1,
+            allowDuplicateUploads: true,
+            progressCallbacksInterval: 1000,  
         }});
         
         // define flow events
-        flow.on('fileAdded', function (file, event) {{ console.log('file added'); }});
-        flow.on('fileSuccess', function (file, message) {{ console.log('file success'); }});
-        flow.on('fileError', function (file, message) {{ console.log('file error'); }});
+        flow.on('fileAdded', function (file, event) {{ 
+            console.log('file added');
+            sessionStorage.setItem('{id_storage}', JSON.stringify({{
+                status: 'fileAdded',
+                file_name: file.name,
+                _timestamp: new Date().getTime(),
+            }}));
+        }});
 
-        // define output component for progress
-        var output = document.getElementById('{id_output}');
+        // define flow events
+        flow.on('fileSuccess', function (file, message) {{
+            console.log('file success');
+            sessionStorage.setItem('{id_storage}', JSON.stringify({{
+                status: 'fileSuccess',
+                file_name: file.name,
+                _timestamp: new Date().getTime(),                
+            }}));
+        }});
+
+        // define flow events
+        flow.on('fileError', function (file, message) {{
+            console.log('file error');
+            sessionStorage.setItem('{id_storage}', JSON.stringify({{
+                status: 'fileError',
+                file_name: file.name,
+                _timestamp: new Date().getTime(),
+            }}));
+        }});
+
+        // define flow events
+        var output = document.getElementById('');
         flow.on('fileProgress', function (file) {{
             let percent = Math.floor(file.progress() * 100);
-            output.innerHTML = 'progress: ' + percent + '%';
+            console.log('file progress: ' + percent + '%');
+            if (output) {{
+                output.innerHTML = 'progress: ' + percent + '%';
+            }}
         }});
 
         // bind input change event to flow
@@ -93,15 +123,16 @@ def layout(pathname, search, **kwargs):
 
         # upload with flow.js <input and js>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
+        fuc.FefferySessionStorage(id=f"id-{TAG}-status-flow"),
         fuc.FefferyExecuteJs(jsString=_get_js_flow(
             id_div_input=f"id-{TAG}-div-flow",
             id_button_upload=f"id-{TAG}-upload-flow",
-            id_output=f"id-{TAG}-result-flow",
+            id_storage=f"id-{TAG}-status-flow",
         )),
 
         # define style
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-    ], className="w-50")
+    ], className=None)
 
 
 @dash.callback(
@@ -125,6 +156,16 @@ def _upload_file(contents, filename, last_modified):
 
     # return result
     return html.Span(f"filename: {filename}, last_modified: {last_modified}")
+
+
+@dash.callback(
+    Output(f"id-{TAG}-result-flow", "children"),
+    Input(f"id-{TAG}-status-flow", "data"),
+)
+def _upload_file_flow(data):
+    if data is None:
+        return None
+    return html.Span(f"status: {data}")
 
 
 @server.route("/upload", methods=["POST"])
