@@ -131,7 +131,7 @@ class UserLogin(User, flask_login.UserMixin):
 # overwirte user_loader
 @login_manager.user_loader
 def load_user(user_id):
-    user = UserLogin.query.get(user_id)
+    user = app_db.session.get(UserLogin, user_id)
     return user if user and user.status == 1 else None
 
 

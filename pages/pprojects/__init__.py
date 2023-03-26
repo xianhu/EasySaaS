@@ -83,7 +83,7 @@ def layout(pathname, search, **kwargs):
 ], prevent_initial_call=False)
 def _update_page(addedit, delete, user_id):
     # user instance by user_id
-    user = app_db.session.query(User).get(user_id)
+    user = app_db.session.get(User, user_id)
 
     # define data
     data_table = []

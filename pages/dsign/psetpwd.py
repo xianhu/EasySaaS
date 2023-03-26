@@ -31,7 +31,7 @@ def layout(pathname, search, **kwargs):
         _id, token = search.get("_id")[0], search.get("token")[0]
 
         # get user from database
-        user = app_db.session.query(User).get(_id)
+        user = app_db.session.get(User, _id)
         assert user and user.token_verify == token
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
