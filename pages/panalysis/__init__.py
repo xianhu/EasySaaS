@@ -61,14 +61,10 @@ def layout(pathname, search, **kwargs):
     sider = fac.AntdSider([menu, ], collapsible=True, theme="dark", className="vh-100 overflow-auto")
 
     # define components
-    kwargs_switch = dict(checkedChildren="Open", unCheckedChildren="Close")
     main = fac.AntdContent(children=[
         comps_header.get_component_header(
             chilren_left=html.Div("Loading...", id=f"id-{TAG}-header"),
-            children_right=html.Div(children=[
-                fac.AntdSwitch(id=f"id-{TAG}-switch", **kwargs_switch, className="me-2"),
-                comps_header.get_component_header_user(user_title, dot=True),
-            ]),
+            children_right=comps_header.get_component_header_user(user_title, dot=True),
         ),
         fuc.FefferyTopProgress(children=[
             html.Div(id=f"id-{TAG}-content", className="px-4 py-4"),
@@ -78,9 +74,9 @@ def layout(pathname, search, **kwargs):
     # return result
     return fac.AntdLayout(children=[
         sider, main,
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -92,10 +88,9 @@ def layout(pathname, search, **kwargs):
     executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-menu", "currentKey"),
-    Input(f"id-{TAG}-switch", "checked"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=False)
-def _update_page(current_key, switch_checked, store_data):
+def _update_page(current_key, store_data):
     # define outputs
     out_main = dict(header=dash.no_update, content=fac.AntdEmpty(locale="en-us"))
     out_others = dict(current_key=current_key, executejs_string=dash.no_update)
@@ -107,17 +102,19 @@ def _update_page(current_key, switch_checked, store_data):
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
-    # define header of main
+    # get data from store
     up_role = store_data["up_role"]
     project_name = store_data["project_name"]
-    text_title = f"{current_key}-{switch_checked}-{project_name}-{up_role}"
+
+    # define header of main
+    text_title = f"{current_key}-{project_name}-{up_role}"
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content of main
     if current_key == "Echarts":
-        out_main["content"] = pecharts.layout(None, None, switch_checked=switch_checked)
+        out_main["content"] = pecharts.layout(None, None)
     elif current_key == "Files":
-        out_main["content"] = pfiles.layout(None, None, switch_checked=switch_checked)
+        out_main["content"] = pfiles.layout(None, None)
 
     # return result
     return out_main, out_others
