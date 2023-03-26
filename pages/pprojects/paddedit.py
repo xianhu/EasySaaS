@@ -8,6 +8,7 @@ import time
 
 import dash
 import feffery_antd_components as fac
+import flask_login
 from dash import Input, Output, State
 
 from app import app_db
@@ -74,6 +75,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
 
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
+    current_user = flask_login.current_user
 
     # check triggered_id
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
@@ -105,7 +107,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
         # check project id
         if not project.get("id"):
             # add project
-            user_id = project["user_id"]
+            user_id = current_user.id
             project_id = get_md5(name + str(time.time()))
 
             # define project and user_project instances

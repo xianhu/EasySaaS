@@ -12,8 +12,6 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from app import app_db
-from models.users import User
 from utility.paths import PATH_ANALYSIS
 from . import paddedit, pdelete
 from ..comps import header as comps_header
@@ -79,15 +77,14 @@ def layout(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-addedit-close", "data"),
     Input(f"id-{TAG}-delete-close", "data"),
-    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
-def _update_page(addedit, delete, user_id):
-    # user instance by user_id
-    user = app_db.session.get(User, user_id)
+def _update_page(addedit, delete):
+    # user instance
+    current_user = flask_login.current_user
 
     # define data
     data_table = []
-    for up in user.user_projects:
+    for up in current_user.user_projects:
         if up.project.status == 0:
             continue
         up_role = up.role
@@ -102,8 +99,9 @@ def _update_page(addedit, delete, user_id):
 
         # append data
         data_table.append({
-            "user_id": user_id, "id": project.id, "key": project.id,
-            "name": project.name, "desc": project.desc, "role": up_role, "operation": operation,
+            "id": project.id, "key": project.id,
+            "name": project.name, "desc": project.desc,
+            "role": up_role, "operation": operation,
         })
 
     # return result
@@ -140,7 +138,7 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id
     # check triggered_id
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
-        out_addedit["project"] = dict(user_id=user_id)
+        out_addedit["project"] = dict()
         return out_addedit, out_delete
 
     # check triggered_id
