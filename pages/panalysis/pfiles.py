@@ -50,11 +50,11 @@ def layout(pathname, search, **kwargs):
 
         # upload with flow.js <input and js>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
-        fuc.FefferySessionStorage(id=f"id-{TAG}-status-flow"),
+        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-flow"),
         fuc.FefferyExecuteJs(jsString=get_js_flow(
-            id_div_input=f"id-{TAG}-div-flow",
-            id_button_upload=f"id-{TAG}-upload-flow",
-            id_storage=f"id-{TAG}-status-flow",
+            id_div=f"id-{TAG}-div-flow",
+            id_button=f"id-{TAG}-upload-flow",
+            id_storage=f"id-{TAG}-storage-flow",
         )),
 
         # define style
@@ -87,12 +87,12 @@ def _upload_file(contents, filename, last_modified):
 
 @dash.callback(
     Output(f"id-{TAG}-result-flow", "children"),
-    Input(f"id-{TAG}-status-flow", "data"),
+    Input(f"id-{TAG}-storage-flow", "data"),
 )
-def _upload_file_flow(data):
-    if data is None:
+def _upload_file_flow(data_storage):
+    if data_storage is None:
         return None
-    return html.Span(f"status: {data}")
+    return html.Span(str(data_storage))
 
 
 @server.route("/upload", methods=["POST"])
