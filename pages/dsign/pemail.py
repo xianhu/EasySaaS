@@ -114,7 +114,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
     # check user
     _id = get_md5(email)
-    user = app_db.session.query(User).get(_id)
+    user = app_db.session.get(User, _id)
     if pathname == PATH_SIGNUP and (user and (user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
@@ -131,7 +131,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
     # define query and href of verify
     query = urllib.parse.urlencode(dict(_id=_id, token=token))
-    href = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query}"
+    href = urllib.parse.urljoin(CONFIG_APP_DOMAIN, f"{pathname}-setpwd?{query}")
 
     # define subject and body
     if pathname == PATH_SIGNUP:

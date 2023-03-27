@@ -12,8 +12,6 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from app import app_db
-from models.users import User
 from utility.paths import PATH_ANALYSIS
 from . import paddedit, pdelete
 from ..comps import header as comps_header
@@ -26,7 +24,7 @@ STYLE_PAGE = """
         font-size: 16px !important;
     }
     .ant-table .ant-table-cell {
-        font-size: 16px !important; 
+        font-size: 16px !important;
         padding: 20px !important;
     }
 """
@@ -69,7 +67,6 @@ def layout(pathname, search, **kwargs):
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define components of others
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-        dcc.Store(id=f"id-{TAG}-data-uid", data=current_user.id),
     ], className="bg-main vh-100 overflow-auto")
 
 
@@ -79,15 +76,14 @@ def layout(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-addedit-close", "data"),
     Input(f"id-{TAG}-delete-close", "data"),
-    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=False)
-def _update_page(addedit, delete, user_id):
-    # user instance by user_id
-    user = app_db.session.query(User).get(user_id)
+def _update_page(data_addedit, data_delete):
+    # user instance
+    current_user = flask_login.current_user
 
-    # define data
+    # table data
     data_table = []
-    for up in user.user_projects:
+    for up in current_user.user_projects:
         if up.project.status == 0:
             continue
         up_role = up.role
@@ -102,8 +98,9 @@ def _update_page(addedit, delete, user_id):
 
         # append data
         data_table.append({
-            "user_id": user_id, "id": project.id, "key": project.id,
-            "name": project.name, "desc": project.desc, "role": up_role, "operation": operation,
+            "id": project.id, "key": project.id,
+            "name": project.name, "desc": project.desc,
+            "role": up_role, "operation": operation,
         })
 
     # return result
@@ -127,9 +124,8 @@ def _update_page(addedit, delete, user_id):
 ], [
     State(f"id-{TAG}-table-project", "clickedContent"),
     State(f"id-{TAG}-table-project", "recentlyButtonClickedRow"),
-    State(f"id-{TAG}-data-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id):
+def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row):
     # define outputs
     out_addedit = dict(open=dash.no_update, project=dash.no_update)
     out_delete = dict(open=dash.no_update, project=dash.no_update)
@@ -140,7 +136,7 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id
     # check triggered_id
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
-        out_addedit["project"] = dict(user_id=user_id)
+        out_addedit["project"] = dict()
         return out_addedit, out_delete
 
     # check triggered_id

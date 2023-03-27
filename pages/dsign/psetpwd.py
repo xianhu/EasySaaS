@@ -31,7 +31,7 @@ def layout(pathname, search, **kwargs):
         _id, token = search.get("_id")[0], search.get("token")[0]
 
         # get user from database
-        user = app_db.session.query(User).get(_id)
+        user = app_db.session.get(User, _id)
         assert user and user.token_verify == token
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
@@ -115,7 +115,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
 
     # check user
     _id = get_md5(email)
-    user = app_db.session.query(User).get(_id)
+    user = app_db.session.get(User, _id)
 
     # update user
     user.set_password_hash(pwd1)

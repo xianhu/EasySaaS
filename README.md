@@ -19,7 +19,7 @@ docker inspect mysql/redis | grep IPAddress
 ```
 vim .bash_profile
 
-# export ES_APP_DOMAIN=http://0.0.0.0
+# export ES_APP_DOMAIN=http://127.0.0.1
 # export ES_SECRET_KEY=xxxxxxxxxxxxxxxxxxx
 
 # export ES_MAIL_SERVER=smtp.exmail.xx.com

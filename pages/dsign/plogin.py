@@ -98,7 +98,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
 
     # check user
     _id = get_md5(email)
-    user = app_db.session.query(UserLogin).get(_id)
+    user = app_db.session.get(UserLogin, _id)
     if (not user) or (user.status != 1):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"

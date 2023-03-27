@@ -12,6 +12,7 @@ from sqlalchemy import orm
 from werkzeug import security
 
 from models import BaseModel
+from utility import get_md5
 
 
 class User(BaseModel):
@@ -90,7 +91,7 @@ class UserProject(BaseModel):
     project = orm.relationship("Project", back_populates="user_projects")
 
 
-def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
+def add_user(session, email, pwd=None, project_id=None, role="admin"):
     """
     add user, and add user-project relationship if necessary
     """
@@ -107,7 +108,7 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
 
     # add user-project relationship if necessary
     if project_id:
-        user_project = UserProject(user_id=user.id, project_id=project_id, role=project_role)
+        user_project = UserProject(user_id=user.id, project_id=project_id, role=role)
         session.add(user_project)
         session.commit()
 
@@ -115,7 +116,7 @@ def add_user(session, email, pwd=None, project_id=None, project_role="admin"):
     return user
 
 
-def add_project(session, name, desc=None, user_id=None, project_role="admin"):
+def add_project(session, name, desc=None, user_id=None, role="admin"):
     """
     add project, and add user-project relationship
     """
@@ -126,7 +127,7 @@ def add_project(session, name, desc=None, user_id=None, project_role="admin"):
 
     # add user-project relationship if necessary
     if user_id:
-        user_project = UserProject(user_id=user_id, project_id=project.id, role=project_role)
+        user_project = UserProject(user_id=user_id, project_id=project.id, role=role)
         session.add(user_project)
         session.commit()
 
@@ -136,7 +137,6 @@ def add_project(session, name, desc=None, user_id=None, project_role="admin"):
 
 if __name__ == "__main__":
     from config import CONFIG_DATABASE_URI
-    from utility import get_md5
 
     # create engine
     engine = sqlalchemy.create_engine(CONFIG_DATABASE_URI)
@@ -163,13 +163,13 @@ if __name__ == "__main__":
     # =============================== test ===============================
     # create session and select data
     with orm.sessionmaker(engine)() as _session:
-        _user = _session.query(User).get(_user_id)
+        _user = _session.get(User, _user_id)
         logging.warning("get user: %s", _user.to_dict())
         for up in _user.user_projects:
             logging.warning("\tuser-project: %s", up.to_dict())
             logging.warning("\tproject: %s", up.project.to_dict())
 
-        _project = _session.query(Project).get(_project_id)
+        _project = _session.get(Project, _project_id)
         logging.warning("get project: %s", _project.to_dict())
         for up in _project.user_projects:
             logging.warning("\tuser-project: %s", up.to_dict())
