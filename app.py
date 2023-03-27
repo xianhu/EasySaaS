@@ -5,10 +5,13 @@ Dash Application
 """
 
 import logging
+import uuid
 
+import celery
 import dash
 import flask_login
 import flask_mail
+import flask_redis
 from flask import request
 
 from config import *
@@ -21,11 +24,13 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
 # celery -A app.app_celery worker -l INFO --purge
 # celery -A app.app_celery flower --port=5555 -l INFO
-# broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
-# app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[])
+broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
+app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
+    "pages.panalysis.ptasks",
+])
 
 # define callback manager
-# callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid4()], expire=60)
+callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid.uuid4()], expire=60)
 
 # define cdn list
 cdn_js_flowjs = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.js"
@@ -45,6 +50,7 @@ app = dash.Dash(
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
+    background_callback_manager=callback_manager,
     external_stylesheets=[
         cdn_css_bootstrap,
     ],
@@ -117,7 +123,7 @@ app_db.init_app(server)
 app_mail = flask_mail.Mail(server)
 
 # initial redis
-# app_redis = flask_redis.FlaskRedis(server)
+app_redis = flask_redis.FlaskRedis(server)
 
 # initial login_manager
 login_manager = flask_login.LoginManager(server)
