@@ -6,7 +6,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
     clientside: {
         render_chart: function (data) {
             // create a new chart
-            let chart = echarts.init(document.getElementById(data['id_chart_div']));
+            let chart = echarts.init(document.getElementById(data['id_div']));
 
             // define option
             const option = {
@@ -25,7 +25,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
 
             // event listener
             chart.on('click', function (params) {
-                sessionStorage.setItem(data['id_chart_click'], JSON.stringify({
+                sessionStorage.setItem(data['id_storage'], JSON.stringify({
                     name: params.name,
                     value: params.value,
                     _timestamp: new Date().getTime(),
