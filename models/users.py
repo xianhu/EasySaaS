@@ -31,10 +31,10 @@ class User(BaseModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
 
     # others columns
-    token_verify = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
+    token_verify = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
 
     # relationship: user.user_projects
     user_projects = orm.relationship("UserProject", back_populates="user")
@@ -65,7 +65,6 @@ class Project(BaseModel):
     # informations
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # informations
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
