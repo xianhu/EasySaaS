@@ -10,9 +10,8 @@ import os
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask
 from dash import dcc, html, Input, Output, State
-from flask import request
+from flask import jsonify, request
 
 from app import server
 from .funcs import get_js_flow
@@ -109,4 +108,4 @@ def _route_upload():
         file_out.write(file.read())
 
     # return result
-    return flask.jsonify({"success": True})
+    return jsonify({"success": True})

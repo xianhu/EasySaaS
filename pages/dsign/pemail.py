@@ -10,9 +10,9 @@ import uuid
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask
 import flask_mail
 from dash import Input, Output, State
+from flask import session as flask_session
 
 from app import User, app_db, app_mail
 from config import CONFIG_APP_NAME, CONFIG_APP_DOMAIN
@@ -64,7 +64,7 @@ def layout_result(pathname, search, **kwargs):
     """
     layout of page
     """
-    email = flask.session.get("email")
+    email = flask_session.get("email")
     return palert.layout(pathname, search, status="success", **dict(
         text_title="Sending success",
         text_subtitle=f"An email has sent to {email}.",
@@ -157,7 +157,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     # =============================================================================================
 
     # set session and go result
-    flask.session["email"] = email
+    flask_session["email"] = email
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result

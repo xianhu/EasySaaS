@@ -24,8 +24,8 @@ STYLE_PAGE = """
         font-size: 16px !important;
     }
     .ant-table .ant-table-cell {
-        font-size: 16px !important;
         padding: 20px !important;
+        font-size: 16px !important;
     }
 """
 
