@@ -15,6 +15,7 @@ from dash import dcc, html, Input, Output, State
 from flask import request
 
 from app import server
+from .funcs import get_js_flow
 
 TAG_BASE = "analysis"
 TAG = "analysis-files"
@@ -26,79 +27,6 @@ STYLE_PAGE = """
         align-items: center !important;
     }
 """
-
-
-def _get_js_flow(id_div_input, id_button_upload, id_storage):
-    """
-    get js according to flow.js
-    """
-    return f"""
-        // add input to div
-        var div = document.getElementById('{id_div_input}');
-        div.innerHTML="<input id='id-input-file' type='file' name='file' style='display:none;'/>";
-
-        // bind button click event to input
-        document.getElementById('{id_button_upload}').addEventListener('click', function() {{
-            document.getElementById('id-input-file').click();
-        }});
-        
-        // define flow instance
-        var flow = new Flow({{
-            target: '/upload',
-            testChunks: false,
-            uploadMethod: 'POST',
-            chunkSize: 1024 * 1024,
-            simultaneousUploads: 1,
-            allowDuplicateUploads: true,
-            progressCallbacksInterval: 1000,  
-        }});
-        
-        // define flow events
-        flow.on('fileAdded', function (file, event) {{ 
-            console.log('file added');
-            sessionStorage.setItem('{id_storage}', JSON.stringify({{
-                status: 'fileAdded',
-                file_name: file.name,
-                _timestamp: new Date().getTime(),
-            }}));
-        }});
-
-        // define flow events
-        flow.on('fileSuccess', function (file, message) {{
-            console.log('file success');
-            sessionStorage.setItem('{id_storage}', JSON.stringify({{
-                status: 'fileSuccess',
-                file_name: file.name,
-                _timestamp: new Date().getTime(),                
-            }}));
-        }});
-
-        // define flow events
-        flow.on('fileError', function (file, message) {{
-            console.log('file error');
-            sessionStorage.setItem('{id_storage}', JSON.stringify({{
-                status: 'fileError',
-                file_name: file.name,
-                _timestamp: new Date().getTime(),
-            }}));
-        }});
-
-        // define flow events
-        var output = document.getElementById('');
-        flow.on('fileProgress', function (file) {{
-            let percent = Math.floor(file.progress() * 100);
-            console.log('file progress: ' + percent + '%');
-            if (output) {{
-                output.innerHTML = 'progress: ' + percent + '%';
-            }}
-        }});
-
-        // bind input change event to flow
-        document.getElementById('id-input-file').addEventListener('change', function(event) {{
-            flow.addFile(event.target.files[0]);
-            flow.upload();
-        }});
-    """
 
 
 def layout(pathname, search, **kwargs):
@@ -124,7 +52,7 @@ def layout(pathname, search, **kwargs):
         # upload with flow.js <input and js>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
         fuc.FefferySessionStorage(id=f"id-{TAG}-status-flow"),
-        fuc.FefferyExecuteJs(jsString=_get_js_flow(
+        fuc.FefferyExecuteJs(jsString=get_js_flow(
             id_div_input=f"id-{TAG}-div-flow",
             id_button_upload=f"id-{TAG}-upload-flow",
             id_storage=f"id-{TAG}-status-flow",
@@ -176,11 +104,9 @@ def _route_upload():
     chunk_number = int(request.form.get("flowChunkNumber", 1))
 
     # write file to target
-    if chunk_number == 1:
-        with open(target_file, "wb") as file_out:
-            file_out.write(b"")
-    with open(target_file, "ab") as file_out:
-        file = request.files.get("file")
+    file = request.files.get("file")
+    file_mode = "wb" if chunk_number == 1 else "ab"
+    with open(target_file, file_mode) as file_out:
         file_out.write(file.read())
 
     # return result
