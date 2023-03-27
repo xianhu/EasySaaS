@@ -19,7 +19,7 @@ from app import server
 from .funcs import get_js_flow
 
 TAG_BASE = "analysis"
-TAG = "analysis-files"
+TAG = "analysis-upload"
 
 # style of page
 STYLE_PAGE = """
@@ -75,6 +75,8 @@ def layout(pathname, search, **kwargs):
 def _upload_file(contents, file_name, last_modified):
     if contents is None:
         return None
+
+    # get target_file
     str_uuid = flask_session.get("uuid", "")
     target_file = os.path.join("/tmp", f"{str_uuid}_{file_name}")
 

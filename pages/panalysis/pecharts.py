@@ -36,8 +36,8 @@ def layout(pathname, search, **kwargs):
         html.Div(id=f"id-{TAG}-div-chart", style=style),  # div to show chart
         fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
         dcc.Store(id=f"id-{TAG}-data-chart", data=data_chart),  # data to trigger clientside callback
-        # define style
-        html.Div(id=f"id-{TAG}-message"),
+        # define message and style
+        html.Div(id=f"id-{TAG}-message-chart"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
 
@@ -54,7 +54,7 @@ dash.clientside_callback(
 
 
 @dash.callback(
-    Output(f"id-{TAG}-message", "children"),
+    Output(f"id-{TAG}-message-chart", "children"),
     Input(f"id-{TAG}-storage-chart", "data"),
     prevent_initial_call=True,
 )
