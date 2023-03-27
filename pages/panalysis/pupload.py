@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-files page
+upload page
 """
 
 import base64
