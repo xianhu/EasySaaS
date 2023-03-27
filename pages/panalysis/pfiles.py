@@ -34,10 +34,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define components
-    children_button = [
-        fac.AntdIcon(icon="antd-plus"),
-        html.Span("Upload", className="ms-1"),
-    ]
+    icon_plus = fac.AntdIcon(icon="antd-plus")
+    span_upload = html.Span("Upload", className="ms-1")
+    children_button = [icon_plus, span_upload]
 
     # return result
     return html.Div(children=[

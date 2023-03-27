@@ -131,7 +131,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
     # define query and href of verify
     query = urllib.parse.urlencode(dict(_id=_id, token=token))
-    href = f"{CONFIG_APP_DOMAIN.strip('/')}{pathname}-setpwd?{query}"
+    href = urllib.parse.urljoin(CONFIG_APP_DOMAIN, f"{pathname}-setpwd?{query}")
 
     # define subject and body
     if pathname == PATH_SIGNUP:

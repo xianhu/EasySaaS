@@ -42,7 +42,6 @@ def layout(pathname, search, **kwargs):
     ], className=None)
 
 
-# client side callback
 dash.clientside_callback(
     ClientsideFunction(
         namespace="clientside",
