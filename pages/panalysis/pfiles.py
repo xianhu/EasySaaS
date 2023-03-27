@@ -6,12 +6,14 @@ files page
 
 import base64
 import os
+import uuid
 
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import dcc, html, Input, Output, State
 from flask import jsonify, request
+from flask import session as flask_session
 
 from app import server
 from .funcs import get_js_flow
@@ -36,6 +38,9 @@ def layout(pathname, search, **kwargs):
     icon_plus = fac.AntdIcon(icon="antd-plus")
     span_upload = html.Span("Upload", className="ms-1")
     children_button = [icon_plus, span_upload]
+
+    # define uuid to session
+    flask_session["uuid"] = str(uuid.uuid4())
 
     # return result
     return html.Div(children=[
@@ -67,10 +72,11 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-upload", "filename"),
     State(f"id-{TAG}-upload", "last_modified"),
 )
-def _upload_file(contents, filename, last_modified):
+def _upload_file(contents, file_name, last_modified):
     if contents is None:
         return None
-    target_file = os.path.join("/tmp", filename)
+    str_uuid = flask_session.get("uuid", "")
+    target_file = os.path.join("/tmp", f"{str_uuid}_{file_name}")
 
     # parse contents
     content_type, content_string = contents.split(",")
@@ -81,7 +87,7 @@ def _upload_file(contents, filename, last_modified):
         file_out.write(content_decoded)
 
     # return result
-    return html.Span(f"filename: {filename}, last_modified: {last_modified}")
+    return html.Span(f"file_name: {file_name}, last_modified: {last_modified}")
 
 
 @dash.callback(
@@ -96,15 +102,18 @@ def _upload_file_flow(data_storage):
 
 @server.route("/upload", methods=["POST"])
 def _route_upload():
-    # get parameters
+    # get file_name and target_file
+    str_uuid = flask_session.get("uuid", "")
     file_name = request.form.get("flowFilename")
-    target_file = os.path.join("/tmp", file_name)
+    target_file = os.path.join("/tmp", f"{str_uuid}_{file_name}")
+
+    # calculate file_mode based on chunk_number
     chunk_number = int(request.form.get("flowChunkNumber", 1))
+    file_mode = "wb" if chunk_number == 1 else "ab"
 
     # write file to target
-    file = request.files.get("file")
-    file_mode = "wb" if chunk_number == 1 else "ab"
     with open(target_file, file_mode) as file_out:
+        file = request.files.get("file")
         file_out.write(file.read())
 
     # return result
