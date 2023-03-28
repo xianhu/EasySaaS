@@ -13,7 +13,7 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from . import pecharts, pupload
+from . import pecharts, pupload, ptasks
 from .routers import ROUTER_MENU
 from .. import palert
 from ..comps import header as comps_header
@@ -115,6 +115,8 @@ def _update_page(current_key, store_data):
         out_main["content"] = pecharts.layout(None, None)
     elif current_key == "Upload":
         out_main["content"] = pupload.layout(None, None)
+    elif current_key == "Tasks":
+        out_main["content"] = ptasks.layout(None, None)
 
     # return result
     return out_main, out_others
