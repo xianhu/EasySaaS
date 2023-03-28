@@ -9,10 +9,10 @@ ROUTER_MENU = [{
     "props": {"key": "Echarts", "title": "Echarts", "icon": "antd-alert"},
 }, {
     "component": "Item",
-    "props": {"key": "Files", "title": "Files", "icon": "antd-calendar"},
+    "props": {"key": "Upload", "title": "Upload", "icon": "antd-calendar"},
 }, {
     "component": "Item",
-    "props": {"key": "Tables", "title": "Tables", "icon": "antd-dollar"},
+    "props": {"key": "Tasks", "title": "Tasks", "icon": "antd-dollar"},
 }, {
     "component": "Item",
     "props": {"key": "Contact", "title": "Contact", "icon": "antd-mail"},

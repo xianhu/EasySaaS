@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-files page
+upload page
 """
 
 import base64
@@ -19,7 +19,7 @@ from app import server
 from .funcs import get_js_flow
 
 TAG_BASE = "analysis"
-TAG = "analysis-files"
+TAG = "analysis-upload"
 
 # style of page
 STYLE_PAGE = """
@@ -75,6 +75,8 @@ def layout(pathname, search, **kwargs):
 def _upload_file(contents, file_name, last_modified):
     if contents is None:
         return None
+
+    # get target_file
     str_uuid = flask_session.get("uuid", "")
     target_file = os.path.join("/tmp", f"{str_uuid}_{file_name}")
 
@@ -88,16 +90,6 @@ def _upload_file(contents, file_name, last_modified):
 
     # return result
     return html.Span(f"file_name: {file_name}, last_modified: {last_modified}")
-
-
-@dash.callback(
-    Output(f"id-{TAG}-result-flow", "children"),
-    Input(f"id-{TAG}-storage-flow", "data"),
-)
-def _upload_file_flow(data_storage):
-    if data_storage is None:
-        return None
-    return html.Span(str(data_storage))
 
 
 @server.route("/upload", methods=["POST"])
@@ -118,3 +110,15 @@ def _route_upload():
 
     # return result
     return jsonify({"success": True})
+
+
+@dash.callback(
+    Output(f"id-{TAG}-result-flow", "children"),
+    Input(f"id-{TAG}-storage-flow", "data"),
+)
+def _upload_file_flow(data_storage):
+    if data_storage is None:
+        return None
+
+    # return result
+    return html.Span(str(data_storage))
