@@ -10,4 +10,5 @@ Flask-SQLAlchemy==3.0.3
 
 uWSGI==2.0.21
 celery==5.2.7
+flower==1.2.0
 pymysql==1.0.2

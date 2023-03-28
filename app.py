@@ -22,8 +22,8 @@ from models.users import User
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
-# celery -A app.app_celery worker -l INFO --purge
-# celery -A app.app_celery flower --port=5555 -l INFO
+# nohup celery -A app.app_celery worker -l INFO --purge > /dev/null 2>&1 &
+# nohup celery -A app.app_celery flower --port=5555 -l INFO > /dev/null 2>&1 &
 broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
 app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
     "pages.panalysis.ptasks",
