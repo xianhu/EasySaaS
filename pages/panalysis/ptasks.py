@@ -21,11 +21,13 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    return html.Div(children=[
-        fac.AntdButton("Run Task", id=f"id-{TAG}-button-run"),
-        html.Div(id=f"id-{TAG}-div-time"),
-        html.Div(id=f"id-{TAG}-div-output"),
-    ], className=None)
+    # define components
+    div_time = html.Div(id=f"id-{TAG}-div-time")
+    div_output = html.Div(id=f"id-{TAG}-div-output")
+    button_run = fac.AntdButton("Run Task", id=f"id-{TAG}-button-run")
+
+    # return result
+    return html.Div([button_run, div_time, div_output], className=None)
 
 
 @dash.callback([
