@@ -92,16 +92,6 @@ def _upload_file(contents, file_name, last_modified):
     return html.Span(f"file_name: {file_name}, last_modified: {last_modified}")
 
 
-@dash.callback(
-    Output(f"id-{TAG}-result-flow", "children"),
-    Input(f"id-{TAG}-storage-flow", "data"),
-)
-def _upload_file_flow(data_storage):
-    if data_storage is None:
-        return None
-    return html.Span(str(data_storage))
-
-
 @server.route("/upload", methods=["POST"])
 def _route_upload():
     # get file_name and target_file
@@ -120,3 +110,15 @@ def _route_upload():
 
     # return result
     return jsonify({"success": True})
+
+
+@dash.callback(
+    Output(f"id-{TAG}-result-flow", "children"),
+    Input(f"id-{TAG}-storage-flow", "data"),
+)
+def _upload_file_flow(data_storage):
+    if data_storage is None:
+        return None
+
+    # return result
+    return html.Span(str(data_storage))

@@ -24,16 +24,17 @@ def layout(pathname, search, **kwargs):
     """
     # define data
     data_chart = dict(
+        # chart id
         id_div=f"id-{TAG}-div-chart",  # div to show chart
         id_storage=f"id-{TAG}-storage-chart",  # storage of chart click data
+        # chart data
         x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         y_data=[random.randint(50, 100) for _ in range(10)],
     )
 
     # return result
-    style = {"height": "500px"}
     return html.Div(children=[
-        html.Div(id=f"id-{TAG}-div-chart", style=style),  # div to show chart
+        html.Div(id=f"id-{TAG}-div-chart", style={"height": "500px"}),  # div to show chart
         fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
         dcc.Store(id=f"id-{TAG}-data-chart", data=data_chart),  # data to trigger clientside callback
         # define message and style
