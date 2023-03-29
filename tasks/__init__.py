@@ -22,3 +22,11 @@ app_celery = Celery(
         "pages.panalysis.ptasks",
     ],
 )
+
+
+@app_celery.task(name="test", serializer="json")
+def test(param1, param2):
+    """
+    test task
+    """
+    return True
