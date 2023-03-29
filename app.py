@@ -7,7 +7,6 @@ Dash Application
 import logging
 import uuid
 
-import celery
 import dash
 import flask_login
 import flask_mail
@@ -17,17 +16,11 @@ from flask import request
 from config import *
 from models import app_db
 from models.users import User
+from tasks import app_celery
 
 # logging config
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
-
-# nohup celery -A app.app_celery worker -l INFO --purge > /dev/null 2>&1 &
-# nohup celery -A app.app_celery flower --port=5555 -l INFO > /dev/null 2>&1 &
-broker, backend = f"{CONFIG_REDIS_URI}/11", f"{CONFIG_REDIS_URI}/12"
-app_celery = celery.Celery(__name__, broker=broker, backend=backend, include=[
-    "pages.panalysis.ptasks",
-])
 
 # define callback manager
 callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid.uuid4()], expire=60)
