@@ -8,14 +8,14 @@ functions module
 def get_js_flow(id_div, id_button, id_storage):
     """
     get js according to flow.js
-    :param id_div: id of div to show <input>
+    :param id_div: id of div to include <input>
     :param id_button: id of button to trigger <input>
-    :param id_storage: id of storage to save data
+    :param id_storage: id of storage to save event data
     """
     return f"""
         // add input to div
         var div = document.getElementById('{id_div}');
-        div.innerHTML="<input id='id-input-file' type='file' name='file' style='display:none;'/>";
+        div.innerHTML="<input id='id-input-file' type='file' name='file'/>";
 
         // define flow instance
         var flow = new Flow({{

@@ -86,8 +86,7 @@ def _update_page(data_addedit, data_delete):
     for up in current_user.user_projects:
         if up.project.status == 0:
             continue
-        up_role = up.role
-        project = up.project
+        up_role, project = up.role, up.project
 
         # define operation of button column
         href = f"{PATH_ANALYSIS}?id={project.id}"

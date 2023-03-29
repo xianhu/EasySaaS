@@ -120,7 +120,7 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
         out_email["help"] = "This email has been registered"
         out_cpc["refresh"] = True
         return out_email, out_cpc, out_others
-    if pathname == PATH_FORGOTPWD and ((not user) or (user.status != 1)):
+    if pathname == PATH_FORGOTPWD and (not (user and user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
         out_cpc["refresh"] = True
