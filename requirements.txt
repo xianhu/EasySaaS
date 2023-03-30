@@ -1,4 +1,4 @@
-dash[compress]==2.9.1
+dash[compress]==2.9.2
 feffery-antd-components==0.2.0rc33
 feffery-utils-components==0.1.22
 
