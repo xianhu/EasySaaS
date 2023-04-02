@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-compontents of header
+components of header
 """
 
 import dash

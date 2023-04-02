@@ -129,7 +129,7 @@ class UserLogin(User, flask_login.UserMixin):
     pass
 
 
-# overwirte user_loader
+# overwrite user_loader
 @login_manager.user_loader
 def load_user(user_id):
     user = app_db.session.get(UserLogin, user_id)
