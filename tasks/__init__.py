@@ -25,7 +25,7 @@ app_celery = Celery(
 
 
 @app_celery.task(name="test", serializer="json")
-def test(param1, param2):
+def test():
     """
     test task
     """
