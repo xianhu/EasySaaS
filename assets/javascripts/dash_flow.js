@@ -2,8 +2,6 @@
  * flow object in dash
  * @type {any}
  */
-
-// flow object
 const flow = new Flow({
     target: '/upload',
     testChunks: false,
@@ -13,32 +11,13 @@ const flow = new Flow({
     allowDuplicateUploads: true,
     progressCallbacksInterval: 1000,
 });
+console.log('flow object created');
 
 // define flow events
 flow.on('fileAdded', function (file, event) {
     console.log('file added');
-    sessionStorage.setItem('id-key-flow', JSON.stringify({
+    sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileAdded',
-        file_name: file.name,
-        _timestamp: new Date().getTime(),
-    }));
-});
-
-// define flow events
-flow.on('fileSuccess', function (file, message) {
-    console.log('file success');
-    sessionStorage.setItem('id-key-flow', JSON.stringify({
-        status: 'fileSuccess',
-        file_name: file.name,
-        _timestamp: new Date().getTime(),
-    }));
-});
-
-// define flow events
-flow.on('fileError', function (file, message) {
-    console.log('file error');
-    sessionStorage.setItem('id-key-flow', JSON.stringify({
-        status: 'fileError',
         file_name: file.name,
         _timestamp: new Date().getTime(),
     }));
@@ -50,4 +29,22 @@ flow.on('fileProgress', function (file) {
     console.log('file progress: ' + percent + '%');
 });
 
-console.log("dash_flow.js loaded")
+// define flow events
+flow.on('fileSuccess', function (file, message) {
+    console.log('file success');
+    sessionStorage.setItem('id-storage-flow', JSON.stringify({
+        status: 'fileSuccess',
+        file_name: file.name,
+        _timestamp: new Date().getTime(),
+    }));
+});
+
+// define flow events
+flow.on('fileError', function (file, message) {
+    console.log('file error');
+    sessionStorage.setItem('id-storage-flow', JSON.stringify({
+        status: 'fileError',
+        file_name: file.name,
+        _timestamp: new Date().getTime(),
+    }));
+});
