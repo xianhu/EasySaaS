@@ -5,7 +5,7 @@
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     clientside: {
         render_chart: function (params) {
-            console.log('render chart: ' + String(params));
+            console.log('render chart: ' + JSON.stringify(params));
 
             // get data from params
             let id_div = params['id_div'];
@@ -40,7 +40,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         },
 
         render_flow: function (params) {
-            console.log('render flow: ' + String(params));
+            console.log('render flow: ' + JSON.stringify(params));
 
             // get data from params
             let id_div = params['id_div'];
