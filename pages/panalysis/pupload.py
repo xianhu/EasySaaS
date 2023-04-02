@@ -68,6 +68,17 @@ dash.clientside_callback(
 )
 
 
+@dash.callback(
+    Output(f"id-{TAG}-result-flow", "children"),
+    Input(f"id-storage-flow", "data"),
+    prevent_initial_call=True,
+)
+def _update_page(storage_flow):
+    if storage_flow is None:
+        return None
+    return html.Span(str(storage_flow))
+
+
 @server.route("/upload", methods=["POST"])
 def _route_upload():
     # define uuid of session
@@ -90,13 +101,3 @@ def _route_upload():
 
     # return result
     return jsonify({"success": True})
-
-
-@dash.callback(
-    Output(f"id-{TAG}-result-flow", "children"),
-    Input(f"id-storage-flow", "data"),
-)
-def _upload_file_flow(storage_flow):
-    if storage_flow is None:
-        return None
-    return html.Span(str(storage_flow))
