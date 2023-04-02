@@ -1,6 +1,6 @@
 # EasySaaS
 
-This project will be attempted to make a great starting point for your next big business as easy and efficent as possible. This project will create an easy way to build a SaaS
+This project will be attempted to make a great starting point for your next big business as easy and efficient as possible. This project will create an easy way to build a SaaS
 application using Python、Dash and feffery-xxx-components.
 
 ## Install For Development
@@ -40,7 +40,7 @@ source .bash_profile
 # Python3.8 required
 cd {DIR} && python3.8 -m venv .venv
 source .venv/bin/activate / deactivate
-pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pip3 install -r requirements.txt
 ```
 
 ### Run uwsgi, Config File: aconfig/uwsgi.ini
@@ -62,11 +62,10 @@ docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \
 
 ### Frontend
 
-- Css File: https://github.com/thomaspark/bootswatch
-- Css File: https://github.com/tcbegley/dash-bootstrap-css
 - Bootstrap: https://getbootstrap.com/docs/5.1/utilities/api/
 - CheatSheet: https://dashcheatsheet.pythonanywhere.com/
 - Front4.0: https://htmlstream.com/front-v4.0/index.html
+- Echarts: https://echarts.apache.org/examples/zh/index.html
 - Antd: https://ant-design.gitee.io/index-cn
 - Fac: https://fac.feffery.tech/what-is-fac
 - Fuc: https://fuc.feffery.tech/what-is-fuc
