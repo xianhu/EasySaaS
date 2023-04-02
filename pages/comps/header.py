@@ -43,7 +43,7 @@ def get_component_header_user(user_title, dot=True):
 
 
 def get_component_header(
-        chilren_left=None, path_logo="favicon1.svg",
+        children_left=None, path_logo="favicon1.svg",
         children_right=None, user_title=None, dot=True,
         children_middle=None, class_row=None,
 ):
@@ -51,8 +51,8 @@ def get_component_header(
     layout of component
     """
     # define components
-    if chilren_left:
-        col_left = fac.AntdCol(chilren_left)
+    if children_left:
+        col_left = fac.AntdCol(children_left)
     else:
         col_left = fac.AntdCol(get_component_header_brand(path_logo=path_logo))
 

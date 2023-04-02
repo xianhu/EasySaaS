@@ -63,7 +63,7 @@ def layout(pathname, search, **kwargs):
     # define components
     main = fac.AntdContent(children=[
         comps_header.get_component_header(
-            chilren_left=html.Div("Loading...", id=f"id-{TAG}-header"),
+            children_left=html.Div("Loading...", id=f"id-{TAG}-header"),
             children_right=comps_header.get_component_header_user(user_title, dot=True),
         ),
         fuc.FefferyTopProgress(children=[
