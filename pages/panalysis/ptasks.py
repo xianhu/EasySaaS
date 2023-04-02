@@ -8,7 +8,7 @@ import time
 
 import dash
 import feffery_antd_components as fac
-from dash import html, Input, Output, State
+from dash import Input, Output, State, html
 
 TAG_BASE = "analysis"
 TAG = "analysis-tasks"

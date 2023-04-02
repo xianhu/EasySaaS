@@ -12,8 +12,8 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app, server
-from pages import palert, puser, pprojects, panalysis
-from pages.dsign import plogin, pemail, psetpwd
+from pages import palert, panalysis, pprojects, puser
+from pages.dsign import pemail, plogin, psetpwd
 from utility.consts import *
 from utility.paths import *
 
