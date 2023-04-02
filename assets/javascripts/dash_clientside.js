@@ -45,7 +45,6 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
             // get data from params
             let id_div = params['id_div'];
             let id_button = params['id_button'];
-            let id_storage = params['id_storage'];
 
             // add input to div
             let id_input = 'id-input-file';

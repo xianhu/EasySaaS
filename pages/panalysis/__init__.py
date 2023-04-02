@@ -13,7 +13,7 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from . import pecharts, pupload, ptasks
+from . import pecharts, ptasks, pupload
 from .routers import ROUTER_MENU
 from .. import palert
 from ..comps import header as comps_header
