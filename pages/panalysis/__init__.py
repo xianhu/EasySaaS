@@ -13,7 +13,7 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from . import pecharts, pupload, ptasks
+from . import pecharts, ptasks, pupload
 from .routers import ROUTER_MENU
 from .. import palert
 from ..comps import header as comps_header
@@ -63,7 +63,7 @@ def layout(pathname, search, **kwargs):
     # define components
     main = fac.AntdContent(children=[
         comps_header.get_component_header(
-            chilren_left=html.Div("Loading...", id=f"id-{TAG}-header"),
+            children_left=html.Div("Loading...", id=f"id-{TAG}-header"),
             children_right=comps_header.get_component_header_user(user_title, dot=True),
         ),
         fuc.FefferyTopProgress(children=[

@@ -9,7 +9,7 @@ import random
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import Input, Output, ClientsideFunction, dcc, html
+from dash import ClientsideFunction, Input, Output, dcc, html
 
 TAG_BASE = "analysis"
 TAG = "analysis-echarts"
@@ -23,7 +23,7 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # define data
-    data_chart = dict(
+    params_chart = dict(
         # chart id
         id_div=f"id-{TAG}-div-chart",  # div to show chart
         id_storage=f"id-{TAG}-storage-chart",  # storage of chart click data
@@ -36,20 +36,21 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         html.Div(id=f"id-{TAG}-div-chart", style={"height": "500px"}),  # div to show chart
         fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
-        dcc.Store(id=f"id-{TAG}-data-chart", data=data_chart),  # data to trigger clientside callback
+        dcc.Store(id=f"id-{TAG}-params-chart", data=params_chart),  # params to trigger clientside callback
         # define message and style
         html.Div(id=f"id-{TAG}-message-chart"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
 
 
+# trigger clientside callback
 dash.clientside_callback(
     ClientsideFunction(
         namespace="clientside",
         function_name="render_chart",
     ),
     Output(f"id-{TAG}-div-chart", "children"),
-    Input(f"id-{TAG}-data-chart", "data"),
+    Input(f"id-{TAG}-params-chart", "data"),
     prevent_initial_call=False,
 )
 

@@ -26,7 +26,7 @@ class User(BaseModel):
     id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
-    # informations
+    # information
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     phone = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
@@ -61,11 +61,11 @@ class Project(BaseModel):
     # basic
     id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
 
-    # informations
+    # information
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=True)
     desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
-    # informations
+    # information
     ts_start = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     ts_expired = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 

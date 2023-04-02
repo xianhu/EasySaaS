@@ -4,19 +4,17 @@
 upload page
 """
 
-import base64
 import os
 import uuid
 
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import dcc, html, Input, Output, State
+from dash import ClientsideFunction, Input, Output, dcc, html
 from flask import jsonify, request
 from flask import session as flask_session
 
 from app import server
-from .funcs import get_js_flow
 
 TAG_BASE = "analysis"
 TAG = "analysis-upload"
@@ -39,86 +37,67 @@ def layout(pathname, search, **kwargs):
     span_upload = html.Span("Upload", className="ms-1")
     children_button = [icon_plus, span_upload]
 
-    # define uuid to session
-    flask_session["uuid"] = str(uuid.uuid4())
-
     # return result
     return html.Div(children=[
-        # upload with dcc.Upload
-        dcc.Upload(fac.AntdButton(children_button), id=f"id-{TAG}-upload"),
-        html.Div(id=f"id-{TAG}-result", className="mt-2 mb-3"),
-
-        # upload with flow.js
+        # upload with flow.js <button and result>
         fac.AntdButton(children_button, id=f"id-{TAG}-upload-flow"),
         html.Div(id=f"id-{TAG}-result-flow", className="mt-2"),
 
-        # upload with flow.js <input and js>
+        # upload with flow.js <input and storage>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
-        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-flow"),
-        fuc.FefferyExecuteJs(jsString=get_js_flow(
-            id_div=f"id-{TAG}-div-flow",
-            id_button=f"id-{TAG}-upload-flow",
-            id_storage=f"id-{TAG}-storage-flow",
-        )),
+        dcc.Store(id=f"id-{TAG}-params-flow", data={
+            "id_div": f"id-{TAG}-div-flow",
+            "id_button": f"id-{TAG}-upload-flow",
+        }),
+        fuc.FefferySessionStorage(id="id-storage-flow"),
 
         # define style
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
 
 
-@dash.callback(
-    Output(f"id-{TAG}-result", "children"),
-    Input(f"id-{TAG}-upload", "contents"),
-    State(f"id-{TAG}-upload", "filename"),
-    State(f"id-{TAG}-upload", "last_modified"),
+# trigger clientside callback
+dash.clientside_callback(
+    ClientsideFunction(
+        namespace="clientside",
+        function_name="render_flow",
+    ),
+    Output(f"id-{TAG}-div-flow", "children"),
+    Input(f"id-{TAG}-params-flow", "data"),
+    prevent_initial_call=False,
 )
-def _upload_file(contents, file_name, last_modified):
-    if contents is None:
+
+
+@dash.callback(
+    Output(f"id-{TAG}-result-flow", "children"),
+    Input(f"id-storage-flow", "data"),
+    prevent_initial_call=True,
+)
+def _update_page(storage_flow):
+    if storage_flow is None:
         return None
-
-    # get target_file
-    str_uuid = flask_session.get("uuid", "")
-    target_file = os.path.join("/tmp", f"{str_uuid}_{file_name}")
-
-    # parse contents
-    content_type, content_string = contents.split(",")
-    content_decoded = base64.b64decode(content_string)
-
-    # write file to target
-    with open(target_file, "wb") as file_out:
-        file_out.write(content_decoded)
-
-    # return result
-    return html.Span(f"file_name: {file_name}, last_modified: {last_modified}")
+    return html.Span(str(storage_flow))
 
 
 @server.route("/upload", methods=["POST"])
 def _route_upload():
-    # get file_name and target_file
-    str_uuid = flask_session.get("uuid", "")
-    file_name = request.form.get("flowFilename")
-    target_file = os.path.join("/tmp", f"{str_uuid}_{file_name}")
+    # define uuid of session
+    if not flask_session.get("uuid"):
+        flask_session["uuid"] = str(uuid.uuid4())
+    str_uuid = flask_session.get("uuid")
 
-    # calculate file_mode based on chunk_number
+    # get file_name and target_file
+    file_name = request.form.get("flowFilename")
+    file_target = os.path.join("/tmp", f"{str_uuid}_{file_name}")
+
+    # get chunk_number
     chunk_number = int(request.form.get("flowChunkNumber", 1))
-    file_mode = "wb" if chunk_number == 1 else "ab"
 
     # write file to target
-    with open(target_file, file_mode) as file_out:
+    file_mode = "wb" if chunk_number == 1 else "ab"
+    with open(file_target, file_mode) as file_out:
         file = request.files.get("file")
         file_out.write(file.read())
 
     # return result
     return jsonify({"success": True})
-
-
-@dash.callback(
-    Output(f"id-{TAG}-result-flow", "children"),
-    Input(f"id-{TAG}-storage-flow", "data"),
-)
-def _upload_file_flow(data_storage):
-    if data_storage is None:
-        return None
-
-    # return result
-    return html.Span(str(data_storage))

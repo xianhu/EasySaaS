@@ -8,7 +8,7 @@ import time
 
 import dash
 import feffery_antd_components as fac
-from dash import Input, Output, State, html
+from dash import Input, Output, html
 
 TAG_BASE = "analysis"
 TAG = "analysis-tasks"
@@ -30,19 +30,17 @@ def layout(pathname, search, **kwargs):
     return html.Div([button_run, div_time, div_output], className=None)
 
 
-@dash.callback([
+@dash.callback(
     Output(f"id-{TAG}-div-time", "children"),
     Output(f"id-{TAG}-div-output", "children"),
-], [
     Input(f"id-{TAG}-button-run", "nClicks"),
-    State(f"id-{TAG}-div-output", "children"),
-], running=[
-    (Output(f"id-{TAG}-button-run", "disabled"), True, False),
-], progress=[
-    Output(f"id-{TAG}-div-time", "children"),
-    Output(f"id-{TAG}-div-output", "children"),
-], background=True, prevent_initial_call=True)
-def _update_page(set_progress, n_clicks, children):
+    running=[
+        (Output(f"id-{TAG}-button-run", "disabled"), True, False),
+    ], progress=[
+        Output(f"id-{TAG}-div-time", "children"),
+        Output(f"id-{TAG}-div-output", "children"),
+    ], background=True, prevent_initial_call=True)
+def _update_page(set_progress, n_clicks):
     time_start = time.time()
 
     # run tasks

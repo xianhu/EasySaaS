@@ -4,19 +4,25 @@
  */
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     clientside: {
-        render_chart: function (data) {
+        render_chart: function (params) {
+            console.log('render chart: ' + JSON.stringify(params));
+
+            // get data from params
+            let id_div = params['id_div'];
+            let id_storage = params['id_storage'];
+
             // create a new chart
-            let chart = echarts.init(document.getElementById(data['id_div']));
+            let chart = echarts.init(document.getElementById(id_div));
 
             // define option
             const option = {
                 xAxis: {
-                    data: data['x_data'],
+                    data: params['x_data'],
                 },
                 yAxis: {},
                 series: [{
                     type: 'bar',
-                    data: data['y_data'],
+                    data: params['y_data'],
                 }]
             };
 
@@ -25,11 +31,35 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
 
             // event listener
             chart.on('click', function (params) {
-                sessionStorage.setItem(data['id_storage'], JSON.stringify({
+                sessionStorage.setItem(id_storage, JSON.stringify({
                     name: params.name,
                     value: params.value,
                     _timestamp: new Date().getTime(),
                 }));
+            });
+        },
+
+        render_flow: function (params) {
+            console.log('render flow: ' + JSON.stringify(params));
+
+            // get data from params
+            let id_div = params['id_div'];
+            let id_button = params['id_button'];
+
+            // add input to div
+            let id_input = 'id-input-file';
+            let div = document.getElementById(id_div);
+            div.innerHTML = "<input id='id-input-file' type='file' name='file'/>";
+
+            // bind button click event to input click
+            document.getElementById(id_button).addEventListener('click', function (event) {
+                document.getElementById(id_input).click();
+            });
+
+            // bind input change event to flow upload
+            document.getElementById(id_input).addEventListener('change', function (event) {
+                flow.addFile(event.target.files[0]);
+                flow.upload();
             });
         },
     },
