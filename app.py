@@ -107,6 +107,8 @@ server.config.update(
 
     REMEMBER_COOKIE_NAME="remember_token",
     REMEMBER_COOKIE_DURATION=60 * 60 * 24 * 7,
+
+    PERMANENT_SESSION_LIFETIME=60 * 60 * 24 * 7,
 )
 
 # initial db

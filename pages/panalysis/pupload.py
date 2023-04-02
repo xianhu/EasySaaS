@@ -11,12 +11,11 @@ import uuid
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import dcc, html, Input, Output, State
+from dash import dcc, html, Input, Output, State, ClientsideFunction
 from flask import jsonify, request
 from flask import session as flask_session
 
 from app import server
-from .funcs import get_js_flow
 
 TAG_BASE = "analysis"
 TAG = "analysis-upload"
@@ -40,7 +39,7 @@ def layout(pathname, search, **kwargs):
     children_button = [icon_plus, span_upload]
 
     # define uuid to session
-    flask_session["uuid"] = str(uuid.uuid4())
+    # flask_session["uuid"] = str(uuid.uuid4())
 
     # return result
     return html.Div(children=[
@@ -54,16 +53,31 @@ def layout(pathname, search, **kwargs):
 
         # upload with flow.js <input and js>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
-        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-flow"),
-        fuc.FefferyExecuteJs(jsString=get_js_flow(
-            id_div=f"id-{TAG}-div-flow",
-            id_button=f"id-{TAG}-upload-flow",
-            id_storage=f"id-{TAG}-storage-flow",
-        )),
+        fuc.FefferySessionStorage(id=f"id-key-flow"),
+        dcc.Store(id=f"id-{TAG}-store-flow", data={
+            "id_div": f"id-{TAG}-div-flow",
+            "id_button": f"id-{TAG}-upload-flow",
+        }),
+        # fuc.FefferyExecuteJs(jsString=get_js_flow(
+        #     id_div=f"id-{TAG}-div-flow",
+        #     id_button=f"id-{TAG}-upload-flow",
+        #     id_storage=f"id-{TAG}-storage-flow",
+        # )),
 
         # define style
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
+
+
+dash.clientside_callback(
+    ClientsideFunction(
+        namespace="clientside",
+        function_name="render_flow",
+    ),
+    Output(f"id-{TAG}-div-flow", "children"),
+    Input(f"id-{TAG}-store-flow", "data"),
+    prevent_initial_call=False,
+)
 
 
 @dash.callback(
@@ -114,11 +128,14 @@ def _route_upload():
 
 @dash.callback(
     Output(f"id-{TAG}-result-flow", "children"),
-    Input(f"id-{TAG}-storage-flow", "data"),
+    Input(f"id-key-flow", "data"),
 )
 def _upload_file_flow(data_storage):
     if data_storage is None:
         return None
+    print(flask_session)
 
     # return result
+    if not flask_session.get("uuid"):
+        flask_session["uuid"] = str(uuid.uuid4())
     return html.Span(str(data_storage))

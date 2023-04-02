@@ -32,5 +32,23 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
                 }));
             });
         },
+
+        render_flow: function (data) {
+            console.log('render flow: ' + String(data));
+            // add input to div
+            let div = document.getElementById(data['id_div']);
+            div.innerHTML = "<input id='id-input-file' type='file' name='file'/>";
+
+            // bind button click event to input click
+            document.getElementById(data['id_button']).addEventListener('click', function () {
+                document.getElementById('id-input-file').click();
+            });
+
+            // bind input change event to flow upload
+            document.getElementById('id-input-file').addEventListener('change', function (event) {
+                flow.addFile(event.target.files[0]);
+                flow.upload();
+            });
+        },
     },
 });
