@@ -22,7 +22,7 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    # define data
+    # define params
     params_chart = dict(
         # chart id
         id_div=f"id-{TAG}-div-chart",  # div to show chart

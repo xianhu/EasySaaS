@@ -45,10 +45,10 @@ def layout(pathname, search, **kwargs):
 
         # upload with flow.js <input and storage>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
-        dcc.Store(id=f"id-{TAG}-params-flow", data={
-            "id_div": f"id-{TAG}-div-flow",
-            "id_button": f"id-{TAG}-upload-flow",
-        }),
+        dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
+            id_div=f"id-{TAG}-div-flow",
+            id_button=f"id-{TAG}-upload-flow",
+        )),
         fuc.FefferySessionStorage(id="id-storage-flow"),
 
         # define style
