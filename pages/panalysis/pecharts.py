@@ -46,7 +46,7 @@ def layout(pathname, search, **kwargs):
 # trigger clientside callback
 dash.clientside_callback(
     ClientsideFunction(
-        namespace="clientside",
+        namespace="ns_echarts",
         function_name="render_chart",
     ),
     Output(f"id-{TAG}-div-chart", "children"),

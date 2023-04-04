@@ -59,7 +59,7 @@ def layout(pathname, search, **kwargs):
 # trigger clientside callback
 dash.clientside_callback(
     ClientsideFunction(
-        namespace="clientside",
+        namespace="ns_flow",
         function_name="render_flow",
     ),
     Output(f"id-{TAG}-div-flow", "children"),
