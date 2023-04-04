@@ -64,7 +64,7 @@ dash.clientside_callback(
     ),
     Output(f"id-{TAG}-div-flow", "data"),
     Input(f"id-{TAG}-params-flow", "data"),
-    prevent_initial_call=True,
+    prevent_initial_call=False,
 )
 
 

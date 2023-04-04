@@ -14,8 +14,8 @@ const flow = new Flow({
 console.log('flow object created');
 
 // define flow events
-flow.on('fileAdded', function (file, event) {
-    console.log('file added', event);
+flow.on('fileAdded', function (file) {
+    console.log('file added');
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileAdded',
         file_name: file.name,
