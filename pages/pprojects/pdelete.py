@@ -76,7 +76,7 @@ def _update_page(open_data, ok_counts, project):
         # commit to database
         app_db.session.commit()
 
-        # update page
+        # update modal and return
         out_modal["visible"] = False
         return out_name, out_modal, time.time()
 

@@ -123,7 +123,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
             ).update({Project.desc: desc})
             app_db.session.commit()
 
-        # update page
+        # update modal and return
         out_modal["visible"] = False
         return out_name, out_desc, out_modal, time.time()
 

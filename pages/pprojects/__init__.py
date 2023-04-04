@@ -65,7 +65,7 @@ def layout(pathname, search, **kwargs):
         # define components of modal
         modal_addedit, data_addedit_open, data_addedit_close, data_addedit_project,
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
-        # define components of others
+        # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")
 

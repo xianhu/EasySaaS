@@ -45,13 +45,13 @@ def layout(pathname, search, **kwargs):
 
         # upload with flow.js <input and storage>
         html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
-        dcc.Store(id=f"id-{TAG}-params-flow", data={
-            "id_div": f"id-{TAG}-div-flow",
-            "id_button": f"id-{TAG}-upload-flow",
-        }),
+        dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
+            id_div=f"id-{TAG}-div-flow",
+            id_button=f"id-{TAG}-upload-flow",
+        )),
         fuc.FefferySessionStorage(id="id-storage-flow"),
 
-        # define style
+        # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
 
@@ -59,10 +59,10 @@ def layout(pathname, search, **kwargs):
 # trigger clientside callback
 dash.clientside_callback(
     ClientsideFunction(
-        namespace="clientside",
+        namespace="ns_flow",
         function_name="render_flow",
     ),
-    Output(f"id-{TAG}-div-flow", "children"),
+    Output(f"id-{TAG}-div-flow", "data"),
     Input(f"id-{TAG}-params-flow", "data"),
     prevent_initial_call=False,
 )
@@ -73,10 +73,10 @@ dash.clientside_callback(
     Input(f"id-storage-flow", "data"),
     prevent_initial_call=True,
 )
-def _update_page(storage_flow):
-    if storage_flow is None:
+def _update_page(data_storage):
+    if data_storage is None:
         return None
-    return html.Span(str(storage_flow))
+    return html.Span(str(data_storage))
 
 
 @server.route("/upload", methods=["POST"])

@@ -74,8 +74,10 @@ def layout(pathname, search, **kwargs):
     # return result
     return fac.AntdLayout(children=[
         sider, main,
+        # define components of others
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")
 

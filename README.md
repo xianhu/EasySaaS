@@ -1,7 +1,8 @@
 # EasySaaS
 
-This project will be attempted to make a great starting point for your next big business as easy and efficient as possible. This project will create an easy way to build a SaaS
-application using Python、Dash and feffery-xxx-components.
+This project will be attempted to make a great starting point for your next big business as easy and efficient as possible.
+This project will create an easy way to build a SaaS application using Python、Dash and feffery-xxx-components.
+This project also show you how to use Dash effectively and efficiently.
 
 ## Install For Development
 
@@ -17,7 +18,7 @@ docker inspect mysql/redis | grep IPAddress
 ### Update System Environs
 
 ```
-vim .bash_profile
+vim .bash_profile / .zshrc
 
 # export ES_APP_DOMAIN=http://127.0.0.1
 # export ES_SECRET_KEY=xxxxxxxxxxxxxxxxxxx
@@ -31,7 +32,7 @@ vim .bash_profile
 # export ES_DATABASE_URI=sqlite:///{DIR}/main.db
 # mysql+pymysql://user:password@host:port/dbname
 
-source .bash_profile
+source .bash_profile / .zshrc
 ```
 
 ### Install venv And requirements.txt
