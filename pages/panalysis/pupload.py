@@ -51,7 +51,7 @@ def layout(pathname, search, **kwargs):
         )),
         fuc.FefferySessionStorage(id="id-storage-flow"),
 
-        # define style
+        # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
 
@@ -62,9 +62,9 @@ dash.clientside_callback(
         namespace="ns_flow",
         function_name="render_flow",
     ),
-    Output(f"id-{TAG}-div-flow", "children"),
+    Output(f"id-{TAG}-div-flow", "data"),
     Input(f"id-{TAG}-params-flow", "data"),
-    prevent_initial_call=False,
+    prevent_initial_call=True,
 )
 
 
@@ -73,10 +73,10 @@ dash.clientside_callback(
     Input(f"id-storage-flow", "data"),
     prevent_initial_call=True,
 )
-def _update_page(storage_flow):
-    if storage_flow is None:
+def _update_page(data_storage):
+    if data_storage is None:
         return None
-    return html.Span(str(storage_flow))
+    return html.Span(str(data_storage))
 
 
 @server.route("/upload", methods=["POST"])

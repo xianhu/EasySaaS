@@ -1,5 +1,5 @@
 /**
- * dash clientside callbacks
+ * dash clientside callbacks - ns_flow
  * @type {any}
  */
 window.dash_clientside = Object.assign({}, window.dash_clientside, {

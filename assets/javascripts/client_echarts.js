@@ -1,5 +1,5 @@
 /**
- * dash clientside callbacks - echarts
+ * dash clientside callbacks - ns_echarts
  * @type {any}
  */
 window.dash_clientside = Object.assign({}, window.dash_clientside, {

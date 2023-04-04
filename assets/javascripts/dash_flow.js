@@ -15,7 +15,7 @@ console.log('flow object created');
 
 // define flow events
 flow.on('fileAdded', function (file, event) {
-    console.log('file added');
+    console.log('file added', event);
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileAdded',
         file_name: file.name,
@@ -31,7 +31,7 @@ flow.on('fileProgress', function (file) {
 
 // define flow events
 flow.on('fileSuccess', function (file, message) {
-    console.log('file success');
+    console.log('file success', message);
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileSuccess',
         file_name: file.name,
@@ -41,7 +41,7 @@ flow.on('fileSuccess', function (file, message) {
 
 // define flow events
 flow.on('fileError', function (file, message) {
-    console.log('file error');
+    console.log('file error', message);
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileError',
         file_name: file.name,
