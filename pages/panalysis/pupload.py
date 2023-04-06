@@ -39,19 +39,19 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return html.Div(children=[
-        # upload with flow.js <button and result>
+        # upload with flow.js
+        html.Div(className="d-none", id=f"id-{TAG}-div-flow"),
         fac.AntdButton(children_button, id=f"id-{TAG}-upload-flow"),
-        html.Div(id=f"id-{TAG}-result-flow", className="mt-2"),
+        fuc.FefferySessionStorage(id="id-storage-flow"),
 
-        # upload with flow.js <input and storage>
-        html.Div(id=f"id-{TAG}-div-flow", className="d-none"),
+        # params to trigger clientside callback
         dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
             id_div=f"id-{TAG}-div-flow",
             id_button=f"id-{TAG}-upload-flow",
         )),
-        fuc.FefferySessionStorage(id="id-storage-flow"),
 
-        # define style of this page
+        # define message and style
+        html.Div(id=f"id-{TAG}-message-flow"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className=None)
 
@@ -69,14 +69,15 @@ dash.clientside_callback(
 
 
 @dash.callback(
-    Output(f"id-{TAG}-result-flow", "children"),
+    Output(f"id-{TAG}-message-flow", "children"),
     Input(f"id-storage-flow", "data"),
     prevent_initial_call=True,
 )
 def _update_page(data_storage):
     if data_storage is None:
         return None
-    return html.Span(str(data_storage))
+    content = f"upload: {data_storage}"
+    return fac.AntdMessage(content=content, top=50)
 
 
 @server.route("/upload", methods=["POST"])

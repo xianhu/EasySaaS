@@ -37,7 +37,10 @@ def layout(pathname, search, **kwargs):
         # define components
         html.Div(id=f"id-{TAG}-div-chart", style={"height": "500px"}),  # div to show chart
         fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
-        dcc.Store(id=f"id-{TAG}-params-chart", data=params_chart),  # params to trigger clientside callback
+
+        # params to trigger clientside callback
+        dcc.Store(id=f"id-{TAG}-params-chart", data=params_chart),
+
         # define message and style
         html.Div(id=f"id-{TAG}-message-chart"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
