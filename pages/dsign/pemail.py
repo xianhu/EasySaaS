@@ -42,24 +42,26 @@ def layout(pathname, search, **kwargs):
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # define components
-    checkbox_terms = fac.AntdFormItem(children=[
-        fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms", className="me-2"),
-        html.Span(children=[
-            "I agree to ", html.A("terms of use", href="#"),
-            " and ", html.A("privacy policy", href="#"), ".",
-        ], className="text-muted"),
-    ], id=f"id-{TAG}-form-terms", className=("d-none" if pathname == PATH_FORGOTPWD else ""))
+    checkbox_terms = fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms", className="me-2")
+    span_terms = html.Span(children=[
+        "I agree to ", html.A("terms of use", href="#"),
+        " and ", html.A("privacy policy", href="#"), ".",
+    ], className="text-muted")
+
+    # define components
+    class_terms = "" if pathname == PATH_SIGNUP else "d-none"
+    form_terms = fac.AntdFormItem([checkbox_terms, span_terms], id=f"id-{TAG}-form-terms", className=class_terms)
 
     # define kwargs
     kwargs_temp = dict(
         text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
-        form_items=[form_email, row_cpc, checkbox_terms],
+        form_items=[form_email, row_cpc, form_terms],
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
-        form_items=[form_email, row_cpc, checkbox_terms],
+        form_items=[form_email, row_cpc, form_terms],
         data=PATH_FORGOTPWD,
     )
 

@@ -34,7 +34,7 @@ def layout(pathname, search, **kwargs):
     # return result
     return html.Div(children=[
         get_component_header(
-            children_left=get_component_logo(style_logo="normal"),
+            children_left=get_component_logo(size=20),
             children_right=get_component_header_user(user_title=user_title, dot=True),
         ),
         fac.AntdTabs(children=[
