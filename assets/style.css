@@ -8,10 +8,15 @@
 
 }
 
+@font-face {
+    font-family: "Raleway";
+    src: url("fonts/Raleway.ttf");
+}
+
 /* ----------------------------------------------------- */
 
 body {
-    font-family: sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 /* ----------------------------------------------------- */
