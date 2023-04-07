@@ -28,7 +28,7 @@ def get_component_header(children_left, children_right, children_middle=None):
     """
     class_row = "bg-white border-bottom sticky-top px-4 py-2"
     return fac.AntdRow(children=[
-        fac.AntdCol(children_left),
-        fac.AntdCol(children_middle),
-        fac.AntdCol(children_right),
+        fac.AntdCol(children_left, className=None),
+        fac.AntdCol(children_middle, className=None),
+        fac.AntdCol(children_right, className=None),
     ], align="middle", justify="space-between", className=class_row)

@@ -14,7 +14,8 @@ from dash import Input, Output, State, dcc, html
 
 from utility.paths import PATH_ANALYSIS
 from . import paddedit, pdelete
-from ..comps import header as comps_header
+from ..comps import get_component_logo
+from ..comps.header import get_component_header, get_component_header_user
 
 TAG = "projects"
 
@@ -57,7 +58,10 @@ def layout(pathname, search, **kwargs):
     # return result
     return html.Div(children=[
         # define components
-        comps_header.get_component_header(user_title=user_title, dot=True),
+        get_component_header(
+            children_left=get_component_logo(style_logo="normal"),
+            children_right=get_component_header_user(user_title=user_title, dot=True),
+        ),
         html.Div(children=[
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
             fac.AntdSpin(html.Div(id=f"id-{TAG}-div-table", className="mt-2")),
