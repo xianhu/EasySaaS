@@ -8,17 +8,8 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import dcc, html
 
-from config import CONFIG_APP_NAME
 from utility.paths import PATH_FORGOTPWD, PATH_LOGIN, PATH_SIGNUP
-
-STYLE_PAGE = """
-    .logo {
-        font-family: "Raleway";
-        font-size: 40px;
-        font-weight: 900;
-        color: black;
-    }
-"""
+from ..comps import get_component_logo
 
 
 def layout(pathname, search, tag, **kwargs):
@@ -50,18 +41,24 @@ def layout(pathname, search, tag, **kwargs):
         html.Div(kwargs["text_title"], className="text-center fs-2"),
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
+        # define components
         fac.AntdForm(kwargs["form_items"], id=f"id-{tag}-form", className="mt-4"),
+
+        # define components
+        html.Div(kwargs["checkbox_terms"], className="mt-4"),
         fac.AntdButton(text_button, id=f"id-{tag}-button", **kwargs_button),
 
+        # define components
         fac.AntdRow(a_list, align="middle", justify="space-between", className="mt-1"),
     ], className="bg-white p-4 shadow rounded", span=20, md=6), align="center", className=None)
 
+    # define components
+    logo = html.Div(get_component_logo(), className="text-center p-5 pb-4")
+
     # return result
     return html.Div(children=[
-        html.Div(html.A(CONFIG_APP_NAME, href="/", className="logo "), className="p-5 pb-4 text-center"),
-        content,
+        logo, content,
         # define components
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE)
     ], className="vh-100 bg-main")

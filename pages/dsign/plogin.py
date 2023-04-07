@@ -44,6 +44,7 @@ def layout(pathname, search, **kwargs):
         text_title="Welcome back",
         text_subtitle="Login to analysis your data.",
         form_items=[form_email, form_pwd, row_cpc],
+        checkbox_terms=None,
         data=kwargs.get("nextpath") or PATH_ROOT,
     )
 

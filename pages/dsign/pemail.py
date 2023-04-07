@@ -11,7 +11,7 @@ import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_mail
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 from flask import session as flask_session
 
 from app import User, app_db, app_mail
@@ -41,16 +41,30 @@ def layout(pathname, search, **kwargs):
     image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
+    # define components
+    checkbox_terms = html.Div(children=[
+        fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms", className="me-2"),
+        html.Span(children=[
+            "I agree to ",
+            html.A("terms of use", href="#"),
+            " and ",
+            html.A("privacy policy", href="#"),
+            ".",
+        ], className="small text-muted"),
+    ], className=("d-none" if pathname == PATH_FORGOTPWD else ""))
+
     # define kwargs
     kwargs_temp = dict(
         text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
         form_items=[form_email, row_cpc],
+        checkbox_terms=checkbox_terms,
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
         form_items=[form_email, row_cpc],
+        checkbox_terms=checkbox_terms,
         data=PATH_FORGOTPWD,
     )
 
@@ -86,9 +100,10 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-input-email", "value"),
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
+    State(f"id-{TAG}-checkbox-terms", "checked"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, vcpc, vimage, pathname):
+def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     # define outputs
     out_email = dict(status="", help="")
     out_cpc = dict(status="", help="", refresh=False)

@@ -53,6 +53,7 @@ def layout(pathname, search, **kwargs):
         text_title="Set password",
         text_subtitle="Set the password of this email.",
         form_items=[form_email, form_pwd1, form_pwd2],
+        checkbox_terms=None,
         data=[pathname, email],
     )
 
