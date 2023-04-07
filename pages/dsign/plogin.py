@@ -41,7 +41,6 @@ def layout(pathname, search, **kwargs):
 
     # define kwargs
     kwargs_temp = dict(
-        src_image="illustrations/login.svg",
         text_title="Welcome back",
         text_subtitle="Login to analysis your data.",
         form_items=[form_email, form_pwd, row_cpc],

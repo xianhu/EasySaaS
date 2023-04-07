@@ -43,13 +43,11 @@ def layout(pathname, search, **kwargs):
 
     # define kwargs
     kwargs_temp = dict(
-        src_image="illustrations/signup.svg",
         text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
         form_items=[form_email, row_cpc],
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
-        src_image="illustrations/forgotpwd.svg",
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
         form_items=[form_email, row_cpc],

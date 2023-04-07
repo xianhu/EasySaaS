@@ -50,7 +50,6 @@ def layout(pathname, search, **kwargs):
 
     # define kwargs
     kwargs_temp = dict(
-        src_image="illustrations/setpwd.svg",
         text_title="Set password",
         text_subtitle="Set the password of this email.",
         form_items=[form_email, form_pwd1, form_pwd2],
