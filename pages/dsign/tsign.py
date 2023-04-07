@@ -38,24 +38,22 @@ def layout(pathname, search, tag, **kwargs):
     # define components
     kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
     content = fac.AntdCol(children=[
-        html.Div(kwargs["text_title"], className="text-center fs-2"),
+        html.Div(kwargs["text_title"], className="text-center fs-3"),
         html.Div(kwargs["text_subtitle"], className="text-center text-muted"),
 
         # define components
         fac.AntdForm(kwargs["form_items"], id=f"id-{tag}-form", className="mt-4"),
 
         # define components
-        fac.AntdButton(text_button, id=f"id-{tag}-button", **kwargs_button, className=None),
-
-        # define components
+        fac.AntdButton(text_button, id=f"id-{tag}-button", **kwargs_button),
         fac.AntdRow(a_list, align="middle", justify="space-between", className="mt-2"),
     ], span=20, md=6, className="bg-white shadow rounded p-4")
 
     # return result
     return html.Div(children=[
-        html.Div(get_component_logo(), className="text-center pt-5 pb-4"),
+        html.Div(get_component_logo(size=40), className="text-center pt-5 pb-4"),
         fac.AntdRow(content, align="center", justify="center", className=None),
         # define components
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
-    ], className="vh-100 bg-main")
+    ], className="bg-main vh-100")

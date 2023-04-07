@@ -10,22 +10,16 @@ from config import CONFIG_APP_NAME
 from utility.paths import PATH_ROOT
 
 
-def get_component_logo(style_logo="large"):
+def get_component_logo(size):
     """
     layout of component
     """
     # define style
     style_logo = {
         "color": "#000000",
-        "font-size": "40px",
         "font-weight": "900",
         "font-family": "Raleway",
-        "text-decoration": "none",
-    } if style_logo == "large" else {
-        "color": "#000000",
-        "font-size": "20px",
-        "font-weight": "900",
-        "font-family": "Raleway",
+        "font-size": f"{size}px",
         "text-decoration": "none",
     }
 
