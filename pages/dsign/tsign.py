@@ -43,9 +43,9 @@ def layout(pathname, search, tag, **kwargs):
 
         # define components
         fac.AntdForm(kwargs["form_items"], id=f"id-{tag}-form", className="mt-4"),
+        html.Div(kwargs["checkbox_terms"], className=("mb-4" if pathname == PATH_SIGNUP else None)),
 
         # define components
-        html.Div(kwargs["checkbox_terms"], className="mt-4"),
         fac.AntdButton(text_button, id=f"id-{tag}-button", **kwargs_button),
 
         # define components

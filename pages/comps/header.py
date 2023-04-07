@@ -22,11 +22,11 @@ def get_component_header_user(user_title, dot=True):
     ], title=user_title, buttonMode=True), dot=dot)
 
 
-def get_component_header(children_left, children_right, children_middle=None, class_row=None):
+def get_component_header(children_left, children_right, children_middle=None):
     """
     layout of component
     """
-    class_row = class_row or "bg-white border-bottom sticky-top px-4 py-2"
+    class_row = "bg-white border-bottom sticky-top px-4 py-2"
     return fac.AntdRow(children=[
         fac.AntdCol(children_left),
         fac.AntdCol(children_middle),
