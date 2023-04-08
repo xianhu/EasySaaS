@@ -88,11 +88,11 @@ def layout_result(pathname, search, **kwargs):
 ), dict(
     status=Output(f"id-{TAG}-form-cpc", "validateStatus"),
     help=Output(f"id-{TAG}-form-cpc", "help"),
-    refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
 ), dict(
     status=Output(f"id-{TAG}-form-terms", "validateStatus"),
     help=Output(f"id-{TAG}-form-terms", "help"),
 ), dict(
+    cpc_refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
     button_loading=Output(f"id-{TAG}-button", "loading"),
     executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
@@ -106,16 +106,15 @@ def layout_result(pathname, search, **kwargs):
 def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     # define outputs
     out_email = dict(status="", help="")
-    out_cpc = dict(status="", help="", refresh=False)
+    out_cpc = dict(status="", help="")
     out_terms = dict(status="", help="")
-    out_others = dict(button_loading=False, executejs_string=None)
+    out_others = dict(cpc_refresh=False, button_loading=False, executejs_string=None)
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        # out_cpc["refresh"] = True if email else False
         return out_email, out_cpc, out_terms, out_others
 
     # check captcha
@@ -123,10 +122,10 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     if (not vcpc) or (vcpc != vimage):
         out_cpc["status"] = "error"
         out_cpc["help"] = "Captcha is incorrect"
-        out_cpc["refresh"] = True if vcpc else False
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_cpc, out_terms, out_others
 
-    # check terms
+    # check terms if signup
     if pathname == PATH_SIGNUP and (not checked):
         out_terms["status"] = "error"
         out_terms["help"] = "Please agree to terms of use and privacy policy"
@@ -138,12 +137,12 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     if pathname == PATH_SIGNUP and (user and (user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
-        out_cpc["refresh"] = True
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_cpc, out_terms, out_others
     if pathname == PATH_FORGOTPWD and (not (user and user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
-        out_cpc["refresh"] = True
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_cpc, out_terms, out_others
 
     # send email and add/update user ==============================================================
@@ -167,12 +166,14 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
 
     # add/update user
     if not user:
+        # add user if signup
         user = User(id=_id, email=email, token_verify=token, status=0)
         app_db.session.add(user)
         app_db.session.commit()
     else:
+        # update user if forgotpwd
         user.token_verify = token
-        # user.status = 0 !!!
+        # user.status = 0 !!!!!!
         app_db.session.commit()
     # =============================================================================================
 

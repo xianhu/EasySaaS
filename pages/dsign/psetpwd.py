@@ -120,9 +120,9 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
     user.set_password_hash(pwd1)
     user.token_verify = None
     user.status = 1
-    app_db.session.commit()
 
     # go to result page
+    app_db.session.commit()
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
