@@ -60,7 +60,7 @@ def layout(pathname, search, **kwargs):
         # define components
         get_component_header(
             children_left=get_component_logo(size=20),
-            children_right=get_component_header_user(user_title=user_title, dot=True),
+            children_right=get_component_header_user(user_title, dot=True),
         ),
         html.Div(children=[
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
