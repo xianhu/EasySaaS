@@ -11,14 +11,14 @@ import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 import flask_mail
-from dash import Input, Output, State
+from dash import Input, Output, State, html
 from flask import session as flask_session
 
 from app import User, app_db, app_mail
 from config import CONFIG_APP_DOMAIN, CONFIG_APP_NAME
 from utility import get_md5
 from utility.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from utility.paths import PATH_FORGOTPWD, PATH_SIGNUP
+from utility.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from . import tsign
 from .. import palert
 
@@ -41,18 +41,27 @@ def layout(pathname, search, **kwargs):
     image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
+    # define components
+    checkbox_terms = fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms", className="me-2")
+    span_terms = html.Span(children=[
+        "I agree to ", html.A("terms of use", href="#"),
+        " and ", html.A("privacy policy", href="#"), ".",
+    ], className="text-muted")
+
+    # define components
+    class_terms = "" if pathname == PATH_SIGNUP else "d-none"
+    form_terms = fac.AntdFormItem([checkbox_terms, span_terms], id=f"id-{TAG}-form-terms", className=class_terms)
+
     # define kwargs
     kwargs_temp = dict(
-        src_image="illustrations/signup.svg",
         text_title="Welcome to system",
         text_subtitle="Fill out the email to get started.",
-        form_items=[form_email, row_cpc],
+        form_items=[form_email, row_cpc, form_terms],
         data=PATH_SIGNUP,
     ) if pathname == PATH_SIGNUP else dict(
-        src_image="illustrations/forgotpwd.svg",
         text_title="Forgot password?",
         text_subtitle="Fill out the email to reset password.",
-        form_items=[form_email, row_cpc],
+        form_items=[form_email, row_cpc, form_terms],
         data=PATH_FORGOTPWD,
     )
 
@@ -69,7 +78,7 @@ def layout_result(pathname, search, **kwargs):
         text_title="Sending success",
         text_subtitle=f"An email has sent to {email}.",
         text_button="Now, go to mailbox!",
-        return_href=None,
+        return_href=PATH_ROOT,
     ))
 
 
@@ -79,8 +88,11 @@ def layout_result(pathname, search, **kwargs):
 ), dict(
     status=Output(f"id-{TAG}-form-cpc", "validateStatus"),
     help=Output(f"id-{TAG}-form-cpc", "help"),
-    refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
 ), dict(
+    status=Output(f"id-{TAG}-form-terms", "validateStatus"),
+    help=Output(f"id-{TAG}-form-terms", "help"),
+), dict(
+    cpc_refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
     button_loading=Output(f"id-{TAG}-button", "loading"),
     executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
@@ -88,29 +100,36 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-input-email", "value"),
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
+    State(f"id-{TAG}-checkbox-terms", "checked"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, vcpc, vimage, pathname):
+def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     # define outputs
     out_email = dict(status="", help="")
-    out_cpc = dict(status="", help="", refresh=False)
-    out_others = dict(button_loading=False, executejs_string=None)
+    out_cpc = dict(status="", help="")
+    out_terms = dict(status="", help="")
+    out_others = dict(cpc_refresh=False, button_loading=False, executejs_string=None)
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        # out_cpc["refresh"] = True if email else False
-        return out_email, out_cpc, out_others
+        return out_email, out_cpc, out_terms, out_others
 
     # check captcha
     vcpc = (vcpc or "").strip()
     if (not vcpc) or (vcpc != vimage):
         out_cpc["status"] = "error"
         out_cpc["help"] = "Captcha is incorrect"
-        out_cpc["refresh"] = True if vcpc else False
-        return out_email, out_cpc, out_others
+        out_others["cpc_refresh"] = True if vcpc else False
+        return out_email, out_cpc, out_terms, out_others
+
+    # check terms if signup
+    if pathname == PATH_SIGNUP and (not checked):
+        out_terms["status"] = "error"
+        out_terms["help"] = "Please agree to terms of use and privacy policy"
+        return out_email, out_cpc, out_terms, out_others
 
     # check user
     _id = get_md5(email)
@@ -118,13 +137,13 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     if pathname == PATH_SIGNUP and (user and (user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
-        out_cpc["refresh"] = True
-        return out_email, out_cpc, out_others
+        out_others["cpc_refresh"] = True if vcpc else False
+        return out_email, out_cpc, out_terms, out_others
     if pathname == PATH_FORGOTPWD and (not (user and user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
-        out_cpc["refresh"] = True
-        return out_email, out_cpc, out_others
+        out_others["cpc_refresh"] = True if vcpc else False
+        return out_email, out_cpc, out_terms, out_others
 
     # send email and add/update user ==============================================================
     token = user.token_verify if user and user.token_verify else str(uuid.uuid4())
@@ -147,12 +166,14 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
 
     # add/update user
     if not user:
+        # add user if signup
         user = User(id=_id, email=email, token_verify=token, status=0)
         app_db.session.add(user)
         app_db.session.commit()
     else:
+        # update user if forgotpwd
         user.token_verify = token
-        # user.status = 0 !!!
+        # user.status = 0 !!!!!!
         app_db.session.commit()
     # =============================================================================================
 
@@ -161,4 +182,4 @@ def _button_click(n_clicks, email, vcpc, vimage, pathname):
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result
-    return out_email, out_cpc, out_others
+    return out_email, out_cpc, out_terms, out_others

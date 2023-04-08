@@ -18,6 +18,9 @@ app_celery = Celery(
     __name__,
     broker=broker,
     backend=backend,
+    accept_content=["json", ],
+    task_serializer="json",
+    result_serializer="json",
     include=[
         "pages.panalysis.ptasks",
     ],

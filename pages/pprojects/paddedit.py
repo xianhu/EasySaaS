@@ -85,12 +85,10 @@ def _update_page(open_data, ok_counts, name, desc, project):
         out_name["readonly"] = False if is_add else True
         out_desc["value"] = "" if is_add else project["desc"]
         out_desc["readonly"] = False if is_add else False
-
-        # update modal
-        out_modal["visible"] = True
         out_modal["title"] = f"{'Add' if is_add else 'Edit'} Project"
 
-        # return result
+        # update modal and return
+        out_modal["visible"] = True
         return out_name, out_desc, out_modal, dash.no_update
 
     # check triggered_id

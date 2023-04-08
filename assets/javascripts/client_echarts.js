@@ -29,11 +29,11 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
             // set option
             chart.setOption(option);
 
-            // event listener
-            chart.on('click', function (params) {
+            // bind event listener
+            chart.on('click', function (event) {
                 sessionStorage.setItem(id_storage, JSON.stringify({
-                    name: params.name,
-                    value: params.value,
+                    name: event.name,
+                    value: event.value,
                     _timestamp: new Date().getTime(),
                 }));
             });

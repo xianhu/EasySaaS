@@ -9,7 +9,8 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import html
 
-from ..comps import header as comps_header
+from ..comps import get_component_logo
+from ..comps.header import get_component_header, get_component_header_user
 
 TAG = "user"
 
@@ -32,10 +33,15 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return html.Div(children=[
-        comps_header.get_component_header(user_title=user_title, dot=True),
+        get_component_header(
+            children_left=get_component_logo(size=20),
+            children_right=get_component_header_user(user_title, dot=True),
+        ),
+        # define components
         fac.AntdTabs(children=[
             fac.AntdTabPane(div_profile, key="profile", tab="Profile"),
             fac.AntdTabPane(div_settings, key="settings", tab="Settings"),
         ], tabPosition="left", className="w-75 m-auto mt-4"),
+        # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")

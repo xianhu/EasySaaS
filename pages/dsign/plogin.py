@@ -41,7 +41,6 @@ def layout(pathname, search, **kwargs):
 
     # define kwargs
     kwargs_temp = dict(
-        src_image="illustrations/login.svg",
         text_title="Welcome back",
         text_subtitle="Login to analysis your data.",
         form_items=[form_email, form_pwd, row_cpc],
@@ -61,8 +60,8 @@ def layout(pathname, search, **kwargs):
 ), dict(
     status=Output(f"id-{TAG}-form-cpc", "validateStatus"),
     help=Output(f"id-{TAG}-form-cpc", "help"),
-    refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
 ), dict(
+    cpc_refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
     button_loading=Output(f"id-{TAG}-button", "loading"),
     executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
@@ -77,15 +76,14 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     # define outputs
     out_email = dict(status="", help="")
     out_pwd = dict(status="", help="")
-    out_cpc = dict(status="", help="", refresh=False)
-    out_others = dict(button_loading=False, executejs_string=None)
+    out_cpc = dict(status="", help="")
+    out_others = dict(cpc_refresh=False, button_loading=False, executejs_string=None)
 
     # check email
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        # out_cpc["refresh"] = True if email else False
         return out_email, out_pwd, out_cpc, out_others
 
     # check captcha
@@ -93,7 +91,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     if (not vcpc) or (vcpc != vimage):
         out_cpc["status"] = "error"
         out_cpc["help"] = "Captcha is incorrect"
-        out_cpc["refresh"] = True if vcpc else False
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_pwd, out_cpc, out_others
 
     # check user
@@ -102,7 +100,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     if not (user and user.status == 1):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
-        out_cpc["refresh"] = True
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_pwd, out_cpc, out_others
 
     # check password
@@ -110,7 +108,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     if not user.check_password_hash(pwd):
         out_pwd["status"] = "error"
         out_pwd["help"] = "Password is incorrect"
-        out_cpc["refresh"] = True
+        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_pwd, out_cpc, out_others
 
     # login user and go nextpath
