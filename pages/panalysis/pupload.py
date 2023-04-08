@@ -32,17 +32,11 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    # define components
-    icon_plus = fac.AntdIcon(icon="antd-plus")
-    span_upload = html.Span("Upload", className="ms-1")
-    children_button = [icon_plus, span_upload]
-
-    # return result
     return html.Div(children=[
         # upload with flow.js
         html.Div(className="d-none", id=f"id-{TAG}-div-flow"),
-        fac.AntdButton(children_button, id=f"id-{TAG}-upload-flow"),
-        fuc.FefferySessionStorage(id="id-storage-flow"),
+        fac.AntdButton("Upload File", id=f"id-{TAG}-upload-flow"),
+        fuc.FefferySessionStorage(id="id-storage-flow"),  # fixed id
 
         # params to trigger clientside callback
         dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
@@ -87,7 +81,7 @@ def _route_upload():
         flask_session["uuid"] = str(uuid.uuid4())
     str_uuid = flask_session.get("uuid")
 
-    # get file_name and target_file
+    # get file_name and file_target
     file_name = request.form.get("flowFilename")
     file_target = os.path.join("/tmp", f"{str_uuid}_{file_name}")
 
