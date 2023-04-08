@@ -18,7 +18,7 @@ from app import User, app_db, app_mail
 from config import CONFIG_APP_DOMAIN, CONFIG_APP_NAME
 from utility import get_md5
 from utility.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from utility.paths import PATH_FORGOTPWD, PATH_SIGNUP
+from utility.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from . import tsign
 from .. import palert
 
@@ -78,7 +78,7 @@ def layout_result(pathname, search, **kwargs):
         text_title="Sending success",
         text_subtitle=f"An email has sent to {email}.",
         text_button="Now, go to mailbox!",
-        return_href=None,
+        return_href=PATH_ROOT,
     ))
 
 

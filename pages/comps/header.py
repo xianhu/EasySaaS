@@ -9,7 +9,7 @@ import feffery_antd_components as fac
 from utility.paths import *
 
 
-def get_component_header_user(user_title, dot=True):
+def get_component_header_user(user_title, dot=False):
     """
     layout of component
     """
