@@ -57,11 +57,11 @@ def layout(pathname, search, **kwargs):
 
     # return result
     return html.Div(children=[
-        # define components
         get_component_header(
             children_left=get_component_logo(size=20),
             children_right=get_component_header_user(user_title, dot=True),
         ),
+        # define components
         html.Div(children=[
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
             fac.AntdSpin(html.Div(id=f"id-{TAG}-div-table", className="mt-2")),

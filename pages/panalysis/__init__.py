@@ -16,7 +16,7 @@ from dash import Input, Output, State, dcc, html
 from . import pecharts, ptasks, pupload
 from .routers import ROUTER_MENU
 from .. import palert
-from ..comps import header as comps_header
+from ..comps.header import get_component_header, get_component_header_user
 
 TAG = "analysis"
 
@@ -62,9 +62,9 @@ def layout(pathname, search, **kwargs):
 
     # define components
     main = fac.AntdContent(children=[
-        comps_header.get_component_header(
+        get_component_header(
             children_left=html.Div("Loading...", id=f"id-{TAG}-header"),
-            children_right=comps_header.get_component_header_user(user_title, dot=True),
+            children_right=get_component_header_user(user_title, dot=True),
         ),
         fuc.FefferyTopProgress(children=[
             html.Div(id=f"id-{TAG}-content", className="px-4 py-4"),
@@ -75,8 +75,8 @@ def layout(pathname, search, **kwargs):
     return fac.AntdLayout(children=[
         sider, main,
         # define components of others
-        dcc.Store(id=f"id-{TAG}-data", data=store_data),
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        dcc.Store(id=f"id-{TAG}-data", data=store_data),
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="bg-main vh-100 overflow-auto")
