@@ -77,11 +77,13 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
 
             // bind input change event to flow upload
             document.getElementById(id_input).addEventListener('change', function (event) {
-                console.log('input change: ' + event.target.files[0]);
-                // check file size or type in here
+                // check file size or type here
+                console.log(event.target.files[0]);
 
                 flow.addFile(event.target.files[0]);
                 flow.upload();  // or triggered by session[id-storage-flow]
+                // reset input value
+                // event.target.value = '';
             });
         },
     },
