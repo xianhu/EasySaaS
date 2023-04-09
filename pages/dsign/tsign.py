@@ -56,4 +56,4 @@ def layout(pathname, search, tag, **kwargs):
         # define components
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
         dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
-    ], className="bg-main vh-100 overflow-auto")
+    ], className="vh-100 overflow-auto")

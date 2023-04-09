@@ -15,10 +15,31 @@
     src: url("fonts/Raleway.ttf");
 }
 
+@font-face {
+    font-family: "Raleway-Bold";
+    src: url("fonts/Raleway-Bold.ttf");
+}
+
+@font-face {
+    font-family: "NotoSans";
+    src: url("fonts/NotoSans.ttf");
+}
+
+@font-face {
+    font-family: "NotoSans-Bold";
+    src: url("fonts/NotoSans-Bold.ttf");
+}
+
+/* ----------------------------------------------------- */
+
+body {
+    font-family: NotoSans, Noto Sans, sans-serif, Arial;
+}
+
 /* ----------------------------------------------------- */
 
 .bg-main {
-    background-color: #f0f2f5;
+    background-color: #f0f2f5 !important;
 }
 
 /* ----------------------------------------------------- */

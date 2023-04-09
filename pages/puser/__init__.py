@@ -44,4 +44,4 @@ def layout(pathname, search, **kwargs):
         ], tabPosition="left", className="w-75 m-auto mt-4"),
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-    ], className="bg-main vh-100 overflow-auto")
+    ], className="vh-100 overflow-auto")

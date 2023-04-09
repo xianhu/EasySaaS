@@ -71,7 +71,7 @@ def layout(pathname, search, **kwargs):
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-    ], className="bg-main vh-100 overflow-auto")
+    ], className="vh-100 overflow-auto")
 
 
 @dash.callback([
