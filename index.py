@@ -19,7 +19,7 @@ from utility.paths import *
 
 # application layout
 app.layout = html.Div(children=[
-    html.Div(id="id-content"),
+    html.Div(id="id-content", className="bg-main"),
     # define components
     fuc.FefferyExecuteJs(id="id-executejs"),
     dcc.Location(id="id-location", refresh=False),

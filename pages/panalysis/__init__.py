@@ -79,7 +79,7 @@ def layout(pathname, search, **kwargs):
         dcc.Store(id=f"id-{TAG}-data", data=store_data),
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-    ], className="bg-main vh-100 overflow-auto")
+    ], className="vh-100 overflow-auto")
 
 
 @dash.callback([dict(
