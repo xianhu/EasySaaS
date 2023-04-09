@@ -1,7 +1,9 @@
 /**
- * dash clientside callbacks - ns_echarts
- * @type {any}
+ * js_echarts: include init and client side callbacks
  */
+// initial code
+
+// client side callbacks
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     ns_echarts: {
         render_chart: function (params) {
