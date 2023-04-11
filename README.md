@@ -4,8 +4,6 @@ This project will be attempted to make a great starting point for your next big 
 This project will create an easy way to build a SaaS application using Python、Dash and feffery-xxx-components.
 This project also show you how to use Dash effectively and efficiently.
 
-## Install For Development
-
 ### Run mysql And redis By Docker
 
 ```
@@ -44,22 +42,7 @@ source .venv/bin/activate / deactivate
 pip3 install -r requirements.txt
 ```
 
-### Run uwsgi, Config File: aconfig/uwsgi.ini
-
-```
-.venv/bin/uwsgi --ini aconfig/uwsgi.ini
-.venv/bin/uwsgi --reload index.pid
-.venv/bin/uwsgi --stop index.pid
-```
-
-### Run nginx By Docker, Config File: aconfig/nginx.conf
-
-```
-docker run --name nginx -v {DIR}/aconfig/nginx.conf:/etc/nginx/nginx.conf:ro \ 
-                        -v /tmp/:/tmp/ -p 80:80 -p 443:443 -d nginx
-```
-
-## Others
+### Run Application With uwsgi / unicorn
 
 ### Frontend
 

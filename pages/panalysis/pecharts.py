@@ -55,7 +55,6 @@ dash.clientside_callback(
     ),
     Output(f"id-{TAG}-div-chart", "data"),
     Input(f"id-{TAG}-params-chart", "data"),
-    prevent_initial_call=False,
 )
 
 
