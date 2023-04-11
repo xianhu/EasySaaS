@@ -5,7 +5,8 @@
 /* ----------------------------------------------------- */
 
 :root {
-
+    --color-primary: #E5534D;
+    --color-secondary: #B0B0B0;
 }
 
 /* ----------------------------------------------------- */
@@ -33,6 +34,8 @@
 /* ----------------------------------------------------- */
 
 body {
+    overflow-x: hidden;
+    -ms-overflow-x: hidden;
     font-family: NotoSans, Noto Sans, sans-serif, Arial;
 }
 

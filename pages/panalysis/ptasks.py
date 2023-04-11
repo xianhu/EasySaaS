@@ -25,7 +25,7 @@ def layout(pathname, search, **kwargs):
         fac.AntdButton("Run Task", id=f"id-{TAG}-button-run"),
         html.Div(id=f"id-{TAG}-div-time"),
         html.Div(id=f"id-{TAG}-div-output"),
-    ], className=None)
+    ], className="vh-100 overflow-auto px-4 py-3")
 
 
 @dash.callback(
