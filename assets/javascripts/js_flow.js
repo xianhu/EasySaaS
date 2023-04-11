@@ -26,12 +26,6 @@ flow.on('fileAdded', function (file) {
 // define flow events
 flow.on('fileProgress', function (file) {
     let percent = Math.floor(file.progress() * 100);
-    // sessionStorage.setItem('id-storage-flow', JSON.stringify({
-    //     status: 'fileProgress',
-    //     file_name: file.name,
-    //     percent: percent,
-    //     _timestamp: new Date().getTime(),
-    // }));
     console.log('file progress: ' + percent + '%');
 });
 
@@ -80,10 +74,12 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
                 // check file size or type here
                 console.log(event.target.files[0]);
 
+                // add file to flow and upload
                 flow.addFile(event.target.files[0]);
-                flow.upload();  // or triggered by session[id-storage-flow]
+                flow.upload();  // or triggered by button click
+
                 // reset input value
-                // event.target.value = '';
+                event.target.value = '';
             });
         },
     },

@@ -58,7 +58,6 @@ dash.clientside_callback(
     ),
     Output(f"id-{TAG}-div-flow", "data"),
     Input(f"id-{TAG}-params-flow", "data"),
-    prevent_initial_call=False,
 )
 
 
@@ -68,8 +67,6 @@ dash.clientside_callback(
     prevent_initial_call=True,
 )
 def _update_page(data_storage):
-    if data_storage is None:
-        return None
     content = f"upload: {data_storage}"
     return fac.AntdMessage(content=content, top=50)
 
