@@ -42,11 +42,11 @@ def layout(pathname, search, **kwargs):
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # define components
-    checkbox_terms = fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms", className="me-2")
+    checkbox_terms = fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms")
     span_terms = html.Span(children=[
         "I agree to ", html.A("terms of use", href="#"),
         " and ", html.A("privacy policy", href="#"), ".",
-    ], className="text-muted")
+    ], className="text-muted ms-2")
 
     # define components
     class_terms = "" if pathname == PATH_SIGNUP else "d-none"

@@ -32,6 +32,8 @@ cdn_js_flowjs = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.
 
 # define cdn list base on https://www.unpkg.com/
 # cdn_js_recorder = "https://www.unpkg.com/js-audio-recorder@1.0.7/dist/recorder.js"
+# cdn_jsmind_css = "https://unpkg.com/jsmind@0.5/style/jsmind.css"
+# cdn_jsmind_js = "https://unpkg.com/jsmind@0.5/es6/jsmind.js"
 
 # create app
 app = dash.Dash(
@@ -76,6 +78,7 @@ app.index_string = """<!DOCTYPE html>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
+
             gtag('config', 'G-xxxx');
         </script>
     </head>

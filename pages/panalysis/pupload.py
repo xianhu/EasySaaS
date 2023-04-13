@@ -20,12 +20,7 @@ TAG_BASE = "analysis"
 TAG = "analysis-upload"
 
 # style of page
-STYLE_PAGE = """
-    .ant-btn, .ant-btn > span {
-        display: flex !important;
-        align-items: center !important;
-    }
-"""
+STYLE_PAGE = ""
 
 
 def layout(pathname, search, **kwargs):
@@ -47,7 +42,7 @@ def layout(pathname, search, **kwargs):
         # define message and style
         html.Div(id=f"id-{TAG}-message-flow"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-    ], className=None)
+    ], className="vh-100 overflow-auto px-4 py-3")
 
 
 # trigger clientside callback

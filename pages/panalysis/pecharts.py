@@ -44,7 +44,7 @@ def layout(pathname, search, **kwargs):
         # define message and style
         html.Div(id=f"id-{TAG}-message-chart"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
-    ], className=None)
+    ], className="vh-100 overflow-auto px-4 py-3")
 
 
 # trigger clientside callback

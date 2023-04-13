@@ -18,6 +18,7 @@ flow.on('fileAdded', function (file) {
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileAdded',
         file_name: file.name,
+        file_size: file.size,
         _timestamp: new Date().getTime(),
     }));
     console.log('file added');
@@ -34,6 +35,7 @@ flow.on('fileSuccess', function (file, message) {
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileSuccess',
         file_name: file.name,
+        file_size: file.size,
         _timestamp: new Date().getTime(),
     }));
     console.log('file success', message);
@@ -44,6 +46,7 @@ flow.on('fileError', function (file, message) {
     sessionStorage.setItem('id-storage-flow', JSON.stringify({
         status: 'fileError',
         file_name: file.name,
+        file_size: file.size,
         _timestamp: new Date().getTime(),
     }));
     console.log('file error', message);
@@ -66,6 +69,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
 
             // bind button click event to input click
             document.getElementById(id_button).addEventListener('click', function (event) {
+                console.log('button clicked -> input clicked')
                 document.getElementById(id_input).click();
             });
 

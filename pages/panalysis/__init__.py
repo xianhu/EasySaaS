@@ -67,7 +67,7 @@ def layout(pathname, search, **kwargs):
             children_right=get_component_header_user(user_title, dot=True),
         ),
         fuc.FefferyTopProgress(children=[
-            html.Div(id=f"id-{TAG}-content", className="px-4 py-4"),
+            html.Div(id=f"id-{TAG}-content"),
         ], listenPropsMode="include", includeProps=[f"id-{TAG}-content.children", ]),
     ], className="vh-100 overflow-auto")
 

@@ -19,11 +19,11 @@ from utility.paths import *
 
 # application layout
 app.layout = html.Div(children=[
-    html.Div(id="id-content", className="bg-main"),
+    html.Div(id="id-content"),
     # define components
     fuc.FefferyExecuteJs(id="id-executejs"),
     dcc.Location(id="id-location", refresh=False),
-])
+], className="bg-main overflow-x-hidden")
 
 
 @dash.callback([

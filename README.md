@@ -44,6 +44,13 @@ pip3 install -r requirements.txt
 
 ### Run Application With uwsgi / unicorn
 
+```
+.venv/bin/uwsgi --http 0.0.0.0:8080 
+                --virtualenv .venv --module index:server 
+                --master --enable-threads --pidfile index.pid --daemonize index.log
+.venv/bin/uwsig --stop / --reload index.pid
+```
+
 ### Frontend
 
 - Bootstrap: https://getbootstrap.com/docs/5.1/utilities/api/

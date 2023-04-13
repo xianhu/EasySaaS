@@ -32,8 +32,7 @@ def layout(pathname, search, **kwargs):
     return fac.AntdModal(content, id=f"id-{TAG}-modal-project", **dict(
         title="Delete Project", visible=False, closable=False, maskClosable=False,
         okText="Confirm", cancelText="Cancel", okClickClose=False,
-        renderFooter=True, confirmAutoSpin=True,
-        okButtonProps=dict(danger=True),
+        renderFooter=True, confirmAutoSpin=True, okButtonProps=dict(danger=True),
     ))
 
 
@@ -58,6 +57,8 @@ def _update_page(open_data, ok_counts, project):
     # check triggered_id
     if triggered_id == f"id-{TAG_BASE}-{TYPE}-open":
         out_name["children"] = project["name"]
+
+        # update modal and return
         out_modal["visible"] = True
         return out_name, out_modal, dash.no_update
 

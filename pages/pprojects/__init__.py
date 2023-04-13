@@ -52,8 +52,8 @@ def layout(pathname, search, **kwargs):
     data_delete_project = dcc.Store(id=f"id-{TAG}-delete-project", data=None)
 
     # define components
-    button_add = fac.AntdButton("Add Project", id=f"id-{TAG}-button-add", type="primary", disabled=True)
-    col_list = [fac.AntdCol(html.Span("Project List", className=None)), fac.AntdCol(button_add)]
+    button_add = fac.AntdButton("Add Project", id=f"id-{TAG}-button-add", type="primary")
+    col_list = [fac.AntdCol(html.Span("Project List")), fac.AntdCol(button_add)]
 
     # return result
     return html.Div(children=[
@@ -62,10 +62,10 @@ def layout(pathname, search, **kwargs):
             children_right=get_component_header_user(user_title, dot=True),
         ),
         # define components
-        html.Div(children=[
+        fac.AntdRow(fac.AntdCol(children=[
             fac.AntdRow(col_list, align="bottom", justify="space-between"),
             fac.AntdSpin(html.Div(id=f"id-{TAG}-div-table", className="mt-2")),
-        ], className="w-75 m-auto mt-4"),
+        ], span=22, md=18), justify="center", className="mt-4"),
         # define components of modal
         modal_addedit, data_addedit_open, data_addedit_close, data_addedit_project,
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
