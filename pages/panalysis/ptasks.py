@@ -23,20 +23,20 @@ def layout(pathname, search, **kwargs):
     """
     return html.Div(children=[
         fac.AntdButton("Run Task", id=f"id-{TAG}-button-run"),
-        html.Div(id=f"id-{TAG}-div-time"),
-        html.Div(id=f"id-{TAG}-div-output"),
+        html.Div(id=f"id-{TAG}-div-0"), html.Div(id=f"id-{TAG}-div-1"),
     ], className="vh-100 overflow-auto px-4 py-3")
 
 
 @dash.callback(
-    Output(f"id-{TAG}-div-time", "children"),
-    Output(f"id-{TAG}-div-output", "children"),
+    Output(f"id-{TAG}-div-0", "children"),
+    Output(f"id-{TAG}-div-1", "children"),
     Input(f"id-{TAG}-button-run", "nClicks"),
     running=[
         (Output(f"id-{TAG}-button-run", "disabled"), True, False),
-    ], progress=[
-        Output(f"id-{TAG}-div-time", "children"),
-        Output(f"id-{TAG}-div-output", "children"),
+    ],
+    progress=[
+        Output(f"id-{TAG}-div-0", "children"),
+        Output(f"id-{TAG}-div-1", "children"),
     ], background=True, prevent_initial_call=True)
 def _update_page(set_progress, n_clicks):
     time_start = time.time()

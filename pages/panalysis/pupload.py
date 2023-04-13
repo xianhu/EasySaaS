@@ -20,12 +20,7 @@ TAG_BASE = "analysis"
 TAG = "analysis-upload"
 
 # style of page
-STYLE_PAGE = """
-    .ant-btn, .ant-btn > span {
-        display: flex !important;
-        align-items: center !important;
-    }
-"""
+STYLE_PAGE = ""
 
 
 def layout(pathname, search, **kwargs):
