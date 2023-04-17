@@ -25,13 +25,11 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 # define callback manager
 callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid.uuid4()], expire=60)
 
-# define cdn list base on https://cdnjs.cloudflare.com/
-cdn_css_bootstrap = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css"
-cdn_js_echarts = "https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"
-cdn_js_flowjs = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.js"
-
-# define cdn list base on https://www.unpkg.com/
-# cdn_js_recorder = "https://www.unpkg.com/js-audio-recorder@1.0.7/dist/recorder.js"
+# define cdn list base on https://cdnjs.cloudflare.com/ or https://www.unpkg.com/
+cdn_bootstrap_css = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css"
+cdn_echarts_js = "https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"
+cdn_flowjs_js = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.js"
+# cdn_recorder_js = "https://www.unpkg.com/js-audio-recorder@1.0.7/dist/recorder.js"
 # cdn_jsmind_css = "https://unpkg.com/jsmind@0.5/style/jsmind.css"
 # cdn_jsmind_js = "https://unpkg.com/jsmind@0.5/es6/jsmind.js"
 
@@ -46,16 +44,11 @@ app = dash.Dash(
     assets_folder="assets",
     title=CONFIG_APP_NAME,
     update_title="Updating...",
-    prevent_initial_callbacks=False,
+    # prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
-    external_stylesheets=[
-        cdn_css_bootstrap,
-    ],
-    external_scripts=[
-        cdn_js_echarts,
-        cdn_js_flowjs,
-    ],
+    external_stylesheets=[cdn_bootstrap_css, ],
+    external_scripts=[cdn_echarts_js, cdn_flowjs_js],
     meta_tags=[{
         "charset": "utf-8",
     }, {
