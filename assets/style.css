@@ -45,4 +45,12 @@ body {
     background-color: #f0f2f5 !important;
 }
 
+.color-primary {
+    color: var(--color-primary) !important;
+}
+
+.color-secondary {
+    color: var(--color-secondary) !important;
+}
+
 /* ----------------------------------------------------- */
