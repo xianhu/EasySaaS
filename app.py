@@ -44,11 +44,16 @@ app = dash.Dash(
     assets_folder="assets",
     title=CONFIG_APP_NAME,
     update_title="Updating...",
-    # prevent_initial_callbacks=False,
+    prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
-    external_stylesheets=[cdn_bootstrap_css, ],
-    external_scripts=[cdn_echarts_js, cdn_flowjs_js],
+    external_stylesheets=[
+        cdn_bootstrap_css,
+    ],
+    external_scripts=[
+        cdn_echarts_js,
+        cdn_flowjs_js,
+    ],
     meta_tags=[{
         "charset": "utf-8",
     }, {

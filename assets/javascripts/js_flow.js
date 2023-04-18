@@ -57,7 +57,7 @@ flow.on('fileError', function (file, message) {
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     ns_flow: {
         render_flow: function (params) {
-            console.log('render flow: ' + JSON.stringify(params));
+            console.log('render flow:' + JSON.stringify(params));
 
             // get data from params
             let id_div = params['id_div'];
