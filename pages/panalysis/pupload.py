@@ -18,6 +18,7 @@ from app import server
 
 TAG_BASE = "analysis"
 TAG = "analysis-upload"
+FOLDER_UPLOAD = "/tmp"
 
 # style of page
 STYLE_PAGE = ""
@@ -29,18 +30,18 @@ def layout(pathname, search, **kwargs):
     """
     return html.Div(children=[
         # upload with flow.js
-        html.Div(className="d-none", id=f"id-{TAG}-div-upload"),
-        fac.AntdButton("Upload File", id=f"id-{TAG}-button-upload"),
-        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-upload"),
+        html.Div(className="d-none", id=f"id-{TAG}-div-flow"),
+        fac.AntdButton("Upload File", id=f"id-{TAG}-upload-flow"),
+        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-flow"),
 
         # params to trigger clientside callback
-        dcc.Store(id=f"id-{TAG}-params-upload", data=dict(
-            id_div=f"id-{TAG}-div-upload",
-            id_button=f"id-{TAG}-button-upload",
+        dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
+            id_div=f"id-{TAG}-div-flow",
+            id_button=f"id-{TAG}-upload-flow",
         )),
 
         # define message and style
-        html.Div(id=f"id-{TAG}-message-upload"),
+        html.Div(id=f"id-{TAG}-message-flow"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="vh-100 overflow-auto px-4 py-3")
 
@@ -51,14 +52,14 @@ dash.clientside_callback(
         namespace="ns_flow",
         function_name="render_flow",
     ),
-    Output(f"id-{TAG}-div-upload", "data"),
-    Input(f"id-{TAG}-params-upload", "data"),
+    Output(f"id-{TAG}-div-flow", "data"),
+    Input(f"id-{TAG}-params-flow", "data"),
 )
 
 
 @dash.callback(
-    Output(f"id-{TAG}-message-upload", "children"),
-    Input(f"id-{TAG}-storage-upload", "data"),
+    Output(f"id-{TAG}-message-flow", "children"),
+    Input(f"id-{TAG}-storage-flow", "data"),
     prevent_initial_call=True,
 )
 def _update_page(data_storage):
@@ -75,7 +76,7 @@ def _route_upload():
 
     # get file_name and file_target
     file_name = request.form.get("flowFilename")
-    file_target = os.path.join("/tmp", f"{str_uuid}_{file_name}")
+    file_target = os.path.join(FOLDER_UPLOAD, f"{str_uuid}_{file_name}")
 
     # get chunk_number
     chunk_number = int(request.form.get("flowChunkNumber", 1))
