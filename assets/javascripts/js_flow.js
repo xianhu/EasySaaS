@@ -12,10 +12,11 @@ const flow = new Flow({
     progressCallbacksInterval: 1000,
 });
 console.log('flow object created');
+let id_storage_flow = 'id-analysis-upload-storage-flow';
 
 // define flow events
 flow.on('fileAdded', function (file) {
-    sessionStorage.setItem('id-storage-flow', JSON.stringify({
+    sessionStorage.setItem(id_storage_flow, JSON.stringify({
         status: 'fileAdded',
         file_name: file.name,
         file_size: file.size,
@@ -32,7 +33,7 @@ flow.on('fileProgress', function (file) {
 
 // define flow events
 flow.on('fileSuccess', function (file, message) {
-    sessionStorage.setItem('id-storage-flow', JSON.stringify({
+    sessionStorage.setItem(id_storage_flow, JSON.stringify({
         status: 'fileSuccess',
         file_name: file.name,
         file_size: file.size,
@@ -43,7 +44,7 @@ flow.on('fileSuccess', function (file, message) {
 
 // define flow events
 flow.on('fileError', function (file, message) {
-    sessionStorage.setItem('id-storage-flow', JSON.stringify({
+    sessionStorage.setItem(id_storage_flow, JSON.stringify({
         status: 'fileError',
         file_name: file.name,
         file_size: file.size,
@@ -56,14 +57,14 @@ flow.on('fileError', function (file, message) {
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     ns_flow: {
         render_flow: function (params) {
-            console.log('render flow: ' + JSON.stringify(params));
+            console.log('render flow:' + JSON.stringify(params));
 
             // get data from params
             let id_div = params['id_div'];
             let id_button = params['id_button'];
+            let id_input = 'id-input-file';
 
             // add input to div
-            let id_input = 'id-input-file';
             let div = document.getElementById(id_div);
             div.innerHTML = "<input id='id-input-file' type='file' name='file' />";
 

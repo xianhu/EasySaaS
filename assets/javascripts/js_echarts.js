@@ -7,7 +7,7 @@
 window.dash_clientside = Object.assign({}, window.dash_clientside, {
     ns_echarts: {
         render_chart: function (params) {
-            console.log('render chart: ' + JSON.stringify(params));
+            console.log('render chart:' + JSON.stringify(params));
 
             // get data from params
             let id_div = params['id_div'];

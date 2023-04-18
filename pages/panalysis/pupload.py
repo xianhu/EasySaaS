@@ -18,6 +18,7 @@ from app import server
 
 TAG_BASE = "analysis"
 TAG = "analysis-upload"
+FOLDER_UPLOAD = "/tmp"
 
 # style of page
 STYLE_PAGE = ""
@@ -31,7 +32,7 @@ def layout(pathname, search, **kwargs):
         # upload with flow.js
         html.Div(className="d-none", id=f"id-{TAG}-div-flow"),
         fac.AntdButton("Upload File", id=f"id-{TAG}-upload-flow"),
-        fuc.FefferySessionStorage(id="id-storage-flow"),  # fixed id
+        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-flow"),
 
         # params to trigger clientside callback
         dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
@@ -58,7 +59,7 @@ dash.clientside_callback(
 
 @dash.callback(
     Output(f"id-{TAG}-message-flow", "children"),
-    Input(f"id-storage-flow", "data"),
+    Input(f"id-{TAG}-storage-flow", "data"),
     prevent_initial_call=True,
 )
 def _update_page(data_storage):
@@ -75,7 +76,7 @@ def _route_upload():
 
     # get file_name and file_target
     file_name = request.form.get("flowFilename")
-    file_target = os.path.join("/tmp", f"{str_uuid}_{file_name}")
+    file_target = os.path.join(FOLDER_UPLOAD, f"{str_uuid}_{file_name}")
 
     # get chunk_number
     chunk_number = int(request.form.get("flowChunkNumber", 1))

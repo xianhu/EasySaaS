@@ -1,6 +1,6 @@
-dash[compress]==2.9.2
+dash[compress]==2.9.3
 feffery-antd-components==0.2.0
-feffery-utils-components==0.1.23
+feffery-utils-components==0.1.24
 
 Flask[compose]==2.2.3
 Flask-Mail==0.9.1
