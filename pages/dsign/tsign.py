@@ -12,7 +12,7 @@ from utility.paths import PATH_FORGOTPWD, PATH_LOGIN, PATH_SIGNUP
 from ..comps import get_component_logo
 
 # define components
-a_login_in = html.A("Log in", href=PATH_LOGIN)
+a_log_in = html.A("Log in", href=PATH_LOGIN)
 a_sign_up = html.A("Sign up", href=PATH_SIGNUP)
 a_forgot_pwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
 
@@ -26,9 +26,9 @@ def layout(pathname, search, tag, **kwargs):
     if pathname == PATH_LOGIN:
         text_button, a_list = "Log in", [a_sign_up, a_forgot_pwd]
     elif pathname == PATH_SIGNUP:
-        text_button, a_list = "Verify the email", [a_login_in, a_forgot_pwd]
+        text_button, a_list = "Verify the email", [a_log_in, a_forgot_pwd]
     elif pathname == PATH_FORGOTPWD:
-        text_button, a_list = "Verify the email", [a_login_in, a_sign_up]
+        text_button, a_list = "Verify the email", [a_log_in, a_sign_up]
 
     # define components
     kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
