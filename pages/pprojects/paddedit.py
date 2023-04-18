@@ -35,10 +35,10 @@ def layout(pathname, search, **kwargs):
     form_desc = fac.AntdFormItem(input_desc, id=f"id-{TAG}-form-desc", label="project description:", required=False)
 
     # define components
-    form_item = fac.AntdForm([form_name, form_desc], layout="vertical")
+    form_items = fac.AntdForm(children=[form_name, form_desc], layout="vertical")
 
     # return result
-    return fac.AntdModal(form_item, id=f"id-{TAG}-modal-project", **dict(
+    return fac.AntdModal(form_items, id=f"id-{TAG}-modal-project", **dict(
         title="Add/Edit", visible=False, closable=False, maskClosable=False,
         okText="Confirm", cancelText="Cancel", okClickClose=False,
         renderFooter=True, confirmAutoSpin=True,

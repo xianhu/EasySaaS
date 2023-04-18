@@ -29,18 +29,18 @@ def layout(pathname, search, **kwargs):
     """
     return html.Div(children=[
         # upload with flow.js
-        html.Div(className="d-none", id=f"id-{TAG}-div-flow"),
-        fac.AntdButton("Upload File", id=f"id-{TAG}-upload-flow"),
-        fuc.FefferySessionStorage(id="id-storage-flow"),  # fixed id
+        html.Div(className="d-none", id=f"id-{TAG}-div-upload"),
+        fac.AntdButton("Upload File", id=f"id-{TAG}-button-upload"),
+        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-upload"),
 
         # params to trigger clientside callback
-        dcc.Store(id=f"id-{TAG}-params-flow", data=dict(
-            id_div=f"id-{TAG}-div-flow",
-            id_button=f"id-{TAG}-upload-flow",
+        dcc.Store(id=f"id-{TAG}-params-upload", data=dict(
+            id_div=f"id-{TAG}-div-upload",
+            id_button=f"id-{TAG}-button-upload",
         )),
 
         # define message and style
-        html.Div(id=f"id-{TAG}-message-flow"),
+        html.Div(id=f"id-{TAG}-message-upload"),
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="vh-100 overflow-auto px-4 py-3")
 
@@ -51,14 +51,14 @@ dash.clientside_callback(
         namespace="ns_flow",
         function_name="render_flow",
     ),
-    Output(f"id-{TAG}-div-flow", "data"),
-    Input(f"id-{TAG}-params-flow", "data"),
+    Output(f"id-{TAG}-div-upload", "data"),
+    Input(f"id-{TAG}-params-upload", "data"),
 )
 
 
 @dash.callback(
-    Output(f"id-{TAG}-message-flow", "children"),
-    Input(f"id-storage-flow", "data"),
+    Output(f"id-{TAG}-message-upload", "children"),
+    Input(f"id-{TAG}-storage-upload", "data"),
     prevent_initial_call=True,
 )
 def _update_page(data_storage):

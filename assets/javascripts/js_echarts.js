@@ -9,11 +9,8 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         render_chart: function (params) {
             console.log('render chart: ' + JSON.stringify(params));
 
-            // get data from params
-            let id_div = params['id_div'];
-            let id_storage = params['id_storage'];
-
             // create a new chart
+            let id_div = params['id_div'];
             let chart = echarts.init(document.getElementById(id_div));
 
             // define option
@@ -32,6 +29,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
             chart.setOption(option);
 
             // bind event listener
+            let id_storage = params['id_storage'];
             chart.on('click', function (event) {
                 sessionStorage.setItem(id_storage, JSON.stringify({
                     name: event.name,
