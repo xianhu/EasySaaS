@@ -18,10 +18,9 @@ from app import server
 
 TAG_BASE = "analysis"
 TAG = "analysis-upload"
-FOLDER_UPLOAD = "/tmp"
 
-# style of page
-STYLE_PAGE = ""
+# upload folder
+FOLDER_UPLOAD = "/tmp"
 
 
 def layout(pathname, search, **kwargs):
@@ -40,9 +39,8 @@ def layout(pathname, search, **kwargs):
             id_button=f"id-{TAG}-upload-flow",
         )),
 
-        # define message and style
+        # message to show information
         html.Div(id=f"id-{TAG}-message-flow"),
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="vh-100 overflow-auto px-4 py-3")
 
 

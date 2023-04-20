@@ -14,9 +14,6 @@ from dash import ClientsideFunction, Input, Output, dcc, html
 TAG_BASE = "analysis"
 TAG = "analysis-echarts"
 
-# style of page
-STYLE_PAGE = ""
-
 
 def layout(pathname, search, **kwargs):
     """
@@ -41,9 +38,8 @@ def layout(pathname, search, **kwargs):
         # params to trigger clientside callback
         dcc.Store(id=f"id-{TAG}-params-chart", data=params_chart),
 
-        # define message and style
+        # message to show information
         html.Div(id=f"id-{TAG}-message-chart"),
-        fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="vh-100 overflow-auto px-4 py-3")
 
 
