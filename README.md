@@ -17,9 +17,7 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 vim .bash_profile / .zshrc
-
 # export ES_APP_DOMAIN=http://127.0.0.1
-# export ES_SECRET_KEY=xxxxxxxxxxxxxxxxxxx
 
 # export ES_MAIL_SERVER=smtp.exmail.xx.com
 # export ES_MAIL_PORT=465
@@ -29,7 +27,6 @@ vim .bash_profile / .zshrc
 # export ES_REDIS_URI=redis://:password@host:port
 # export ES_DATABASE_URI=sqlite:///{DIR}/main.db
 # mysql+pymysql://user:password@host:port/dbname
-
 source .bash_profile / .zshrc
 ```
 
@@ -45,9 +42,8 @@ pip3 install -r requirements.txt
 ### Run Application With uwsgi / unicorn
 
 ```
-.venv/bin/uwsgi --http 0.0.0.0:8080 
-                --virtualenv .venv --module index:server 
-                --master --enable-threads --pidfile index.pid --daemonize index.log
+.venv/bin/uwsgi --http 0.0.0.0:8080 --module index:server --virtualenv .venv 
+                --pidfile index.pid --master --enable-threads --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
 ```
 
