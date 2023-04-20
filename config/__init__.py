@@ -10,9 +10,8 @@ import os
 ENV_PREFIX = "ES"
 CONFIG_APP_NAME = "EasySaaS"
 
-# define saas application
+# define app config
 CONFIG_APP_DOMAIN = os.environ.get(f"{ENV_PREFIX}_APP_DOMAIN")
-CONFIG_SECRET_KEY = os.environ.get(f"{ENV_PREFIX}_SECRET_KEY")
 
 # define mail config
 CONFIG_MAIL_SERVER = os.environ.get(f"{ENV_PREFIX}_MAIL_SERVER")

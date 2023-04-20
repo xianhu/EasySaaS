@@ -5,6 +5,7 @@ Dash Application
 """
 
 import logging
+import secrets
 import uuid
 
 import dash
@@ -96,7 +97,7 @@ app.index_string = """<!DOCTYPE html>
 # config server
 server = app.server
 server.config.update(
-    SECRET_KEY=CONFIG_SECRET_KEY,
+    SECRET_KEY=secrets.token_hex(16),
 
     MAIL_SERVER=CONFIG_MAIL_SERVER,
     MAIL_PORT=CONFIG_MAIL_PORT,

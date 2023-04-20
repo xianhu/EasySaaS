@@ -13,9 +13,6 @@ from dash import Input, Output, html
 TAG_BASE = "analysis"
 TAG = "analysis-tasks"
 
-# style of page
-STYLE_PAGE = ""
-
 
 def layout(pathname, search, **kwargs):
     """
@@ -23,7 +20,8 @@ def layout(pathname, search, **kwargs):
     """
     return html.Div(children=[
         fac.AntdButton("Run Task", id=f"id-{TAG}-button-run"),
-        html.Div(id=f"id-{TAG}-div-0"), html.Div(id=f"id-{TAG}-div-1"),
+        html.Div(id=f"id-{TAG}-div-0"),
+        html.Div(id=f"id-{TAG}-div-1"),
     ], className="vh-100 overflow-auto px-4 py-3")
 
 

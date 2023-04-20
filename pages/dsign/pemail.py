@@ -4,8 +4,8 @@
 email[signup/forgotpwd] page
 """
 
+import secrets
 import urllib.parse
-import uuid
 
 import dash
 import feffery_antd_components as fac
@@ -48,7 +48,7 @@ def layout(pathname, search, **kwargs):
         " and ", html.A("privacy policy", href="#"), ".",
     ], className="text-muted ms-2")
 
-    # define components
+    # define components (d-none if signup)
     class_terms = "" if pathname == PATH_SIGNUP else "d-none"
     form_terms = fac.AntdFormItem([checkbox_terms, span_terms], id=f"id-{TAG}-form-terms", className=class_terms)
 
@@ -146,7 +146,7 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         return out_email, out_cpc, out_terms, out_others
 
     # send email and add/update user ==============================================================
-    token = user.token_verify if user and user.token_verify else str(uuid.uuid4())
+    token = user.token_verify if user and user.token_verify else secrets.token_urlsafe(32)
 
     # define query and href of verify
     query = urllib.parse.urlencode(dict(_id=_id, token=token))
