@@ -10,7 +10,6 @@ from typing import Any, Optional, Union
 
 from jose import jwt
 from passlib.context import CryptContext
-from pydantic import ValidationError
 
 from core.settings import settings
 
@@ -42,7 +41,7 @@ def verify_access_token(token: str) -> Optional[str]:
     """
     try:
         pyload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
-    except (jwt.JWTError, ValidationError):
+    except jwt.JWTError:
         pyload = None
 
     # return

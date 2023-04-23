@@ -16,12 +16,18 @@ Flask-SQLAlchemy~=3.0.3
 fastapi~=0.95.1
 uvicorn~=0.21.1
 
-# Others
+# Database
+pymysql~=1.0.3
+SQLAlchemy~=2.0.10
+
+# Tasks
 celery~=5.2.7
 flower~=1.2.0
-pymysql~=1.0.3
-passlib~=1.7.4
+
+# Security
 bcrypt~=4.0.1
-pydantic~=1.10.7
-SQLAlchemy~=2.0.10
+passlib~=1.7.4
 python-jose[cryptography]~=3.3.0
+
+# Others
+pydantic~=1.10.7
