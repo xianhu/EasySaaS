@@ -13,3 +13,5 @@ PATH_FORGOTPWD = "/forgotpwd"
 PATH_USER = "/user"
 PATH_PROJECTS = "/projects"
 PATH_ANALYSIS = "/analysis"
+
+PATH_API_V1 = "/api/v1"

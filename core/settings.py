@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-config file
+settings file
 """
 
 import os
@@ -11,8 +11,10 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
+    # settings -- security
     SECRET_KEY: str = secrets.token_hex(32)
+    REMEMBER_COOKIE_DURATION: int = 60 * 60 * 24 * 7
+    PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     # settings -- base
@@ -39,3 +41,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if __name__ == "__main__":
+    import pprint
+
+    pprint.pprint(settings.dict())

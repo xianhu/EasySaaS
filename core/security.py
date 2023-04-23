@@ -38,7 +38,7 @@ def create_access_token(subject: Union[str, Any], expires_minutes: int = None) -
 
 def verify_access_token(token: str) -> Optional[str]:
     """
-    verify access token, return TokenPayload or None
+    verify access token, return subject or None
     """
     try:
         pyload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
@@ -46,7 +46,7 @@ def verify_access_token(token: str) -> Optional[str]:
         pyload = None
 
     # return
-    return pyload
+    return pyload["sub"] if pyload else None
 
 
 def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
