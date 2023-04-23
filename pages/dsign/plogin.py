@@ -12,8 +12,8 @@ from dash import Input, Output, State
 
 from app import UserLogin, app_db
 from utility import get_md5
-from utility.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from utility.paths import PATH_ROOT
+from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
+from core.paths import PATH_ROOT
 from . import tsign
 
 TAG = "login"

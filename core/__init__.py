@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-utility module
+core module
 """
 
 import hashlib

@@ -17,8 +17,8 @@ from flask import session as flask_session
 from app import User, app_db, app_mail
 from config import CONFIG_APP_DOMAIN, CONFIG_APP_NAME
 from utility import get_md5
-from utility.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from utility.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
+from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
+from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from . import tsign
 from .. import palert
 

@@ -11,7 +11,7 @@ import sqlalchemy
 from sqlalchemy import orm
 from werkzeug import security
 
-from models import BaseModel
+from data.models import BaseModel
 
 
 class User(BaseModel):

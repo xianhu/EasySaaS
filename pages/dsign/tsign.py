@@ -8,7 +8,7 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import dcc, html
 
-from utility.paths import PATH_FORGOTPWD, PATH_LOGIN, PATH_SIGNUP
+from core.paths import PATH_FORGOTPWD, PATH_LOGIN, PATH_SIGNUP
 from ..comps import get_component_logo
 
 # define components

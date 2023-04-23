@@ -11,7 +11,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State, html
 
 from app import app_db
-from models.users import Project, UserProject
+from data.models.users import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-delete"

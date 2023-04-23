@@ -15,8 +15,8 @@ import flask_redis
 from flask import request
 
 from config import *
-from models import app_db
-from models.users import User
+from data.models import app_db
+from data.models.users import User
 from tasks import app_celery
 
 # logging config

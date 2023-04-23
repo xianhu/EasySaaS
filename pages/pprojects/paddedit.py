@@ -12,7 +12,7 @@ import flask_login
 from dash import Input, Output, State
 
 from app import app_db
-from models.users import Project, UserProject
+from data.models.users import Project, UserProject
 from utility import get_md5
 
 TAG_BASE = "projects"

@@ -14,8 +14,8 @@ from dash import Input, Output, State, dcc, html
 from app import app, server
 from pages import palert, panalysis, pprojects, puser
 from pages.dsign import pemail, plogin, psetpwd
-from utility.consts import *
-from utility.paths import *
+from core.consts import *
+from core.paths import *
 
 # application layout
 app.layout = html.Div(children=[
