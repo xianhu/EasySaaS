@@ -31,3 +31,4 @@ python-jose[cryptography]~=3.3.0
 
 # Others
 pydantic~=1.10.7
+emails~=0.6.0

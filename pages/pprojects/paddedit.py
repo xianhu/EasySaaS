@@ -12,7 +12,6 @@ import flask_login
 from dash import Input, Output, State
 
 from app import app_db
-from core.security import get_md5
 from models.mflask.project import Project, UserProject
 
 TAG_BASE = "projects"
@@ -105,14 +104,14 @@ def _update_page(open_data, ok_counts, name, desc, project):
         if not project.get("id"):
             # add project
             user_id = flask_login.current_user.id
-            project_id = get_md5(name + str(time.time()))
 
             # define project and user_project instances
-            project = Project(id=project_id, name=name, desc=desc)
-            user_project = UserProject(user_id=user_id, project_id=project_id)
+            project = Project(name=name, desc=desc)
+            app_db.session.add(project)
+            app_db.session.commit()
 
-            # commit to database
-            app_db.session.add_all([project, user_project])
+            user_project = UserProject(user_id=user_id, project_id=project.id)
+            app_db.session.add(user_project)
             app_db.session.commit()
         else:
             # edit project
