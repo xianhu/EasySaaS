@@ -1,5 +1,5 @@
 /**
- * js_echarts: include init and client side callbacks
+ * js_echarts: include initial code and client side callbacks
  */
 // initial code
 
@@ -9,7 +9,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         render_chart: function (params) {
             console.log('render chart:' + JSON.stringify(params));
 
-            // get models from params
+            // get data from params
             let id_div = params['id_div'];
             let id_storage = params['id_storage'];
 

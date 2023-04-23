@@ -1,8 +1,7 @@
 # EasySaaS
 
 This project will be attempted to make a great starting point for your next big business as easy and efficient as possible.
-This project will create an easy way to build a SaaS application using Python、Dash and feffery-xxx-components.
-This project also show you how to use Dash effectively and efficiently.
+This project will create an easy way to build a SaaS application using Flask、Dash and feffery-xxx-components, or using FastAPI.
 
 ### Run mysql And redis By Docker
 
