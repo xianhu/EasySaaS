@@ -4,14 +4,13 @@
 security file
 """
 
-import hashlib
 from datetime import datetime, timedelta
 from typing import Any, Optional, Union
 
 from jose import jwt
 from passlib.context import CryptContext
 
-from core.settings import settings
+from .settings import settings
 
 # define algorithm
 ALGORITHM = "HS256"
@@ -20,12 +19,12 @@ ALGORITHM = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 
-def create_access_token(subject: Union[str, Any], expires_minutes: int = None) -> str:
+def create_access_token(subject: Union[str, Any], expires_duration: int = None) -> str:
     """
-    create access token, and return
+    create access token based on subject
     """
-    minutes = expires_minutes or settings.ACCESS_TOKEN_EXPIRE_MINUTES
-    expire = datetime.utcnow() + timedelta(minutes=minutes)
+    seconds = expires_duration or settings.ACCESS_TOKEN_EXPIRE_DURATION
+    expire = datetime.utcnow() + timedelta(seconds=seconds)
 
     # sub and exp is remained keys in jwt
     pyload = {"sub": str(subject), "exp": expire}
@@ -35,9 +34,9 @@ def create_access_token(subject: Union[str, Any], expires_minutes: int = None) -
     return token
 
 
-def verify_access_token(token: str) -> Optional[str]:
+def get_access_subject(token: str) -> Optional[str]:
     """
-    verify access token, return subject or None
+    get access subject from token
     """
     try:
         pyload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
@@ -60,11 +59,3 @@ def get_password_hash(pwd_plain: str) -> str:
     get password hash
     """
     return pwd_context.hash(pwd_plain)
-
-
-def get_md5(source: str) -> str:
-    """
-    get md5 of source
-    """
-    str_encode = source.encode()
-    return hashlib.md5(str_encode).hexdigest()
