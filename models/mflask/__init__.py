@@ -4,25 +4,25 @@
 models in flask
 """
 
+import flask_sqlalchemy
 import sqlalchemy
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from sqlalchemy.ext.declarative import declared_attr
 
 # create SQLAlchemy
-app_db = SQLAlchemy(app=None)
+app_db = flask_sqlalchemy.SQLAlchemy(app=None)
 
 
 class BaseModel(app_db.Model):
     __abstract__ = True
-    __ignore__ = ["created_at", "updated_at"]
+    __ignore__ = ["pwd", "created_at", "updated_at"]
 
     @declared_attr
     def __tablename__(cls) -> str:
         return f"{cls.__name__.lower()}s"
 
     # get function
-    def get(self, column):
+    def get(self, column) -> object:
         return getattr(self, column)
 
     # to dict function
