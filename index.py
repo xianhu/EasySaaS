@@ -12,10 +12,10 @@ import flask_login
 from dash import Input, Output, State, dcc, html
 
 from app import app, server
-from pages import palert, panalysis, pprojects, puser
-from pages.dsign import pemail, plogin, psetpwd
 from core.consts import *
 from core.paths import *
+from pages import palert, panalysis, pprojects, puser
+from pages.dsign import pemail, plogin, psetpwd
 
 # application layout
 app.layout = html.Div(children=[
@@ -23,7 +23,7 @@ app.layout = html.Div(children=[
     # define components
     fuc.FefferyExecuteJs(id="id-executejs"),
     dcc.Location(id="id-location", refresh=False),
-], className="bg-main overflow-x-hidden")
+], className="bg-main overflow-auto overflow-x-hidden")
 
 
 @dash.callback([
@@ -97,5 +97,5 @@ def _init_page(pathname, search, vhash):
 
 
 if __name__ == "__main__":
-    # app.run_server(port=80, debug=True)
-    server.run(host="0.0.0.0", port=80, debug=True)
+    # app.run_server(port=8000, debug=True)
+    server.run(port=8000, debug=True)

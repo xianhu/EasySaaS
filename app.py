@@ -5,7 +5,6 @@ Dash Application
 """
 
 import logging
-import secrets
 import uuid
 
 import dash
@@ -14,9 +13,9 @@ import flask_mail
 import flask_redis
 from flask import request
 
-from config import *
+from core.settings import settings
 from models.mflask import app_db
-from models.user import User
+from models.mflask.user import User
 from tasks import app_celery
 
 # logging config
@@ -43,7 +42,7 @@ app = dash.Dash(
     show_undo_redo=False,
     url_base_pathname="/",
     assets_folder="assets",
-    title=CONFIG_APP_NAME,
+    title=settings.APP_NAME,
     update_title="Updating...",
     prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
@@ -97,23 +96,23 @@ app.index_string = """<!DOCTYPE html>
 # config server
 server = app.server
 server.config.update(
-    SECRET_KEY=secrets.token_hex(16),
+    SECRET_KEY=settings.SECRET_KEY,
 
-    MAIL_SERVER=CONFIG_MAIL_SERVER,
-    MAIL_PORT=CONFIG_MAIL_PORT,
-    MAIL_USERNAME=CONFIG_MAIL_USERNAME,
-    MAIL_PASSWORD=CONFIG_MAIL_PASSWORD,
-    MAIL_DEFAULT_SENDER=CONFIG_MAIL_SENDER,
+    MAIL_SERVER=settings.MAIL_SERVER,
+    MAIL_PORT=settings.MAIL_PORT,
+    MAIL_USERNAME=settings.MAIL_USERNAME,
+    MAIL_PASSWORD=settings.MAIL_PASSWORD,
+    MAIL_DEFAULT_SENDER=settings.MAIL_SENDER,
     MAIL_USE_TLS=False, MAIL_USE_SSL=True,
 
-    REDIS_URL=f"{CONFIG_REDIS_URI}/10",
+    REDIS_URL=f"{settings.REDIS_URI}/10",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    SQLALCHEMY_DATABASE_URI=CONFIG_DATABASE_URI,
+    SQLALCHEMY_DATABASE_URI=settings.DATABASE_URI,
 
     REMEMBER_COOKIE_NAME="remember_token",
-    REMEMBER_COOKIE_DURATION=60 * 60 * 24 * 7,
+    REMEMBER_COOKIE_DURATION=settings.REMEMBER_COOKIE_DURATION,
 
-    PERMANENT_SESSION_LIFETIME=60 * 60 * 24 * 7,
+    PERMANENT_SESSION_LIFETIME=settings.PERMANENT_SESSION_LIFETIME,
 )
 
 # initial db

@@ -42,11 +42,11 @@ pip3 install -r requirements.txt
 ### Run Application With uwsgi / gunicorn / uvicorn
 
 ```
-.venv/bin/uwsgi --http 0.0.0.0:8080 --module index:server --pidfile index.pid 
+.venv/bin/uwsgi --http :8000 --module index:server --pidfile index.pid 
                 --master --enable-threads --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
 
-.venv/bin/uvicorn main:app --reload
+.venv/bin/uvicorn main:app --port 8000 --reload
 ```
 
 ### Frontend
