@@ -6,14 +6,13 @@ security file
 
 import hashlib
 from datetime import datetime, timedelta
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
 from core.settings import settings
-from models.schemas.token import TokenPayload
 
 # define algorithm
 ALGORITHM = "HS256"
@@ -37,18 +36,17 @@ def create_access_token(subject: Union[str, Any], expires_minutes: int = None) -
     return token
 
 
-def verify_access_token(token: str) -> Union[TokenPayload, None]:
+def verify_access_token(token: str) -> Optional[str]:
     """
     verify access token, return TokenPayload or None
     """
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
-        token_pyload = TokenPayload(**payload)
+        pyload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
     except (jwt.JWTError, ValidationError):
-        token_pyload = None
+        pyload = None
 
     # return
-    return token_pyload
+    return pyload
 
 
 def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
