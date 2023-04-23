@@ -6,11 +6,11 @@ celery tasks module
 
 from celery import Celery
 
-from config import CONFIG_REDIS_URI
+from core.settings import settings
 
 # define broker and backend
-broker = f"{CONFIG_REDIS_URI}/11"
-backend = f"{CONFIG_REDIS_URI}/12"
+broker = f"{settings.REDIS_URI}/11"
+backend = f"{settings.REDIS_URI}/12"
 
 # celery -A tasks worker -l INFO --purge
 # celery -A tasks flower --port=5555 -l INFO

@@ -17,15 +17,15 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 vim .bash_profile / .zshrc
-# export ES_APP_DOMAIN=http://127.0.0.1
+# export {PRE}_APP_DOMAIN=http://127.0.0.1:8000
 
-# export ES_MAIL_SERVER=smtp.exmail.xx.com
-# export ES_MAIL_PORT=465
-# export ES_MAIL_USERNAME=noreply@easysaas.com
-# export ES_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxx
+# export {PRE}_MAIL_SERVER=smtp.exmail.xx.com
+# export {PRE}_MAIL_PORT=465
+# export {PRE}_MAIL_USERNAME=noreply@easysaas.com
+# export {PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxx
 
-# export ES_REDIS_URI=redis://:password@host:port
-# export ES_DATABASE_URI=sqlite:///{DIR}/main.db
+# export {PRE}_REDIS_URI=redis://:password@host:port
+# export {PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
 # mysql+pymysql://user:password@host:port/dbname
 source .bash_profile / .zshrc
 ```
@@ -39,12 +39,14 @@ source .venv/bin/activate / deactivate
 pip3 install -r requirements.txt
 ```
 
-### Run Application With uwsgi / unicorn
+### Run Application With uwsgi / gunicorn / uvicorn
 
 ```
-.venv/bin/uwsgi --http 0.0.0.0:8080 --module index:server --virtualenv .venv 
-                --pidfile index.pid --master --enable-threads --daemonize index.log
+.venv/bin/uwsgi --http :8000 --module index:server --pidfile index.pid 
+                --master --enable-threads --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
+
+.venv/bin/uvicorn main:app --port 8000 --reload
 ```
 
 ### Frontend
@@ -56,3 +58,5 @@ pip3 install -r requirements.txt
 - Antd: https://ant-design.gitee.io/index-cn
 - Fac: https://fac.feffery.tech/what-is-fac
 - Fuc: https://fuc.feffery.tech/what-is-fuc
+- FastAPI: https://fastapi.tiangolo.com
+- Pydantic: https://pydantic-docs.helpmanual.io

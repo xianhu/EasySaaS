@@ -12,7 +12,7 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State, dcc, html
 
-from utility.paths import PATH_ANALYSIS
+from core.paths import PATH_ANALYSIS
 from . import paddedit, pdelete
 from ..comps import get_component_logo
 from ..comps.header import get_component_header, get_component_header_user

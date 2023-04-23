@@ -11,9 +11,9 @@ import flask_login
 from dash import Input, Output, State
 
 from app import UserLogin, app_db
-from utility import get_md5
-from utility.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from utility.paths import PATH_ROOT
+from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
+from core.paths import PATH_ROOT
+from core.security import check_password_hash, get_md5
 from . import tsign
 
 TAG = "login"
@@ -42,7 +42,7 @@ def layout(pathname, search, **kwargs):
     # define kwargs
     kwargs_temp = dict(
         text_title="Welcome back",
-        text_subtitle="Login to analysis your data.",
+        text_subtitle="Login to analysis your models.",
         form_items=[form_email, form_pwd, row_cpc],
         data=kwargs.get("nextpath") or PATH_ROOT,
     )
@@ -105,7 +105,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
 
     # check password
     pwd = (pwd or "").strip()
-    if not user.check_password_hash(pwd):
+    if not check_password_hash(pwd, user.pwd):
         out_pwd["status"] = "error"
         out_pwd["help"] = "Password is incorrect"
         out_others["cpc_refresh"] = True if vcpc else False

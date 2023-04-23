@@ -4,7 +4,6 @@
 email[signup/forgotpwd] page
 """
 
-import secrets
 import urllib.parse
 
 import dash
@@ -15,10 +14,10 @@ from dash import Input, Output, State, html
 from flask import session as flask_session
 
 from app import User, app_db, app_mail
-from config import CONFIG_APP_DOMAIN, CONFIG_APP_NAME
-from utility import get_md5
-from utility.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from utility.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
+from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
+from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
+from core.security import create_access_token, get_md5
+from core.settings import settings
 from . import tsign
 from .. import palert
 
@@ -146,35 +145,23 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         return out_email, out_cpc, out_terms, out_others
 
     # send email and add/update user ==============================================================
-    token = user.token_verify if user and user.token_verify else secrets.token_urlsafe(32)
+    token = create_access_token(subject=email, expires_minutes=30)
 
     # define query and href of verify
-    query = urllib.parse.urlencode(dict(_id=_id, token=token))
-    href = urllib.parse.urljoin(CONFIG_APP_DOMAIN, f"{pathname}-setpwd?{query}")
+    query = urllib.parse.urlencode(dict(token=token))
+    href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?{query}")
 
     # define subject and body
     if pathname == PATH_SIGNUP:
-        subject = f"Registration of {CONFIG_APP_NAME}"
+        subject = f"Registration of {settings.APP_NAME}"
     else:
-        subject = f"Resetting password of {CONFIG_APP_NAME}"
+        subject = f"Resetting password of {settings.APP_NAME}"
     mail_body = f"please click link: {href}"
     mail_html = f"please click link: <a href='{href}'>Verify the email</a>"
 
     # send email
     kwargs = dict(body=mail_body, html=mail_html)
     app_mail.send(flask_mail.Message(subject, **kwargs, recipients=[email, ]))
-
-    # add/update user
-    if not user:
-        # add user if signup
-        user = User(id=_id, email=email, token_verify=token, status=0)
-        app_db.session.add(user)
-        app_db.session.commit()
-    else:
-        # update user if forgotpwd
-        user.token_verify = token
-        # user.status = 0 !!!!!!
-        app_db.session.commit()
     # =============================================================================================
 
     # set session and go result

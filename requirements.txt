@@ -1,15 +1,33 @@
-dash==2.9.3
-feffery-antd-components==0.2.1
-feffery-utils-components==0.1.25
+# Dash
+dash~=2.9.3
+feffery-antd-components~=0.2.2
+feffery-utils-components~=0.1.25
+uWSGI~=2.0.21
 
-Flask==2.2.3
-Flask-Mail==0.9.1
-Flask-Login==0.6.2
-Flask-Redis==0.4.0
-Flask-Compress==1.13.0
-Flask-SQLAlchemy==3.0.3
+# Flask
+Flask~=2.2.3
+Flask-Mail~=0.9.1
+Flask-Login~=0.6.2
+Flask-Redis~=0.4.0
+Flask-Compress~=1.13.0
+Flask-SQLAlchemy~=3.0.3
 
-uWSGI==2.0.21
-celery==5.2.7
-flower==1.2.0
-pymysql==1.0.3
+# FastAPI
+fastapi~=0.95.1
+uvicorn~=0.21.1
+
+# Database
+pymysql~=1.0.3
+SQLAlchemy~=2.0.10
+
+# Tasks
+celery~=5.2.7
+flower~=1.2.0
+
+# Security
+bcrypt~=4.0.1
+passlib~=1.7.4
+python-jose[cryptography]~=3.3.0
+
+# Others
+pydantic~=1.10.7
