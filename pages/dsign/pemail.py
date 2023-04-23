@@ -4,7 +4,6 @@
 email[signup/forgotpwd] page
 """
 
-import secrets
 import urllib.parse
 
 import dash
@@ -15,10 +14,10 @@ from dash import Input, Output, State, html
 from flask import session as flask_session
 
 from app import User, app_db, app_mail
-from core.settings import settings
-from core.security import get_md5
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
+from core.security import create_access_token, get_md5
+from core.settings import settings
 from . import tsign
 from .. import palert
 
@@ -146,10 +145,10 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         return out_email, out_cpc, out_terms, out_others
 
     # send email and add/update user ==============================================================
-    token = user.token_verify if user and user.token_verify else secrets.token_urlsafe(32)
+    token = create_access_token(subject=email, expires_minutes=30)
 
     # define query and href of verify
-    query = urllib.parse.urlencode(dict(_id=_id, token=token))
+    query = urllib.parse.urlencode(dict(token=token))
     href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?{query}")
 
     # define subject and body
@@ -163,18 +162,6 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     # send email
     kwargs = dict(body=mail_body, html=mail_html)
     app_mail.send(flask_mail.Message(subject, **kwargs, recipients=[email, ]))
-
-    # add/update user
-    if not user:
-        # add user if signup
-        user = User(id=_id, email=email, token_verify=token, status=0)
-        app_db.session.add(user)
-        app_db.session.commit()
-    else:
-        # update user if forgotpwd
-        user.token_verify = token
-        # user.status = 0 !!!!!!
-        app_db.session.commit()
     # =============================================================================================
 
     # set session and go result

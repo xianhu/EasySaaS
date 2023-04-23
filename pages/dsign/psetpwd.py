@@ -14,7 +14,7 @@ from dash import Input, Output, State
 from app import User, app_db
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
-from core.security import get_md5
+from core.security import get_md5, verify_access_token
 from . import tsign
 from .. import palert
 
@@ -28,15 +28,10 @@ def layout(pathname, search, **kwargs):
     try:
         # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        _id, token = search.get("_id")[0], search.get("token")[0]
-
-        # get user from database
-        user = app_db.session.get(User, _id)
-        assert user and user.token_verify == token
+        email = verify_access_token(search.get("token")[0])
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         return palert.layout_expired(pathname, search)
-    email = user.email
 
     # define components
     input_email = fac.AntdInput(id=f"id-{TAG}-input-email", value=email, size="large", readOnly=True)
