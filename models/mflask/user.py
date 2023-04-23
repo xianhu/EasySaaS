@@ -11,8 +11,6 @@ from models.mflask import BaseModel
 
 
 class User(BaseModel):
-    __name__ = "user"
-
     # basic
     id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(512), index=False, nullable=True)

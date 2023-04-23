@@ -7,6 +7,7 @@ models in flask
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+from sqlalchemy.ext.declarative import declared_attr
 
 # create SQLAlchemy
 app_db = SQLAlchemy(app=None)
@@ -15,6 +16,10 @@ app_db = SQLAlchemy(app=None)
 class BaseModel(app_db.Model):
     __abstract__ = True
     __ignore__ = ["created_at", "updated_at"]
+
+    @declared_attr
+    def __tablename__(cls) -> str:
+        return f"{cls.__name__.lower()}s"
 
     # get function
     def get(self, column):
