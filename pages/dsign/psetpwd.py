@@ -85,7 +85,7 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-input-email", "value"),
     State(f"id-{TAG}-input-pwd1", "value"),
     State(f"id-{TAG}-input-pwd2", "value"),
-    State(f"id-{TAG}-data", "data"),
+    State(f"id-{TAG}-models", "models"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
     # define outputs

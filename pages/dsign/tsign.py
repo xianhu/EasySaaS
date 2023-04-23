@@ -48,5 +48,5 @@ def layout(pathname, search, tag, **kwargs):
         fac.AntdRow(fac.AntdCol(content, span=20, md=6), justify="center"),
         # define components
         fuc.FefferyExecuteJs(id=f"id-{tag}-executejs"),
-        dcc.Store(id=f"id-{tag}-data", data=kwargs["data"]),
+        dcc.Store(id=f"id-{tag}-models", data=kwargs["models"]),
     ], className="vh-100 overflow-auto")

@@ -12,7 +12,7 @@ import flask_login
 from dash import Input, Output, State
 
 from app import app_db
-from data.models.users import Project, UserProject
+from models.users import Project, UserProject
 from utility import get_md5
 
 TAG_BASE = "projects"
@@ -59,13 +59,13 @@ def layout(pathname, search, **kwargs):
     visible=Output(f"id-{TAG}-modal-project", "visible"),
     loading=Output(f"id-{TAG}-modal-project", "confirmLoading"),
     title=Output(f"id-{TAG}-modal-project", "title"),
-), Output(f"id-{TAG_BASE}-{TYPE}-close", "data")], [
-    Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
+), Output(f"id-{TAG_BASE}-{TYPE}-close", "models")], [
+    Input(f"id-{TAG_BASE}-{TYPE}-open", "models"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
 ], [
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
-    State(f"id-{TAG_BASE}-{TYPE}-project", "data"),
+    State(f"id-{TAG_BASE}-{TYPE}-project", "models"),
 ], prevent_initial_call=True)
 def _update_page(open_data, ok_counts, name, desc, project):
     # define outputs

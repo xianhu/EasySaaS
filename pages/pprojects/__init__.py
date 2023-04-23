@@ -78,14 +78,14 @@ def layout(pathname, search, **kwargs):
     Output(f"id-{TAG}-button-add", "disabled"),
     Output(f"id-{TAG}-div-table", "children"),
 ], [
-    Input(f"id-{TAG}-addedit-close", "data"),
-    Input(f"id-{TAG}-delete-close", "data"),
+    Input(f"id-{TAG}-addedit-close", "models"),
+    Input(f"id-{TAG}-delete-close", "models"),
 ], prevent_initial_call=False)
 def _update_page(data_addedit, data_delete):
     # user instance
     current_user = flask_login.current_user
 
-    # table data
+    # table models
     data_table = []
     for up in current_user.user_projects:
         if up.project.status == 0:
@@ -99,7 +99,7 @@ def _update_page(data_addedit, data_delete):
             operation.append({"content": "Edit", "type": "link"})
             operation.append({"content": "Delete", "type": "link", "danger": True})
 
-        # append data
+        # append models
         data_table.append({
             "id": project.id, "key": project.id,
             "name": project.name, "desc": project.desc,
@@ -116,11 +116,11 @@ def _update_page(data_addedit, data_delete):
 
 
 @dash.callback([dict(
-    open=Output(f"id-{TAG}-addedit-open", "data"),
-    project=Output(f"id-{TAG}-addedit-project", "data"),
+    open=Output(f"id-{TAG}-addedit-open", "models"),
+    project=Output(f"id-{TAG}-addedit-project", "models"),
 ), dict(
-    open=Output(f"id-{TAG}-delete-open", "data"),
-    project=Output(f"id-{TAG}-delete-project", "data"),
+    open=Output(f"id-{TAG}-delete-open", "models"),
+    project=Output(f"id-{TAG}-delete-project", "models"),
 )], [
     Input(f"id-{TAG}-button-add", "nClicks"),
     Input(f"id-{TAG}-table-project", "nClicksButton"),

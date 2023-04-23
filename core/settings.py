@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     # settings -- base
-    ENV_PRE: str = "EASY"
+    ENV_PRE: str = "ES"
     APP_NAME: str = "EasySaaS"
 
     # settings from environment variables -- base

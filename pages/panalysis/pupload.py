@@ -50,14 +50,14 @@ dash.clientside_callback(
         namespace="ns_flow",
         function_name="render_flow",
     ),
-    Output(f"id-{TAG}-div-flow", "data"),
-    Input(f"id-{TAG}-params-flow", "data"),
+    Output(f"id-{TAG}-div-flow", "models"),
+    Input(f"id-{TAG}-params-flow", "models"),
 )
 
 
 @dash.callback(
     Output(f"id-{TAG}-message-flow", "children"),
-    Input(f"id-{TAG}-storage-flow", "data"),
+    Input(f"id-{TAG}-storage-flow", "models"),
     prevent_initial_call=True,
 )
 def _update_page(data_storage):

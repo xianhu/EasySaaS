@@ -42,7 +42,7 @@ def layout(pathname, search, **kwargs):
     # define kwargs
     kwargs_temp = dict(
         text_title="Welcome back",
-        text_subtitle="Login to analysis your data.",
+        text_subtitle="Login to analysis your models.",
         form_items=[form_email, form_pwd, row_cpc],
         data=kwargs.get("nextpath") or PATH_ROOT,
     )
@@ -70,7 +70,7 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-input-pwd", "value"),
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
-    State(f"id-{TAG}-data", "data"),
+    State(f"id-{TAG}-models", "models"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     # define outputs

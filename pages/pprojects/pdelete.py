@@ -11,7 +11,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State, html
 
 from app import app_db
-from data.models.users import Project, UserProject
+from models.users import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-delete"
@@ -41,10 +41,10 @@ def layout(pathname, search, **kwargs):
 ), dict(
     visible=Output(f"id-{TAG}-modal-project", "visible"),
     loading=Output(f"id-{TAG}-modal-project", "confirmLoading"),
-), Output(f"id-{TAG_BASE}-{TYPE}-close", "data")], [
-    Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
+), Output(f"id-{TAG_BASE}-{TYPE}-close", "models")], [
+    Input(f"id-{TAG_BASE}-{TYPE}-open", "models"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
-    State(f"id-{TAG_BASE}-{TYPE}-project", "data"),
+    State(f"id-{TAG_BASE}-{TYPE}-project", "models"),
 ], prevent_initial_call=True)
 def _update_page(open_data, ok_counts, project):
     # define outputs

@@ -101,7 +101,7 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
     State(f"id-{TAG}-checkbox-terms", "checked"),
-    State(f"id-{TAG}-data", "data"),
+    State(f"id-{TAG}-models", "models"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     # define outputs

@@ -50,7 +50,7 @@ def layout(pathname, search, **kwargs):
     project_id = search["id"][0]
     up_role, project = project_role_dict[project_id]
 
-    # define data
+    # define models
     store_data = dict(
         user_id=current_user.id, up_role=up_role,
         project_id=project.id, project_name=project.name,
@@ -76,7 +76,7 @@ def layout(pathname, search, **kwargs):
         sider, main,
         # define components of others
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        dcc.Store(id=f"id-{TAG}-data", data=store_data),
+        dcc.Store(id=f"id-{TAG}-models", data=store_data),
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="vh-100 overflow-auto")
@@ -90,7 +90,7 @@ def layout(pathname, search, **kwargs):
     executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-menu", "currentKey"),
-    State(f"id-{TAG}-data", "data"),
+    State(f"id-{TAG}-models", "models"),
 ], prevent_initial_call=False)
 def _update_page(current_key, store_data):
     # define outputs
@@ -104,7 +104,7 @@ def _update_page(current_key, store_data):
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
-    # get data from store
+    # get models from store
     up_role = store_data["up_role"]
     project_name = store_data["project_name"]
 

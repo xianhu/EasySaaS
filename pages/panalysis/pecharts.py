@@ -23,8 +23,8 @@ def layout(pathname, search, **kwargs):
     params_chart = dict(
         # chart id
         id_div=f"id-{TAG}-div-chart",  # div to show chart
-        id_storage=f"id-{TAG}-storage-chart",  # storage of chart click data
-        # chart data
+        id_storage=f"id-{TAG}-storage-chart",  # storage of chart click models
+        # chart models
         x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         y_data=[random.randint(50, 100) for _ in range(10)],
     )
@@ -33,7 +33,7 @@ def layout(pathname, search, **kwargs):
     return html.Div(children=[
         # define components
         html.Div(id=f"id-{TAG}-div-chart", style={"height": "500px"}),  # div to show chart
-        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
+        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click models
 
         # params to trigger clientside callback
         dcc.Store(id=f"id-{TAG}-params-chart", data=params_chart),
@@ -49,14 +49,14 @@ dash.clientside_callback(
         namespace="ns_echarts",
         function_name="render_chart",
     ),
-    Output(f"id-{TAG}-div-chart", "data"),
-    Input(f"id-{TAG}-params-chart", "data"),
+    Output(f"id-{TAG}-div-chart", "models"),
+    Input(f"id-{TAG}-params-chart", "models"),
 )
 
 
 @dash.callback(
     Output(f"id-{TAG}-message-chart", "children"),
-    Input(f"id-{TAG}-storage-chart", "data"),
+    Input(f"id-{TAG}-storage-chart", "models"),
     prevent_initial_call=True,
 )
 def _update_page(data_storage):

@@ -13,7 +13,7 @@ from passlib.context import CryptContext
 from pydantic import ValidationError
 
 from core.settings import settings
-from data.schemas.token import TokenPayload
+from models.schemas.token import TokenPayload
 
 # define algorithm
 ALGORITHM = "HS256"
