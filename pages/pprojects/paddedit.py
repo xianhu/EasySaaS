@@ -12,8 +12,8 @@ import flask_login
 from dash import Input, Output, State
 
 from app import app_db
-from models.user import Project, UserProject
-from utility import get_md5
+from core.security import get_md5
+from models.mflask.project import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-addedit"

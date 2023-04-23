@@ -12,9 +12,9 @@ import feffery_antd_components as fac
 from dash import Input, Output, State
 
 from app import User, app_db
-from utility import get_md5
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
+from core.security import get_md5
 from . import tsign
 from .. import palert
 

@@ -15,8 +15,8 @@ from dash import Input, Output, State, html
 from flask import session as flask_session
 
 from app import User, app_db, app_mail
-from config import CONFIG_APP_DOMAIN, CONFIG_APP_NAME
-from utility import get_md5
+from core.settings import settings
+from core.security import get_md5
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from . import tsign
@@ -150,13 +150,13 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
 
     # define query and href of verify
     query = urllib.parse.urlencode(dict(_id=_id, token=token))
-    href = urllib.parse.urljoin(CONFIG_APP_DOMAIN, f"{pathname}-setpwd?{query}")
+    href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?{query}")
 
     # define subject and body
     if pathname == PATH_SIGNUP:
-        subject = f"Registration of {CONFIG_APP_NAME}"
+        subject = f"Registration of {settings.APP_NAME}"
     else:
-        subject = f"Resetting password of {CONFIG_APP_NAME}"
+        subject = f"Resetting password of {settings.APP_NAME}"
     mail_body = f"please click link: {href}"
     mail_html = f"please click link: <a href='{href}'>Verify the email</a>"
 
