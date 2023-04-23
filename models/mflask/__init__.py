@@ -6,23 +6,25 @@ models in flask
 
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import orm
-
-from models import BaseModel
+from sqlalchemy import func
 
 # create SQLAlchemy
 app_db = SQLAlchemy(app=None)
 
 
-class UserProject(BaseModel, app_db.Model):
-    # relationships
-    user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("user.id"), primary_key=True)
-    project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("project.id"), primary_key=True)
+class BaseModel(app_db.Model):
+    __abstract__ = True
+    __ignore__ = ["created_at", "updated_at"]
 
-    # role and role_json of project
-    role = sqlalchemy.Column(sqlalchemy.String(255), default="admin", doc="admin/writer/reader")
-    role_json = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, doc="json of role")
+    # get function
+    def get(self, column):
+        return getattr(self, column)
 
-    # relationships: up.user, up.project
-    user = orm.relationship("User", back_populates="user_projects")
-    project = orm.relationship("Project", back_populates="user_projects")
+    # to dict function
+    def to_dict(self) -> dict:
+        columns = [c for c in self.__table__.columns if c.name not in self.__ignore__]
+        return {c.name: getattr(self, c.name) for c in columns}
+
+    status = sqlalchemy.Column(sqlalchemy.SmallInteger, default=1, doc="Status: 1/0")
+    created_at = sqlalchemy.Column(sqlalchemy.DateTime, default=func.now(), doc="Created At")
+    updated_at = sqlalchemy.Column(sqlalchemy.DateTime, default=func.now(), onupdate=func.now(), doc="Updated At")

@@ -21,6 +21,7 @@ celery~=5.2.7
 flower~=1.2.0
 pymysql~=1.0.3
 passlib~=1.7.4
+bcrypt~=4.0.1
 pydantic~=1.10.7
 SQLAlchemy~=2.0.10
 python-jose[cryptography]~=3.3.0

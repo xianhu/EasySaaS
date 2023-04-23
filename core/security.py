@@ -18,7 +18,7 @@ from core.settings import settings
 ALGORITHM = "HS256"
 
 # define password context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 
 def create_access_token(subject: Union[str, Any], expires_minutes: int = None) -> str:
