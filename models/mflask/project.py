@@ -7,12 +7,12 @@ project model
 import sqlalchemy
 from sqlalchemy import orm
 
-from models.mflask import BaseModel
+from . import BaseModel
 
 
 class Project(BaseModel):
     # basic
-    id = sqlalchemy.Column(sqlalchemy.String(255), primary_key=True)
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
     # information
     name = sqlalchemy.Column(sqlalchemy.String(255), index=False, nullable=True)
@@ -24,8 +24,8 @@ class Project(BaseModel):
 
 class UserProject(BaseModel):
     # relationships
-    user_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("users.id"), primary_key=True)
-    project_id = sqlalchemy.Column(sqlalchemy.String(255), sqlalchemy.ForeignKey("projects.id"), primary_key=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), primary_key=True)
+    project_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("projects.id"), primary_key=True)
 
     # role and role_json of project
     role = sqlalchemy.Column(sqlalchemy.String(255), index=False, default="admin", doc="Role: admin, member")
