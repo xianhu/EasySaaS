@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     # settings -- base
     ENV_PRE: str = "EASY"
-    APP_NAME: str = "EasyApi"
+    APP_NAME: str = "EasySaaS"
 
     # settings from environment variables -- base
     APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN")
@@ -39,8 +39,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-if __name__ == '__main__':
-    import pprint
-
-    pprint.pprint(settings.dict())

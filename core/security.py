@@ -4,6 +4,7 @@
 security file
 """
 
+import hashlib
 from datetime import datetime, timedelta
 from typing import Any, Union
 
@@ -12,13 +13,13 @@ from passlib.context import CryptContext
 from pydantic import ValidationError
 
 from core.settings import settings
-from schemas.token import TokenPayload
-
-# define password context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from data.schemas.token import TokenPayload
 
 # define algorithm
 ALGORITHM = "HS256"
+
+# define password context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_access_token(subject: Union[str, Any], expires_minutes: int = None) -> str:
@@ -50,15 +51,23 @@ def verify_access_token(token: str) -> Union[TokenPayload, None]:
     return token_pyload
 
 
-def check_password_hash(pwd_plain, pwd_hash):
+def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
     """
     check password hash
     """
     return pwd_context.verify(pwd_plain, pwd_hash)
 
 
-def get_password_hash(pwd_plain):
+def get_password_hash(pwd_plain: str) -> str:
     """
     get password hash
     """
     return pwd_context.hash(pwd_plain)
+
+
+def get_md5(source: str) -> str:
+    """
+    get md5 of source
+    """
+    str_encode = source.encode()
+    return hashlib.md5(str_encode).hexdigest()
