@@ -14,7 +14,7 @@ from dash import Input, Output, State
 from app import User, app_db
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
-from core.security import get_md5, verify_access_token
+from core.security import get_md5, get_password_hash, verify_access_token
 from . import tsign
 from .. import palert
 
@@ -29,6 +29,7 @@ def layout(pathname, search, **kwargs):
         # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
         email = verify_access_token(search.get("token")[0])
+        assert email, "email is empty"
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         return palert.layout_expired(pathname, search)
@@ -80,7 +81,7 @@ def layout_result(pathname, search, **kwargs):
     State(f"id-{TAG}-input-email", "value"),
     State(f"id-{TAG}-input-pwd1", "value"),
     State(f"id-{TAG}-input-pwd2", "value"),
-    State(f"id-{TAG}-models", "models"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
     # define outputs
@@ -106,15 +107,18 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
         out_pwd["status2"] = "error"
         out_pwd["help2"] = "Passwords are inconsistent"
         return out_pwd, out_others
+    pwd = get_password_hash(pwd1)
 
     # check user
     _id = get_md5(email)
     user = app_db.session.get(User, _id)
 
-    # update user
-    user.set_password_hash(pwd1)
-    user.token_verify = None
-    user.status = 1
+    if not user:
+        user = User(id=_id, pwd=pwd, email=email)
+        app_db.session.add(user)
+    else:
+        user.pwd = pwd
+        app_db.session.merge(user)
 
     # commit and go result
     app_db.session.commit()

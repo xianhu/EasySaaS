@@ -76,7 +76,7 @@ def layout(pathname, search, **kwargs):
         sider, main,
         # define components of others
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        dcc.Store(id=f"id-{TAG}-models", data=store_data),
+        dcc.Store(id=f"id-{TAG}-data", data=store_data),
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
     ], className="vh-100 overflow-auto")
@@ -90,7 +90,7 @@ def layout(pathname, search, **kwargs):
     executejs_string=Output(f"id-{TAG}-executejs", "jsString"),
 )], [
     Input(f"id-{TAG}-menu", "currentKey"),
-    State(f"id-{TAG}-models", "models"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=False)
 def _update_page(current_key, store_data):
     # define outputs

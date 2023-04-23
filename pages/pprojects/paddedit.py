@@ -59,13 +59,13 @@ def layout(pathname, search, **kwargs):
     visible=Output(f"id-{TAG}-modal-project", "visible"),
     loading=Output(f"id-{TAG}-modal-project", "confirmLoading"),
     title=Output(f"id-{TAG}-modal-project", "title"),
-), Output(f"id-{TAG_BASE}-{TYPE}-close", "models")], [
-    Input(f"id-{TAG_BASE}-{TYPE}-open", "models"),
+), Output(f"id-{TAG_BASE}-{TYPE}-close", "data")], [
+    Input(f"id-{TAG_BASE}-{TYPE}-open", "data"),
     Input(f"id-{TAG}-modal-project", "okCounts"),
 ], [
     State(f"id-{TAG}-input-name", "value"),
     State(f"id-{TAG}-input-desc", "value"),
-    State(f"id-{TAG_BASE}-{TYPE}-project", "models"),
+    State(f"id-{TAG_BASE}-{TYPE}-project", "data"),
 ], prevent_initial_call=True)
 def _update_page(open_data, ok_counts, name, desc, project):
     # define outputs

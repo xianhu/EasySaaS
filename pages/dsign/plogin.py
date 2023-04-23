@@ -13,7 +13,7 @@ from dash import Input, Output, State
 from app import UserLogin, app_db
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_ROOT
-from core.security import get_md5
+from core.security import check_password_hash, get_md5
 from . import tsign
 
 TAG = "login"
@@ -70,7 +70,7 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-input-pwd", "value"),
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
-    State(f"id-{TAG}-models", "models"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
 def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     # define outputs
@@ -105,7 +105,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
 
     # check password
     pwd = (pwd or "").strip()
-    if not user.check_password_hash(pwd):
+    if not check_password_hash(pwd, user.pwd):
         out_pwd["status"] = "error"
         out_pwd["help"] = "Password is incorrect"
         out_others["cpc_refresh"] = True if vcpc else False
