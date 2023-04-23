@@ -16,7 +16,7 @@ from flask import request
 
 from config import *
 from models.mflask import app_db
-from models.users import User
+from models.user import User
 from tasks import app_celery
 
 # logging config
