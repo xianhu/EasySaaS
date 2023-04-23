@@ -16,7 +16,7 @@ from flask import session as flask_session
 from app import User, app_db, app_mail
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
-from core.security import create_access_token, get_md5
+from core.security import create_access_token
 from core.settings import settings
 from . import tsign
 from .. import palert
@@ -131,8 +131,7 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         return out_email, out_cpc, out_terms, out_others
 
     # check user
-    _id = get_md5(email)
-    user = app_db.session.get(User, _id)
+    user = app_db.session.query(User).filter(User.email == email).first()
     if pathname == PATH_SIGNUP and (user and (user.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
@@ -144,20 +143,17 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_cpc, out_terms, out_others
 
-    # send email and add/update user ==============================================================
-    token = create_access_token(subject=email, expires_minutes=30)
-
-    # define query and href of verify
-    query = urllib.parse.urlencode(dict(token=token))
-    href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?{query}")
+    # send email ==================================================================================
+    token = create_access_token(subject=email, expires_duration=60 * 10)
+    link_verify = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?token={token}")
 
     # define subject and body
     if pathname == PATH_SIGNUP:
         subject = f"Registration of {settings.APP_NAME}"
     else:
         subject = f"Resetting password of {settings.APP_NAME}"
-    mail_body = f"please click link: {href}"
-    mail_html = f"please click link: <a href='{href}'>Verify the email</a>"
+    mail_body = f"please click link: {link_verify}"
+    mail_html = f"please click link: <a href='{link_verify}'>Verify the email</a>"
 
     # send email
     kwargs = dict(body=mail_body, html=mail_html)
