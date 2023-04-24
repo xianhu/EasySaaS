@@ -13,6 +13,7 @@ class ProjectSchema(ProjectBase):
 
 class ProjectCreate(ProjectBase):
     name: str
+    user_id: int
 
 
 class ProjectUpdate(ProjectBase):
