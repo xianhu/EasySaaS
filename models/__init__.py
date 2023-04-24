@@ -19,10 +19,24 @@ SessionLocal = sqlalchemy.orm.sessionmaker(bind=engine, autocommit=False, autofl
 
 def get_db() -> Generator:
     """
-    get db session
+    generate db session
     """
     try:
         db = SessionLocal()
         yield db
     finally:
         db.close()
+
+
+class DbMaker(object):
+    """
+    with db session
+    """
+
+    def __enter__(self):
+        self.db = SessionLocal()
+        return self.db
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.db.close()
+        return

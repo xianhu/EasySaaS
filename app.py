@@ -12,9 +12,8 @@ import flask_login
 from flask import request
 
 from core.settings import settings
-from models import get_db
+from models import DbMaker, User
 from models.crud import crud_user
-from models.user import User
 from tasks import app_celery
 
 # logging config
@@ -35,15 +34,11 @@ cdn_flowjs_js = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.
 # create app
 app = dash.Dash(
     __name__,
-    server=True,
-    serve_locally=True,
     compress=True,
     show_undo_redo=False,
     url_base_pathname="/",
-    assets_folder="assets",
     title=settings.APP_NAME,
     update_title="Updating...",
-    prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
     external_stylesheets=[
@@ -115,8 +110,7 @@ class UserLogin(User, flask_login.UserMixin):
 # overwrite user_loader
 @login_manager.user_loader
 def load_user(user_id):
-    user_db = None
-    for db in get_db():
+    with DbMaker() as db:
         user_db = crud_user.get(db, _id=user_id)
     return user_db if user_db and user_db.status == 1 else None
 

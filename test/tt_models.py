@@ -7,7 +7,7 @@ test models
 import logging
 
 from core.security import get_password_hash
-from models import engine, get_db
+from models import DbMaker, engine
 from models.base import Model
 from models.crud import crud_project, crud_user
 from models.schemas import ProjectCreate, ProjectUpdate
@@ -17,7 +17,7 @@ from models.schemas import UserCreate, UserUpdate
 Model.metadata.drop_all(engine, checkfirst=True)
 Model.metadata.create_all(engine, checkfirst=True)
 
-for db in get_db():
+with DbMaker() as db:
     # test user
     email = "admin@easysaas.com"
     user_schema = UserCreate(email=email, pwd=get_password_hash("a123456"))

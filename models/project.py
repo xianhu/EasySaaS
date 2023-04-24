@@ -11,6 +11,8 @@ from .base import AbstractModel
 
 
 class Project(AbstractModel):
+    __tablename__ = "projects"
+
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, ForeignKey("users.id"), nullable=False)
