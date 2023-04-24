@@ -17,6 +17,7 @@ class ProjectCreate(ProjectBase):
 
 
 class ProjectUpdate(ProjectBase):
+    # user_id: int
     pass
 
 

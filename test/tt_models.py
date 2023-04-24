@@ -20,22 +20,22 @@ Model.metadata.create_all(engine, checkfirst=True)
 for db in get_db():
     # test user
     email = "admin@easysaas.com"
-    user = UserCreate(email=email, pwd=get_password_hash("a123456"))
-    user_db = curd_user.create(db, obj_in=user)
+    user_schema = UserCreate(email=email, pwd=get_password_hash("a123456"))
+    user_db = curd_user.create(db, obj_schema=user_schema)
     logging.warning("add user: %s", user_db.to_dict())
 
-    user_update = UserUpdate(name="admin")
-    user_db = curd_user.update(db, obj_db=user_db, obj_in=user_update)
+    user_schema = UserUpdate(name="admin")
+    user_db = curd_user.update(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("update user: %s", user_db.to_dict())
 
     # test project
     project_name = "demo project"
-    project = ProjectCreate(name=project_name, user_id=user_db.id)
-    project_db = curd_project.create(db, obj_in=project)
+    project_schema = ProjectCreate(name=project_name, user_id=user_db.id)
+    project_db = curd_project.create(db, obj_schema=project_schema)
     logging.warning("add project: %s", project_db.to_dict())
 
-    project_update = ProjectUpdate(desc="demo project description")
-    project_db = curd_project.update(db, obj_db=project_db, obj_in=project_update)
+    project_schema = ProjectUpdate(desc="demo project description")
+    project_db = curd_project.update(db, obj_db=project_db, obj_schema=project_schema)
     logging.warning("update project: %s", project_db.to_dict())
 
     # test relationship

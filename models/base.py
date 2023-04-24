@@ -4,6 +4,8 @@
 base model
 """
 
+from typing import Any, Dict
+
 import sqlalchemy.orm
 from sqlalchemy import func
 from sqlalchemy.ext import declarative
@@ -20,12 +22,10 @@ class AbstractModel(Model):
     def __tablename__(cls) -> str:
         return f"{cls.__name__.lower()}s"
 
-    # get function
-    def get(self, column) -> object:
-        return getattr(self, column)
+    def get(self, field: str) -> Any:
+        return getattr(self, field)
 
-    # to dict function
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict[str, Any]:
         columns = [c for c in self.__table__.columns if c.name not in self.__ignore__]
         return {c.name: getattr(self, c.name) for c in columns}
 
