@@ -11,7 +11,7 @@ import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
 
-from app import User, app_db
+from app import User
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
 from core.security import get_access_subject, get_password_hash

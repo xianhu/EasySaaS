@@ -9,11 +9,10 @@ import urllib.parse
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask_mail
 from dash import Input, Output, State, html
 from flask import session as flask_session
 
-from app import User, app_db, app_mail
+from app import User
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from core.security import create_access_token
@@ -157,7 +156,7 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
 
     # send email
     kwargs = dict(body=mail_body, html=mail_html)
-    app_mail.send(flask_mail.Message(subject, **kwargs, recipients=[email, ]))
+    # app_mail.send(flask_mail.Message(subject, **kwargs, recipients=[email, ]))
     # =============================================================================================
 
     # set session and go result

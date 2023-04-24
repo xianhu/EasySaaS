@@ -27,8 +27,8 @@ def create_access_token(subject: Union[str, Any], expires_duration: int = None) 
     expire = datetime.utcnow() + timedelta(seconds=seconds)
 
     # sub and exp is remained keys in jwt
-    pyload = {"sub": str(subject), "exp": expire}
-    token = jwt.encode(pyload, settings.SECRET_KEY, algorithm=ALGORITHM)
+    payload = {"sub": str(subject), "exp": expire}
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
 
     # return
     return token
@@ -39,12 +39,12 @@ def get_access_subject(token: str) -> Optional[str]:
     get access subject from token
     """
     try:
-        pyload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
     except jwt.JWTError:
-        pyload = None
+        payload = None
 
     # return
-    return pyload["sub"] if pyload else None
+    return payload["sub"] if payload else None
 
 
 def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
