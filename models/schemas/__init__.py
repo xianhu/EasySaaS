@@ -4,5 +4,15 @@
 schemas module
 """
 
-from .project import Project, ProjectCreate, ProjectInDB, ProjectUpdate
-from .user import User, UserCreate, UserInDB, UserUpdate
+from .project import (
+    ProjectSchema,
+    ProjectCreate,
+    ProjectUpdate,
+    ProjectInDB,
+)
+from .user import (
+    UserSchema,
+    UserCreate,
+    UserUpdate,
+    UserInDB,
+)

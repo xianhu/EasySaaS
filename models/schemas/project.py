@@ -1,10 +1,8 @@
 # _*_ coding: utf-8 _*_
 
 """
-schemas of project
+project schema
 """
-
-from typing import Optional
 
 from .base import ProjectBase
 
@@ -22,7 +20,8 @@ class ProjectUpdate(ProjectBase):
 
 
 class ProjectInDB(ProjectBase):
-    id: Optional[int] = None
+    id: int
+    user_id: int
 
     class Config:
         orm_mode = True

@@ -1,10 +1,8 @@
 # _*_ coding: utf-8 _*_
 
 """
-schemas of user
+user schema
 """
-
-from typing import Optional
 
 from pydantic import EmailStr
 
@@ -25,8 +23,8 @@ class UserUpdate(UserBase):
 
 
 class UserInDB(UserBase):
-    id: Optional[int] = None
-    pwd: Optional[str] = None
+    id: int
+    pwd: str
 
     class Config:
         orm_mode = True
