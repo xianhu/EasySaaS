@@ -4,5 +4,5 @@
 crud module
 """
 
-from .project import project as curd_project
-from .user import user as curd_user
+from .project import project as crud_project
+from .user import user as crud_user

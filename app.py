@@ -12,7 +12,8 @@ import flask_login
 from flask import request
 
 from core.settings import settings
-from models import get_session
+from models import get_db
+from models.crud import crud_user
 from models.user import User
 from tasks import app_celery
 
@@ -96,13 +97,6 @@ server = app.server
 server.config.update(
     SECRET_KEY=settings.SECRET_KEY,
 
-    MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_PORT=settings.MAIL_PORT,
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD,
-    MAIL_DEFAULT_SENDER=settings.MAIL_SENDER,
-    MAIL_USE_TLS=False, MAIL_USE_SSL=True,
-
     REMEMBER_COOKIE_NAME="remember_token",
     REMEMBER_COOKIE_DURATION=settings.REMEMBER_COOKIE_DURATION,
 
@@ -121,10 +115,10 @@ class UserLogin(User, flask_login.UserMixin):
 # overwrite user_loader
 @login_manager.user_loader
 def load_user(user_id):
-    user = None
-    for session in get_session():
-        user = session.get(UserLogin, user_id)
-    return user if user and user.status == 1 else None
+    user_db = None
+    for db in get_db():
+        user_db = crud_user.get(db, _id=user_id)
+    return user_db if user_db and user_db.status == 1 else None
 
 
 # func before_request
