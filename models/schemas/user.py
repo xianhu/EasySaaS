@@ -4,6 +4,8 @@
 user schema
 """
 
+from typing import Optional
+
 from pydantic import EmailStr
 
 from .base import UserBase
@@ -19,7 +21,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    pwd: str
+    pwd: Optional[str] = None
 
 
 class UserInDB(UserBase):

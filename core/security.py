@@ -47,15 +47,15 @@ def get_access_subject(token: str) -> Optional[str]:
     return payload["sub"] if payload else None
 
 
-def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
-    """
-    check password hash
-    """
-    return pwd_context.verify(pwd_plain, pwd_hash)
-
-
 def get_password_hash(pwd_plain: str) -> str:
     """
     get password hash
     """
     return pwd_context.hash(pwd_plain)
+
+
+def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
+    """
+    check password hash
+    """
+    return pwd_context.verify(pwd_plain, pwd_hash)

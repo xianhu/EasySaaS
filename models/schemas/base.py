@@ -9,15 +9,17 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
-class UserBase(BaseModel):
+class Base(BaseModel):
+    status: Optional[int] = 1
+
+
+class UserBase(Base):
     name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
     avatar: Optional[str] = None
-    status: Optional[int] = 1
 
 
-class ProjectBase(BaseModel):
+class ProjectBase(Base):
     name: Optional[str] = None
     desc: Optional[str] = None
-    status: Optional[int] = 1
