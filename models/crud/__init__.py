@@ -3,3 +3,5 @@
 """
 crud module
 """
+
+from .user import user as curd_user

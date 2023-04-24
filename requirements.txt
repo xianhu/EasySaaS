@@ -1,7 +1,7 @@
 # Dash
 dash~=2.9.3
 feffery-antd-components~=0.2.2
-feffery-utils-components~=0.1.25
+feffery-utils-components~=0.1.26
 uWSGI~=2.0.21
 
 # Flask
@@ -27,5 +27,5 @@ passlib~=1.7.4
 python-jose[cryptography]~=3.3.0
 
 # Others
-pydantic~=1.10.7
 emails~=0.6.0
+pydantic[email]~=1.10.7
