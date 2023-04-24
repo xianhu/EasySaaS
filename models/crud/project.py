@@ -5,7 +5,7 @@ project crud
 """
 
 from .base import CRUDBase
-from .. import Project
+from .. import Project  # Model
 from ..schemas import ProjectCreate, ProjectUpdate
 
 

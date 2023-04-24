@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-celery tasks module
+tasks module
 """
 
 from celery import Celery

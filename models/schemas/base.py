@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-base schemas
+base schema
 """
 
 from typing import Optional

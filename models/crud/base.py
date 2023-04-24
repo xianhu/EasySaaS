@@ -4,7 +4,7 @@
 base crud
 """
 
-from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
+from typing import Generic, Optional, Type, TypeVar, Union
 
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -43,11 +43,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.commit()
         return obj_db
 
-    def update(self, db: Session, obj_db: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
-        if not isinstance(obj_in, dict):
-            obj_in = obj_in.dict(exclude_none=True)
-        for field in obj_in:
-            setattr(obj_db, field, obj_in[field])
+    def update(self, db: Session, obj_db: ModelType, obj_in: UpdateSchemaType) -> ModelType:
+        obj_in = obj_in.dict(exclude_none=True)
+        [setattr(obj_db, field, obj_in[field]) for field in obj_in]
         db.merge(obj_db)
         db.commit()
         return obj_db
