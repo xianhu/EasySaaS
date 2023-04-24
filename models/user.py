@@ -7,19 +7,19 @@ user model
 import sqlalchemy
 from sqlalchemy import orm
 
-from . import BaseModel
+from .base import AbstractModel
 
 
-class User(BaseModel):
+class User(AbstractModel):
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    pwd = sqlalchemy.Column(sqlalchemy.String(512), index=False, nullable=True)
+    pwd = sqlalchemy.Column(sqlalchemy.String(512), index=False)
 
     # information
-    name = sqlalchemy.Column(sqlalchemy.String(255), index=False, nullable=True)
-    email = sqlalchemy.Column(sqlalchemy.String(255), index=True, nullable=True, unique=True)
-    phone = sqlalchemy.Column(sqlalchemy.String(255), index=True, nullable=True, unique=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String(255), index=False, nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String(255), index=False)
+    email = sqlalchemy.Column(sqlalchemy.String(255), index=True, unique=True)
+    phone = sqlalchemy.Column(sqlalchemy.String(255), index=True, unique=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(255), index=False)
 
-    # relationship: user.user_projects
-    user_projects = orm.relationship("UserProject", back_populates="user")
+    # relationship: projects
+    projects = orm.relationship("Project", back_populates="user")
