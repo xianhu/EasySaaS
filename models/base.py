@@ -1,23 +1,22 @@
 # _*_ coding: utf-8 _*_
 
 """
-models in flask
+base model
 """
 
-import flask_sqlalchemy
-import sqlalchemy
+import sqlalchemy.orm
 from sqlalchemy import func
-from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext import declarative
 
-# create SQLAlchemy
-app_db = flask_sqlalchemy.SQLAlchemy(app=None)
+# define base model
+Model = declarative.declarative_base()
 
 
-class BaseModel(app_db.Model):
+class AbstractModel(Model):
     __abstract__ = True
-    __ignore__ = ["pwd", "created_at", "updated_at"]
+    __ignore__ = ["created_at", "updated_at"]
 
-    @declared_attr
+    @declarative.declared_attr
     def __tablename__(cls) -> str:
         return f"{cls.__name__.lower()}s"
 

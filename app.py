@@ -9,13 +9,11 @@ import uuid
 
 import dash
 import flask_login
-import flask_mail
-import flask_redis
 from flask import request
 
 from core.settings import settings
-from models.mflask import app_db
-from models.mflask.user import User
+from models import get_session
+from models.user import User
 from tasks import app_celery
 
 # logging config
@@ -105,24 +103,11 @@ server.config.update(
     MAIL_DEFAULT_SENDER=settings.MAIL_SENDER,
     MAIL_USE_TLS=False, MAIL_USE_SSL=True,
 
-    REDIS_URL=f"{settings.REDIS_URI}/10",
-    SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    SQLALCHEMY_DATABASE_URI=settings.DATABASE_URI,
-
     REMEMBER_COOKIE_NAME="remember_token",
     REMEMBER_COOKIE_DURATION=settings.REMEMBER_COOKIE_DURATION,
 
     PERMANENT_SESSION_LIFETIME=settings.PERMANENT_SESSION_LIFETIME,
 )
-
-# initial db
-app_db.init_app(server)
-
-# initial mail
-app_mail = flask_mail.Mail(server)
-
-# initial redis
-app_redis = flask_redis.FlaskRedis(server)
 
 # initial login_manager
 login_manager = flask_login.LoginManager(server)
@@ -136,7 +121,9 @@ class UserLogin(User, flask_login.UserMixin):
 # overwrite user_loader
 @login_manager.user_loader
 def load_user(user_id):
-    user = app_db.session.get(UserLogin, user_id)
+    user = None
+    for session in get_session():
+        user = session.get(UserLogin, user_id)
     return user if user and user.status == 1 else None
 
 

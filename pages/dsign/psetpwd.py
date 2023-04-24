@@ -11,10 +11,10 @@ import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
 
-from app import User, app_db
+from app import User
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
-from core.security import get_md5, get_password_hash, verify_access_token
+from core.security import get_access_subject, get_password_hash
 from . import tsign
 from .. import palert
 
@@ -28,7 +28,7 @@ def layout(pathname, search, **kwargs):
     try:
         # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        email = verify_access_token(search.get("token")[0])
+        email = get_access_subject(search.get("token")[0])
         assert email, "email is empty"
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
@@ -110,11 +110,9 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
     pwd = get_password_hash(pwd1)
 
     # check user
-    _id = get_md5(email)
-    user = app_db.session.get(User, _id)
-
+    user = app_db.session.query(User).filter(User.email == email).first()
     if not user:
-        user = User(id=_id, pwd=pwd, email=email)
+        user = User(pwd=pwd, email=email)
         app_db.session.add(user)
     else:
         user.pwd = pwd

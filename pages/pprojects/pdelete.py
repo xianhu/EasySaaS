@@ -11,7 +11,7 @@ import feffery_antd_components as fac
 from dash import Input, Output, State, html
 
 from app import app_db
-from models.mflask.project import Project, UserProject
+from models.project import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-delete"

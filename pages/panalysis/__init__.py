@@ -50,7 +50,7 @@ def layout(pathname, search, **kwargs):
     project_id = search["id"][0]
     up_role, project = project_role_dict[project_id]
 
-    # define models
+    # define data
     store_data = dict(
         user_id=current_user.id, up_role=up_role,
         project_id=project.id, project_name=project.name,
@@ -104,7 +104,7 @@ def _update_page(current_key, store_data):
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
-    # get models from store
+    # get data from store
     up_role = store_data["up_role"]
     project_name = store_data["project_name"]
 

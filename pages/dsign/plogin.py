@@ -10,10 +10,11 @@ import feffery_utils_components as fuc
 import flask_login
 from dash import Input, Output, State
 
-from app import UserLogin, app_db
+from app import UserLogin
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_ROOT
-from core.security import check_password_hash, get_md5
+from core.security import check_password_hash
+from models import get_session
 from . import tsign
 
 TAG = "login"
@@ -95,8 +96,10 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         return out_email, out_pwd, out_cpc, out_others
 
     # check user
-    _id = get_md5(email)
-    user = app_db.session.get(UserLogin, _id)
+    for session in get_session():
+        user = session.query(UserLogin).filter(
+            UserLogin.email == email,
+        ).first()
     if not (user and user.status == 1):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"

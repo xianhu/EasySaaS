@@ -1,5 +1,5 @@
 /**
- * js_flow: include init and client side callbacks
+ * js_flow: include initial code and client side callbacks
  */
 // initial code
 const flow = new Flow({
@@ -12,6 +12,8 @@ const flow = new Flow({
     progressCallbacksInterval: 1000,
 });
 console.log('flow object created');
+
+// id of storage, used to store flow events
 let id_storage_flow = 'id-analysis-upload-storage-flow';
 
 // define flow events
@@ -28,6 +30,12 @@ flow.on('fileAdded', function (file) {
 // define flow events
 flow.on('fileProgress', function (file) {
     let percent = Math.floor(file.progress() * 100);
+    // sessionStorage.setItem(id_storage_flow, JSON.stringify({
+    //     status: 'fileProgress',
+    //     file_name: file.name,
+    //     file_size: file.size,
+    //     _timestamp: new Date().getTime(),
+    // }));
     console.log('file progress: ' + percent + '%');
 });
 
@@ -59,7 +67,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
         render_flow: function (params) {
             console.log('render flow:' + JSON.stringify(params));
 
-            // get models from params
+            // get data from params
             let id_div = params['id_div'];
             let id_button = params['id_button'];
             let id_input = 'id-input-file';
