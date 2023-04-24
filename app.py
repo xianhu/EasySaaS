@@ -15,7 +15,7 @@ from flask import request
 
 from core.settings import settings
 from models.mflask import app_db
-from models.mflask.user import User
+from models.user import User
 from tasks import app_celery
 
 # logging config

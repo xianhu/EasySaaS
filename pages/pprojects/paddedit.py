@@ -12,7 +12,7 @@ import flask_login
 from dash import Input, Output, State
 
 from app import app_db
-from models.mflask.project import Project, UserProject
+from models.project import Project, UserProject
 
 TAG_BASE = "projects"
 TAG = "projects-addedit"
