@@ -7,6 +7,7 @@ models module
 from typing import Generator
 
 import sqlalchemy.orm
+from sqlalchemy.orm import Session
 
 from core.settings import settings
 from .project import Project
@@ -33,7 +34,7 @@ class DbMaker(object):
     with db session
     """
 
-    def __enter__(self):
+    def __enter__(self) -> Session:
         self.db = SessionLocal()
         return self.db
 

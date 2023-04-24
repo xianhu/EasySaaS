@@ -4,8 +4,7 @@
 project model
 """
 
-import sqlalchemy
-from sqlalchemy import ForeignKey, orm
+import sqlalchemy.orm
 
 from .base import AbstractModel
 
@@ -15,11 +14,11 @@ class Project(AbstractModel):
 
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer, ForeignKey("users.id"), nullable=False)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
 
     # information
     name = sqlalchemy.Column(sqlalchemy.String(255), index=False)
     desc = sqlalchemy.Column(sqlalchemy.String(512), index=False)
 
     # relationship: user
-    user = orm.relationship("User", back_populates="projects")
+    user = sqlalchemy.orm.relationship("User", back_populates="projects")

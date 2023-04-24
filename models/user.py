@@ -4,8 +4,7 @@
 user model
 """
 
-import sqlalchemy
-from sqlalchemy import orm
+import sqlalchemy.orm
 
 from .base import AbstractModel
 
@@ -24,4 +23,4 @@ class User(AbstractModel):
     avatar = sqlalchemy.Column(sqlalchemy.String(255), index=False)
 
     # relationship: projects
-    projects = orm.relationship("Project", back_populates="user")
+    projects = sqlalchemy.orm.relationship("Project", back_populates="user")

@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email tasks
+email task
 """
 
 from typing import Any, Dict, Union
@@ -18,8 +18,7 @@ smtp_options = {
     "port": settings.MAIL_PORT,
     "user": settings.MAIL_USERNAME,
     "password": settings.MAIL_PASSWORD,
-    "tls": False, "ssl": True,
-    "timeout": 10,
+    "tls": False, "ssl": True, "timeout": 10,
 }
 
 

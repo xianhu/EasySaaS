@@ -6,7 +6,7 @@ base model
 
 from typing import Any, Dict
 
-import sqlalchemy.orm
+import sqlalchemy
 from sqlalchemy import func
 from sqlalchemy.ext import declarative
 
