@@ -13,8 +13,8 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     # settings -- security
     SECRET_KEY: str = secrets.token_hex(32)
-    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
+    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
 
     # settings -- base
     ENV_PRE: str = "ES"

@@ -16,7 +16,8 @@ from ..comps.header import get_component_header, get_component_header_user
 TAG = "user"
 
 # style of page
-STYLE_PAGE = """"""
+STYLE_PAGE = """
+"""
 
 
 def layout(pathname, search, **kwargs):

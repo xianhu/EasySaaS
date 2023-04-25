@@ -3,6 +3,7 @@
 """
 Application Layout
 """
+
 import logging
 
 import dash

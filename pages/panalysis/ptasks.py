@@ -38,9 +38,9 @@ def layout(pathname, search, **kwargs):
     ], background=True, prevent_initial_call=True)
 def _update_page(set_progress, n_clicks):
     time_start = time.time()
+    out_children = "Output:"
 
     # run tasks
-    out_children = "Output:"
     for index in range(10):
         time.sleep(1)
         time_run = time.time() - time_start

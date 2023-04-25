@@ -1,6 +1,6 @@
 # Dash
 dash~=2.9.3
-feffery-antd-components~=0.2.2
+feffery-antd-components~=0.2.5
 feffery-utils-components~=0.1.26
 uWSGI~=2.0.21
 

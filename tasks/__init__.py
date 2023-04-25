@@ -22,6 +22,7 @@ app_celery = Celery(
     task_serializer="json",
     result_serializer="json",
     include=[
+        "tasks.email",
         "pages.panalysis.ptasks",
     ],
 )
