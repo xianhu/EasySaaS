@@ -117,13 +117,15 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-    # check user
-    if not user_db:
-        user_schema = UserCreate(pwd=pwd_hash, email=email)
-        crud_user.create(db, obj_schema=user_schema)
-    else:
-        user_schema = UserUpdate(pwd=pwd_hash)
-        crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+        # check user
+        if not user_db:
+            # create user
+            user_schema = UserCreate(pwd=pwd_hash, email=email)
+            crud_user.create(db, obj_schema=user_schema)
+        else:
+            # update user
+            user_schema = UserUpdate(pwd=pwd_hash)
+            crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
 
     # set executejs_string
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
