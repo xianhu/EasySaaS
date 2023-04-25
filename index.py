@@ -3,6 +3,7 @@
 """
 Application Layout
 """
+import logging
 
 import dash
 import feffery_utils_components as fuc
@@ -36,8 +37,12 @@ app.layout = html.Div(children=[
     State("id-location", "hash"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
+    # get user.id or None
+    user_id = get_access_sub(flask_session.get("token", ""))
+    logging.warning("[%s] pathname: %s, search: %s", user_id, pathname, search)
+
     # define variables
-    kwargs = dict(vhash=vhash, nextpath=None)
+    kwargs = dict(vhash=vhash, user_id=user_id)
     jsstr_login = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
     jsstr_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
@@ -70,17 +75,17 @@ def _init_page(pathname, search, vhash):
         return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
 
     if pathname == PATH_USER:
-        if not get_access_sub(flask_session.get("token", "")):
+        if not user_id:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, puser.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == PATH_PROJECTS:
-        if not get_access_sub(flask_session.get("token", "")):
+        if not user_id:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, pprojects.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == PATH_ANALYSIS:
-        if not get_access_sub(flask_session.get("token", "")):
+        if not user_id:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, panalysis.layout(pathname, search, **kwargs), jsstr_title
 

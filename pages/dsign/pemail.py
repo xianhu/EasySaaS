@@ -149,8 +149,8 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         return out_email, out_cpc, out_terms, out_others
 
     # send email ==================================================================================
-    subject = json.dumps(dict(email=email, type="sign"))
-    token = create_access_token(subject=subject, expires_duration=60 * 10)
+    sub = json.dumps(dict(email=email, type="sign"))
+    token = create_access_token(sub=sub, expires_duration=60 * 10)
 
     # define mail_subject
     if pathname == PATH_SIGNUP:
@@ -158,7 +158,7 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
     else:
         mail_subject = "Resetting password of {{ app_name }}"
 
-    # define mail_html
+    # define href and mail_html
     href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?token={token}")
     mail_html = "please click link: <a href='{{ href }}'>Verify the email</a>"
 

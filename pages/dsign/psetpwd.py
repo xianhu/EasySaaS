@@ -31,12 +31,12 @@ def layout(pathname, search, **kwargs):
     try:
         # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        subject = json.loads(get_access_subject(search.get("token")[0]))
-        assert subject["type"] == "sign", "token type error"
+        sub = json.loads(get_access_sub(search.get("token")[0]))
+        assert sub.get("type") == "sign", "token type error"
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         return palert.layout_expired(pathname, search)
-    email = subject["email"]
+    email = sub["email"]
 
     # define components
     input_email = fac.AntdInput(id=f"id-{TAG}-input-email", value=email, size="large", readOnly=True)
@@ -111,7 +111,7 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
         out_pwd["status2"] = "error"
         out_pwd["help2"] = "Passwords are inconsistent"
         return out_pwd, out_others
-    pwd = get_password_hash(pwd1)
+    pwd_hash = get_password_hash(pwd1)
 
     # get user from db
     with DbMaker() as db:
@@ -119,11 +119,11 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
 
     # check user
     if not user_db:
-        user_schema = UserCreate(email=email, pwd=pwd)
+        user_schema = UserCreate(pwd=pwd_hash, email=email)
         crud_user.create(db, obj_schema=user_schema)
     else:
-        user_schema = UserUpdate(pwd=pwd)
-        crud_user.update(db, db_obj=user_db, obj_schema=user_schema)
+        user_schema = UserUpdate(pwd=pwd_hash)
+        crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
 
     # set executejs_string
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
