@@ -4,6 +4,7 @@
 set password page
 """
 
+import json
 import logging
 import urllib.parse
 
@@ -11,10 +12,12 @@ import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
 
-from app import User
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
 from core.security import get_access_subject, get_password_hash
+from models import DbMaker
+from models.crud import crud_user
+from models.schemas import UserCreate, UserUpdate
 from . import tsign
 from .. import palert
 
@@ -28,11 +31,12 @@ def layout(pathname, search, **kwargs):
     try:
         # get values from search
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        email = get_access_subject(search.get("token")[0])
-        assert email, "email is empty"
+        subject = json.loads(get_access_subject(search.get("token")[0]))
+        assert subject["type"] == "sign", "token type error"
     except Exception as excep:
         logging.error("token expired or error: %s", excep)
         return palert.layout_expired(pathname, search)
+    email = subject["email"]
 
     # define components
     input_email = fac.AntdInput(id=f"id-{TAG}-input-email", value=email, size="large", readOnly=True)
@@ -109,17 +113,19 @@ def _button_click(n_clicks, email, pwd1, pwd2, pathname_email):
         return out_pwd, out_others
     pwd = get_password_hash(pwd1)
 
-    # check user
-    user = app_db.session.query(User).filter(User.email == email).first()
-    if not user:
-        user = User(pwd=pwd, email=email)
-        app_db.session.add(user)
-    else:
-        user.pwd = pwd
-        app_db.session.merge(user)
+    # get user from db
+    with DbMaker() as db:
+        user_db = crud_user.get_by_email(db, email=email)
 
-    # commit and go result
-    app_db.session.commit()
+    # check user
+    if not user_db:
+        user_schema = UserCreate(email=email, pwd=pwd)
+        crud_user.create(db, obj_schema=user_schema)
+    else:
+        user_schema = UserUpdate(pwd=pwd)
+        crud_user.update(db, db_obj=user_db, obj_schema=user_schema)
+
+    # set executejs_string
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=f"{pathname}/result")
 
     # return result

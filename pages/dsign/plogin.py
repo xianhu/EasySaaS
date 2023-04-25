@@ -14,7 +14,7 @@ from app import UserLogin
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_ROOT
 from core.security import check_password_hash
-from models import get_session
+from models import DbMaker
 from . import tsign
 
 TAG = "login"
@@ -95,12 +95,14 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_pwd, out_cpc, out_others
 
-    # check user
-    for session in get_session():
-        user = session.query(UserLogin).filter(
+    # get user from db
+    with DbMaker() as db:
+        user_db = db.query(UserLogin).filter(
             UserLogin.email == email,
         ).first()
-    if not (user and user.status == 1):
+
+    # check user
+    if not (user_db and user_db.status == 1):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
         out_others["cpc_refresh"] = True if vcpc else False
@@ -108,14 +110,14 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
 
     # check password
     pwd = (pwd or "").strip()
-    if not check_password_hash(pwd, user.pwd):
+    if not check_password_hash(pwd, user_db.pwd):
         out_pwd["status"] = "error"
         out_pwd["help"] = "Password is incorrect"
         out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_pwd, out_cpc, out_others
 
     # login user and go nextpath
-    flask_login.login_user(user, remember=True)
+    flask_login.login_user(user_db, remember=True)
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
 
     # return result
