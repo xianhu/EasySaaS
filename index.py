@@ -8,12 +8,13 @@ import logging
 
 import dash
 import feffery_utils_components as fuc
-import flask_login
 from dash import Input, Output, State, dcc, html
+from flask import session as flask_session
 
 from app import app, server
 from core.consts import *
 from core.paths import *
+from core.security import get_access_sub
 from pages import palert, panalysis, pprojects, puser
 from pages.dsign import pemail, plogin, psetpwd
 
@@ -37,28 +38,25 @@ app.layout = html.Div(children=[
     State("id-location", "hash"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
-    # user instance
-    current_user = flask_login.current_user
-
-    # logging current_user
-    xwho = current_user.id if current_user.is_authenticated else "Anonymous"
-    logging.warning("[%s]: pathname=%s, search=%s, hash=%s", xwho, pathname, search, vhash)
+    # get user.id or None
+    user_id = get_access_sub(flask_session.get("token", ""))
+    logging.warning("[%s] pathname: %s, search: %s", user_id, pathname, search)
 
     # define variables
-    kwargs = dict(vhash=vhash, nextpath=None)
+    kwargs = dict(vhash=vhash, user_id=user_id)
     jsstr_login = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
     jsstr_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
     # =============================================================================================
     if pathname == PATH_LOGIN:
-        if current_user.is_authenticated:
-            flask_login.logout_user()
+        if flask_session.get("token"):
+            flask_session.pop("token")
         return pathname, search, plogin.layout(pathname, search, **kwargs), jsstr_title
 
     # =============================================================================================
     if pathname == PATH_SIGNUP or pathname == PATH_FORGOTPWD:
-        if current_user.is_authenticated:
-            flask_login.logout_user()
+        if flask_session.get("token"):
+            flask_session.pop("token")
         return pathname, search, pemail.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == f"{PATH_SIGNUP}/result" or pathname == f"{PATH_FORGOTPWD}/result":
@@ -66,8 +64,8 @@ def _init_page(pathname, search, vhash):
 
     # =============================================================================================
     if pathname == f"{PATH_SIGNUP}-setpwd" or pathname == f"{PATH_FORGOTPWD}-setpwd":
-        if current_user.is_authenticated:
-            flask_login.logout_user()
+        if flask_session.get("token"):
+            flask_session.pop("token")
         return pathname, search, psetpwd.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == f"{PATH_SIGNUP}-setpwd/result" or pathname == f"{PATH_FORGOTPWD}-setpwd/result":
@@ -78,17 +76,17 @@ def _init_page(pathname, search, vhash):
         return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
 
     if pathname == PATH_USER:
-        if not current_user.is_authenticated:
+        if not user_id:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, puser.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == PATH_PROJECTS:
-        if not current_user.is_authenticated:
+        if not user_id:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, pprojects.layout(pathname, search, **kwargs), jsstr_title
 
     if pathname == PATH_ANALYSIS:
-        if not current_user.is_authenticated:
+        if not user_id:
             return pathname, search, dash.no_update, jsstr_login
         return pathname, search, panalysis.layout(pathname, search, **kwargs), jsstr_title
 

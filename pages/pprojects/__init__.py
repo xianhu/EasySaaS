@@ -9,10 +9,11 @@ import time
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask_login
 from dash import Input, Output, State, dcc, html
 
 from core.paths import PATH_ANALYSIS
+from models import DbMaker
+from models.crud import crud_user
 from . import paddedit, pdelete
 from ..comps import get_component_logo
 from ..comps.header import get_component_header, get_component_header_user
@@ -36,8 +37,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # user instance
-    current_user = flask_login.current_user
-    user_title = current_user.email.split("@")[0]
+    with DbMaker() as db:
+        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
+    user_title = user_db.email.split("@")[0]
 
     # define components for (addedit) project
     modal_addedit = paddedit.layout(pathname, search)
@@ -71,6 +73,7 @@ def layout(pathname, search, **kwargs):
         modal_delete, data_delete_open, data_delete_close, data_delete_project,
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
+        dcc.Store(id=f"id-{TAG}-uid", data=user_db.id),
     ], className="vh-100 overflow-auto")
 
 
@@ -80,30 +83,28 @@ def layout(pathname, search, **kwargs):
 ], [
     Input(f"id-{TAG}-addedit-close", "data"),
     Input(f"id-{TAG}-delete-close", "data"),
+    State(f"id-{TAG}-uid", "data"),
 ], prevent_initial_call=False)
-def _update_page(data_addedit, data_delete):
+def _update_page(data_addedit, data_delete, user_id):
     # user instance
-    current_user = flask_login.current_user
+    with DbMaker() as db:
+        user_db = crud_user.get(db, _id=user_id)
+        projects_list = [p for p in user_db.projects if p.status == 1]
 
     # table data
     data_table = []
-    for up in current_user.user_projects:
-        if up.project.status == 0:
-            continue
-        up_role, project = up.role, up.project
-
-        # define operation of button column
-        href = f"{PATH_ANALYSIS}?id={project.id}"
-        operation = [{"content": "Analysis", "type": "link", "href": href}]
-        if up_role == "admin":
-            operation.append({"content": "Edit", "type": "link"})
-            operation.append({"content": "Delete", "type": "link", "danger": True})
+    for project in projects_list:
+        # operation
+        operation = [
+            {"content": "Analysis", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
+            {"content": "Edit", "type": "link"},
+            {"content": "Delete", "type": "link", "danger": True},
+        ]
 
         # append data
         data_table.append({
-            "id": project.id, "key": project.id,
-            "name": project.name, "desc": project.desc,
-            "role": up_role, "operation": operation,
+            "id": project.id, "key": project.id, "user_id": user_id,
+            "name": project.name, "desc": project.desc, "operation": operation,
         })
 
     # return result
@@ -127,8 +128,9 @@ def _update_page(data_addedit, data_delete):
 ], [
     State(f"id-{TAG}-table-project", "clickedContent"),
     State(f"id-{TAG}-table-project", "recentlyButtonClickedRow"),
+    State(f"id-{TAG}-uid", "data"),
 ], prevent_initial_call=True)
-def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row):
+def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id):
     # define outputs
     out_addedit = dict(open=dash.no_update, project=dash.no_update)
     out_delete = dict(open=dash.no_update, project=dash.no_update)
@@ -139,7 +141,7 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row):
     # check triggered_id
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
-        out_addedit["project"] = dict()
+        out_addedit["project"] = dict(user_id=user_id)
         return out_addedit, out_delete
 
     # check triggered_id

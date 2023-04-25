@@ -4,6 +4,7 @@
 email[signup/forgotpwd] page
 """
 
+import json
 import urllib.parse
 
 import dash
@@ -12,11 +13,13 @@ import feffery_utils_components as fuc
 from dash import Input, Output, State, html
 from flask import session as flask_session
 
-from app import User
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from core.security import create_access_token
 from core.settings import settings
+from models import DbMaker
+from models.crud import crud_user
+from tasks.email import send_email
 from . import tsign
 from .. import palert
 
@@ -129,34 +132,39 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
         out_terms["help"] = "Please agree to terms of use and privacy policy"
         return out_email, out_cpc, out_terms, out_others
 
+    # get user from db
+    with DbMaker() as db:
+        user_db = crud_user.get_by_email(db, email=email)
+
     # check user
-    user = app_db.session.query(User).filter(User.email == email).first()
-    if pathname == PATH_SIGNUP and (user and (user.status == 1)):
+    if pathname == PATH_SIGNUP and (user_db and user_db.status == 1):
         out_email["status"] = "error"
         out_email["help"] = "This email has been registered"
         out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_cpc, out_terms, out_others
-    if pathname == PATH_FORGOTPWD and (not (user and user.status == 1)):
+    if pathname == PATH_FORGOTPWD and (not (user_db and user_db.status == 1)):
         out_email["status"] = "error"
         out_email["help"] = "This email hasn't been registered"
         out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_cpc, out_terms, out_others
 
     # send email ==================================================================================
-    token = create_access_token(subject=email, expires_duration=60 * 10)
-    link_verify = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?token={token}")
+    sub = json.dumps(dict(email=email, type="sign"))
+    token = create_access_token(sub=sub, expires_duration=60 * 10)
 
-    # define subject and body
+    # define mail_subject
     if pathname == PATH_SIGNUP:
-        subject = f"Registration of {settings.APP_NAME}"
+        mail_subject = "Registration of {{ app_name }}"
     else:
-        subject = f"Resetting password of {settings.APP_NAME}"
-    mail_body = f"please click link: {link_verify}"
-    mail_html = f"please click link: <a href='{link_verify}'>Verify the email</a>"
+        mail_subject = "Resetting password of {{ app_name }}"
+
+    # define href and mail_html
+    href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{pathname}-setpwd?token={token}")
+    mail_html = "please click link: <a href='{{ href }}'>Verify the email</a>"
 
     # send email
-    kwargs = dict(body=mail_body, html=mail_html)
-    # app_mail.send(flask_mail.Message(subject, **kwargs, recipients=[email, ]))
+    render = dict(app_name=settings.APP_NAME, href=href)
+    send_email(to=email, subject=mail_subject, html=mail_html, render=render)
     # =============================================================================================
 
     # set session and go result

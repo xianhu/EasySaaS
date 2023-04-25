@@ -4,25 +4,22 @@
 project schema
 """
 
-from .base import ProjectBase
+from typing import Optional
+
+from pydantic import BaseModel
 
 
-class ProjectSchema(ProjectBase):
-    pass
+class ProjectSchema(BaseModel):
+    name: Optional[str] = None
+    desc: Optional[str] = None
+    status: Optional[int] = 1
 
 
-class ProjectCreate(ProjectBase):
+class ProjectCreate(ProjectSchema):
     name: str
     user_id: int
 
 
-class ProjectUpdate(ProjectBase):
+class ProjectUpdate(ProjectSchema):
+    # user_id: int
     pass
-
-
-class ProjectInDB(ProjectBase):
-    id: int
-    user_id: int
-
-    class Config:
-        orm_mode = True

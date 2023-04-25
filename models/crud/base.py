@@ -18,34 +18,31 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    """
-    CRUD object with default methods to Create, Read, Update, Delete.
-    """
 
     def __init__(self, model: Type[ModelType]):
         self.model = model
         return
 
     def get(self, db: Session, _id: Union[int, str]) -> Optional[ModelType]:
-        obj = db.query(self.model).get(_id)
-        return obj
+        obj_db = db.query(self.model).get(_id)
+        return obj_db
 
     def delete(self, db: Session, _id: Union[int, str]) -> ModelType:
-        obj = db.query(self.model).get(_id)
-        obj.status = 0
+        obj_db = db.query(self.model).get(_id)
+        obj_db.status = 0
         db.commit()
-        return obj
+        return obj_db
 
-    def create(self, db: Session, obj_in: CreateSchemaType) -> ModelType:
-        obj_in = obj_in.dict(exclude_none=True)
-        obj_db = self.model(**obj_in)
+    def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:
+        obj_schema = obj_schema.dict(exclude_none=True)
+        obj_db = self.model(**obj_schema)
         db.add(obj_db)
         db.commit()
         return obj_db
 
-    def update(self, db: Session, obj_db: ModelType, obj_in: UpdateSchemaType) -> ModelType:
-        obj_in = obj_in.dict(exclude_none=True)
-        [setattr(obj_db, field, obj_in[field]) for field in obj_in]
+    def update(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
+        obj_schema = obj_schema.dict(exclude_none=True)
+        [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
         db.merge(obj_db)
         db.commit()
         return obj_db

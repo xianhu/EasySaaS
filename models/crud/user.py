@@ -16,7 +16,8 @@ from ..schemas import UserCreate, UserUpdate
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     def get_by_email(self, db: Session, email: str) -> Optional[User]:
-        return db.query(User).filter(User.email == email).first()
+        obj_db = db.query(User).filter(User.email == email).first()
+        return obj_db
 
 
 user = CRUDUser(User)

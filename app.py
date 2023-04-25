@@ -8,12 +8,9 @@ import logging
 import uuid
 
 import dash
-import flask_login
 from flask import request
 
 from core.settings import settings
-from models import get_session
-from models.user import User
 from tasks import app_celery
 
 # logging config
@@ -34,15 +31,11 @@ cdn_flowjs_js = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.
 # create app
 app = dash.Dash(
     __name__,
-    server=True,
-    serve_locally=True,
     compress=True,
     show_undo_redo=False,
     url_base_pathname="/",
-    assets_folder="assets",
     title=settings.APP_NAME,
     update_title="Updating...",
-    prevent_initial_callbacks=False,
     suppress_callback_exceptions=True,
     background_callback_manager=callback_manager,
     external_stylesheets=[
@@ -95,36 +88,8 @@ app.index_string = """<!DOCTYPE html>
 server = app.server
 server.config.update(
     SECRET_KEY=settings.SECRET_KEY,
-
-    MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_PORT=settings.MAIL_PORT,
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD,
-    MAIL_DEFAULT_SENDER=settings.MAIL_SENDER,
-    MAIL_USE_TLS=False, MAIL_USE_SSL=True,
-
-    REMEMBER_COOKIE_NAME="remember_token",
-    REMEMBER_COOKIE_DURATION=settings.REMEMBER_COOKIE_DURATION,
-
     PERMANENT_SESSION_LIFETIME=settings.PERMANENT_SESSION_LIFETIME,
 )
-
-# initial login_manager
-login_manager = flask_login.LoginManager(server)
-
-
-# define UserLogin class
-class UserLogin(User, flask_login.UserMixin):
-    pass
-
-
-# overwrite user_loader
-@login_manager.user_loader
-def load_user(user_id):
-    user = None
-    for session in get_session():
-        user = session.get(UserLogin, user_id)
-    return user if user and user.status == 1 else None
 
 
 # func before_request

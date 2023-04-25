@@ -67,6 +67,8 @@ def _update_page(data_storage):
 
 @server.route("/upload", methods=["POST"])
 def _route_upload():
+    # verify token if needed
+
     # define uuid of session
     if not flask_session.get("uuid"):
         flask_session["uuid"] = str(uuid.uuid4())

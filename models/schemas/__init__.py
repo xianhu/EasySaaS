@@ -4,15 +4,16 @@
 schemas module
 """
 
-from .project import (
-    ProjectSchema,
-    ProjectCreate,
-    ProjectUpdate,
-    ProjectInDB,
-)
-from .user import (
-    UserSchema,
-    UserCreate,
-    UserUpdate,
-    UserInDB,
-)
+from pydantic import BaseModel
+
+from .project import ProjectCreate, ProjectSchema, ProjectUpdate
+from .user import UserCreate, UserSchema, UserUpdate
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class Msg(BaseModel):
+    msg: str
