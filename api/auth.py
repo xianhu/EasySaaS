@@ -21,9 +21,7 @@ def auth_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRe
     """
     login to get access token
     """
-    user = crud_user.authenticate(
-        db, email=form_data.username, password=form_data.password
-    )
+    user = crud_user.authenticate(db, email=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     return Token(access_token=create_access_token(user.id), token_type="bearer")
