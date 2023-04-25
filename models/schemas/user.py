@@ -6,27 +6,21 @@ user schema
 
 from typing import Optional
 
-from pydantic import EmailStr
-
-from .base import UserBase
+from pydantic import BaseModel, EmailStr
 
 
-class UserSchema(UserBase):
-    pass
+class UserSchema(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    avatar: Optional[str] = None
+    status: Optional[int] = 1
 
 
-class UserCreate(UserBase):
+class UserCreate(UserSchema):
     pwd: str
     email: EmailStr
 
 
-class UserUpdate(UserBase):
+class UserUpdate(UserSchema):
     pwd: Optional[str] = None
-
-
-class UserInDB(UserBase):
-    id: int
-    pwd: str
-
-    class Config:
-        orm_mode = True
