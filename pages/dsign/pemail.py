@@ -164,7 +164,7 @@ def _button_click(n_clicks, email, vcpc, vimage, checked, pathname):
 
     # send email
     render = dict(app_name=settings.APP_NAME, href=href)
-    send_email(email, subject=mail_subject, html=mail_html, render=render)
+    send_email(to=email, subject=mail_subject, html=mail_html, render=render)
     # =============================================================================================
 
     # set session and go result

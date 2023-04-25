@@ -38,7 +38,7 @@ def layout(pathname, search, **kwargs):
     """
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, kwargs.get("user_id"))
+        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
     user_title = user_db.email.split("@")[0]
 
     # define components for (addedit) project
@@ -88,16 +88,13 @@ def layout(pathname, search, **kwargs):
 def _update_page(data_addedit, data_delete, user_id):
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, user_id)
+        user_db = crud_user.get(db, _id=user_id)
         projects_list = [p for p in user_db.projects if p.status == 1]
 
     # table data
     data_table = []
     for project in projects_list:
-        if project.status == 0:
-            continue
-
-        # define operation
+        # operation
         operation = [
             {"content": "Analysis", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
             {"content": "Edit", "type": "link"},

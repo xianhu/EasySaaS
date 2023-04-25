@@ -84,6 +84,8 @@ def _update_page(open_data, ok_counts, name, desc, project):
         out_name["readonly"] = False if is_add else True
         out_desc["value"] = "" if is_add else project["desc"]
         out_desc["readonly"] = False if is_add else False
+
+        # update modal title
         out_modal["title"] = f"{'Add' if is_add else 'Edit'} Project"
 
         # update modal and return
@@ -104,7 +106,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
         if not project.get("id"):
             # create project
             with DbMaker() as db:
-                user_id = project.get("user_id")
+                user_id = project["user_id"]
                 project_schema = ProjectCreate(name=name, desc=desc, user_id=user_id)
                 crud_project.create(db, obj_schema=project_schema)
         else:
