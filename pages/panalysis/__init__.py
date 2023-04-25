@@ -12,6 +12,8 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
 
+from models import DbMaker
+from models.crud import crud_user
 from . import pecharts, ptasks, pupload
 from .routers import ROUTER_MENU
 from .. import palert
@@ -32,8 +34,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # user instance
-    current_user = flask_login.current_user
-    user_title = current_user.email.split("@")[0]
+    with DbMaker() as db:
+        user_db = crud_user.get(db, kwargs.get("user_id"))
+    user_title = user_db.email.split("@")[0]
 
     # get project_role_dict
     up_list = [up for up in current_user.user_projects if up.project.status == 1]

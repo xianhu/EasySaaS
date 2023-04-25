@@ -102,15 +102,17 @@ def _update_page(open_data, ok_counts, name, desc, project):
 
         # check project id
         if not project.get("id"):
-            # add project
+            # create project
             with DbMaker() as db:
-                project_schema = ProjectCreate(name=name, desc=desc)
+                user_id = project.get("user_id")
+                project_schema = ProjectCreate(name=name, desc=desc, user_id=user_id)
                 crud_project.create(db, obj_schema=project_schema)
         else:
-            # edit project
+            # update project
             with DbMaker() as db:
+                project_db = crud_project.get(db, _id=project["id"])
                 project_schema = ProjectUpdate(desc=desc)
-                crud_project.update(db, obj_db=project, obj_schema=project_schema)
+                crud_project.update(db, obj_db=project_db, obj_schema=project_schema)
 
         # update modal and return
         out_modal["visible"] = False
