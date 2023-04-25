@@ -20,7 +20,7 @@ Model.metadata.create_all(engine, checkfirst=True)
 with DbMaker() as db:
     # test user
     email = "admin@easysaas.com"
-    user_schema = UserCreate(email=email, pwd=get_password_hash("a123456"))
+    user_schema = UserCreate(pwd=get_password_hash("a123456"), email=email)
     user_db = crud_user.create(db, obj_schema=user_schema)
     logging.warning("add user: %s", user_db.to_dict())
 
