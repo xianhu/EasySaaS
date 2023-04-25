@@ -11,8 +11,7 @@ import feffery_antd_components as fac
 import flask_login
 from dash import Input, Output, State
 
-from app import app_db
-from models.project import Project, UserProject
+from models.project import Project
 
 TAG_BASE = "projects"
 TAG = "projects-addedit"
