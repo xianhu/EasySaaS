@@ -16,8 +16,8 @@ class UserSchema(UserBase):
 
 
 class UserCreate(UserBase):
-    email: EmailStr
     pwd: str
+    email: EmailStr
 
 
 class UserUpdate(UserBase):

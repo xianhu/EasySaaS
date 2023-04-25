@@ -10,8 +10,6 @@ from .base import AbstractModel
 
 
 class User(AbstractModel):
-    __tablename__ = "users"
-
     # basic
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     pwd = sqlalchemy.Column(sqlalchemy.String(512), index=False)

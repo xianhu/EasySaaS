@@ -6,7 +6,6 @@ uWSGI~=2.0.21
 
 # Flask
 Flask~=2.2.3
-Flask-Login~=0.6.2
 Flask-Compress~=1.13.0
 
 # FastAPI

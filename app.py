@@ -8,12 +8,9 @@ import logging
 import uuid
 
 import dash
-import flask_login
 from flask import request
 
 from core.settings import settings
-from models import DbMaker, User
-from models.crud import crud_user
 from tasks import app_celery
 
 # logging config
@@ -91,28 +88,8 @@ app.index_string = """<!DOCTYPE html>
 server = app.server
 server.config.update(
     SECRET_KEY=settings.SECRET_KEY,
-
-    REMEMBER_COOKIE_NAME="remember_token",
-    REMEMBER_COOKIE_DURATION=settings.REMEMBER_COOKIE_DURATION,
-
     PERMANENT_SESSION_LIFETIME=settings.PERMANENT_SESSION_LIFETIME,
 )
-
-# initial login_manager
-login_manager = flask_login.LoginManager(server)
-
-
-# define UserLogin class
-class UserLogin(User, flask_login.UserMixin):
-    pass
-
-
-# overwrite user_loader
-@login_manager.user_loader
-def load_user(user_id):
-    with DbMaker() as db:
-        user_db = crud_user.get(db, _id=user_id)
-    return user_db if user_db and user_db.status == 1 else None
 
 
 # func before_request

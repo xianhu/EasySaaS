@@ -18,6 +18,10 @@ class AbstractModel(Model):
     __abstract__ = True
     __ignore__ = ["created_at", "updated_at"]
 
+    @declarative.declared_attr
+    def __tablename__(cls) -> str:
+        return f"{cls.__name__.lower()}s"
+
     def get(self, field: str) -> Any:
         return getattr(self, field)
 
