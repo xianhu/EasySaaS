@@ -7,10 +7,8 @@ login page
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask_login
 from dash import Input, Output, State
 
-from app import UserLogin
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.paths import PATH_ROOT
 from core.security import check_password_hash

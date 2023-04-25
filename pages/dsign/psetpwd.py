@@ -14,7 +14,7 @@ from dash import Input, Output, State
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_PWD
 from core.paths import PATH_LOGIN
-from core.security import get_access_subject, get_password_hash
+from core.security import get_access_sub, get_password_hash
 from models import DbMaker
 from models.crud import crud_user
 from models.schemas import UserCreate, UserUpdate

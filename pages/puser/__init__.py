@@ -6,7 +6,6 @@ user page
 
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask_login
 from dash import html
 
 from ..comps import get_component_logo

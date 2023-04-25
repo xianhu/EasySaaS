@@ -9,7 +9,6 @@ import time
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-import flask_login
 from dash import Input, Output, State, dcc, html
 
 from core.paths import PATH_ANALYSIS
