@@ -5,7 +5,7 @@ security file
 """
 
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Optional, Union
 
 from jose import jwt
 from passlib.context import CryptContext
@@ -27,14 +27,14 @@ def create_access_token(sub: Union[str, int], expires_duration: int = None) -> s
     expire = datetime.utcnow() + timedelta(seconds=seconds)
 
     # sub and exp is remained keys in jwt
-    payload = {"sub": sub, "exp": expire}
+    payload = {"sub": str(sub), "exp": expire}
     token = jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
 
     # return
     return token
 
 
-def get_access_sub(token: str) -> Union[str, int, None]:
+def get_access_sub(token: str) -> Optional[str]:
     """
     get access sub from token
     """
