@@ -6,8 +6,10 @@ user page
 
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import html
+from dash import dcc, html
 
+from models import DbMaker
+from models.crud import crud_user
 from ..comps import get_component_logo
 from ..comps.header import get_component_header, get_component_header_user
 
@@ -22,8 +24,9 @@ def layout(pathname, search, **kwargs):
     layout of page
     """
     # user instance
-    current_user = flask_login.current_user
-    user_title = current_user.email.split("@")[0]
+    with DbMaker() as db:
+        user_db = crud_user.get(db, kwargs.get("user_id"))
+    user_title = user_db.email.split("@")[0]
 
     # define components
     style = {"minHeight": "300px"}
@@ -43,4 +46,5 @@ def layout(pathname, search, **kwargs):
         ], tabPosition="left", className="w-75 m-auto mt-4"),
         # define style of this page
         fuc.FefferyStyle(rawStyle=STYLE_PAGE),
+        dcc.Store(id=f"id-{TAG}-uid", data=user_db.id),
     ], className="vh-100 overflow-auto")

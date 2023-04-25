@@ -10,7 +10,8 @@ import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State, html
 
-from models.project import Project
+from models import DbMaker
+from models.crud import crud_project
 
 TAG_BASE = "projects"
 TAG = "projects-delete"
@@ -63,18 +64,8 @@ def _update_page(open_data, ok_counts, project):
 
     # check triggered_id
     if triggered_id == f"id-{TAG}-modal-project":
-        # delete user_project (all users)
-        app_db.session.query(UserProject).filter(
-            UserProject.project_id == project["id"],
-        ).delete()
-
-        # delete project (set status to 0)
-        app_db.session.query(Project).filter(
-            Project.id == project["id"],
-        ).update({Project.status: 0})
-
-        # commit to database
-        app_db.session.commit()
+        with DbMaker() as db:
+            crud_project.delete(db, _id=project["id"])
 
         # update modal and return
         out_modal["visible"] = False

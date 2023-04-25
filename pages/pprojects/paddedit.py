@@ -10,7 +10,9 @@ import dash
 import feffery_antd_components as fac
 from dash import Input, Output, State
 
-from models.project import Project
+from models import DbMaker
+from models.crud import crud_project
+from models.schemas import ProjectCreate, ProjectUpdate
 
 TAG_BASE = "projects"
 TAG = "projects-addedit"
@@ -101,22 +103,14 @@ def _update_page(open_data, ok_counts, name, desc, project):
         # check project id
         if not project.get("id"):
             # add project
-            user_id = flask_login.current_user.id
-
-            # define project and user_project instances
-            project = Project(name=name, desc=desc)
-            app_db.session.add(project)
-            app_db.session.commit()
-
-            user_project = UserProject(user_id=user_id, project_id=project.id)
-            app_db.session.add(user_project)
-            app_db.session.commit()
+            with DbMaker() as db:
+                project_schema = ProjectCreate(name=name, desc=desc)
+                crud_project.create(db, obj_schema=project_schema)
         else:
             # edit project
-            app_db.session.query(Project).filter(
-                Project.id == project["id"],
-            ).update({Project.desc: desc})
-            app_db.session.commit()
+            with DbMaker() as db:
+                project_schema = ProjectUpdate(desc=desc)
+                crud_project.update(db, obj_db=project, obj_schema=project_schema)
 
         # update modal and return
         out_modal["visible"] = False
