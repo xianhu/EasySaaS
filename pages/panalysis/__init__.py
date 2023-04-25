@@ -35,28 +35,21 @@ def layout(pathname, search, **kwargs):
     """
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, kwargs.get("user_id"))
+        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
+        projects_dict = {p.id: p for p in user_db.projects if p.status == 1}
     user_title = user_db.email.split("@")[0]
-
-    # get project_role_dict
-    up_list = [up for up in current_user.user_projects if up.project.status == 1]
-    project_role_dict = {up.project.id: (up.role, up.project) for up in up_list}
 
     # check project id
     try:
         search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        assert search["id"][0] in project_role_dict, "project not found"
+        assert int(search["id"][0]) in projects_dict, "project not found"
     except Exception as excep:
         logging.error("get project.id failed: %s", excep)
         return palert.layout_expired(pathname, search)
-    project_id = search["id"][0]
-    up_role, project = project_role_dict[project_id]
 
     # define data
-    store_data = dict(
-        user_id=current_user.id, up_role=up_role,
-        project_id=project.id, project_name=project.name,
-    )
+    project = projects_dict[int(search["id"][0])]
+    store_data = dict(user_id=user_db.id, project_id=project.id, project_name=project.name)
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")
@@ -106,12 +99,9 @@ def _update_page(current_key, store_data):
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
-    # get data from store
-    up_role = store_data["up_role"]
-    project_name = store_data["project_name"]
-
     # define header of main
-    text_title = f"{current_key}-{project_name}-{up_role}"
+    project_name = store_data["project_name"]
+    text_title = f"{current_key}-{project_name}"
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content of main
