@@ -25,12 +25,12 @@ with DbMaker() as db:
     logging.warning("create user: %s", user_db.to_dict())
 
     # update user by db
-    user_db.name = "admin 111"
+    user_db.name = "admin"
     user_db = crud_user.update(db, obj_db=user_db)
     logging.warning("update user: %s", user_db.to_dict())
 
     # update user by schema
-    user_schema = UserUpdate(name="admin 222")
+    user_schema = UserUpdate(email_verified=True)
     user_db = crud_user.update_by_schema(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("update user: %s", user_db.to_dict())
 
@@ -41,12 +41,12 @@ with DbMaker() as db:
     logging.warning("create project: %s", project_db.to_dict())
 
     # update project by db
-    project_db.desc = "demo project description 111"
+    project_db.desc = "demo project description"
     project_db = crud_project.update(db, obj_db=project_db)
     logging.warning("update project: %s", project_db.to_dict())
 
     # update project by schema
-    project_schema = ProjectUpdate(desc="demo project description 222")
+    project_schema = ProjectUpdate(desc="demo project description")
     project_db = crud_project.update_by_schema(db, obj_db=project_db, obj_schema=project_schema)
     logging.warning("update project: %s", project_db.to_dict())
 

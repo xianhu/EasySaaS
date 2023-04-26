@@ -11,8 +11,8 @@ from .base import AbstractModel
 
 class Project(AbstractModel):
     # information -- basic
-    name = sqlalchemy.Column(sqlalchemy.String(255), index=False)
-    desc = sqlalchemy.Column(sqlalchemy.String(512), index=False)
+    name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
+    desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # relationship: user
     user = sqlalchemy.orm.relationship("User", back_populates="projects")
