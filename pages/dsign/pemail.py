@@ -18,7 +18,7 @@ from core.security import create_token, get_password_hash, get_token_sub
 from core.settings import settings
 from models import DbMaker
 from models.crud import crud_user
-from models.schemas import UserCreate
+from models.schemas import UserCreate, UserUpdate
 from tasks.email import send_email
 from ..comps import get_component_logo
 from ..paths import *
@@ -38,7 +38,6 @@ def layout(pathname, search, **kwargs):
     input_cpc = fac.AntdInput(id=f"id-{TAG}-input-cpc", placeholder="Captcha", size="large")
     form_cpc = fac.AntdFormItem(input_cpc, id=f"id-{TAG}-form-cpc", required=True)
 
-    # define components
     image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
@@ -54,7 +53,6 @@ def layout(pathname, search, **kwargs):
     form_pwd2 = fac.AntdFormItem(input_pwd2, id=f"id-{TAG}-form-pwd2", required=True)
 
     # define text according to pathname
-    text_send = "Send code"
     if pathname == PATH_SIGNUP:
         text_title = "Welcome to system"
         text_subtitle = "Fill out the email to get started."
@@ -63,6 +61,7 @@ def layout(pathname, search, **kwargs):
         text_title = "Reset password"
         text_subtitle = "Fill out the email to reset password."
         text_button = "Reset password"
+    text_send = "Send code"
 
     # return result
     kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
@@ -127,33 +126,31 @@ def _button_click(n_clicks, email, cpc, image, pathname):
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-        # check user
-        if pathname == PATH_SIGNUP and (user_db and user_db.status is not None):
-            out_email["status"] = "error"
-            out_email["help"] = "This email has been registered"
-            out_others["cpc_refresh"] = True if cpc else False
-            return out_email, out_cpc, out_others
+    # check user
+    if pathname == PATH_SIGNUP and (user_db and user_db.status is not None):
+        out_email["status"] = "error"
+        out_email["help"] = "This email has been registered"
+        out_others["cpc_refresh"] = True if cpc else False
+        return out_email, out_cpc, out_others
+    if pathname == PATH_RESET and (not (user_db and user_db.status == 1)):
+        out_email["status"] = "error"
+        out_email["help"] = "This email hasn't been registered"
+        out_others["cpc_refresh"] = True if cpc else False
+        return out_email, out_cpc, out_others
 
-        # check user
-        if pathname == PATH_RESET and (not (user_db and user_db.status == 1)):
-            out_email["status"] = "error"
-            out_email["help"] = "This email hasn't been registered"
-            out_others["cpc_refresh"] = True if cpc else False
-            return out_email, out_cpc, out_others
-
-    # create code and save to session
+    # create code and save to token ===============================================================
     code = random.randint(100001, 999999)
-    sub = json.dumps(dict(email=email, code=code, type="reset"))
+    sub = json.dumps(dict(email=email, code=code, pathname=pathname))
     flask_session["token_verify"] = create_token(sub, expires_duration=60 * 10)
 
-    # send email ==============================================================================
+    # define email content
     mail_subject = "Verify code of {{ app_name }}"
     mail_html = "Verify code of {{ app_name }}: <b>{{ code }}</b>"
 
     # send email
     render = dict(app_name=settings.APP_NAME, code=code)
     send_email(to=email, subject=mail_subject, html=mail_html, render=render)
-    # =========================================================================================
+    # =============================================================================================
 
     # return result
     out_others["button_disabled"] = True
@@ -184,18 +181,14 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     out_pwd = dict(status1="", help1="", status2="", help2="")
     out_others = dict(button_loading=False, executejs_string=None)
 
-    # check code
-    code = (code or "").strip()
-    if not code:
-        out_code["status"] = "error"
-        out_code["help"] = "Code is required"
-        return out_code, out_pwd, out_others
-    code = int(code)
-
-    # check code
+    # parse token
     sub = get_token_sub(flask_session.get("token_verify", ""))
     sub_dict = json.loads(sub or "{}")
-    if (not sub_dict) or (sub_dict.get("code") != code):
+    code_token = str(sub_dict.get("code", ""))
+
+    # check code
+    code = (code or "").strip()
+    if (not code) or (not code_token) or (code_token != code):
         out_code["status"] = "error"
         out_code["help"] = "Code is incorrect"
         return out_code, out_pwd, out_others
@@ -221,16 +214,14 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     # get user from db
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
-
-        # check user
         if not user_db:
             # create user
             user_schema = UserCreate(pwd=pwd_hash, email=email, email_verify=True)
             crud_user.create(db, obj_schema=user_schema)
         else:
             # update user
-            user_db.pwd = pwd_hash
-            crud_user.update(db, obj_db=user_db)
+            user_schema = UserUpdate(pwd=pwd_hash)
+            crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
 
     # return result
