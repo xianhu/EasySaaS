@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email[signup/forgotpwd] page
+forgotpwd page
 """
 
 import json
@@ -23,7 +23,7 @@ from . import tsign
 from .. import palert
 from ..paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 
-TAG = "email"
+TAG = "forgotpwd"
 
 
 def layout(pathname, search, **kwargs):

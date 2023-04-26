@@ -5,6 +5,7 @@ page paths
 """
 
 PATH_ROOT = "/"
+PATH_VERIFY = "/verify"
 
 PATH_LOGIN = "/login"
 PATH_SIGNUP = "/signup"
