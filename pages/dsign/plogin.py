@@ -19,10 +19,6 @@ from ..paths import *
 
 TAG = "login"
 
-a_log_in = html.A("Log in", href=PATH_LOGIN)
-a_sign_up = html.A("Sign up", href=PATH_SIGNUP)
-a_forgot_pwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
-
 
 def layout(pathname, search, **kwargs):
     """
@@ -56,7 +52,10 @@ def layout(pathname, search, **kwargs):
             fac.AntdForm([form_email, form_pwd, row_cpc], className="mt-4"),
             fac.AntdButton("Log in", id=f"id-{TAG}-button", **kwargs_button),
 
-            fac.AntdRow([a_sign_up, a_forgot_pwd], justify="space-between", className="mt-2"),
+            fac.AntdRow(children=[
+                html.A("Sign up", href=PATH_SIGNUP),
+                html.A("Forgot password?", href=PATH_FORGOTPWD),
+            ], align="center", justify="space-between", className="mt-2"),
         ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
         # define components
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
@@ -111,20 +110,20 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-    # check user
-    if not (user_db and user_db.status == 1):
-        out_email["status"] = "error"
-        out_email["help"] = "This email hasn't been registered"
-        out_others["cpc_refresh"] = True if vcpc else False
-        return out_email, out_pwd, out_cpc, out_others
+        # check user
+        if not (user_db and user_db.status == 1):
+            out_email["status"] = "error"
+            out_email["help"] = "This email hasn't been registered"
+            out_others["cpc_refresh"] = True if vcpc else False
+            return out_email, out_pwd, out_cpc, out_others
 
-    # check password
-    pwd_plain = (pwd or "").strip()
-    if not check_password_hash(pwd_plain, user_db.pwd):
-        out_pwd["status"] = "error"
-        out_pwd["help"] = "Password is incorrect"
-        out_others["cpc_refresh"] = True if vcpc else False
-        return out_email, out_pwd, out_cpc, out_others
+        # check password
+        pwd_plain = (pwd or "").strip()
+        if not check_password_hash(pwd_plain, user_db.pwd):
+            out_pwd["status"] = "error"
+            out_pwd["help"] = "Password is incorrect"
+            out_others["cpc_refresh"] = True if vcpc else False
+            return out_email, out_pwd, out_cpc, out_others
 
     # login user and go nextpath
     flask_session["token"] = create_access_token(user_db.id)

@@ -19,10 +19,6 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         obj_db = db.query(User).filter(User.email == email).first()
         return obj_db
 
-    def get_by_email_and_pwd(self, db: Session, email: str, pwd_hash: str) -> Optional[User]:
-        obj_db = db.query(User).filter(User.email == email).first()
-        return obj_db if obj_db.pwd == pwd_hash else None
-
     def update_email_verify(self, db: Session, email: str) -> User:
         obj_db = db.query(User).filter(User.email == email).first()
         obj_db.email_verify = True

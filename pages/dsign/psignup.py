@@ -4,16 +4,21 @@
 signup page
 """
 
+import json
+import urllib.parse
+
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
-from flask import session as flask_session
 
-from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from core.security import check_password_hash, create_access_token
+from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
+from core.security import create_access_token, get_password_hash
+from core.settings import settings
 from models import DbMaker
 from models.crud import crud_user
+from models.schemas import UserCreate
+from tasks.email import send_email
 from ..comps import get_component_logo
 from ..paths import *
 
@@ -80,11 +85,16 @@ def layout(pathname, search, **kwargs):
     status=Output(f"id-{TAG}-form-email", "validateStatus"),
     help=Output(f"id-{TAG}-form-email", "help"),
 ), dict(
-    status=Output(f"id-{TAG}-form-pwd", "validateStatus"),
-    help=Output(f"id-{TAG}-form-pwd", "help"),
+    status1=Output(f"id-{TAG}-form-pwd1", "validateStatus"),
+    help1=Output(f"id-{TAG}-form-pwd1", "help"),
+    status2=Output(f"id-{TAG}-form-pwd2", "validateStatus"),
+    help2=Output(f"id-{TAG}-form-pwd2", "help"),
 ), dict(
     status=Output(f"id-{TAG}-form-cpc", "validateStatus"),
     help=Output(f"id-{TAG}-form-cpc", "help"),
+), dict(
+    status=Output(f"id-{TAG}-form-terms", "validateStatus"),
+    help=Output(f"id-{TAG}-form-terms", "help"),
 ), dict(
     cpc_refresh=Output(f"id-{TAG}-image-cpc", "refresh"),
     button_loading=Output(f"id-{TAG}-button", "loading"),
@@ -92,16 +102,19 @@ def layout(pathname, search, **kwargs):
 )], [
     Input(f"id-{TAG}-button", "nClicks"),
     State(f"id-{TAG}-input-email", "value"),
-    State(f"id-{TAG}-input-pwd", "value"),
+    State(f"id-{TAG}-input-pwd1", "value"),
+    State(f"id-{TAG}-input-pwd2", "value"),
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
+    State(f"id-{TAG}-checkbox-terms", "checked"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
+def _button_click(n_clicks, email, pwd1, pwd2, vcpc, vimage, checked, nextpath):
     # define outputs
     out_email = dict(status="", help="")
-    out_pwd = dict(status="", help="")
+    out_pwd = dict(status1="", help1="", status2="", help2="")
     out_cpc = dict(status="", help="")
+    out_terms = dict(status="", help="")
     out_others = dict(cpc_refresh=False, button_loading=False, executejs_string=None)
 
     # check email
@@ -109,7 +122,7 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        return out_email, out_pwd, out_cpc, out_others
+        return out_email, out_pwd, out_cpc, out_terms, out_others
 
     # check captcha
     vcpc = (vcpc or "").strip()
@@ -117,30 +130,64 @@ def _button_click(n_clicks, email, pwd, vcpc, vimage, nextpath):
         out_cpc["status"] = "error"
         out_cpc["help"] = "Captcha is incorrect"
         out_others["cpc_refresh"] = True if vcpc else False
-        return out_email, out_pwd, out_cpc, out_others
+        return out_email, out_pwd, out_cpc, out_terms, out_others
+
+    # check password
+    pwd1 = (pwd1 or "").strip()
+    pwd2 = (pwd2 or "").strip()
+    if (not pwd1) or (len(pwd1) < 6):
+        out_pwd["status1"] = "error"
+        out_pwd["help1"] = "Password is too short"
+        return out_email, out_pwd, out_cpc, out_terms, out_others
+    if not RE_PWD.match(pwd1):
+        out_pwd["status1"] = "error"
+        out_pwd["help1"] = "Password must contain numbers and letters"
+        return out_email, out_pwd, out_cpc, out_terms, out_others
+    if (not pwd2) or (pwd2 != pwd1):
+        out_pwd["status2"] = "error"
+        out_pwd["help2"] = "Passwords are inconsistent"
+        return out_email, out_pwd, out_cpc, out_terms, out_others
+    pwd_hash = get_password_hash(pwd1)
+
+    # check terms
+    if not checked:
+        out_terms["status"] = "error"
+        out_terms["help"] = "Please agree to terms of use and privacy policy"
+        return out_email, out_pwd, out_cpc, out_terms, out_others
 
     # get user from db
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-    # check user
-    if not (user_db and user_db.status == 1):
-        out_email["status"] = "error"
-        out_email["help"] = "This email hasn't been registered"
-        out_others["cpc_refresh"] = True if vcpc else False
-        return out_email, out_pwd, out_cpc, out_others
+        # check user
+        if user_db and (user_db.status == 1):
+            out_email["status"] = "error"
+            out_email["help"] = "This email has been registered"
+            out_others["cpc_refresh"] = True if vcpc else False
+            return out_email, out_pwd, out_cpc, out_terms, out_others
 
-    # check password
-    pwd_plain = (pwd or "").strip()
-    if not check_password_hash(pwd_plain, user_db.pwd):
-        out_pwd["status"] = "error"
-        out_pwd["help"] = "Password is incorrect"
-        out_others["cpc_refresh"] = True if vcpc else False
-        return out_email, out_pwd, out_cpc, out_others
+        # create user
+        user_schema = UserCreate(pwd=pwd_hash, email=email)
+        crud_user.create(db, obj_schema=user_schema)
 
-    # login user and go nextpath
-    flask_session["token"] = create_access_token(user_db.id)
+        # send email ==============================================================
+        sub = json.dumps(dict(email=email, type="sign"))
+        token = create_access_token(sub=sub, expires_duration=60 * 10)
+
+        # define mail_subject
+        mail_subject = f"Welcome to {settings.APP_NAME}"
+
+        # define href and mail_html
+        href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{PATH_VERIFY}?token={token}")
+        mail_html = "please click link: <a href='{{ href }}'>Verify the email</a>"
+
+        # send email
+        render = dict(app_name=settings.APP_NAME, href=href)
+        send_email(to=email, subject=mail_subject, html=mail_html, render=render)
+        # =============================================================================================
+
+    # go nextpath
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
 
     # return result
-    return out_email, out_pwd, out_cpc, out_others
+    return out_email, out_pwd, out_cpc, out_terms, out_others

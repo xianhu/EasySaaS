@@ -4,6 +4,9 @@
 verify page
 """
 
+import json
+import logging
+
 from flask import session as flask_session
 
 from core.security import get_access_sub
@@ -23,12 +26,16 @@ def layout(pathname, search, **kwargs):
 
     # check token
     token = search.get("token")[0]
-    if not get_access_sub(token):
+    try:
+        payload = json.loads(get_access_sub(token))
+    except Exception as excep:
+        logging.error(excep)
         return palert.layout_expired(pathname, search)
+    email = payload.get("email")
 
     # update email_verify
     with DbMaker() as db:
-        crud_user.update_email_verify(db, email=token)
+        crud_user.update_email_verify(db, email=email)
 
         # login and return
         flask_session["token"] = token
