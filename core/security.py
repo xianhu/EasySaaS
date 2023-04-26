@@ -12,10 +12,8 @@ from passlib.context import CryptContext
 
 from .settings import settings
 
-# define algorithm
+# global
 ALGORITHM = "HS256"
-
-# define password context
 pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 

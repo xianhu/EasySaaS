@@ -11,9 +11,9 @@ from pydantic import BaseModel, EmailStr
 
 class UserSchema(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
     avatar: Optional[str] = None
+    email: Optional[EmailStr] = None
+    email_verified: Optional[bool] = False
     status: Optional[int] = 1
 
 
@@ -24,3 +24,4 @@ class UserCreate(UserSchema):
 
 class UserUpdate(UserSchema):
     pwd: Optional[str] = None
+    # email_verified: Optional[bool]
