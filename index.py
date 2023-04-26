@@ -62,6 +62,8 @@ def _init_page(pathname, search, vhash):
 
     # =============================================================================================
     if pathname == PATH_ROOT:
+        if not user_id:
+            return pathname, search, dash.no_update, jsstr_login
         return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
 
     if pathname == PATH_USER:

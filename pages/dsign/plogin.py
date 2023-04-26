@@ -41,7 +41,6 @@ def layout(pathname, search, **kwargs):
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # return result
-    next_path = kwargs.get("next_path") or PATH_ROOT
     kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
     return html.Div(children=[
         html.Div(get_component_logo(size=40), className="text-center mt-5 mb-4"),
@@ -55,12 +54,12 @@ def layout(pathname, search, **kwargs):
 
             fac.AntdRow(children=[
                 html.A("Sign up", href=PATH_SIGNUP),
-                html.A("Forgot password?", href=PATH_RESET),
+                html.A("Reset password", href=PATH_RESET),
             ], align="center", justify="space-between", className="mt-2"),
         ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
         # define components
-        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        dcc.Store(id=f"id-{TAG}-data", data=next_path),
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs", jsString=None),
+        dcc.Store(id=f"id-{TAG}-data", data=kwargs.get("next_path") or PATH_ROOT),
     ], className="vh-100 overflow-auto")
 
 
@@ -111,20 +110,20 @@ def _button_click(n_clicks, email, pwd, cpc, image, next_path):
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-        # check user
-        if not (user_db and user_db.status == 1):
-            out_email["status"] = "error"
-            out_email["help"] = "This email hasn't been registered"
-            out_others["cpc_refresh"] = True if cpc else False
-            return out_email, out_pwd, out_cpc, out_others
+    # check user
+    if not (user_db and user_db.status == 1):
+        out_email["status"] = "error"
+        out_email["help"] = "This email hasn't been registered"
+        out_others["cpc_refresh"] = True if cpc else False
+        return out_email, out_pwd, out_cpc, out_others
 
-        # check password
-        pwd_plain = (pwd or "").strip()
-        if not check_password_hash(pwd_plain, user_db.pwd):
-            out_pwd["status"] = "error"
-            out_pwd["help"] = "Password is incorrect"
-            out_others["cpc_refresh"] = True if cpc else False
-            return out_email, out_pwd, out_cpc, out_others
+    # check password
+    pwd_plain = (pwd or "").strip()
+    if not check_password_hash(pwd_plain, user_db.pwd):
+        out_pwd["status"] = "error"
+        out_pwd["help"] = "Password is incorrect"
+        out_others["cpc_refresh"] = True if cpc else False
+        return out_email, out_pwd, out_cpc, out_others
 
     # login user and go next_path
     flask_session["token_access"] = create_token(user_db.id)
