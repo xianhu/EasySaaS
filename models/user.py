@@ -10,7 +10,7 @@ from .base import AbstractModel
 
 
 class User(AbstractModel):
-    # basic
+    # hash password
     pwd = sqlalchemy.Column(sqlalchemy.String(512), index=False)
 
     # information -- basic

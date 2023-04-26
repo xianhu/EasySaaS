@@ -18,22 +18,24 @@ Model.metadata.drop_all(engine, checkfirst=True)
 Model.metadata.create_all(engine, checkfirst=True)
 
 with DbMaker() as db:
-    # test user
+    # create user
     email = "admin@easysaas.com"
-    user_schema = UserCreate(pwd=get_password_hash("a123456"), email=email)
+    user_schema = UserCreate(pwd=get_password_hash("a12345"), email=email, id=1001)
     user_db = crud_user.create(db, obj_schema=user_schema)
-    logging.warning("add user: %s", user_db.to_dict())
+    logging.warning("create user: %s", user_db.to_dict())
 
-    user_schema = UserUpdate(name="admin")
+    # update user
+    user_schema = UserUpdate(name="admin", pwd=get_password_hash("a123456"))
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("update user: %s", user_db.to_dict())
 
-    # test project
+    # create project
     project_name = "demo project"
-    project_schema = ProjectCreate(name=project_name, user_id=user_db.id)
+    project_schema = ProjectCreate(name=project_name, user_id=user_db.id, id=10001)
     project_db = crud_project.create(db, obj_schema=project_schema)
-    logging.warning("add project: %s", project_db.to_dict())
+    logging.warning("create project: %s", project_db.to_dict())
 
+    # update project
     project_schema = ProjectUpdate(desc="demo project description")
     project_db = crud_project.update(db, obj_db=project_db, obj_schema=project_schema)
     logging.warning("update project: %s", project_db.to_dict())

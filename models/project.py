@@ -10,7 +10,7 @@ from .base import AbstractModel
 
 
 class Project(AbstractModel):
-    # information
+    # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255), index=False)
     desc = sqlalchemy.Column(sqlalchemy.String(512), index=False)
 

@@ -14,14 +14,13 @@ class UserSchema(BaseModel):
     avatar: Optional[str] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = False
-    status: Optional[int] = 1
 
 
 class UserCreate(UserSchema):
-    pwd: str
-    email: EmailStr
+    pwd: str  # required
+    email: EmailStr  # required
+    id: Optional[int] = None
 
 
 class UserUpdate(UserSchema):
     pwd: Optional[str] = None
-    # email_verified: Optional[bool]

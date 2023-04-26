@@ -34,14 +34,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_db
 
     def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:
-        obj_schema = obj_schema.dict(exclude_none=True)
+        obj_schema = obj_schema.dict(exclude_unset=True, exclude_none=True)
         obj_db = self.model(**obj_schema)
         db.add(obj_db)
         db.commit()
         return obj_db
 
     def update(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
-        obj_schema = obj_schema.dict(exclude_none=True)
+        obj_schema = obj_schema.dict(exclude_unset=True, exclude_none=True)
         [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
         db.merge(obj_db)
         db.commit()
