@@ -43,58 +43,55 @@ def _init_page(pathname, search, vhash):
     user_id = get_access_sub(flask_session.get("token", ""))
     logging.warning("[%s] pathname: %s, search: %s", user_id, pathname, search)
 
-    # define variables: search.get("xxx")[0]
-    search = urllib.parse.parse_qs(search.lstrip("?").strip())
+    # define variables: search_dict.get("xxx")[0]
+    search_dict = urllib.parse.parse_qs(search.lstrip("?").strip())
 
     # define variables
     kwargs = dict(vhash=vhash, user_id=user_id)
     jsstr_login = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
-    jsstr_projects = FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
     jsstr_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
-
-    # =============================================================================================
-    if pathname == PATH_VERIFY:
-        if flask_session.get("token"):
-            flask_session.pop("token")
-        return pathname, search, pverify.layout(pathname, search, **kwargs), jsstr_title
-
-    # =============================================================================================
-    if pathname == PATH_LOGIN:
-        if flask_session.get("token"):
-            flask_session.pop("token")
-        return pathname, search, plogin.layout(pathname, search, **kwargs), jsstr_title
-
-    if pathname == PATH_SIGNUP:
-        if flask_session.get("token"):
-            flask_session.pop("token")
-        return pathname, search, psignup.layout(pathname, search, **kwargs), jsstr_title
-
-    if pathname == PATH_FORGOTPWD:
-        if flask_session.get("token"):
-            flask_session.pop("token")
-        return pathname, search, pforgotpwd.layout(pathname, search, **kwargs), jsstr_title
 
     # =============================================================================================
     if pathname == PATH_ROOT:
         return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
 
+    if pathname == PATH_VERIFY:
+        return pathname, search, pverify.layout(pathname, search_dict, **kwargs), jsstr_title
+
+    # =============================================================================================
+    if pathname == PATH_LOGIN:
+        if flask_session.get("token"):
+            flask_session.pop("token")
+        return pathname, search, plogin.layout(pathname, search_dict, **kwargs), jsstr_title
+
+    if pathname == PATH_SIGNUP:
+        if flask_session.get("token"):
+            flask_session.pop("token")
+        return pathname, search, psignup.layout(pathname, search_dict, **kwargs), jsstr_title
+
+    if pathname == PATH_FORGOTPWD:
+        if flask_session.get("token"):
+            flask_session.pop("token")
+        return pathname, search, pforgotpwd.layout(pathname, search_dict, **kwargs), jsstr_title
+
+    # =============================================================================================
     if pathname == PATH_USER:
         if not user_id:
             return pathname, search, dash.no_update, jsstr_login
-        return pathname, search, puser.layout(pathname, search, **kwargs), jsstr_title
+        return pathname, search, puser.layout(pathname, search_dict, **kwargs), jsstr_title
 
     if pathname == PATH_PROJECTS:
         if not user_id:
             return pathname, search, dash.no_update, jsstr_login
-        return pathname, search, pprojects.layout(pathname, search, **kwargs), jsstr_title
+        return pathname, search, pprojects.layout(pathname, search_dict, **kwargs), jsstr_title
 
     if pathname == PATH_ANALYSIS:
         if not user_id:
             return pathname, search, dash.no_update, jsstr_login
-        return pathname, search, panalysis.layout(pathname, search, **kwargs), jsstr_title
+        return pathname, search, panalysis.layout(pathname, search_dict, **kwargs), jsstr_title
 
     # =============================================================================================
-    return pathname, search, palert.layout_404(pathname, search, return_href=PATH_ROOT), jsstr_title
+    return pathname, search, palert.layout_404(pathname, search_dict, return_href=PATH_ROOT), jsstr_title
 
 
 if __name__ == "__main__":
