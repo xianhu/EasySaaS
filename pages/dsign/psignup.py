@@ -11,6 +11,7 @@ import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
+from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
 from core.security import create_access_token, get_password_hash
@@ -24,10 +25,6 @@ from ..paths import *
 
 TAG = "signup"
 
-a_log_in = html.A("Log in", href=PATH_LOGIN)
-a_sign_up = html.A("Sign up", href=PATH_SIGNUP)
-a_forgot_pwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
-
 
 def layout(pathname, search, **kwargs):
     """
@@ -40,6 +37,7 @@ def layout(pathname, search, **kwargs):
     # define components
     input_pwd1 = fac.AntdInput(id=f"id-{TAG}-input-pwd1", placeholder="Enter Password", size="large", mode="password")
     form_pwd1 = fac.AntdFormItem(input_pwd1, id=f"id-{TAG}-form-pwd1", required=True)
+
     input_pwd2 = fac.AntdInput(id=f"id-{TAG}-input-pwd2", placeholder="Confirm Password", size="large", mode="password")
     form_pwd2 = fac.AntdFormItem(input_pwd2, id=f"id-{TAG}-form-pwd2", required=True)
 
@@ -47,7 +45,6 @@ def layout(pathname, search, **kwargs):
     input_cpc = fac.AntdInput(id=f"id-{TAG}-input-cpc", placeholder="Captcha", size="large")
     form_cpc = fac.AntdFormItem(input_cpc, id=f"id-{TAG}-form-cpc", required=True)
 
-    # define components
     image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
@@ -57,11 +54,10 @@ def layout(pathname, search, **kwargs):
         "I agree to ", html.A("terms of use", href="#"),
         " and ", html.A("privacy policy", href="#"), ".",
     ], className="text-muted ms-2")
-
-    # define components
     form_terms = fac.AntdFormItem([checkbox_terms, span_terms], id=f"id-{TAG}-form-terms")
 
     # return result
+    next_path = kwargs.get("next_path") or PATH_ROOT
     kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
     return html.Div(children=[
         html.Div(get_component_logo(size=40), className="text-center mt-5 mb-4"),
@@ -73,11 +69,14 @@ def layout(pathname, search, **kwargs):
             fac.AntdForm([form_email, form_pwd1, form_pwd2, row_cpc, form_terms], className="mt-4"),
             fac.AntdButton("Sign up", id=f"id-{TAG}-button", **kwargs_button),
 
-            fac.AntdRow([a_log_in, a_forgot_pwd], justify="space-between", className="mt-2"),
+            fac.AntdRow(children=[
+                html.A("Log in", href=PATH_LOGIN),
+                html.A("Forgot password?", href=PATH_FORGOTPWD),
+            ], justify="space-between", className="mt-2"),
         ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
         # define components
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        dcc.Store(id=f"id-{TAG}-data", data=kwargs.get("nextpath") or PATH_ROOT),
+        dcc.Store(id=f"id-{TAG}-data", data=next_path),
     ], className="vh-100 overflow-auto")
 
 
@@ -109,7 +108,7 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-checkbox-terms", "checked"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, pwd1, pwd2, vcpc, vimage, checked, nextpath):
+def _button_click(n_clicks, email, pwd1, pwd2, cpc, image, checked, next_path):
     # define outputs
     out_email = dict(status="", help="")
     out_pwd = dict(status1="", help1="", status2="", help2="")
@@ -122,14 +121,6 @@ def _button_click(n_clicks, email, pwd1, pwd2, vcpc, vimage, checked, nextpath):
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
         out_email["help"] = "Format of email is invalid"
-        return out_email, out_pwd, out_cpc, out_terms, out_others
-
-    # check captcha
-    vcpc = (vcpc or "").strip()
-    if (not vcpc) or (vcpc != vimage):
-        out_cpc["status"] = "error"
-        out_cpc["help"] = "Captcha is incorrect"
-        out_others["cpc_refresh"] = True if vcpc else False
         return out_email, out_pwd, out_cpc, out_terms, out_others
 
     # check password
@@ -155,39 +146,44 @@ def _button_click(n_clicks, email, pwd1, pwd2, vcpc, vimage, checked, nextpath):
         out_terms["help"] = "Please agree to terms of use and privacy policy"
         return out_email, out_pwd, out_cpc, out_terms, out_others
 
+    # check captcha
+    cpc = (cpc or "").strip()
+    if (not cpc) or (cpc != image):
+        out_cpc["status"] = "error"
+        out_cpc["help"] = "Captcha is incorrect"
+        out_others["cpc_refresh"] = True if cpc else False
+        return out_email, out_pwd, out_cpc, out_terms, out_others
+
     # get user from db
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
         # check user
-        if user_db and (user_db.status == 1):
+        if user_db and (user_db.status is not None):
             out_email["status"] = "error"
             out_email["help"] = "This email has been registered"
-            out_others["cpc_refresh"] = True if vcpc else False
+            out_others["cpc_refresh"] = True if cpc else False
             return out_email, out_pwd, out_cpc, out_terms, out_others
 
-        # create user
+        # create user and login user
         user_schema = UserCreate(pwd=pwd_hash, email=email)
-        crud_user.create(db, obj_schema=user_schema)
+        user_db = crud_user.create(db, obj_schema=user_schema)
+        flask_session["token"] = create_access_token(user_db.id)
 
-        # send email ==============================================================
-        sub = json.dumps(dict(email=email, type="sign"))
+        # send email ==============================================================================
+        sub = json.dumps(dict(email=email, type="verify"))
         token = create_access_token(sub=sub, expires_duration=60 * 10)
-
-        # define mail_subject
-        mail_subject = f"Welcome to {settings.APP_NAME}"
-
-        # define href and mail_html
         href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{PATH_VERIFY}?token={token}")
+
+        # define mail_subject and mail_html
+        mail_subject = "Welcome to {{ app_name }}"
         mail_html = "please click link: <a href='{{ href }}'>Verify the email</a>"
 
         # send email
         render = dict(app_name=settings.APP_NAME, href=href)
         send_email(to=email, subject=mail_subject, html=mail_html, render=render)
-        # =============================================================================================
-
-    # go nextpath
-    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=nextpath)
+        # =========================================================================================
+    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=next_path)
 
     # return result
     return out_email, out_pwd, out_cpc, out_terms, out_others

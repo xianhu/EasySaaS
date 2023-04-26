@@ -31,12 +31,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_db = db.query(self.model).get(_id)
         obj_db.status = 0
         db.commit()
+        db.refresh(obj_db)
         return obj_db
 
     def recover(self, db: Session, _id: Union[int, str]) -> ModelType:
         obj_db = db.query(self.model).get(_id)
         obj_db.status = 1
         db.commit()
+        db.refresh(obj_db)
         return obj_db
 
     def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:
@@ -44,11 +46,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_db = self.model(**obj_schema)
         db.add(obj_db)
         db.commit()
+        db.refresh(obj_db)
         return obj_db
 
     def update(self, db: Session, obj_db: ModelType) -> ModelType:
         db.merge(obj_db)
         db.commit()
+        db.refresh(obj_db)
         return obj_db
 
     def update_by_schema(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
