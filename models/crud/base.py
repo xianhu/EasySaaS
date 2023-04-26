@@ -33,6 +33,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.commit()
         return obj_db
 
+    def recover(self, db: Session, _id: Union[int, str]) -> ModelType:
+        obj_db = db.query(self.model).get(_id)
+        obj_db.status = 1
+        db.commit()
+        return obj_db
+
     def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:
         obj_schema = obj_schema.dict(exclude_unset=True, exclude_none=True)
         obj_db = self.model(**obj_schema)
@@ -40,9 +46,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.commit()
         return obj_db
 
-    def update(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
-        obj_schema = obj_schema.dict(exclude_unset=True, exclude_none=True)
-        [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
+    def update(self, db: Session, obj_db: ModelType) -> ModelType:
         db.merge(obj_db)
         db.commit()
         return obj_db
+
+    def update_by_schema(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
+        obj_schema = obj_schema.dict(exclude_unset=True, exclude_none=True)
+        [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
+        return self.update(db, obj_db=obj_db)

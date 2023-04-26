@@ -20,13 +20,18 @@ Model.metadata.create_all(engine, checkfirst=True)
 with DbMaker() as db:
     # create user
     email = "admin@easysaas.com"
-    user_schema = UserCreate(pwd=get_password_hash("a12345"), email=email, id=1001)
+    user_schema = UserCreate(pwd=get_password_hash("a123456"), email=email, id=1001)
     user_db = crud_user.create(db, obj_schema=user_schema)
     logging.warning("create user: %s", user_db.to_dict())
 
-    # update user
-    user_schema = UserUpdate(name="admin", pwd=get_password_hash("a123456"))
-    user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+    # update user by db
+    user_db.name = "admin 111"
+    user_db = crud_user.update(db, obj_db=user_db)
+    logging.warning("update user: %s", user_db.to_dict())
+
+    # update user by schema
+    user_schema = UserUpdate(name="admin 222")
+    user_db = crud_user.update_by_schema(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("update user: %s", user_db.to_dict())
 
     # create project
@@ -35,9 +40,14 @@ with DbMaker() as db:
     project_db = crud_project.create(db, obj_schema=project_schema)
     logging.warning("create project: %s", project_db.to_dict())
 
-    # update project
-    project_schema = ProjectUpdate(desc="demo project description")
-    project_db = crud_project.update(db, obj_db=project_db, obj_schema=project_schema)
+    # update project by db
+    project_db.desc = "demo project description 111"
+    project_db = crud_project.update(db, obj_db=project_db)
+    logging.warning("update project: %s", project_db.to_dict())
+
+    # update project by schema
+    project_schema = ProjectUpdate(desc="demo project description 222")
+    project_db = crud_project.update_by_schema(db, obj_db=project_db, obj_schema=project_schema)
     logging.warning("update project: %s", project_db.to_dict())
 
     # test relationship
