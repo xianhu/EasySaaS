@@ -8,8 +8,8 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import dcc, html
 
-from core.paths import PATH_FORGOTPWD, PATH_LOGIN, PATH_SIGNUP
 from ..comps import get_component_logo
+from ..paths import PATH_FORGOTPWD, PATH_LOGIN, PATH_SIGNUP
 
 # define components
 a_log_in = html.A("Log in", href=PATH_LOGIN)

@@ -14,7 +14,6 @@ from dash import Input, Output, State, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from core.paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 from core.security import create_access_token
 from core.settings import settings
 from models import DbMaker
@@ -22,6 +21,7 @@ from models.crud import crud_user
 from tasks.email import send_email
 from . import tsign
 from .. import palert
+from ..paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
 
 TAG = "email"
 

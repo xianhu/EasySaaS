@@ -11,12 +11,12 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
 
-from core.paths import PATH_ANALYSIS
 from models import DbMaker
 from models.crud import crud_user
 from . import paddedit, pdelete
 from ..comps import get_component_logo
 from ..comps.header import get_component_header, get_component_header_user
+from ..paths import PATH_ANALYSIS
 
 TAG = "projects"
 

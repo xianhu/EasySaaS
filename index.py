@@ -13,7 +13,7 @@ from flask import session as flask_session
 
 from app import app, server
 from core.consts import *
-from core.paths import *
+from pages.paths import *
 from core.security import get_access_sub
 from pages import palert, panalysis, pprojects, puser
 from pages.dsign import pemail, plogin, psetpwd

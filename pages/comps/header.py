@@ -6,7 +6,7 @@ components of header
 
 import feffery_antd_components as fac
 
-from core.paths import *
+from ..paths import *
 
 
 def get_component_header_user(user_title, dot=False):

@@ -11,11 +11,11 @@ from dash import Input, Output, State
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from core.paths import PATH_ROOT
 from core.security import check_password_hash, create_access_token
 from models import DbMaker
 from models.crud import crud_user
 from . import tsign
+from ..paths import PATH_ROOT
 
 TAG = "login"
 
