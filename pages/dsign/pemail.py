@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-reset page
+email[signup/reset] page
 """
 
 import json
@@ -18,11 +18,12 @@ from core.security import create_token, get_password_hash, get_token_sub
 from core.settings import settings
 from models import DbMaker
 from models.crud import crud_user
+from models.schemas import UserCreate
 from tasks.email import send_email
 from ..comps import get_component_logo
 from ..paths import *
 
-TAG = "reset"
+TAG = "email"
 
 
 def layout(pathname, search, **kwargs):
@@ -42,7 +43,7 @@ def layout(pathname, search, **kwargs):
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # define components
-    input_code = fac.AntdInput(id=f"id-{TAG}-input-code", placeholder="code", size="large")
+    input_code = fac.AntdInput(id=f"id-{TAG}-input-code", placeholder="verify code", size="large")
     form_code = fac.AntdFormItem(input_code, id=f"id-{TAG}-form-code", required=True)
 
     # define components
@@ -52,25 +53,35 @@ def layout(pathname, search, **kwargs):
     input_pwd2 = fac.AntdInput(id=f"id-{TAG}-input-pwd2", placeholder="Confirm Password", size="large", mode="password")
     form_pwd2 = fac.AntdFormItem(input_pwd2, id=f"id-{TAG}-form-pwd2", required=True)
 
+    # define text according to pathname
+    text_send = "Send code"
+    if pathname == PATH_SIGNUP:
+        text_title = "Welcome to system"
+        text_subtitle = "Fill out the email to get started."
+        text_button = "Sign up"
+    else:
+        text_title = "Reset password"
+        text_subtitle = "Fill out the email to reset password."
+        text_button = "Reset password"
+
     # return result
-    next_path = kwargs.get("next_path") or PATH_ROOT
     kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
     return html.Div(children=[
         html.Div(get_component_logo(size=40), className="text-center mt-5 mb-4"),
         # define components
         fac.AntdRow(fac.AntdCol(html.Div(children=[
-            html.Div("Forgot password?", className="text-center fs-3"),
-            html.Div("Fill out the email to reset password.", className="text-center text-muted"),
+            html.Div(text_title, className="text-center fs-3"),
+            html.Div(text_subtitle, className="text-center text-muted"),
 
             fac.AntdForm([form_email, row_cpc], className="mt-4"),
-            fac.AntdButton("Send code", id=f"id-{TAG}-send", **kwargs_button),
+            fac.AntdButton(text_send, id=f"id-{TAG}-send", **kwargs_button),
 
             fac.AntdForm([form_code, form_pwd1, form_pwd2], className="mt-4"),
-            fac.AntdButton("Update password", id=f"id-{TAG}-button", **kwargs_button),
+            fac.AntdButton(text_button, id=f"id-{TAG}-button", **kwargs_button),
         ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
         # define components
         fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
-        dcc.Store(id=f"id-{TAG}-data", data=next_path),
+        dcc.Store(id=f"id-{TAG}-data", data=pathname),
     ], className="vh-100 overflow-auto")
 
 
@@ -89,8 +100,9 @@ def layout(pathname, search, **kwargs):
     State(f"id-{TAG}-input-email", "value"),
     State(f"id-{TAG}-input-cpc", "value"),
     State(f"id-{TAG}-image-cpc", "captcha"),
+    State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, email, cpc, image):
+def _button_click(n_clicks, email, cpc, image, pathname):
     # define outputs
     out_email = dict(status="", help="")
     out_cpc = dict(status="", help="")
@@ -116,25 +128,32 @@ def _button_click(n_clicks, email, cpc, image):
         user_db = crud_user.get_by_email(db, email=email)
 
         # check user
-        if not (user_db and user_db.status == 1):
+        if pathname == PATH_SIGNUP and (user_db and user_db.status is not None):
+            out_email["status"] = "error"
+            out_email["help"] = "This email has been registered"
+            out_others["cpc_refresh"] = True if cpc else False
+            return out_email, out_cpc, out_others
+
+        # check user
+        if pathname == PATH_RESET and (not (user_db and user_db.status == 1)):
             out_email["status"] = "error"
             out_email["help"] = "This email hasn't been registered"
             out_others["cpc_refresh"] = True if cpc else False
             return out_email, out_cpc, out_others
 
-        # create code and save to token_reset
-        code = random.randint(100001, 999999)
-        sub = json.dumps(dict(email=email, code=code, type="reset"))
-        flask_session["token_reset"] = create_token(sub, expires_duration=60 * 10)
+    # create code and save to session
+    code = random.randint(100001, 999999)
+    sub = json.dumps(dict(email=email, code=code, type="reset"))
+    flask_session["token_verify"] = create_token(sub, expires_duration=60 * 10)
 
-        # send email ==============================================================================
-        mail_subject = "Code of {{ app_name }}"
-        mail_html = "Code of {{ app_name }}: <b>{{ code }}</b>"
+    # send email ==============================================================================
+    mail_subject = "Verify code of {{ app_name }}"
+    mail_html = "Verify code of {{ app_name }}: <b>{{ code }}</b>"
 
-        # send email
-        render = dict(app_name=settings.APP_NAME, code=code)
-        send_email(to=email, subject=mail_subject, html=mail_html, render=render)
-        # =========================================================================================
+    # send email
+    render = dict(app_name=settings.APP_NAME, code=code)
+    send_email(to=email, subject=mail_subject, html=mail_html, render=render)
+    # =========================================================================================
 
     # return result
     out_others["button_disabled"] = True
@@ -159,7 +178,7 @@ def _button_click(n_clicks, email, cpc, image):
     State(f"id-{TAG}-input-pwd2", "value"),
     State(f"id-{TAG}-data", "data"),
 ], prevent_initial_call=True)
-def _button_click(n_clicks, code, pwd1, pwd2, next_path):
+def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     # define outputs
     out_code = dict(status="", help="")
     out_pwd = dict(status1="", help1="", status2="", help2="")
@@ -174,7 +193,7 @@ def _button_click(n_clicks, code, pwd1, pwd2, next_path):
     code = int(code)
 
     # check code
-    sub = get_token_sub(flask_session.get("token_reset", ""))
+    sub = get_token_sub(flask_session.get("token_verify", ""))
     sub_dict = json.loads(sub or "{}")
     if (not sub_dict) or (sub_dict.get("code") != code):
         out_code["status"] = "error"
@@ -202,9 +221,17 @@ def _button_click(n_clicks, code, pwd1, pwd2, next_path):
     # get user from db
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
-        user_db.pwd = pwd_hash
-        user_db = crud_user.update(db, obj_db=user_db)
-    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=next_path)
+
+        # check user
+        if not user_db:
+            # create user
+            user_schema = UserCreate(pwd=pwd_hash, email=email, email_verify=True)
+            crud_user.create(db, obj_schema=user_schema)
+        else:
+            # update user
+            user_db.pwd = pwd_hash
+            crud_user.update(db, obj_db=user_db)
+    out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
 
     # return result
     return out_code, out_pwd, out_others

@@ -16,7 +16,7 @@ from app import app, server
 from core.consts import FMT_EXECUTEJS_HREF, FMT_EXECUTEJS_TITLE
 from core.security import get_token_sub
 from pages import palert, panalysis, pprojects, puser
-from pages.dsign import plogin, preset, psignup, pverify
+from pages.dsign import pemail, plogin
 from pages.paths import *
 
 # application layout
@@ -56,17 +56,9 @@ def _init_page(pathname, search, vhash):
         flask_session["token_access"] = ""
         return pathname, search, plogin.layout(pathname, search_dict, **kwargs), jsstr_title
 
-    if pathname == PATH_RESET:
+    if pathname == PATH_SIGNUP or pathname == PATH_RESET:
         flask_session["token_access"] = ""
-        return pathname, search, preset.layout(pathname, search_dict, **kwargs), jsstr_title
-
-    if pathname == PATH_SIGNUP:
-        flask_session["token_access"] = ""
-        return pathname, search, psignup.layout(pathname, search_dict, **kwargs), jsstr_title
-
-    if pathname == PATH_VERIFY:
-        flask_session["token_access"] = ""
-        return pathname, search, pverify.layout(pathname, search_dict, **kwargs), jsstr_title
+        return pathname, search, pemail.layout(pathname, search_dict, **kwargs), jsstr_title
 
     # =============================================================================================
     if pathname == PATH_ROOT:

@@ -55,7 +55,7 @@ def layout(pathname, search, **kwargs):
 
             fac.AntdRow(children=[
                 html.A("Sign up", href=PATH_SIGNUP),
-                html.A("Forgot password?", href=PATH_FORGOTPWD),
+                html.A("Forgot password?", href=PATH_RESET),
             ], align="center", justify="space-between", className="mt-2"),
         ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
         # define components

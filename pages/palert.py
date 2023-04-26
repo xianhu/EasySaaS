@@ -60,12 +60,3 @@ def layout_expired(pathname, search, return_href=PATH_ROOT):
     text_title = "Link expired"
     text_subtitle = "This link is expired, click button to safe page."
     return layout(pathname, search, "error", text_title, text_subtitle, "Back to safety", return_href)
-
-
-def layout_verify_success(pathname, search, return_href=PATH_ROOT):
-    """
-    layout of page
-    """
-    text_title = "Verify success"
-    text_subtitle = "Your email has been verified successfully."
-    return layout(pathname, search, "success", text_title, text_subtitle, "Back to safety", return_href)
