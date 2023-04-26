@@ -13,7 +13,7 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from app import app, server
-from core.consts import *
+from core.consts import FMT_EXECUTEJS_HREF, FMT_EXECUTEJS_TITLE
 from core.security import get_access_sub
 from pages import palert, panalysis, pprojects, puser
 from pages.dsign import pforgotpwd, plogin, psignup, pverify
@@ -52,13 +52,6 @@ def _init_page(pathname, search, vhash):
     jsstr_title = FMT_EXECUTEJS_TITLE.format(title=pathname.strip("/").upper())
 
     # =============================================================================================
-    if pathname == PATH_ROOT:
-        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
-
-    if pathname == PATH_VERIFY:
-        return pathname, search, pverify.layout(pathname, search_dict, **kwargs), jsstr_title
-
-    # =============================================================================================
     if pathname == PATH_LOGIN:
         if flask_session.get("token"):
             flask_session.pop("token")
@@ -74,7 +67,15 @@ def _init_page(pathname, search, vhash):
             flask_session.pop("token")
         return pathname, search, pforgotpwd.layout(pathname, search_dict, **kwargs), jsstr_title
 
+    if pathname == PATH_VERIFY:
+        if flask_session.get("token"):
+            flask_session.pop("token")
+        return pathname, search, pverify.layout(pathname, search_dict, **kwargs), jsstr_title
+
     # =============================================================================================
+    if pathname == PATH_ROOT:
+        return pathname, search, dash.no_update, FMT_EXECUTEJS_HREF.format(href=PATH_PROJECTS)
+
     if pathname == PATH_USER:
         if not user_id:
             return pathname, search, dash.no_update, jsstr_login
