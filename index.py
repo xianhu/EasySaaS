@@ -14,9 +14,9 @@ from flask import session as flask_session
 
 from app import app, server
 from core.consts import FMT_EXECUTEJS_HREF, FMT_EXECUTEJS_TITLE
-from core.security import get_access_sub
+from core.security import get_token_sub
 from pages import palert, panalysis, pprojects, puser
-from pages.dsign import pforgotpwd, plogin, psignup, pverify
+from pages.dsign import plogin, preset, psignup, pverify
 from pages.paths import *
 
 # application layout
@@ -40,7 +40,7 @@ app.layout = html.Div(children=[
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
     # get user.id or None
-    user_id = get_access_sub(flask_session.get("token", ""))
+    user_id = get_token_sub(flask_session.get("token_access", ""))
     logging.warning("[%s] pathname: %s, search: %s", user_id, pathname, search)
 
     # define variables: search_dict.get("xxx")[0]
@@ -53,23 +53,19 @@ def _init_page(pathname, search, vhash):
 
     # =============================================================================================
     if pathname == PATH_LOGIN:
-        if flask_session.get("token"):
-            flask_session.pop("token")
+        flask_session["token_access"] = ""
         return pathname, search, plogin.layout(pathname, search_dict, **kwargs), jsstr_title
 
+    if pathname == PATH_RESET:
+        flask_session["token_access"] = ""
+        return pathname, search, preset.layout(pathname, search_dict, **kwargs), jsstr_title
+
     if pathname == PATH_SIGNUP:
-        if flask_session.get("token"):
-            flask_session.pop("token")
+        flask_session["token_access"] = ""
         return pathname, search, psignup.layout(pathname, search_dict, **kwargs), jsstr_title
 
-    if pathname == PATH_FORGOTPWD:
-        if flask_session.get("token"):
-            flask_session.pop("token")
-        return pathname, search, pforgotpwd.layout(pathname, search_dict, **kwargs), jsstr_title
-
     if pathname == PATH_VERIFY:
-        if flask_session.get("token"):
-            flask_session.pop("token")
+        flask_session["token_access"] = ""
         return pathname, search, pverify.layout(pathname, search_dict, **kwargs), jsstr_title
 
     # =============================================================================================

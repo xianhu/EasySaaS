@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-forgotpwd page
+reset page
 """
 
 import json
@@ -14,7 +14,7 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
-from core.security import create_access_token, get_access_sub, get_password_hash
+from core.security import create_token, get_password_hash, get_token_sub
 from core.settings import settings
 from models import DbMaker
 from models.crud import crud_user
@@ -22,7 +22,7 @@ from tasks.email import send_email
 from ..comps import get_component_logo
 from ..paths import *
 
-TAG = "forgotpwd"
+TAG = "reset"
 
 
 def layout(pathname, search, **kwargs):
@@ -125,7 +125,7 @@ def _button_click(n_clicks, email, cpc, image):
         # create code and save to token_reset
         code = random.randint(100001, 999999)
         sub = json.dumps(dict(email=email, code=code, type="reset"))
-        flask_session["token_reset"] = create_access_token(sub, expires_duration=60 * 10)
+        flask_session["token_reset"] = create_token(sub, expires_duration=60 * 10)
 
         # send email ==============================================================================
         mail_subject = "Code of {{ app_name }}"
@@ -174,7 +174,7 @@ def _button_click(n_clicks, code, pwd1, pwd2, next_path):
     code = int(code)
 
     # check code
-    sub = get_access_sub(flask_session.get("token_reset", ""))
+    sub = get_token_sub(flask_session.get("token_reset", ""))
     sub_dict = json.loads(sub or "{}")
     if (not sub_dict) or (sub_dict.get("code") != code):
         out_code["status"] = "error"

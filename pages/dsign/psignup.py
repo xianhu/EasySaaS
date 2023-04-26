@@ -14,7 +14,7 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
-from core.security import create_access_token, get_password_hash
+from core.security import create_token, get_password_hash
 from core.settings import settings
 from models import DbMaker
 from models.crud import crud_user
@@ -168,11 +168,11 @@ def _button_click(n_clicks, email, pwd1, pwd2, cpc, image, checked, next_path):
         # create user and login user
         user_schema = UserCreate(pwd=pwd_hash, email=email)
         user_db = crud_user.create(db, obj_schema=user_schema)
-        flask_session["token"] = create_access_token(user_db.id)
+        flask_session["token_access"] = create_token(user_db.id)
 
         # send email ==============================================================================
         sub = json.dumps(dict(email=email, type="verify"))
-        token = create_access_token(sub=sub, expires_duration=60 * 10)
+        token = create_token(sub=sub, expires_duration=60 * 10)
         href = urllib.parse.urljoin(settings.APP_DOMAIN, f"{PATH_VERIFY}?token={token}")
 
         # define mail_subject and mail_html

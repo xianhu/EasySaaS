@@ -11,7 +11,7 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from core.security import check_password_hash, create_access_token
+from core.security import check_password_hash, create_token
 from models import DbMaker
 from models.crud import crud_user
 from ..comps import get_component_logo
@@ -127,7 +127,7 @@ def _button_click(n_clicks, email, pwd, cpc, image, next_path):
             return out_email, out_pwd, out_cpc, out_others
 
     # login user and go next_path
-    flask_session["token"] = create_access_token(user_db.id)
+    flask_session["token_access"] = create_token(user_db.id)
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=next_path)
 
     # return result

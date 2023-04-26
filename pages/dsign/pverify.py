@@ -9,7 +9,7 @@ import logging
 
 from flask import session as flask_session
 
-from core.security import create_access_token, get_access_sub
+from core.security import create_token, get_token_sub
 from models import DbMaker
 from models.crud import crud_user
 from .. import palert
@@ -28,7 +28,7 @@ def layout(pathname, search, **kwargs):
 
     # check token
     try:
-        sub = json.loads(get_access_sub(token))
+        sub = json.loads(get_token_sub(token))
         assert sub["type"] == "verify", "token type error"
     except Exception as excep:
         logging.error(excep)
@@ -41,6 +41,6 @@ def layout(pathname, search, **kwargs):
         user_db.email_verified = True
         user_db = crud_user.update(db, obj_db=user_db)
 
-    # login and return
-    flask_session["token"] = create_access_token(user_db.id)
+    # login user and return
+    flask_session["token_access"] = create_token(user_db.id)
     return palert.layout_verify_success(pathname, search)
