@@ -26,7 +26,8 @@ def layout(pathname, search, **kwargs):
     """
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
+        user_id = kwargs.get("user_id")
+        user_db = crud_user.get(db, _id=user_id)
     user_title = user_db.email.split("@")[0]
 
     # define components

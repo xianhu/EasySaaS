@@ -12,7 +12,7 @@ import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
 
 from models import DbMaker
-from models.crud import crud_user
+from models.crud import crud_project, crud_user
 from . import paddedit, pdelete
 from ..comps import get_component_logo
 from ..comps.header import get_component_header, get_component_header_user
@@ -38,7 +38,8 @@ def layout(pathname, search, **kwargs):
     """
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
+        user_id = kwargs.get("user_id")
+        user_db = crud_user.get(db, _id=user_id)
     user_title = user_db.email.split("@")[0]
 
     # define components for (addedit) project
@@ -89,7 +90,7 @@ def _update_page(data_addedit, data_delete, user_id):
     # user instance
     with DbMaker() as db:
         user_db = crud_user.get(db, _id=user_id)
-        projects_list = [p for p in user_db.projects if p.status == 1]
+        projects_list = crud_project.get_multi_by_user(db, user_id=user_db.id)
 
     # table data
     data_table = []
