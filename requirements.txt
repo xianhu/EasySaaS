@@ -2,11 +2,8 @@
 dash~=2.9.3
 feffery-antd-components~=0.2.5
 feffery-utils-components~=0.1.26
-uWSGI~=2.0.21
-
-# Flask
-Flask~=2.2.3
 Flask-Compress~=1.13.0
+uWSGI~=2.0.21
 
 # FastAPI
 fastapi~=0.95.1
@@ -28,4 +25,5 @@ python-jose[cryptography]~=3.3.0
 
 # Others
 emails~=0.6.0
+orjson~=3.8.10
 pydantic[email]~=1.10.7

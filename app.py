@@ -24,9 +24,6 @@ callback_manager = dash.CeleryManager(app_celery, cache_by=[lambda: uuid.uuid4()
 cdn_bootstrap_css = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css"
 cdn_echarts_js = "https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"
 cdn_flowjs_js = "https://cdnjs.cloudflare.com/ajax/libs/flow.js/2.14.1/flow.min.js"
-# cdn_recorder_js = "https://www.unpkg.com/js-audio-recorder@1.0.7/dist/recorder.js"
-# cdn_jsmind_css = "https://unpkg.com/jsmind@0.5/style/jsmind.css"
-# cdn_jsmind_js = "https://unpkg.com/jsmind@0.5/es6/jsmind.js"
 
 # create app
 app = dash.Dash(
