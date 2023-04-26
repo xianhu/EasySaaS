@@ -68,4 +68,4 @@ def layout_verify_success(pathname, search, return_href=PATH_ROOT):
     """
     text_title = "Verify success"
     text_subtitle = "Your email has been verified successfully."
-    return layout(pathname, search, "success", text_title, text_subtitle, "Go Go Go", return_href)
+    return layout(pathname, search, "success", text_title, text_subtitle, "Back to safety", return_href)
