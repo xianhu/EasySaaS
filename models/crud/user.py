@@ -23,5 +23,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         obj_db = db.query(User).filter(User.email == email).first()
         return obj_db if obj_db.pwd == pwd_hash else None
 
+    def update_email_verify(self, db: Session, email: str) -> User:
+        obj_db = db.query(User).filter(User.email == email).first()
+        obj_db.email_verify = True
+        db.commit()
+        return obj_db
+
 
 user = CRUDUser(User)

@@ -7,17 +7,21 @@ login page
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import Input, Output, State
+from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.security import check_password_hash, create_access_token
 from models import DbMaker
 from models.crud import crud_user
-from . import tsign
-from ..paths import PATH_ROOT
+from ..comps import get_component_logo
+from ..paths import *
 
 TAG = "login"
+
+a_log_in = html.A("Log in", href=PATH_LOGIN)
+a_sign_up = html.A("Sign up", href=PATH_SIGNUP)
+a_forgot_pwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
 
 
 def layout(pathname, search, **kwargs):
@@ -40,16 +44,24 @@ def layout(pathname, search, **kwargs):
     image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
-    # define kwargs
-    kwargs_temp = dict(
-        text_title="Welcome back",
-        text_subtitle="Login to analysis your models.",
-        form_items=[form_email, form_pwd, row_cpc],
-        data=kwargs.get("nextpath") or PATH_ROOT,
-    )
-
     # return result
-    return tsign.layout(pathname, search, TAG, **kwargs_temp)
+    kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
+    return html.Div(children=[
+        html.Div(get_component_logo(size=40), className="text-center mt-5 mb-4"),
+        # define components
+        fac.AntdRow(fac.AntdCol(html.Div(children=[
+            html.Div("Welcome back", className="text-center fs-3"),
+            html.Div("Login to analysis your models.", className="text-center text-muted"),
+
+            fac.AntdForm([form_email, form_pwd, row_cpc], className="mt-4"),
+            fac.AntdButton("Log in", id=f"id-{TAG}-button", **kwargs_button),
+
+            fac.AntdRow([a_sign_up, a_forgot_pwd], justify="space-between", className="mt-2"),
+        ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
+        # define components
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        dcc.Store(id=f"id-{TAG}-data", data=kwargs.get("nextpath") or PATH_ROOT),
+    ], className="vh-100 overflow-auto")
 
 
 @dash.callback([dict(

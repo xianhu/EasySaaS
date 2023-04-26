@@ -10,7 +10,7 @@ import urllib.parse
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import Input, Output, State, html
+from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
@@ -19,11 +19,15 @@ from core.settings import settings
 from models import DbMaker
 from models.crud import crud_user
 from tasks.email import send_email
-from . import tsign
 from .. import palert
-from ..paths import PATH_FORGOTPWD, PATH_ROOT, PATH_SIGNUP
+from ..comps import get_component_logo
+from ..paths import *
 
 TAG = "forgotpwd"
+
+a_log_in = html.A("Log in", href=PATH_LOGIN)
+a_sign_up = html.A("Sign up", href=PATH_SIGNUP)
+a_forgot_pwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
 
 
 def layout(pathname, search, **kwargs):
@@ -43,31 +47,36 @@ def layout(pathname, search, **kwargs):
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # define components
-    checkbox_terms = fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms")
-    span_terms = html.Span(children=[
-        "I agree to ", html.A("terms of use", href="#"),
-        " and ", html.A("privacy policy", href="#"), ".",
-    ], className="text-muted ms-2")
+    input_code = fac.AntdInput(id=f"id-{TAG}-input-code", placeholder="code", size="large")
+    form_code = fac.AntdFormItem(input_code, id=f"id-{TAG}-form-code", required=True)
 
-    # define components (d-none if signup)
-    class_terms = "" if pathname == PATH_SIGNUP else "d-none"
-    form_terms = fac.AntdFormItem([checkbox_terms, span_terms], id=f"id-{TAG}-form-terms", className=class_terms)
-
-    # define kwargs
-    kwargs_temp = dict(
-        text_title="Welcome to system",
-        text_subtitle="Fill out the email to get started.",
-        form_items=[form_email, row_cpc, form_terms],
-        data=PATH_SIGNUP,
-    ) if pathname == PATH_SIGNUP else dict(
-        text_title="Forgot password?",
-        text_subtitle="Fill out the email to reset password.",
-        form_items=[form_email, row_cpc, form_terms],
-        data=PATH_FORGOTPWD,
-    )
+    # define components
+    input_pwd1 = fac.AntdInput(id=f"id-{TAG}-input-pwd1", placeholder="Enter Password", size="large", mode="password")
+    form_pwd1 = fac.AntdFormItem(input_pwd1, id=f"id-{TAG}-form-pwd1", required=True)
+    input_pwd2 = fac.AntdInput(id=f"id-{TAG}-input-pwd2", placeholder="Confirm Password", size="large", mode="password")
+    form_pwd2 = fac.AntdFormItem(input_pwd2, id=f"id-{TAG}-form-pwd2", required=True)
 
     # return result
-    return tsign.layout(pathname, search, TAG, **kwargs_temp)
+    kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
+    return html.Div(children=[
+        html.Div(get_component_logo(size=40), className="text-center mt-5 mb-4"),
+        # define components
+        fac.AntdRow(fac.AntdCol(html.Div(children=[
+            html.Div("Forgot password?", className="text-center fs-3"),
+            html.Div("Fill out the email to reset password.", className="text-center text-muted"),
+
+            fac.AntdForm([form_email, row_cpc], className="mt-4"),
+            fac.AntdButton("Send code", id=f"id-{TAG}-send", **kwargs_button),
+
+            fac.AntdForm([form_code, form_pwd1, form_pwd2], className="mt-4"),
+            fac.AntdButton("Update password", id=f"id-{TAG}-button", **kwargs_button),
+
+            fac.AntdRow([a_log_in, a_sign_up], justify="space-between", className="mt-2"),
+        ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
+        # define components
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        dcc.Store(id=f"id-{TAG}-data", data=kwargs.get("nextpath") or PATH_ROOT),
+    ], className="vh-100 overflow-auto")
 
 
 def layout_result(pathname, search, **kwargs):

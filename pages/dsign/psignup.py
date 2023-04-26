@@ -7,17 +7,21 @@ signup page
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
-from dash import Input, Output, State
+from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.security import check_password_hash, create_access_token
 from models import DbMaker
 from models.crud import crud_user
-from . import tsign
-from ..paths import PATH_ROOT
+from ..comps import get_component_logo
+from ..paths import *
 
 TAG = "signup"
+
+a_log_in = html.A("Log in", href=PATH_LOGIN)
+a_sign_up = html.A("Sign up", href=PATH_SIGNUP)
+a_forgot_pwd = html.A("Forgot password?", href=PATH_FORGOTPWD)
 
 
 def layout(pathname, search, **kwargs):
@@ -29,8 +33,10 @@ def layout(pathname, search, **kwargs):
     form_email = fac.AntdFormItem(input_email, id=f"id-{TAG}-form-email", required=True)
 
     # define components
-    input_pwd = fac.AntdInput(id=f"id-{TAG}-input-pwd", placeholder="Password", size="large", mode="password")
-    form_pwd = fac.AntdFormItem(input_pwd, id=f"id-{TAG}-form-pwd", required=True)
+    input_pwd1 = fac.AntdInput(id=f"id-{TAG}-input-pwd1", placeholder="Enter Password", size="large", mode="password")
+    form_pwd1 = fac.AntdFormItem(input_pwd1, id=f"id-{TAG}-form-pwd1", required=True)
+    input_pwd2 = fac.AntdInput(id=f"id-{TAG}-input-pwd2", placeholder="Confirm Password", size="large", mode="password")
+    form_pwd2 = fac.AntdFormItem(input_pwd2, id=f"id-{TAG}-form-pwd2", required=True)
 
     # define components
     input_cpc = fac.AntdInput(id=f"id-{TAG}-input-cpc", placeholder="Captcha", size="large")
@@ -40,16 +46,34 @@ def layout(pathname, search, **kwargs):
     image_cpc = fuc.FefferyCaptcha(id=f"id-{TAG}-image-cpc", charNum=4)
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
-    # define kwargs
-    kwargs_temp = dict(
-        text_title="Welcome back",
-        text_subtitle="Login to analysis your models.",
-        form_items=[form_email, form_pwd, row_cpc],
-        data=kwargs.get("nextpath") or PATH_ROOT,
-    )
+    # define components
+    checkbox_terms = fac.AntdCheckbox(id=f"id-{TAG}-checkbox-terms")
+    span_terms = html.Span(children=[
+        "I agree to ", html.A("terms of use", href="#"),
+        " and ", html.A("privacy policy", href="#"), ".",
+    ], className="text-muted ms-2")
+
+    # define components
+    form_terms = fac.AntdFormItem([checkbox_terms, span_terms], id=f"id-{TAG}-form-terms")
 
     # return result
-    return tsign.layout(pathname, search, TAG, **kwargs_temp)
+    kwargs_button = dict(type="primary", size="large", block=True, autoSpin=True)
+    return html.Div(children=[
+        html.Div(get_component_logo(size=40), className="text-center mt-5 mb-4"),
+        # define components
+        fac.AntdRow(fac.AntdCol(html.Div(children=[
+            html.Div("Welcome to system", className="text-center fs-3"),
+            html.Div("Fill out the email to get started.", className="text-center text-muted"),
+
+            fac.AntdForm([form_email, form_pwd1, form_pwd2, row_cpc, form_terms], className="mt-4"),
+            fac.AntdButton("Sign up", id=f"id-{TAG}-button", **kwargs_button),
+
+            fac.AntdRow([a_log_in, a_forgot_pwd], justify="space-between", className="mt-2"),
+        ], className="bg-white shadow rounded p-4"), span=20, md=6), justify="center"),
+        # define components
+        fuc.FefferyExecuteJs(id=f"id-{TAG}-executejs"),
+        dcc.Store(id=f"id-{TAG}-data", data=kwargs.get("nextpath") or PATH_ROOT),
+    ], className="vh-100 overflow-auto")
 
 
 @dash.callback([dict(
