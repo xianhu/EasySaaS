@@ -43,3 +43,7 @@ with DbMaker() as db:
     # test relationship
     logging.warning("user -> projects: %s", user_db.projects)
     logging.warning("project -> user: %s", project_db.user)
+
+    # test get_multi
+    user_db_list = crud_user.get_multi(db, offset=0, limit=100)
+    project_db_list = crud_project.get_multi(db, offset=0, limit=100)

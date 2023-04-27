@@ -4,7 +4,7 @@
 base crud
 """
 
-from typing import Generic, Optional, Type, TypeVar, Union
+from typing import Generic, List, Optional, Type, TypeVar, Union
 
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -26,6 +26,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get(self, db: Session, _id: Union[int, str]) -> Optional[ModelType]:
         obj_db = db.query(self.model).get(_id)
         return obj_db
+
+    def get_multi(self, db: Session, offset: int = 0, limit: int = 100) -> List[ModelType]:
+        obj_db_list = db.query(self.model).offset(offset).limit(limit).all()
+        return obj_db_list
 
     def delete(self, db: Session, _id: Union[int, str]) -> ModelType:
         obj_db = db.query(self.model).get(_id)
