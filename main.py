@@ -10,9 +10,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from api import api_router
 from core.settings import settings
 
+# create app
 app = FastAPI(title=settings.APP_NAME)
 
-# set all CORS enabled origins
+# set middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -23,4 +24,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# set router
 app.include_router(api_router, prefix="/api")

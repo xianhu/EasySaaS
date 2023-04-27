@@ -27,3 +27,4 @@ python-jose[cryptography]~=3.3.0
 emails~=0.6.0
 orjson~=3.8.10
 pydantic[email]~=1.10.7
+python-multipart~=0.0.6

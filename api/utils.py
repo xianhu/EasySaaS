@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from core.security import get_access_sub
+from core.security import get_token_sub
 from models import User, get_db
 from models.crud import crud_user
 
@@ -19,7 +19,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2)
     """
     get current user
     """
-    user_id = get_access_sub(token)
+    user_id = get_token_sub(token)
 
     # check token
     if not user_id:
