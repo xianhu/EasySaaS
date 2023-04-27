@@ -18,7 +18,7 @@ from models.schemas import Token, UserCreate, UserSchema
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserSchema)
+@router.post("/sign-up", response_model=UserSchema)
 def auth_register(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     """
     create a new user to register
