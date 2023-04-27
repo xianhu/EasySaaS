@@ -39,7 +39,7 @@ app.layout = html.Div(children=[
     State("id-location", "hash"),
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
-    # get user.id or None
+    # get user.id or None from 'token_access'
     user_id = get_token_sub(flask_session.get("token_access", ""))
     logging.warning("[%s] pathname: %s, search: %s", user_id, pathname, search)
 

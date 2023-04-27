@@ -42,7 +42,7 @@ def layout(pathname, search, **kwargs):
     row_cpc = fac.AntdRow([fac.AntdCol(form_cpc, span=12), fac.AntdCol(image_cpc)], justify="space-between")
 
     # define components
-    input_code = fac.AntdInput(id=f"id-{TAG}-input-code", placeholder="verify code", size="large")
+    input_code = fac.AntdInput(id=f"id-{TAG}-input-code", placeholder="Verify code", size="large")
     form_code = fac.AntdFormItem(input_code, id=f"id-{TAG}-form-code", required=True)
 
     # define components
@@ -181,9 +181,8 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     out_pwd = dict(status1="", help1="", status2="", help2="")
     out_others = dict(button_loading=False, executejs_string=None)
 
-    # parse token
-    sub = get_token_sub(flask_session.get("token_verify", ""))
-    sub_dict = json.loads(sub or "{}")
+    # parse token from session
+    sub_dict = json.loads(get_token_sub(flask_session.get("token_verify", "")) or "{}")
     code_token = str(sub_dict.get("code", ""))
 
     # check code
@@ -214,14 +213,16 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     # get user from db
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
-        if not user_db:
+        if pathname == PATH_SIGNUP and (not user_db):
             # create user
             user_schema = UserCreate(pwd=pwd_hash, email=email, email_verify=True)
             crud_user.create(db, obj_schema=user_schema)
-        else:
+        if pathname == PATH_RESET and user_db:
             # update user
             user_schema = UserUpdate(pwd=pwd_hash)
             crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+
+    # go next_path: login
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)
 
     # return result

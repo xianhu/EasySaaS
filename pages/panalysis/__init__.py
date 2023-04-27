@@ -30,18 +30,18 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    user_id = kwargs.get("user_id")
     project_id = int(search["id"][0])
 
     # user instance
     with DbMaker() as db:
-        user_id = kwargs.get("user_id")
         user_db = crud_user.get(db, _id=user_id)
         project_db = crud_project.get(db, _id=project_id)
     user_title = user_db.email.split("@")[0]
 
     # check if project is exist
-    if (not project_db) or (project_db.user_id != user_id):
-        return palert.layout_expired(pathname, search)
+    if (not project_db) or (project_db.user_id != user_db.id):
+        return palert.layout_404(pathname, search)
     store_data = dict(user_id=user_db.id, project_id=project_db.id, project_name=project_db.name)
 
     # define components

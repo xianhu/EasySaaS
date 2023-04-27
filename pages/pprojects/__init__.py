@@ -36,9 +36,10 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    user_id = kwargs.get("user_id")
+
     # user instance
     with DbMaker() as db:
-        user_id = kwargs.get("user_id")
         user_db = crud_user.get(db, _id=user_id)
     user_title = user_db.email.split("@")[0]
 
@@ -95,6 +96,9 @@ def _update_page(data_addedit, data_delete, user_id):
     # table data
     data_table = []
     for project in projects_list:
+        if project.status != 1:
+            continue
+
         # operation
         operation = [
             {"content": "Analysis", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
@@ -139,19 +143,19 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
 
-    # check triggered_id
+    # check triggered_id -- add
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
         out_addedit["project"] = dict(user_id=user_id)
         return out_addedit, out_delete
 
-    # check triggered_id
+    # check triggered_id -- edit
     if triggered_id == f"id-{TAG}-table-project" and clicked_content == "Edit":
         out_addedit["open"] = time.time()
         out_addedit["project"] = clicked_row
         return out_addedit, out_delete
 
-    # check triggered_id
+    # check triggered_id -- delete
     if triggered_id == f"id-{TAG}-table-project" and clicked_content == "Delete":
         out_delete["open"] = time.time()
         out_delete["project"] = clicked_row

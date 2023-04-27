@@ -24,9 +24,10 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    user_id = kwargs.get("user_id")
+
     # user instance
     with DbMaker() as db:
-        user_id = kwargs.get("user_id")
         user_db = crud_user.get(db, _id=user_id)
     user_title = user_db.email.split("@")[0]
 
