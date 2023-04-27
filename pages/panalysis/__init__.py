@@ -4,16 +4,13 @@
 analysis page
 """
 
-import logging
-import urllib.parse
-
 import dash
 import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
 
 from models import DbMaker
-from models.crud import crud_user
+from models.crud import crud_project, crud_user
 from . import pecharts, ptasks, pupload
 from .routers import ROUTER_MENU
 from .. import palert
@@ -33,23 +30,19 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    user_id = kwargs.get("user_id")
+    project_id = int(search["id"][0])
+
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
-        projects_dict = {p.id: p for p in user_db.projects if p.status == 1}
+        user_db = crud_user.get(db, _id=user_id)
+        project_db = crud_project.get(db, _id=project_id)
     user_title = user_db.email.split("@")[0]
 
-    # check project id
-    try:
-        search = urllib.parse.parse_qs(search.lstrip("?").strip())
-        assert int(search["id"][0]) in projects_dict, "project not found"
-    except Exception as excep:
-        logging.error("get project.id failed: %s", excep)
-        return palert.layout_expired(pathname, search)
-
-    # define data
-    project = projects_dict[int(search["id"][0])]
-    store_data = dict(user_id=user_db.id, project_id=project.id, project_name=project.name)
+    # check if project is exist
+    if (not project_db) or (project_db.user_id != user_db.id):
+        return palert.layout_404(pathname, search)
+    store_data = dict(user_id=user_db.id, project_id=project_db.id, project_name=project_db.name)
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")

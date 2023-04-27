@@ -11,12 +11,12 @@ import feffery_antd_components as fac
 import feffery_utils_components as fuc
 from dash import Input, Output, State, dcc, html
 
-from core.paths import PATH_ANALYSIS
 from models import DbMaker
-from models.crud import crud_user
+from models.crud import crud_project, crud_user
 from . import paddedit, pdelete
 from ..comps import get_component_logo
 from ..comps.header import get_component_header, get_component_header_user
+from ..paths import PATH_ANALYSIS
 
 TAG = "projects"
 
@@ -36,9 +36,11 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
+    user_id = kwargs.get("user_id")
+
     # user instance
     with DbMaker() as db:
-        user_db = crud_user.get(db, _id=kwargs.get("user_id"))
+        user_db = crud_user.get(db, _id=user_id)
     user_title = user_db.email.split("@")[0]
 
     # define components for (addedit) project
@@ -89,11 +91,14 @@ def _update_page(data_addedit, data_delete, user_id):
     # user instance
     with DbMaker() as db:
         user_db = crud_user.get(db, _id=user_id)
-        projects_list = [p for p in user_db.projects if p.status == 1]
+        projects_list = crud_project.get_multi_by_user(db, user_id=user_db.id)
 
     # table data
     data_table = []
     for project in projects_list:
+        if project.status != 1:
+            continue
+
         # operation
         operation = [
             {"content": "Analysis", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},
@@ -138,19 +143,19 @@ def _update_page(n_clicks, n_clicks_table, clicked_content, clicked_row, user_id
     # get triggered_id
     triggered_id = dash.ctx.triggered_id
 
-    # check triggered_id
+    # check triggered_id -- add
     if triggered_id == f"id-{TAG}-button-add":
         out_addedit["open"] = time.time()
         out_addedit["project"] = dict(user_id=user_id)
         return out_addedit, out_delete
 
-    # check triggered_id
+    # check triggered_id -- edit
     if triggered_id == f"id-{TAG}-table-project" and clicked_content == "Edit":
         out_addedit["open"] = time.time()
         out_addedit["project"] = clicked_row
         return out_addedit, out_delete
 
-    # check triggered_id
+    # check triggered_id -- delete
     if triggered_id == f"id-{TAG}-table-project" and clicked_content == "Delete":
         out_delete["open"] = time.time()
         out_delete["project"] = clicked_row

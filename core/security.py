@@ -12,16 +12,14 @@ from passlib.context import CryptContext
 
 from .settings import settings
 
-# define algorithm
+# global
 ALGORITHM = "HS256"
-
-# define password context
 pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 
-def create_access_token(sub: Union[str, int], expires_duration: int = None) -> str:
+def create_token(sub: Union[str, int], expires_duration: int = None) -> str:
     """
-    create access token based on sub
+    create token based on sub and expires_duration
     """
     seconds = expires_duration or settings.ACCESS_TOKEN_EXPIRE_DURATION
     expire = datetime.utcnow() + timedelta(seconds=seconds)
@@ -34,9 +32,9 @@ def create_access_token(sub: Union[str, int], expires_duration: int = None) -> s
     return token
 
 
-def get_access_sub(token: str) -> Optional[str]:
+def get_token_sub(token: str) -> Optional[str]:
     """
-    get access sub from token
+    get sub from token, return None if token is invalid
     """
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)

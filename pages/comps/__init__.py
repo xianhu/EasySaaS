@@ -6,8 +6,8 @@ components module
 
 from dash import html
 
-from core.paths import PATH_ROOT
 from core.settings import settings
+from ..paths import PATH_ROOT
 
 
 def get_component_logo(size):

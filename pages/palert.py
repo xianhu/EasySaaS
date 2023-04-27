@@ -7,7 +7,7 @@ alert page
 import feffery_antd_components as fac
 from dash import html
 
-from core.paths import PATH_ROOT
+from .paths import PATH_ROOT
 
 
 def layout(pathname, search, status, text_title, text_subtitle, text_button, return_href):

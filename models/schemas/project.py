@@ -12,14 +12,13 @@ from pydantic import BaseModel
 class ProjectSchema(BaseModel):
     name: Optional[str] = None
     desc: Optional[str] = None
-    status: Optional[int] = 1
 
 
 class ProjectCreate(ProjectSchema):
-    name: str
-    user_id: int
+    name: str  # required
+    user_id: int  # required
+    id: Optional[int] = None
 
 
 class ProjectUpdate(ProjectSchema):
-    # user_id: int
     pass

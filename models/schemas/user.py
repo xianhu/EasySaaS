@@ -11,15 +11,15 @@ from pydantic import BaseModel, EmailStr
 
 class UserSchema(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
     avatar: Optional[str] = None
-    status: Optional[int] = 1
+    email: Optional[EmailStr] = None
+    email_verified: Optional[bool] = False
 
 
 class UserCreate(UserSchema):
-    pwd: str
-    email: EmailStr
+    pwd: str  # required
+    email: EmailStr  # required
+    id: Optional[int] = None
 
 
 class UserUpdate(UserSchema):
