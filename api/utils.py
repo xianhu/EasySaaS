@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from core.security import get_token_sub
+from core.utils.security import get_token_sub
 from models import User, get_db
 from models.crud import crud_user
 

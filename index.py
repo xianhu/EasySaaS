@@ -14,7 +14,7 @@ from flask import session as flask_session
 
 from app import app, server
 from core.consts import FMT_EXECUTEJS_HREF, FMT_EXECUTEJS_TITLE
-from core.security import get_token_sub
+from core.utils.security import get_token_sub
 from pages import palert, panalysis, pprojects, puser
 from pages.dsign import pemail, plogin
 from pages.paths import *

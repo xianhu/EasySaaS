@@ -14,8 +14,8 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
-from core.security import create_token, get_password_hash, get_token_sub
 from core.settings import settings
+from core.utils.security import create_token, get_password_hash, get_token_sub
 from models import DbMaker
 from models.crud import crud_user
 from models.schemas import UserCreate, UserUpdate

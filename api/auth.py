@@ -10,18 +10,18 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from core.security import check_password_hash, create_token, get_password_hash
+from core.utils.security import check_password_hash, create_token, get_password_hash
 from models import get_db
 from models.crud import crud_user
-from models.schemas import Token, UserCreate, UserSchema
+from models.schemas import Msg, Token, UserCreate, UserSchema
 
 router = APIRouter()
 
 
-@router.post("/sign-up", response_model=UserSchema)
-def auth_register(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+@router.post("/sign-up", response_model=Msg)
+def sign_up(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     """
-    create a new user to register
+    sign up to get access token
     """
     user = crud_user.get_by_email(db, email=form_data.username)
     if user and user.status is not None:

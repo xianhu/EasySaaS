@@ -1,16 +1,18 @@
 # _*_ coding: utf-8 _*_
 
 """
-email task
+utils of email
 """
 
+import json
+import random
 from typing import Any, Dict, Union
 
 import emails
 from emails.template import JinjaTemplate
 
-from core.settings import settings
-from . import app_celery
+from .security import create_token
+from ..settings import settings
 
 # email config
 smtp_options = {
@@ -35,9 +37,18 @@ def send_email(to: Union[str, list], subject: str, html: str, render: Dict[str, 
     return response.status_code  # 250
 
 
-@app_celery.task(name="send_email", queue="email", bind=True, max_retries=3)
-def send_email_task(to: Union[str, list], subject: str, html: str, render: Dict[str, Any]) -> int:
+def send_email_code(email, _type=None):
     """
-    send email via smtp
+    send code to email
     """
-    return send_email(to=to, subject=subject, html=html, render=render)
+    code = random.randint(100001, 999999)
+    sub = json.dumps(dict(email=email, code=code, type=_type))
+    token = create_token(sub, expires_duration=60 * 10)
+
+    # define email content
+    mail_subject = "Verify code of {{ app_name }}"
+    mail_html = "Verify code: <b>{{ code }}</b>"
+
+    # send email
+    render = dict(app_name=settings.APP_NAME, code=code)
+    return send_email(to=email, subject=mail_subject, html=mail_html, render=render)

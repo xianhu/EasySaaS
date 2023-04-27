@@ -41,6 +41,24 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+
+class ErrorTips(BaseSettings):
+    CAPTCHA_INCORRECT: str = "Captcha is incorrect"
+
+    # error tips -- email
+    EMAIL_INVALID: str = "Format of email is invalid"
+    EMAIL_EXISTED: str = "This email has been registered"
+    EMAIL_NOT_EXISTED: str = "This email hasn't been registered"
+
+    # error tips -- password
+    PWD_INCORRECT: str = "Password is incorrect"
+    PWD_FMT_SHORT: str = "Password is too short"
+    PWD_FMT_ERROR: str = "Password must contain numbers and letters"
+    PWD_INCONSISTENT: str = "Passwords are inconsistent"
+
+
+error_tips = ErrorTips()
+
 if __name__ == "__main__":
     import pprint
 

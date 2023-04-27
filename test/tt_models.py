@@ -6,7 +6,7 @@ test models
 
 import logging
 
-from core.security import get_password_hash
+from core.utils.security import get_password_hash
 from models import DbMaker, engine
 from models.base import Model
 from models.crud import crud_project, crud_user
