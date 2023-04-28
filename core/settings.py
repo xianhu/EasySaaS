@@ -43,6 +43,7 @@ settings = Settings()
 
 
 class ErrorTips(BaseSettings):
+    # error tips -- common
     CAPTCHA_INCORRECT: str = "Captcha is incorrect"
 
     # error tips -- email

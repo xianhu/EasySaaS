@@ -6,7 +6,7 @@ utils of email
 
 import json
 import random
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 import emails
 from emails.template import JinjaTemplate
@@ -37,10 +37,10 @@ def send_email(to: Union[str, list], subject: str, html: str, render: Dict[str, 
     return response.status_code  # 250
 
 
-def send_email_code(email, _type=None):
+def send_email_code(email: str, _type: str = None) -> Optional[str]:
     """
     send code to email: {email, code, type}
-    :return token or None
+    :return token or None if send failed
     """
     code = random.randint(100001, 999999)
 

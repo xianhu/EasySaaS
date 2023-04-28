@@ -11,9 +11,10 @@ from .user import UserCreate, UserSchema, UserUpdate
 
 
 class Token(BaseModel):
-    access_token: str
+    token: str
     token_type: str
 
 
-class Msg(BaseModel):
+class Result(BaseModel):
+    status: int = 1
     msg: str
