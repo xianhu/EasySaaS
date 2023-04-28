@@ -14,7 +14,7 @@ from core.settings import error_tips
 from core.utils import security, utemail
 from models import get_db
 from models.crud import crud_user
-from models.schemas import Result, Token
+from models.schemas import AccessToken, Result, Token
 from models.schemas import UserCreate, UserUpdate
 
 router = APIRouter()
@@ -44,7 +44,7 @@ def _signup(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm 
     return Result(msg="Sign up successfully")
 
 
-@router.post("/access-token")
+@router.post("/access-token", response_model=AccessToken)
 def _access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     """
     log in to get access token

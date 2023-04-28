@@ -9,18 +9,17 @@ import secrets
 
 from pydantic import BaseSettings
 
+ENV_PRE = "ES"
+
 
 class Settings(BaseSettings):
     # settings -- security
-    SECRET_KEY: str = secrets.token_hex(32)
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
+    SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
     # settings -- base
-    ENV_PRE: str = "ES"
     APP_NAME: str = "EasySaaS"
-
-    # settings from environment variables -- base
     APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN")
 
     # settings from environment variables -- email
