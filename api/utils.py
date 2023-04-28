@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from core.security import get_access_sub
+from core.utils.security import get_token_sub
 from models import User, get_db
 from models.crud import crud_user
 
@@ -19,18 +19,22 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2)
     """
     get current user
     """
-    user_id = get_access_sub(token)
+    user_id = get_token_sub(token)
 
     # check token
     if not user_id:
-        status_code = status.HTTP_403_FORBIDDEN
-        raise HTTPException(status_code=status_code, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid token",
+        )
 
     # check user
-    user = crud_user.get(db, _id=user_id)
-    if not user:
-        status_code = status.HTTP_404_NOT_FOUND
-        raise HTTPException(status_code=status_code, detail="User not found")
+    user_db = crud_user.get(db, _id=user_id)
+    if not user_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
 
     # return
-    return user
+    return user_db

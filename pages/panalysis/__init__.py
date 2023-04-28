@@ -39,10 +39,12 @@ def layout(pathname, search, **kwargs):
         project_db = crud_project.get(db, _id=project_id)
     user_title = user_db.email.split("@")[0]
 
-    # check if project is exist
-    if (not project_db) or (project_db.user_id != user_db.id):
+    # check if project is exist or inactivated
+    if (not project_db) or (project_db.status != 1):
         return palert.layout_404(pathname, search)
-    store_data = dict(user_id=user_db.id, project_id=project_db.id, project_name=project_db.name)
+    if project_db.user_id != user_db.id:
+        return palert.layout_403(pathname, search)
+    store_data = dict(project_id=project_db.id, project_name=project_db.name)
 
     # define components
     menu = fac.AntdMenu(id=f"id-{TAG}-menu", menuItems=ROUTER_MENU, mode="inline", theme="dark")

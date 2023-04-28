@@ -5,7 +5,6 @@ email[signup/reset] page
 """
 
 import json
-import random
 
 import dash
 import feffery_antd_components as fac
@@ -14,12 +13,11 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
-from core.security import create_token, get_password_hash, get_token_sub
-from core.settings import settings
+from core.settings import error_tips
+from core.utils import security, utemail
 from models import DbMaker
 from models.crud import crud_user
 from models.schemas import UserCreate, UserUpdate
-from tasks.email import send_email
 from ..comps import get_component_logo
 from ..paths import *
 
@@ -111,14 +109,14 @@ def _button_click(n_clicks, email, cpc, image, pathname):
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
-        out_email["help"] = "Format of email is invalid"
+        out_email["help"] = error_tips.EMAIL_INVALID
         return out_email, out_cpc, out_others
 
     # check captcha
     cpc = (cpc or "").strip()
     if (not cpc) or (cpc != image):
         out_cpc["status"] = "error"
-        out_cpc["help"] = "Captcha is incorrect"
+        out_cpc["help"] = error_tips.CAPTCHA_INCORRECT
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_cpc, out_others
 
@@ -126,31 +124,23 @@ def _button_click(n_clicks, email, cpc, image, pathname):
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-    # check user
+    # check user -- existed
     if pathname == PATH_SIGNUP and (user_db and user_db.status is not None):
         out_email["status"] = "error"
-        out_email["help"] = "This email has been registered"
+        out_email["help"] = error_tips.EMAIL_EXISTED
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_cpc, out_others
+
+    # check user -- not existed
     if pathname == PATH_RESET and (not (user_db and user_db.status == 1)):
         out_email["status"] = "error"
-        out_email["help"] = "This email hasn't been registered"
+        out_email["help"] = error_tips.EMAIL_NOT_EXISTED
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_cpc, out_others
 
-    # create code and save to token ===============================================================
-    code = random.randint(100001, 999999)
-    sub = json.dumps(dict(email=email, code=code, pathname=pathname))
-    flask_session["token_verify"] = create_token(sub, expires_duration=60 * 10)
-
-    # define email content
-    mail_subject = "Verify code of {{ app_name }}"
-    mail_html = "Verify code of {{ app_name }}: <b>{{ code }}</b>"
-
-    # send email
-    render = dict(app_name=settings.APP_NAME, code=code)
-    send_email(to=email, subject=mail_subject, html=mail_html, render=render)
-    # =============================================================================================
+    # create token_verify with code, and send email
+    token_verify = utemail.send_email_code(email, _type=pathname)
+    flask_session["token_verify"] = token_verify if token_verify else ""
 
     # return result
     out_others["button_disabled"] = True
@@ -181,44 +171,51 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     out_pwd = dict(status1="", help1="", status2="", help2="")
     out_others = dict(button_loading=False, executejs_string=None)
 
-    # parse token from session
-    sub_dict = json.loads(get_token_sub(flask_session.get("token_verify", "")) or "{}")
-    code_token = str(sub_dict.get("code", ""))
+    # parse token_verify from session
+    token_verify = flask_session.get("token_verify", "")
+    sub_dict = json.loads(security.get_token_sub(token_verify) or "{}")
+
+    # check token_verify
+    if (not sub_dict.get("code")) or (not sub_dict.get("email")):
+        out_code["status"] = "error"
+        out_code["help"] = error_tips.CODE_INVALID
+        return out_code, out_pwd, out_others
 
     # check code
     code = (code or "").strip()
-    if (not code) or (not code_token) or (code_token != code):
+    code_token = str(sub_dict["code"])
+    if (not code) or (code_token != code):
         out_code["status"] = "error"
-        out_code["help"] = "Code is incorrect"
+        out_code["help"] = error_tips.CODE_INVALID
         return out_code, out_pwd, out_others
-    email = sub_dict.get("email")
 
     # check password
     pwd1 = (pwd1 or "").strip()
     pwd2 = (pwd2 or "").strip()
     if (not pwd1) or (len(pwd1) < 6):
         out_pwd["status1"] = "error"
-        out_pwd["help1"] = "Password is too short"
+        out_pwd["help1"] = error_tips.PWD_FMT_SHORT
         return out_code, out_pwd, out_others
     if not RE_PWD.match(pwd1):
         out_pwd["status1"] = "error"
-        out_pwd["help1"] = "Password must contain numbers and letters"
+        out_pwd["help1"] = error_tips.PWD_FMT_ERROR
         return out_code, out_pwd, out_others
     if (not pwd2) or (pwd2 != pwd1):
         out_pwd["status2"] = "error"
-        out_pwd["help2"] = "Passwords are inconsistent"
+        out_pwd["help2"] = error_tips.PWD_FMT_INCONSISTENT
         return out_code, out_pwd, out_others
-    pwd_hash = get_password_hash(pwd1)
+    pwd_hash = security.get_pwd_hash(pwd1)
 
     # get user from db
     with DbMaker() as db:
+        email = sub_dict.get("email")
         user_db = crud_user.get_by_email(db, email=email)
         if pathname == PATH_SIGNUP and (not user_db):
-            # create user
+            # create user with email (verify)
             user_schema = UserCreate(pwd=pwd_hash, email=email, email_verify=True)
             crud_user.create(db, obj_schema=user_schema)
         if pathname == PATH_RESET and user_db:
-            # update user
+            # update user's password
             user_schema = UserUpdate(pwd=pwd_hash)
             crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
 

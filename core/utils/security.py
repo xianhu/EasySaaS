@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-security file
+utils of security
 """
 
 from datetime import datetime, timedelta
@@ -10,7 +10,7 @@ from typing import Optional, Union
 from jose import jwt
 from passlib.context import CryptContext
 
-from .settings import settings
+from ..settings import settings
 
 # global
 ALGORITHM = "HS256"
@@ -45,14 +45,14 @@ def get_token_sub(token: str) -> Optional[str]:
     return payload["sub"] if payload else None
 
 
-def get_password_hash(pwd_plain: str) -> str:
+def get_pwd_hash(pwd_plain: str) -> str:
     """
     get password hash
     """
     return pwd_context.hash(pwd_plain)
 
 
-def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
+def check_pwd_hash(pwd_plain: str, pwd_hash: str) -> bool:
     """
     check password hash
     """
