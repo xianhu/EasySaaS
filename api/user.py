@@ -5,18 +5,25 @@ user api
 """
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from models import get_db
+from models import User
 from models.schemas import UserSchema
 from .utils import get_current_user
 
 router = APIRouter()
 
 
-@router.post("/me", response_model=UserSchema)
-def user_me(db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_user)):
+@router.get("/me", response_model=UserSchema)
+def _me(current_user: User = Depends(get_current_user)):
     """
-    login to get access token
+    get current user's info
     """
-    return UserSchema(**current_user.dict())
+    return current_user.to_dict()
+
+
+@router.get("/{user_id}", response_model=UserSchema)
+def _get_user(user_id: int):
+    """
+    get user's info
+    """
+    return User.get_by_id(user_id).to_dict()
