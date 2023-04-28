@@ -10,6 +10,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserSchema(BaseModel):
+    id: Optional[int] = None
     name: Optional[str] = None
     avatar: Optional[str] = None
     email: Optional[EmailStr] = None
@@ -19,7 +20,6 @@ class UserSchema(BaseModel):
 class UserCreate(UserSchema):
     pwd: str  # required
     email: EmailStr  # required
-    id: Optional[int] = None
 
 
 class UserUpdate(UserSchema):

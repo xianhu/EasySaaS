@@ -15,6 +15,11 @@ class Token(BaseModel):
     token_type: str
 
 
+class AccessToken(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class Result(BaseModel):
     status: int = 1
     msg: str

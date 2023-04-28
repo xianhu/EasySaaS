@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 
 class ProjectSchema(BaseModel):
+    id: Optional[int] = None
     name: Optional[str] = None
     desc: Optional[str] = None
 
@@ -17,7 +18,6 @@ class ProjectSchema(BaseModel):
 class ProjectCreate(ProjectSchema):
     name: str  # required
     user_id: int  # required
-    id: Optional[int] = None
 
 
 class ProjectUpdate(ProjectSchema):
