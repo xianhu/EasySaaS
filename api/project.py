@@ -6,7 +6,7 @@ project api
 
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from models import User
@@ -19,9 +19,9 @@ router = APIRouter()
 
 
 @router.get("/list", response_model=List[ProjectSchema])
-def _list(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def _list(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """
-    get project list
+    get projects list
     """
     projects_list = crud_project.get_multi_by_user(db, user_id=current_user.id)
     return [project.to_dict() for project in projects_list]
@@ -32,4 +32,10 @@ def _get_project(project_id: int, db: Session = Depends(get_db)):
     """
     get project's info
     """
-    return crud_project.get(db, id=project_id).to_dict()
+    project_db = crud_project.get(db, _id=project_id)
+    if not (project_db and project_db.status == 1):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found",
+        )
+    return ProjectSchema(**project_db.to_dict())

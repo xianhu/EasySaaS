@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 @router.post("/signup", response_model=Result)
-def _signup(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     sign up to create a new user
     """
@@ -45,7 +45,7 @@ def _signup(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm 
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     log in to get access token
     """
@@ -66,15 +66,15 @@ def _access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordReques
             detail=error_tips.PWD_INCORRECT,
         )
 
-    # return token
-    token = security.create_token(user_db.id)
-    return dict(token=token, token_type="bearer", access_token=token)
+    # return access_token
+    access_token = security.create_token(user_db.id)
+    return AccessToken(access_token=access_token, token_type="bearer")
 
 
-@router.post("/verify-email", response_model=Token)
-def _verify_email(email: str, db: Session = Depends(get_db)):
+@router.post("/email-send", response_model=Token)
+def _email_send(email: str, db: Session = Depends(get_db)):
     """
-    verify email with send a code
+    send a code to email
     """
     # check user
     user_db = crud_user.get_by_email(db, email=email)
@@ -87,14 +87,14 @@ def _verify_email(email: str, db: Session = Depends(get_db)):
     # create token_verify with code, and send email
     token_verify = utemail.send_email_code(email, _type="verify")
 
-    # return token
+    # return token_verify
     return Token(token=token_verify, token_type="verify")
 
 
 @router.get("/reset", response_model=Result)
-def _reset(code: str, token_verify: str, pwd: str, db: Session = Depends(get_db)):
+def _reset(code: str, pwd: str, token_verify: str, db: Session = Depends(get_db)):
     """
-    reset password based on code and token
+    reset password based on code and token_verify
     """
     # parse token_verify to get sub_dict
     sub_dict = json.loads(security.get_token_sub(token_verify) or "{}")
@@ -105,20 +105,22 @@ def _reset(code: str, token_verify: str, pwd: str, db: Session = Depends(get_db)
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.CODE_INVALID,
         )
+    code_token = str(sub_dict["code"])
+    email = sub_dict["email"]
 
     # check code
     code = (code or "").strip()
-    code_token = str(sub_dict["code"])
     if (not code) or (code_token != code):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.CODE_INVALID,
         )
-    pwd_hash = security.get_pwd_hash(pwd)
+
+    # get user from db
+    user_db = crud_user.get_by_email(db, email=email)
 
     # update user's password
-    user_schema = UserUpdate(pwd=pwd_hash)
-    user_db = crud_user.get_by_email(db, email=sub_dict["email"])
+    user_schema = UserUpdate(pwd=security.get_pwd_hash(pwd))
     crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
 
     # return result

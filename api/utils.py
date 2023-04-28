@@ -16,9 +16,9 @@ from models.crud import crud_user
 oauth2 = OAuth2PasswordBearer(tokenUrl="/api/auth/access-token")
 
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2)) -> User:
+def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)) -> User:
     """
-    get current user
+    get current user model from token
     """
     user_id = security.get_token_sub(token)
 
