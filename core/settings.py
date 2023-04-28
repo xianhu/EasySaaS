@@ -47,8 +47,8 @@ class ErrorTips(BaseSettings):
 
     # error tips -- email
     EMAIL_INVALID: str = "Format of email is invalid"
-    EMAIL_EXISTED: str = "This email has been registered"
-    EMAIL_NOT_EXISTED: str = "This email hasn't been registered"
+    EMAIL_EXISTED: str = "This email existed in system"
+    EMAIL_NOT_EXISTED: str = "This email not existed in system"
 
     # error tips -- password
     PWD_INCORRECT: str = "Password is incorrect"
@@ -63,3 +63,4 @@ if __name__ == "__main__":
     import pprint
 
     pprint.pprint(settings.dict())
+    pprint.pprint(error_tips.dict())
