@@ -11,7 +11,8 @@ from dash import Input, Output, State, dcc, html
 from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
-from core.utils.security import check_password_hash, create_token
+from core.settings import error_tips
+from core.utils.security import check_pwd_hash, create_token
 from models import DbMaker
 from models.crud import crud_user
 from ..comps import get_component_logo
@@ -94,16 +95,16 @@ def _button_click(n_clicks, email, pwd, cpc, image, next_path):
     email = (email or "").strip()
     if not RE_EMAIL.match(email):
         out_email["status"] = "error"
-        out_email["help"] = "Format of email is invalid"
-        return out_email, out_pwd, out_cpc, out_others
+        out_email["help"] = error_tips.EMAIL_INVALID
+        return out_email, out_cpc, out_others
 
     # check captcha
     cpc = (cpc or "").strip()
     if (not cpc) or (cpc != image):
         out_cpc["status"] = "error"
-        out_cpc["help"] = "Captcha is incorrect"
+        out_cpc["help"] = error_tips.CAPTCHA_INCORRECT
         out_others["cpc_refresh"] = True if cpc else False
-        return out_email, out_pwd, out_cpc, out_others
+        return out_email, out_cpc, out_others
 
     # get user from db
     with DbMaker() as db:
@@ -112,15 +113,15 @@ def _button_click(n_clicks, email, pwd, cpc, image, next_path):
     # check user
     if not (user_db and user_db.status == 1):
         out_email["status"] = "error"
-        out_email["help"] = "This email hasn't been registered"
+        out_email["help"] = error_tips.EMAIL_NOT_EXISTED
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_pwd, out_cpc, out_others
 
     # check password
     pwd_plain = (pwd or "").strip()
-    if not check_password_hash(pwd_plain, user_db.pwd):
+    if not check_pwd_hash(pwd_plain, user_db.pwd):
         out_pwd["status"] = "error"
-        out_pwd["help"] = "Password is incorrect"
+        out_pwd["help"] = error_tips.PWD_INCORRECT
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_pwd, out_cpc, out_others
 

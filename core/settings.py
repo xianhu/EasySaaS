@@ -45,6 +45,8 @@ settings = Settings()
 class ErrorTips(BaseSettings):
     # error tips -- common
     CAPTCHA_INCORRECT: str = "Captcha is incorrect"
+    TOKEN_INVALID: str = "Token is invalid or expired"
+    CODE_INVALID: str = "Code is invalid or expired"
 
     # error tips -- email
     EMAIL_INVALID: str = "Format of email is invalid"
@@ -55,7 +57,7 @@ class ErrorTips(BaseSettings):
     PWD_INCORRECT: str = "Password is incorrect"
     PWD_FMT_SHORT: str = "Password is too short"
     PWD_FMT_ERROR: str = "Password must contain numbers and letters"
-    PWD_INCONSISTENT: str = "Passwords are inconsistent"
+    PWD_FMT_INCONSISTENT: str = "Passwords are inconsistent"
 
 
 error_tips = ErrorTips()
