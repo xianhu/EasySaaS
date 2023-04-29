@@ -37,23 +37,29 @@ def send_email(to: Union[str, list], subject: str, html: str, render: Dict[str, 
     return response.status_code  # 250
 
 
-def send_email_code(email: str, _type: str = None) -> Optional[str]:
+def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Optional[str]:
     """
-    send code to email: sub: {email, code, type}
+    send code or link to email: sub: {email, code, type}
     :return token or None if send failed
     """
-    code = random.randint(100001, 999999)
+    # define code and token
+    code = random.randint(1001, 9999) if is_code else 0
+    sub = json.dumps(dict(email=email, code=code, type=_type))
+    token = security.create_token(sub, expires_duration=60 * 10)
 
     # define email content
-    mail_subject = "Verify code of {{ app_name }}"
-    mail_html = "Verify code: <b>{{ code }}</b>"
+    mail_subject = "Verify of {{ app_name }}"
+    if is_code:
+        mail_html = "Verify code: <b>{{ code }}</b>"
+    else:
+        mail_html = "Verify link: <a href='{{ link }}'>click</a>"
+
+    # define render
+    link = f"{settings.APP_DOMAIN}/token={token}"
+    render = dict(app_name=settings.APP_NAME, code=code, link=link)
 
     # send email and check status
-    render = dict(app_name=settings.APP_NAME, code=code)
     status = send_email(email, subject=mail_subject, html=mail_html, render=render)
     if status != 250:
         return None
-
-    # return token
-    sub = json.dumps(dict(email=email, code=code, type=_type))
-    return security.create_token(sub, expires_duration=60 * 10)
+    return token
