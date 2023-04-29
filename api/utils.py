@@ -13,23 +13,24 @@ from core.utils import security
 from models import User, get_db
 from models.crud import crud_user
 
-oauth2 = OAuth2PasswordBearer(tokenUrl="/api/auth/access-token")
+# define OAuth2PasswordBearer
+token_url = "/api/auth/access-token"
+oauth2 = OAuth2PasswordBearer(tokenUrl=token_url)
 
 
 def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)) -> User:
     """
-    get current user model from token
+    check token and return user model
     """
+    # get user id, and check token
     user_id = security.get_token_sub(token)
-
-    # check token
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=error_tips.TOKEN_INVALID,
         )
 
-    # check user
+    # check user by user_id
     user_db = crud_user.get(db, _id=user_id)
     if not (user_db and user_db.status == 1):
         raise HTTPException(
@@ -37,5 +38,5 @@ def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)
             detail=error_tips.EMAIL_NOT_EXISTED,
         )
 
-    # return
+    # return model
     return user_db
