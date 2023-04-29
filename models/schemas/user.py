@@ -20,6 +20,7 @@ class UserSchema(BaseModel):
 class UserCreate(UserSchema):
     pwd: str  # required
     email: EmailStr  # required
+    email_verified: bool  # required
 
 
 class UserUpdate(UserSchema):
