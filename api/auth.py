@@ -5,6 +5,7 @@ auth api
 """
 
 import json
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -17,7 +18,7 @@ from core.utils.utemail import send_email_verify
 from models import get_db
 from models.crud import crud_user
 from models.schemas import AccessToken, Result, Token
-from models.schemas import UserCreate, UserUpdate
+from models.schemas import UserCreate, UserUpdatePri
 from .utils import user_existed, user_not_existed
 
 router = APIRouter()
@@ -30,7 +31,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
     """
     email, pwd_plain = form_data.username, form_data.password
 
-    # get user_db, or raise exception
+    # get user, or raise exception
     user_db = user_existed(email=email, db=db)
 
     # check password
@@ -40,9 +41,8 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
             detail=error_tips.PWD_INCORRECT,
         )
 
-    # return AccessToken
-    access_token = create_token(user_db.id)
-    return AccessToken(access_token=access_token, token_type="bearer")
+    # return access_token
+    return AccessToken(access_token=create_token(user_db.id))
 
 
 @router.post("/signup", response_model=Result)
@@ -53,12 +53,13 @@ def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
     email, pwd_plain = form_data.username, form_data.password
 
     # user not existed, or raise exception
-    user_db = user_not_existed(email=email, db=db)
+    user_not_existed(email=email, db=db)
 
     # create user with email (unverified)
     pwd_hash = get_pwd_hash(pwd_plain)
     user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=False)
     user_db = crud_user.create(db, obj_schema=user_schema)
+    logging.warning("create user: %s", user_db.to_dict())
 
     # return result
     return Result(msg="Sign up successfully")
@@ -69,12 +70,15 @@ def _send_code(email: str, db: Session = Depends(get_db)):
     """
     send a code to email, and return token
     """
-    # get user_db, or raise exception
-    user_db = user_existed(email=email, db=db)
+    # get user, or raise exception
+    user_existed(email=email, db=db)
 
-    # create token with code, and return it
-    token = send_email_verify(email, is_code=True, _type="verify")
-    return Token(token=token, token_type="verify")
+    # create token with code
+    token = send_email_verify(email, is_code=True)
+    logging.warning("send code: %s - %s", email, token)
+
+    # return token
+    return Token(token=token, token_type="verify_code")
 
 
 @router.post("/reset", response_model=Result)
@@ -102,12 +106,13 @@ def _reset(code: str, pwd: str, token: str, db: Session = Depends(get_db)):
         )
     email = sub_dict["email"]
 
-    # get user_db, or raise exception
+    # get user, or raise exception
     user_db = user_existed(email=email, db=db)
 
     # update user's password
-    user_schema = UserUpdate(pwd=get_pwd_hash(pwd))
+    user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd))
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+    logging.warning("reset password: %s", user_db.to_dict())
 
     # return result
     return Result(msg="Reset password successfully")
