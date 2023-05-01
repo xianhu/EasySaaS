@@ -21,10 +21,10 @@ def layout(pathname, search, **kwargs):
     """
     # define params
     params_chart = dict(
-        # chart id
+        # id_xxx of chart
         id_div=f"id-{TAG}-div-chart",  # div to show chart
         id_storage=f"id-{TAG}-storage-chart",  # storage of chart click data
-        # chart data
+        # data of chart
         x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         y_data=[random.randint(50, 100) for _ in range(10)],
     )

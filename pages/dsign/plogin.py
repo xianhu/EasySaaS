@@ -12,7 +12,7 @@ from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL
 from core.settings import error_tips
-from core.utils import security
+from core.utils.security import check_pwd_hash, create_token
 from models import DbMaker
 from models.crud import crud_user
 from ..comps import get_component_logo
@@ -119,14 +119,14 @@ def _button_click(n_clicks, email, pwd, cpc, image, next_path):
 
     # check password
     pwd_plain = (pwd or "").strip()
-    if not security.check_pwd_hash(pwd_plain, user_db.pwd):
+    if not check_pwd_hash(pwd_plain, user_db.pwd):
         out_pwd["status"] = "error"
         out_pwd["help"] = error_tips.PWD_INCORRECT
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_pwd, out_cpc, out_others
 
     # login user and go next_path
-    flask_session["token_access"] = security.create_token(user_db.id)
+    flask_session["token_access"] = create_token(user_db.id)
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=next_path)
 
     # return result
