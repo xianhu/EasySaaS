@@ -14,10 +14,11 @@ from flask import session as flask_session
 
 from core.consts import FMT_EXECUTEJS_HREF, RE_EMAIL, RE_PWD
 from core.settings import error_tips
-from core.utils import security, utemail
+from core.utils.security import get_pwd_hash, get_token_sub
+from core.utils.utemail import send_email_verify
 from models import DbMaker
 from models.crud import crud_user
-from models.schemas import UserCreate, UserUpdate
+from models.schemas import UserCreate, UserUpdatePri
 from ..comps import get_component_logo
 from ..paths import *
 
@@ -138,9 +139,9 @@ def _button_click(n_clicks, email, cpc, image, pathname):
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_cpc, out_others
 
-    # create token_verify with code, and send email
-    token_verify = utemail.send_email_code(email, _type=pathname)
-    flask_session["token_verify"] = token_verify if token_verify else ""
+    # create token with code, and send email
+    token = send_email_verify(email, is_code=True)
+    flask_session["token"] = token if token else ""
 
     # return result
     out_others["button_disabled"] = True
@@ -171,23 +172,24 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
     out_pwd = dict(status1="", help1="", status2="", help2="")
     out_others = dict(button_loading=False, executejs_string=None)
 
-    # parse token_verify from session
-    token_verify = flask_session.get("token_verify", "")
-    sub_dict = json.loads(security.get_token_sub(token_verify) or "{}")
+    # parse token from session
+    token = flask_session.get("token", "")
+    sub_dict = json.loads(get_token_sub(token) or "{}")
 
-    # check token_verify
+    # check token: code and email
     if (not sub_dict.get("code")) or (not sub_dict.get("email")):
         out_code["status"] = "error"
         out_code["help"] = error_tips.CODE_INVALID
         return out_code, out_pwd, out_others
+    code_token = str(sub_dict["code"])
 
     # check code
     code = (code or "").strip()
-    code_token = str(sub_dict["code"])
-    if (not code) or (code_token != code):
+    if (not code) or (code != code_token):
         out_code["status"] = "error"
         out_code["help"] = error_tips.CODE_INVALID
         return out_code, out_pwd, out_others
+    email = sub_dict["email"]
 
     # check password
     pwd1 = (pwd1 or "").strip()
@@ -204,19 +206,20 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
         out_pwd["status2"] = "error"
         out_pwd["help2"] = error_tips.PWD_FMT_INCONSISTENT
         return out_code, out_pwd, out_others
-    pwd_hash = security.get_pwd_hash(pwd1)
+    pwd_hash = get_pwd_hash(pwd1)
 
     # get user from db
     with DbMaker() as db:
-        email = sub_dict.get("email")
         user_db = crud_user.get_by_email(db, email=email)
+
+        # create user with email (verified)
         if pathname == PATH_SIGNUP and (not user_db):
-            # create user with email (verify)
-            user_schema = UserCreate(pwd=pwd_hash, email=email, email_verify=True)
+            user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
             crud_user.create(db, obj_schema=user_schema)
+
+        # update user's password
         if pathname == PATH_RESET and user_db:
-            # update user's password
-            user_schema = UserUpdate(pwd=pwd_hash)
+            user_schema = UserUpdatePri(pwd=pwd_hash)
             crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
 
     # go next_path: login
