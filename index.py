@@ -14,7 +14,7 @@ from flask import session as flask_session
 
 from app import app, server
 from core.consts import FMT_EXECUTEJS_HREF, FMT_EXECUTEJS_TITLE
-from core.utils.security import get_token_sub
+from core.utils import security
 from pages import palert, panalysis, pprojects, puser
 from pages.dsign import pemail, plogin
 from pages.paths import *
@@ -40,7 +40,7 @@ app.layout = html.Div(children=[
 ], prevent_initial_call=False)
 def _init_page(pathname, search, vhash):
     # get user.id or None from 'token_access'
-    user_id = get_token_sub(flask_session.get("token_access", ""))
+    user_id = security.get_token_sub(flask_session.get("token_access", ""))
     logging.warning("[%s] pathname: %s, search: %s", user_id, pathname, search)
 
     # define variables: search_dict.get("xxx")[0]

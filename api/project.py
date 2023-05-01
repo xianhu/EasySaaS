@@ -7,11 +7,3 @@ project api
 from fastapi import APIRouter
 
 router = APIRouter()
-
-
-@router.get("/list")
-def project_list():
-    """
-    get project list
-    """
-    return {"message": "Hello World"}

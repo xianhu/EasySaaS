@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Union
 import emails
 from emails.template import JinjaTemplate
 
-from .security import create_token
+from . import security
 from ..settings import settings
 
 # email config
@@ -24,36 +24,40 @@ smtp_options = {
 }
 
 
-def send_email(to: Union[str, list], subject: str, html: str, render: Dict[str, Any]) -> int:
+def send_email(
+        mail_from: Union[str, tuple], mail_to: Union[str, tuple],
+        subject: str, html: str, render: Dict[str, Any],
+) -> int:
     """
     send email via smtp
     """
-    message = emails.Message(
-        mail_from=settings.MAIL_SENDER,
-        subject=JinjaTemplate(subject),
-        html=JinjaTemplate(html),
-    )
-    response = message.send(to=to, render=render, smtp=smtp_options)
+    message = emails.Message(mail_from=mail_from, subject=JinjaTemplate(subject), html=JinjaTemplate(html))
+    response = message.send(to=mail_to, render=render, smtp=smtp_options)
     return response.status_code  # 250
 
 
-def send_email_code(email: str, _type: str = None) -> Optional[str]:
+def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Optional[str]:
     """
-    send code to email: {email, code, type}
+    send code or link to email: sub: {email, code, type}
     :return token or None if send failed
     """
-    code = random.randint(100001, 999999)
+    # define code and token
+    code = random.randint(1001, 9999) if is_code else 0
+    sub = json.dumps(dict(email=email, code=code, type=_type))
+    token = security.create_token(sub, expires_duration=60 * 10)
 
     # define email content
-    mail_subject = "Verify code of {{ app_name }}"
-    mail_html = "Verify code: <b>{{ code }}</b>"
-    render = dict(app_name=settings.APP_NAME, code=code)
+    mail_subject = "Verify of {{ app_name }}"
+    if is_code:
+        mail_html = "Verify code: <b>{{ code }}</b>"
+    else:
+        mail_html = "Verify link: <a href='{{ link }}'>click</a>"
+
+    # define render
+    link = f"{settings.APP_DOMAIN}/token={token}"
+    render = dict(app_name=settings.APP_NAME, code=code, link=link)
 
     # send email and check status
-    status = send_email(to=email, subject=mail_subject, html=mail_html, render=render)
-    if status != 250:
-        return None
-
-    # return token
-    sub = json.dumps(dict(email=email, code=code, type=_type))
-    return create_token(sub, expires_duration=60 * 10)
+    mail_from = (settings.APP_NAME, settings.MAIL_USERNAME)
+    status = send_email(mail_from, email, subject=mail_subject, html=mail_html, render=render)
+    return token if status == 250 else None

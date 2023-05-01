@@ -4,91 +4,115 @@
 auth api
 """
 
-import random
+import json
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from core.utils.security import check_pwd_hash, create_token, get_pwd_hash
+from core.settings import error_tips
+from core.utils.security import check_pwd_hash, get_pwd_hash
+from core.utils.security import create_token, get_token_sub
+from core.utils.utemail import send_email_verify
 from models import get_db
 from models.crud import crud_user
-from models.schemas import Result, Token, UserCreate, UserSchema
+from models.schemas import AccessToken, Result, Token
+from models.schemas import UserCreate, UserUpdatePri
+from .utils import user_existed, user_not_existed
 
 router = APIRouter()
 
 
+@router.post("/access-token", response_model=AccessToken)
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """
+    log in to get access token
+    """
+    email, pwd_plain = form_data.username, form_data.password
+
+    # get user, or raise exception
+    user_db = user_existed(email=email, db=db)
+
+    # check password
+    if not check_pwd_hash(pwd_plain, user_db.pwd):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.PWD_INCORRECT,
+        )
+
+    # return access_token
+    return AccessToken(access_token=create_token(user_db.id))
+
+
 @router.post("/signup", response_model=Result)
-def _signup(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
-    sign up to get access token
+    sign up to create a new user: email_verified = False
     """
-    user = crud_user.get_by_email(db, email=form_data.username)
-    if user and user.status is not None:
+    email, pwd_plain = form_data.username, form_data.password
+
+    # user not existed, or raise exception
+    user_not_existed(email=email, db=db)
+
+    # create user with email (unverified)
+    pwd_hash = get_pwd_hash(pwd_plain)
+    user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=False)
+    user_db = crud_user.create(db, obj_schema=user_schema)
+    logging.warning("create user: %s", user_db.to_dict())
+
+    # return result
+    return Result(msg="Sign up successfully")
+
+
+@router.post("/send-code", response_model=Token)
+def _send_code(email: str, db: Session = Depends(get_db)):
+    """
+    send a code to email, and return token
+    """
+    # get user, or raise exception
+    user_existed(email=email, db=db)
+
+    # create token with code
+    token = send_email_verify(email, is_code=True)
+    logging.warning("send code: %s - %s", email, token)
+
+    # return token
+    return Token(token=token, token_type="verify_code")
+
+
+@router.post("/reset", response_model=Result)
+def _reset(code: str, pwd: str, token: str, db: Session = Depends(get_db)):
+    """
+    reset password based on code and token
+    """
+    # parse token to get sub_dict
+    sub_dict = json.loads(get_token_sub(token) or "{}")
+
+    # check token: code and email
+    if (not sub_dict.get("code")) or (not sub_dict.get("email")):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered",
+            detail=error_tips.TOKEN_INVALID,
         )
+    code_token = str(sub_dict["code"])
 
-    # create user
-    pwd_hash = get_pwd_hash(form_data.password)
-    user_schema = UserCreate(pwd=pwd_hash, email=form_data.username)
-    user = crud_user.create(db, obj_schema=user_schema)
-    token = create_token(user.id)
-    return Token(access_token=token, token_type="bearer")
-
-
-@router.post("/access-token", response_model=Token)
-def auth_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
-    """
-    login to get access token
-    """
-    user = crud_user.get_by_email(db, email=form_data.username)
-    if not (user and user.status == 1):
+    # check code
+    code = (code or "").strip()
+    if (not code) or (code != code_token):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect email or password",
+            detail=error_tips.CODE_INVALID,
         )
-    if not check_pwd_hash(form_data.password, user.pwd):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect email or password",
-        )
-    token = create_token(user.id)
-    return Token(access_token=token, token_type="bearer")
+    email = sub_dict["email"]
 
+    # get user, or raise exception
+    user_db = user_existed(email=email, db=db)
 
-@router.post("/pwd-recovery", response_model=UserSchema)
-def auth_pwd_recovery(email: str, db: Session = Depends(get_db)):
-    """
-    send email to reset password
-    """
-    user = crud_user.get_by_email(db, email=email)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-    code = random.randint(100000, 999999)
-    token = create_token(code)
-    return Token(access_token=token, token_type="bearer")
+    # update user's password
+    user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd))
+    user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+    logging.warning("reset password: %s", user_db.to_dict())
 
-
-@router.get("/reset", response_model=UserSchema)
-def _reset(code: str, token: str, pwd: str, db: Session = Depends(get_db)):
-    """
-    reset password
-    """
-    user = crud_user.get_by_code(db, code=code)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-    if not check_pwd_hash(pwd, user.pwd):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect password",
-        )
-    user.pwd = get_pwd_hash(pwd)
-    return user
+    # return result
+    return Result(msg="Reset password successfully")

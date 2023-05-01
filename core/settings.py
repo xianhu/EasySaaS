@@ -9,18 +9,17 @@ import secrets
 
 from pydantic import BaseSettings
 
+ENV_PRE = "ES"
+
 
 class Settings(BaseSettings):
     # settings -- security
-    SECRET_KEY: str = secrets.token_hex(32)
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
+    SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
     # settings -- base
-    ENV_PRE: str = "ES"
-    APP_NAME: str = "EasySaaS"
-
-    # settings from environment variables -- base
+    APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME")
     APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN")
 
     # settings from environment variables -- email
@@ -28,7 +27,6 @@ class Settings(BaseSettings):
     MAIL_PORT: str = os.getenv(f"{ENV_PRE}_MAIL_PORT")
     MAIL_USERNAME: str = os.getenv(f"{ENV_PRE}_MAIL_USERNAME")
     MAIL_PASSWORD: str = os.getenv(f"{ENV_PRE}_MAIL_PASSWORD")
-    MAIL_SENDER: list = (APP_NAME, MAIL_USERNAME)
 
     # settings from environment variables -- database
     REDIS_URI: str = os.getenv(f"{ENV_PRE}_REDIS_URI")
@@ -48,16 +46,27 @@ class ErrorTips(BaseSettings):
     TOKEN_INVALID: str = "Token is invalid or expired"
     CODE_INVALID: str = "Code is invalid or expired"
 
-    # error tips -- email
-    EMAIL_INVALID: str = "Format of email is invalid"
-    EMAIL_EXISTED: str = "This email existed in system"
-    EMAIL_NOT_EXISTED: str = "This email not existed in system"
-
     # error tips -- password
     PWD_INCORRECT: str = "Password is incorrect"
     PWD_FMT_SHORT: str = "Password is too short"
     PWD_FMT_ERROR: str = "Password must contain numbers and letters"
     PWD_FMT_INCONSISTENT: str = "Passwords are inconsistent"
+
+    # error tips -- email
+    EMAIL_INVALID: str = "Format of email is invalid"
+    EMAIL_EXISTED: str = "This email existed in system"
+    EMAIL_NOT_EXISTED: str = "This email not existed in system"
+    EMAIL_SEND_FAILED: str = "Email send failed"
+
+    # error tips -- user
+    USER_EXISTED: str = "This user existed in system"
+    USER_NOT_EXISTED: str = "This user not existed in system"
+
+    # error tips -- crud
+    CREATE_FAILED: str = "Create failed"
+    UPDATE_FAILED: str = "Update failed"
+    DELETE_FAILED: str = "Delete failed"
+    QUERY_FAILED: str = "Query failed"
 
 
 error_tips = ErrorTips()
