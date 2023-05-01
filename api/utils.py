@@ -20,9 +20,9 @@ oauth2 = OAuth2PasswordBearer(tokenUrl=token_url)
 
 def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)) -> User:
     """
-    check token and return user model
+    check token, return user model or raise exception
     """
-    # get user id, and check token
+    # check token and get user_id
     user_id = security.get_token_sub(token)
     if not user_id:
         raise HTTPException(
@@ -35,8 +35,8 @@ def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)
     if not (user_db and user_db.status == 1):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_tips.EMAIL_NOT_EXISTED,
+            detail=error_tips.USER_NOT_EXISTED,
         )
 
-    # return model
+    # return
     return user_db
