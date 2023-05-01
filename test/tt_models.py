@@ -28,7 +28,7 @@ with DbMaker() as db:
     logging.warning("create user: %s", user_db.to_dict())
 
     # update user
-    user_schema = UserUpdate(name="admin", email_verified=True)
+    user_schema = UserUpdate(name="admin", email_verified=True, email="feji@qq.com")
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("update user: %s", user_db.to_dict())
 

@@ -28,5 +28,7 @@ def _update(user_schema: UserUpdate, current_user: User = Depends(get_current_us
     """
     update current_user's schema
     """
-    crud_user.update(db, obj_db=current_user, obj_schema=user_schema)
+    # exclude pwd and email_verified
+
+    current_user = crud_user.update(db, obj_db=current_user, obj_schema=user_schema)
     return UserSchema(**current_user.to_dict())

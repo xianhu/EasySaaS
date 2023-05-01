@@ -24,4 +24,7 @@ class UserCreate(UserSchema):
 
 
 class UserUpdate(UserSchema):
-    pwd: Optional[str] = None
+    email_verified: Optional[bool] = None
+
+    class Config:
+        fields = {"email": {"exclude": True}, "pwd": {"exclude": True}}
