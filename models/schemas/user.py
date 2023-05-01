@@ -6,13 +6,13 @@ user schema
 
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, HttpUrl
 
 
 class UserSchema(BaseModel):
     id: Optional[int] = None
     name: Optional[str] = None
-    avatar: Optional[str] = None
+    avatar: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = False
 
