@@ -102,7 +102,7 @@ def _update_page(open_data, ok_counts, name, desc, project):
             return out_name, out_desc, out_modal, dash.no_update
         desc = (desc or "").strip()
 
-        # check project id
+        # check project_id
         if not project.get("id"):
             # create project
             with DbMaker() as db:
