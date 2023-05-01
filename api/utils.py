@@ -20,12 +20,12 @@ token_url = "/api/auth/access-token"
 oauth2 = OAuth2PasswordBearer(tokenUrl=token_url)
 
 
-def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)) -> User:
+def get_current_user(access_token: str = Depends(oauth2), db: Session = Depends(get_db)) -> User:
     """
-    check token, return user model or raise exception
+    check access_token, return user model or raise exception
     """
-    # check token and get user_id
-    user_id = get_token_sub(token)
+    # check access_token and get user_id
+    user_id = get_token_sub(access_token)
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
