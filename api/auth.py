@@ -16,6 +16,7 @@ from models import get_db
 from models.crud import crud_user
 from models.schemas import AccessToken, Result, Token
 from models.schemas import UserCreate, UserUpdate
+from utils import user_existed, user_not_existed
 
 router = APIRouter()
 
@@ -27,13 +28,8 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
     """
     email, pwd_plain = form_data.username, form_data.password
 
-    # check user by email
-    user_db = crud_user.get_by_email(db, email=email)
-    if not (user_db and user_db.status == 1):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_NOT_EXISTED,
-        )
+    # get user_db, or raise exception
+    user_db = user_existed(email=email, db=db)
 
     # check password
     if not security.check_pwd_hash(pwd_plain, user_db.pwd):
@@ -54,58 +50,46 @@ def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
     """
     email, pwd_plain = form_data.username, form_data.password
 
-    # check user by email
-    user_db = crud_user.get_by_email(db, email=email)
-    if user_db and user_db.status is not None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_EXISTED,
-        )
-    pwd_hash = security.get_pwd_hash(pwd_plain)
+    # user not existed, or raise exception
+    user_db = user_not_existed(email=email, db=db)
 
     # create user with email (unverified)
+    pwd_hash = security.get_pwd_hash(pwd_plain)
     user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=False)
-    crud_user.create(db, obj_schema=user_schema)
+    user_db = crud_user.create(db, obj_schema=user_schema)
 
     # return result
     return Result(msg="Sign up successfully")
 
 
-@router.post("/email-send", response_model=Token)
-def _email_send(email: str, db: Session = Depends(get_db)):
+@router.post("/send-code", response_model=Token)
+def _send_code(email: str, db: Session = Depends(get_db)):
     """
-    send a code to email, and return token_verify
+    send a code to email, and return token
     """
-    # check user by email
-    user_db = crud_user.get_by_email(db, email=email)
-    if not (user_db and user_db.status == 1):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_NOT_EXISTED,
-        )
+    # get user_db, or raise exception
+    user_db = user_existed(email=email, db=db)
 
-    # create token_verify with code, and return it
-    token_verify = utemail.send_email_code(email, _type="verify")
-    return Token(token=token_verify, token_type="verify")
+    # create token with code, and return it
+    token = utemail.send_email_verify(email, is_code=True, _type="verify")
+    return Token(token=token, token_type="verify")
 
 
 @router.get("/reset", response_model=Result)
-def _reset(code: str, pwd: str, token_verify: str, db: Session = Depends(get_db)):
+def _reset(code: str, pwd: str, token: str, db: Session = Depends(get_db)):
     """
-    reset password based on code and token_verify
+    reset password based on code and token
     """
-    # parse token_verify to get sub_dict
-    sub = security.get_token_sub(token_verify)
-    sub_dict = json.loads(sub or "{}")
+    # parse token to get sub_dict
+    sub_dict = json.loads(security.get_token_sub(token) or "{}")
 
-    # check token_verify
+    # check token: code and email
     if (not sub_dict.get("code")) or (not sub_dict.get("email")):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.CODE_INVALID,
         )
     code_token = str(sub_dict["code"])
-    email = sub_dict["email"]
 
     # check code
     code = (code or "").strip()
@@ -114,14 +98,10 @@ def _reset(code: str, pwd: str, token_verify: str, db: Session = Depends(get_db)
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.CODE_INVALID,
         )
+    email = sub_dict["email"]
 
-    # check user by email
-    user_db = crud_user.get_by_email(db, email=email)
-    if not (user_db and user_db.status == 1):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_NOT_EXISTED,
-        )
+    # get user_db, or raise exception
+    user_db = user_existed(email=email, db=db)
 
     # update user's password
     user_schema = UserUpdate(pwd=security.get_pwd_hash(pwd))

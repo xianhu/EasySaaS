@@ -4,12 +4,14 @@
 utils functions
 """
 
+from typing import Optional
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips
-from core.utils import security
+from core.utils.security import get_token_sub
 from models import User, get_db
 from models.crud import crud_user
 
@@ -23,7 +25,7 @@ def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)
     check token, return user model or raise exception
     """
     # check token and get user_id
-    user_id = security.get_token_sub(token)
+    user_id = get_token_sub(token)
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -39,4 +41,30 @@ def get_current_user(token: str = Depends(oauth2), db: Session = Depends(get_db)
         )
 
     # return
+    return user_db
+
+
+def user_existed(email: str, db: Session) -> Optional[User]:
+    """
+    check user existed by email, return User or None
+    """
+    user_db = crud_user.get_by_email(db, email=email)
+    if not (user_db and user_db.status == 1):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.USER_NOT_EXISTED,
+        )
+    return user_db
+
+
+def user_not_existed(email: str, db: Session) -> Optional[User]:
+    """
+    check user existed by email, return User or None
+    """
+    user_db = crud_user.get_by_email(db, email=email)
+    if user_db and user_db.status is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.USER_EXISTED,
+        )
     return user_db
