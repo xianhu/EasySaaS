@@ -20,9 +20,5 @@ class ProjectCreate(ProjectSchema):
     user_id: int  # required
 
 
-class ProjectUpdate(ProjectSchema):
-    class Config:
-        fields = {
-            "id": {"exclude": True},
-            "user_id": {"exclude": True},
-        }
+class ProjectUpdate(BaseModel):
+    desc: Optional[str] = None

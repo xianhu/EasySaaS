@@ -23,9 +23,11 @@ class UserCreate(UserSchema):
     email_verified: bool  # required
 
 
-class UserUpdate(UserSchema):
-    class Config:
-        fields = {
-            "id": {"exclude": True},
-            "email": {"exclude": True},
-        }
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[HttpUrl] = None
+
+
+class UserUpdatePri(UserUpdate):
+    pwd: Optional[str] = None
+    email_verified: Optional[bool] = None

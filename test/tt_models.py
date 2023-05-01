@@ -11,7 +11,7 @@ from models import DbMaker, engine
 from models.base import Model
 from models.crud import crud_project, crud_user
 from models.schemas import ProjectCreate, ProjectUpdate
-from models.schemas import UserCreate, UserUpdate
+from models.schemas import UserCreate, UserUpdate, UserUpdatePri
 
 # initialize database
 Model.metadata.drop_all(engine, checkfirst=True)
@@ -27,10 +27,15 @@ with DbMaker() as db:
     user_db = crud_user.create(db, obj_schema=user_schema)
     logging.warning("create user: %s", user_db.to_dict())
 
-    # update user
-    user_schema = UserUpdate(name="admin", email_verified=True, email="feji@qq.com")
+    # update user -- public
+    user_schema = UserUpdate(name="admin")
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
-    logging.warning("update user: %s", user_db.to_dict())
+    logging.warning("update user [public]: %s", user_db.to_dict())
+
+    # update user -- private
+    user_schema = UserUpdatePri(pwd=pwd_hash, email_verified=True)
+    user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+    logging.warning("update user [private]: %s", user_db.to_dict())
 
     # project info ======================================================================
     user_id = user_db.id
