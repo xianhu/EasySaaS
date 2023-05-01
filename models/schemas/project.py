@@ -21,4 +21,8 @@ class ProjectCreate(ProjectSchema):
 
 
 class ProjectUpdate(ProjectSchema):
-    pass
+    class Config:
+        fields = {
+            "id": {"exclude": True},
+            "user_id": {"exclude": True},
+        }

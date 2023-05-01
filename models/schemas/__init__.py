@@ -17,7 +17,7 @@ class Token(BaseModel):
 
 class AccessToken(BaseModel):
     access_token: str
-    token_type: str
+    token_type: str = "bearer"
 
 
 class Result(BaseModel):
