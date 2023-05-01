@@ -24,16 +24,15 @@ smtp_options = {
 }
 
 
-def send_email(to: Union[str, list], subject: str, html: str, render: Dict[str, Any]) -> int:
+def send_email(
+        mail_from: Union[str, tuple], mail_to: Union[str, tuple],
+        subject: str, html: str, render: Dict[str, Any],
+) -> int:
     """
     send email via smtp
     """
-    message = emails.Message(
-        mail_from=settings.MAIL_SENDER,
-        subject=JinjaTemplate(subject),
-        html=JinjaTemplate(html),
-    )
-    response = message.send(to=to, render=render, smtp=smtp_options)
+    message = emails.Message(mail_from=mail_from, subject=JinjaTemplate(subject), html=JinjaTemplate(html))
+    response = message.send(to=mail_to, render=render, smtp=smtp_options)
     return response.status_code  # 250
 
 
@@ -59,7 +58,6 @@ def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Op
     render = dict(app_name=settings.APP_NAME, code=code, link=link)
 
     # send email and check status
-    status = send_email(email, subject=mail_subject, html=mail_html, render=render)
-    if status != 250:
-        return None
-    return token
+    mail_from = (settings.APP_NAME, settings.MAIL_USERNAME)
+    status = send_email(mail_from, email, subject=mail_subject, html=mail_html, render=render)
+    return token if status == 250 else None
