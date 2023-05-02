@@ -55,9 +55,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def update(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
         obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
-        for field in obj_schema:
-            value = obj_schema[field]
-            setattr(obj_db, field, value)
+        [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
         db.merge(obj_db)
         db.commit()
         db.refresh(obj_db)
