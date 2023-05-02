@@ -55,8 +55,8 @@ def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Op
     render = dict(app_name=settings.APP_NAME, code=code, link=link)
 
     # send email and check status
-    mail_from = (settings.APP_NAME, settings.MAIL_USERNAME)
-    status = send_email(mail_from, email, subject=mail_subject, html=mail_html, render=render)
+    _from = (settings.APP_NAME, settings.MAIL_USERNAME)
+    status = send_email(_from, email, subject=mail_subject, html=mail_html, render=render)
 
     # return token or None
     return token if status == 250 else None
