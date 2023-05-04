@@ -46,7 +46,7 @@ def get_current_user(access_token: str = Depends(oauth2), db: Session = Depends(
 
 def user_existed(email: str, db: Session) -> Optional[User]:
     """
-    check user existed by email, return User or None
+    check user existed by email, return user model or raise exception
     """
     user_db = crud_user.get_by_email(db, email=email)
     if not (user_db and user_db.status == 1):
@@ -59,7 +59,7 @@ def user_existed(email: str, db: Session) -> Optional[User]:
 
 def user_not_existed(email: str, db: Session) -> Optional[User]:
     """
-    check user existed by email, return User or None
+    check user existed by email, return user model or raise exception
     """
     user_db = crud_user.get_by_email(db, email=email)
     if user_db and user_db.status is not None:
