@@ -9,7 +9,6 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips
@@ -55,9 +54,6 @@ def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
 
     # user not existed, or raise exception
     user_not_existed(email=email, db=db)
-
-    # email and pwd_hash
-    email = EmailStr(email)
     pwd_hash = get_pwd_hash(pwd_plain)
 
     # create user with email (unverified)

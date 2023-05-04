@@ -6,8 +6,6 @@ test models
 
 import logging
 
-from pydantic import EmailStr
-
 from core.utils import security
 from models import DbMaker, engine
 from models.base import Model
@@ -21,7 +19,7 @@ Model.metadata.create_all(engine, checkfirst=True)
 
 with DbMaker() as db:
     # user info =========================================================================
-    email = EmailStr("admin@easysaas.com")
+    email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")
 
     # create user
