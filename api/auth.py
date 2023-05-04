@@ -54,9 +54,9 @@ def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
 
     # user not existed, or raise exception
     user_not_existed(email=email, db=db)
+    pwd_hash = get_pwd_hash(pwd_plain)
 
     # create user with email (unverified)
-    pwd_hash = get_pwd_hash(pwd_plain)
     user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=False)
     user_db = crud_user.create(db, obj_schema=user_schema)
     logging.warning("create user: %s", user_db.to_dict())
@@ -77,8 +77,8 @@ def _send_code(email: str, db: Session = Depends(get_db)):
     token = send_email_verify(email, is_code=True)
     logging.warning("send code: %s - %s", email, token)
 
-    # return token
-    return Token(token=token, token_type="verify_code")
+    # return token: code or link
+    return Token(token=token, token_type="code")
 
 
 @router.post("/reset", response_model=Result)
@@ -109,7 +109,7 @@ def _reset(code: str, pwd: str, token: str, db: Session = Depends(get_db)):
     # get user, or raise exception
     user_db = user_existed(email=email, db=db)
 
-    # update user's password
+    # update user's password with UserUpdatePri
     user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd))
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("reset password: %s", user_db.to_dict())

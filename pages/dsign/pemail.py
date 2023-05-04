@@ -5,6 +5,7 @@ email[signup/reset] page
 """
 
 import json
+import logging
 
 import dash
 import feffery_antd_components as fac
@@ -215,12 +216,14 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
         # create user with email (verified)
         if pathname == PATH_SIGNUP and (not user_db):
             user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
-            crud_user.create(db, obj_schema=user_schema)
+            user_db = crud_user.create(db, obj_schema=user_schema)
+            logging.warning("create user: %s", user_db.to_dict())
 
-        # update user's password
+        # update user's password with UserUpdatePri
         if pathname == PATH_RESET and user_db:
             user_schema = UserUpdatePri(pwd=pwd_hash)
-            crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+            user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+            logging.warning("reset password: %s", user_db.to_dict())
 
     # go next_path: login
     out_others["executejs_string"] = FMT_EXECUTEJS_HREF.format(href=PATH_LOGIN)

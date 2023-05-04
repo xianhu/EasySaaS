@@ -4,6 +4,7 @@
 models module
 """
 
+import logging
 from typing import Generator
 
 import sqlalchemy.orm
@@ -25,8 +26,10 @@ def get_db() -> Generator:
     try:
         db = SessionLocal()
         yield db
-    finally:
-        db.close()
+    except Exception as excep:
+        logging.error("get_db: %s", excep)
+        db = None
+    return db.close() if db else None
 
 
 class DbMaker(object):
@@ -35,9 +38,13 @@ class DbMaker(object):
     """
 
     def __enter__(self) -> Session:
-        self.db = SessionLocal()
+        try:
+            self.db = SessionLocal()
+        except Exception as excep:
+            logging.error("DbMaker: %s", excep)
+            self.db = None
         return self.db
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.db.close()
-        return
+        self.db.close() if self.db else None
+        return None

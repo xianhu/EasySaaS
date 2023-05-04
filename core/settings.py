@@ -9,6 +9,7 @@ import secrets
 
 from pydantic import BaseSettings
 
+# prefix
 ENV_PRE = "ES"
 
 
@@ -18,17 +19,17 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
     SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
-    # settings -- base
+    # settings from environment -- base
     APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME")
     APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN")
 
-    # settings from environment variables -- email
+    # settings from environment -- email
     MAIL_SERVER: str = os.getenv(f"{ENV_PRE}_MAIL_SERVER")
     MAIL_PORT: str = os.getenv(f"{ENV_PRE}_MAIL_PORT")
     MAIL_USERNAME: str = os.getenv(f"{ENV_PRE}_MAIL_USERNAME")
     MAIL_PASSWORD: str = os.getenv(f"{ENV_PRE}_MAIL_PASSWORD")
 
-    # settings from environment variables -- database
+    # settings from environment -- database
     REDIS_URI: str = os.getenv(f"{ENV_PRE}_REDIS_URI")
     DATABASE_URI: str = os.getenv(f"{ENV_PRE}_DATABASE_URI")
 
@@ -54,9 +55,9 @@ class ErrorTips(BaseSettings):
 
     # error tips -- email
     EMAIL_INVALID: str = "Format of email is invalid"
+    EMAIL_SEND_FAILED: str = "Email send failed"
     EMAIL_EXISTED: str = "This email existed in system"
     EMAIL_NOT_EXISTED: str = "This email not existed in system"
-    EMAIL_SEND_FAILED: str = "Email send failed"
 
     # error tips -- user
     USER_EXISTED: str = "This user existed in system"
