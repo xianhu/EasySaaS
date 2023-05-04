@@ -219,7 +219,7 @@ def _button_click(n_clicks, code, pwd1, pwd2, pathname):
             user_db = crud_user.create(db, obj_schema=user_schema)
             logging.warning("create user: %s", user_db.to_dict())
 
-        # update user's password
+        # update user's password with UserUpdatePri
         if pathname == PATH_RESET and user_db:
             user_schema = UserUpdatePri(pwd=pwd_hash)
             user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
