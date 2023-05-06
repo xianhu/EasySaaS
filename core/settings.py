@@ -17,11 +17,11 @@ class Settings(BaseSettings):
     # settings -- security
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
-    SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
     # settings from environment -- base
-    APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME")
-    APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN")
+    APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", "EasySaaS")
+    APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN", "http://localhost:8000")
+    SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
     # settings from environment -- email
     MAIL_SERVER: str = os.getenv(f"{ENV_PRE}_MAIL_SERVER")

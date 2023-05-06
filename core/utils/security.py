@@ -41,7 +41,7 @@ def get_token_sub(token: str) -> Optional[str]:
     except jwt.JWTError:
         payload = None
 
-    # return
+    # return sub or None
     return payload["sub"] if payload else None
 
 
