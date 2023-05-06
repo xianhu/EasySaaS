@@ -52,9 +52,11 @@ with DbMaker() as db:
     logging.warning("update project: %s", project_db.to_dict())
 
     # test relationship =================================================================
-    logging.warning("user -> projects: %s", user_db.projects)
-    logging.warning("project -> user: %s", project_db.user)
+    logging.warning("user -> projects: %s", user_db.projects[0].to_dict())
+    logging.warning("project -> user: %s", project_db.user.to_dict())
 
-    # test get_multi
+    # test get_multi ====================================================================
     user_db_list = crud_user.get_multi(db, offset=0, limit=100)
     project_db_list = crud_project.get_multi(db, offset=0, limit=100)
+    logging.warning("user_db_list: %s", user_db_list)
+    logging.warning("project_db_list: %s", project_db_list)

@@ -27,7 +27,7 @@ router = APIRouter()
 @router.post("/access-token", response_model=AccessToken)
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
-    log in to get access token
+    get access token by email and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
@@ -41,14 +41,18 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
             detail=error_tips.PWD_INCORRECT,
         )
 
+    # create access_token
+    access_token = create_token(user_db.id)
+    logging.warning("create access_token: %s", access_token)
+
     # return access_token
-    return AccessToken(access_token=create_token(user_db.id))
+    return AccessToken(access_token=access_token)
 
 
 @router.post("/signup", response_model=Result)
 def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
-    sign up to create a new user: email_verified = False
+    sign up by email and password. email_verified = False
     """
     email, pwd_plain = form_data.username, form_data.password
 
@@ -82,7 +86,7 @@ def _send_code(email: str, db: Session = Depends(get_db)):
 
 
 @router.post("/reset", response_model=Result)
-def _reset(code: str, pwd: str, token: str, db: Session = Depends(get_db)):
+def _reset(code: str, pwd_plain: str, token: str, db: Session = Depends(get_db)):
     """
     reset password based on code and token
     """
@@ -108,9 +112,10 @@ def _reset(code: str, pwd: str, token: str, db: Session = Depends(get_db)):
 
     # get user, or raise exception
     user_db = user_existed(email=email, db=db)
+    pwd_hash = get_pwd_hash(pwd_plain)
 
-    # update user's password with UserUpdatePri
-    user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd))
+    # update user's pwd with UserUpdatePri
+    user_schema = UserUpdatePri(pwd=pwd_hash)
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("reset password: %s", user_db.to_dict())
 

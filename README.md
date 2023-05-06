@@ -16,12 +16,14 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 vim .bash_profile / .zshrc
-# export {PRE}_APP_DOMAIN=http://127.0.0.1:8000
+# export {PRE}_APP_NAME=EasySaaS
+# export {PRE}_APP_DOMAIN=http://localhost:8000
+# export {PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
 # export {PRE}_MAIL_SERVER=smtp.exmail.xx.com
 # export {PRE}_MAIL_PORT=465
 # export {PRE}_MAIL_USERNAME=noreply@easysaas.com
-# export {PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxx
+# export {PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxxx
 
 # export {PRE}_REDIS_URI=redis://:password@host:port
 # export {PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
@@ -32,10 +34,10 @@ source .bash_profile / .zshrc
 ### Install venv And requirements.txt
 
 ```
-# Python3.8 required
-cd {DIR} && python3.8 -m venv .venv
+# Python3.10+ required
+cd {DIR} && python3.10 -m venv .venv
 source .venv/bin/activate / deactivate
-pip3 install -r requirements.txt
+pip3.10 install -r requirements.txt
 ```
 
 ### Run Application With uwsgi / gunicorn / uvicorn

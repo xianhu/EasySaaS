@@ -5,6 +5,7 @@ utils of email
 """
 
 import json
+import logging
 import random
 from typing import Any, Dict, Optional, Union
 
@@ -28,9 +29,13 @@ def send_email(_from: Union[str, tuple], _to: Union[str, tuple], subject: str, h
     """
     send email via smtp
     """
-    message = emails.Message(mail_from=_from, subject=JinjaTemplate(subject), html=JinjaTemplate(html))
-    response = message.send(to=_to, render=render, smtp=smtp_options)
-    return response.status_code  # 250
+    try:
+        message = emails.Message(mail_from=_from, subject=JinjaTemplate(subject), html=JinjaTemplate(html))
+        response = message.send(to=_to, render=render, smtp=smtp_options)
+        return response.status_code  # 250
+    except Exception as excep:
+        logging.error("send email error: %s", excep)
+        return 0
 
 
 def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Optional[str]:
