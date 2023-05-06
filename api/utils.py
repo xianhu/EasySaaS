@@ -4,8 +4,6 @@
 utils functions
 """
 
-from typing import Optional
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -44,9 +42,9 @@ def get_current_user(access_token: str = Depends(oauth2), db: Session = Depends(
     return user_db
 
 
-def user_existed(email: str, db: Session) -> Optional[User]:
+def user_existed(email: str, db: Session) -> User:
     """
-    check user existed by email, return user model or raise exception
+    check if user existed by email, raise exception or return user model
     """
     user_db = crud_user.get_by_email(db, email=email)
     if not (user_db and user_db.status == 1):
@@ -57,9 +55,9 @@ def user_existed(email: str, db: Session) -> Optional[User]:
     return user_db
 
 
-def user_not_existed(email: str, db: Session) -> Optional[User]:
+def user_not_existed(email: str, db: Session) -> None:
     """
-    check user existed by email, return user model or raise exception
+    check if user not existed by email, raise exception or return None
     """
     user_db = crud_user.get_by_email(db, email=email)
     if user_db and user_db.status is not None:
@@ -67,4 +65,4 @@ def user_not_existed(email: str, db: Session) -> Optional[User]:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.USER_EXISTED,
         )
-    return user_db
+    return None
