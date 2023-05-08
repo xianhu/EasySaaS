@@ -41,6 +41,21 @@ body {
 
 /* ----------------------------------------------------- */
 
+._dash-loading {
+    color: transparent;
+    position: fixed;
+    top: 50vh;
+    left: 50vw;
+    width: calc(8 * 40px);
+    height: calc(6 * 40px);
+    transform: translate(-50%, -50%);
+    background-image: url("loading.gif");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+/* ----------------------------------------------------- */
+
 .bg-main {
     background-color: #f0f2f5 !important;
 }
