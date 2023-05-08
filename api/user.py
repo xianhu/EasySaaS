@@ -12,6 +12,7 @@ from models.crud import crud_user
 from models.schemas import UserSchema, UserUpdate
 from .utils import get_current_user
 
+# define router
 router = APIRouter()
 
 
