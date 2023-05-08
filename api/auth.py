@@ -21,6 +21,7 @@ from models.schemas import AccessToken, Result, Token
 from models.schemas import UserCreate, UserUpdatePri
 from .utils import user_existed, user_not_existed
 
+# define router
 router = APIRouter()
 
 
@@ -33,6 +34,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
 
     # get user, or raise exception
     user_db = user_existed(email=email, db=db)
+    logging.warning("get user: %s", user_db.to_dict())
 
     # check password
     if not check_pwd_hash(pwd_plain, user_db.pwd):
@@ -76,6 +78,7 @@ def _send_code(email: str, db: Session = Depends(get_db)):
     """
     # get user, or raise exception
     user_db = user_existed(email=email, db=db)
+    logging.warning("get user: %s", user_db.to_dict())
 
     # create token with code
     token = send_email_verify(email, is_code=True)
@@ -112,10 +115,10 @@ def _reset(code: str, pwd_plain: str, token: str, db: Session = Depends(get_db))
 
     # get user, or raise exception
     user_db = user_existed(email=email, db=db)
-    pwd_hash = get_pwd_hash(pwd_plain)
+    logging.warning("get user: %s", user_db.to_dict())
 
     # update user's pwd with UserUpdatePri
-    user_schema = UserUpdatePri(pwd=pwd_hash)
+    user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
     user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
     logging.warning("reset password: %s", user_db.to_dict())
 

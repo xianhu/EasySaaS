@@ -22,3 +22,7 @@ class ProjectCreate(ProjectSchema):
 
 class ProjectUpdate(BaseModel):
     desc: Optional[str] = None
+
+
+class ProjectUpdatePri(ProjectUpdate):
+    pass

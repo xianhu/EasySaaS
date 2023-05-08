@@ -5,11 +5,20 @@
 /* ----------------------------------------------------- */
 
 :root {
-    --color-primary: #E5534D;
-    --color-secondary: #B0B0B0;
+
 }
 
 /* ----------------------------------------------------- */
+
+@font-face {
+    font-family: "NotoSans";
+    src: url("fonts/NotoSans.ttf");
+}
+
+@font-face {
+    font-family: "NotoSans-Bold";
+    src: url("fonts/NotoSans-Bold.ttf");
+}
 
 @font-face {
     font-family: "Raleway";
@@ -22,13 +31,8 @@
 }
 
 @font-face {
-    font-family: "NotoSans";
-    src: url("fonts/NotoSans.ttf");
-}
-
-@font-face {
-    font-family: "NotoSans-Bold";
-    src: url("fonts/NotoSans-Bold.ttf");
+    font-family: "Raleway-ExtraBold";
+    src: url("fonts/Raleway-ExtraBold.ttf");
 }
 
 /* ----------------------------------------------------- */
@@ -58,14 +62,6 @@ body {
 
 .bg-main {
     background-color: #f0f2f5 !important;
-}
-
-.color-primary {
-    color: var(--color-primary) !important;
-}
-
-.color-secondary {
-    color: var(--color-secondary) !important;
 }
 
 /* ----------------------------------------------------- */

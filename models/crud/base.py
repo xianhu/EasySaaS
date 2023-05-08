@@ -15,9 +15,10 @@ from ..base import Model
 ModelType = TypeVar("ModelType", bound=Model)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+UpdatePriSchemaType = TypeVar("UpdatePriSchemaType", bound=BaseModel)
 
 
-class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, UpdatePriSchemaType]):
 
     def __init__(self, model: Type[ModelType]):
         self.model = model
@@ -56,6 +57,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_db
 
     def update(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
+        obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
+        [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
+        db.merge(obj_db)
+        db.commit()
+        db.refresh(obj_db)
+        return obj_db
+
+    def update_pri(self, db: Session, obj_db: ModelType, obj_schema: UpdatePriSchemaType) -> ModelType:
         obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
         [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
         db.merge(obj_db)

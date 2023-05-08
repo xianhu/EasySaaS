@@ -55,8 +55,8 @@ def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Op
     else:
         mail_html = "Verify link: <a href='{{ link }}'>click</a>"
 
-    # define render
-    link = f"{settings.APP_DOMAIN}/token={token}"
+    # define link and render
+    link = f"{settings.APP_DOMAIN}?token={token}"
     render = dict(app_name=settings.APP_NAME, code=code, link=link)
 
     # send email and check status
