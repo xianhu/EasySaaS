@@ -10,10 +10,10 @@ from sqlalchemy.orm import Session
 
 from .base import CRUDBase
 from .. import Project  # Model
-from ..schemas import ProjectCreate, ProjectUpdate
+from ..schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
 
 
-class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
+class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate, ProjectUpdatePri]):
 
     def get_multi_by_user(self, db: Session, user_id: int, offset: int = 0, limit: int = 100) -> List[Project]:
         obj_db_list = db.query(Project).filter(Project.user_id == user_id).offset(offset).limit(limit).all()

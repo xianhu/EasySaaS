@@ -10,10 +10,10 @@ from sqlalchemy.orm import Session
 
 from .base import CRUDBase
 from .. import User  # Model
-from ..schemas import UserCreate, UserUpdate
+from ..schemas import UserCreate, UserUpdate, UserUpdatePri
 
 
-class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
+class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserUpdatePri]):
 
     def get_by_email(self, db: Session, email: str) -> Optional[User]:
         obj_db = db.query(User).filter(User.email == email).first()

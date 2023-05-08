@@ -10,7 +10,7 @@ from core.utils import security
 from models import DbMaker, engine
 from models.base import Model
 from models.crud import crud_project, crud_user
-from models.schemas import ProjectCreate, ProjectUpdate
+from models.schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
 from models.schemas import UserCreate, UserUpdate, UserUpdatePri
 
 # initialize database
@@ -46,10 +46,15 @@ with DbMaker() as db:
     project_db = crud_project.create(db, obj_schema=project_schema)
     logging.warning("create project: %s", project_db.to_dict())
 
-    # update project
+    # update project -- public
     project_schema = ProjectUpdate(desc="demo project description")
     project_db = crud_project.update(db, obj_db=project_db, obj_schema=project_schema)
-    logging.warning("update project: %s", project_db.to_dict())
+    logging.warning("update project [public]: %s", project_db.to_dict())
+
+    # update project -- private
+    project_schema = ProjectUpdatePri(desc="demo project description - private")
+    project_db = crud_project.update(db, obj_db=project_db, obj_schema=project_schema)
+    logging.warning("update project [private]: %s", project_db.to_dict())
 
     # test relationship =================================================================
     logging.warning("user -> projects: %s", user_db.projects[0].to_dict())
