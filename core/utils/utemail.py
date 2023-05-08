@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional, Union
 import emails
 from emails.template import JinjaTemplate
 
-from . import security
+from .security import create_sub_token
 from ..settings import settings
 
 # email config
@@ -46,7 +46,7 @@ def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Op
     # define code and token
     code = random.randint(1001, 9999) if is_code else 0
     sub = json.dumps(dict(email=email, code=code, type=_type))
-    token = security.create_token(sub, expires_duration=60 * 10)
+    token = create_sub_token(sub, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
 
     # define email content
     mail_subject = "Verify of {{ app_name }}"

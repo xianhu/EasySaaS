@@ -47,6 +47,9 @@ app = dash.Dash(
     }, {
         "name": "viewport",
         "content": "width=device-width, initial-scale=1",
+    }, {
+        "name": "keywords",
+        "content": "saas, easy, python, dash, flask, echarts",
     }],
 )
 

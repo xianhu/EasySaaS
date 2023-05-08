@@ -31,18 +31,20 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_db_list = db.query(self.model).offset(offset).limit(limit).all()
         return obj_db_list
 
-    def delete(self, db: Session, _id: Union[int, str]) -> ModelType:
+    def delete(self, db: Session, _id: Union[int, str]) -> Optional[ModelType]:
         obj_db = db.query(self.model).get(_id)
-        obj_db.status = 0
-        db.commit()
-        db.refresh(obj_db)
+        if obj_db:
+            obj_db.status = 0
+            db.commit()
+            db.refresh(obj_db)
         return obj_db
 
-    def recover(self, db: Session, _id: Union[int, str]) -> ModelType:
+    def recover(self, db: Session, _id: Union[int, str]) -> Optional[ModelType]:
         obj_db = db.query(self.model).get(_id)
-        obj_db.status = 1
-        db.commit()
-        db.refresh(obj_db)
+        if obj_db:
+            obj_db.status = 1
+            db.commit()
+            db.refresh(obj_db)
         return obj_db
 
     def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:

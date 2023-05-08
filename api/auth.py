@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from core.settings import error_tips
 from core.utils.security import check_pwd_hash, get_pwd_hash
-from core.utils.security import create_token, get_token_sub
+from core.utils.security import create_sub_token, get_token_sub
 from core.utils.utemail import send_email_verify
 from models import get_db
 from models.crud import crud_user
@@ -42,7 +42,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
         )
 
     # create access_token
-    access_token = create_token(user_db.id)
+    access_token = create_sub_token(user_db.id)
     logging.warning("create access_token: %s", access_token)
 
     # return access_token
@@ -75,7 +75,7 @@ def _send_code(email: str, db: Session = Depends(get_db)):
     send a code to email, and return token
     """
     # get user, or raise exception
-    user_existed(email=email, db=db)
+    user_db = user_existed(email=email, db=db)
 
     # create token with code
     token = send_email_verify(email, is_code=True)

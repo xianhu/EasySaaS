@@ -17,7 +17,7 @@ ALGORITHM = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 
-def create_token(sub: Union[str, int], expires_duration: int = None) -> str:
+def create_sub_token(sub: Union[str, int], expires_duration: int = None) -> str:
     """
     create token based on sub and expires_duration
     """
