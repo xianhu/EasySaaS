@@ -29,8 +29,8 @@ def layout(pathname, search, **kwargs):
     """
     return html.Div(children=[
         # upload with flow.js
-        html.Div(className="d-none", id=f"id-{TAG}-div-flow"),
-        fac.AntdButton("Upload File", id=f"id-{TAG}-upload-flow"),
+        html.Div(className="d-none", id=f"id-{TAG}-div-flow"),  # add input tag to this div
+        fac.AntdButton("Upload File", id=f"id-{TAG}-upload-flow"),  # button to trigger upload
         fuc.FefferySessionStorage(id=f"id-{TAG}-storage-flow"),
 
         # params to trigger clientside callback
@@ -68,7 +68,6 @@ def _update_page(data_storage):
 @server.route("/upload", methods=["POST"])
 def _route_upload():
     # verify token if needed
-
     # define uuid of session
     if not flask_session.get("uuid"):
         flask_session["uuid"] = str(uuid.uuid4())

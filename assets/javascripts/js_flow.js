@@ -70,9 +70,9 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
             // get data from params
             let id_div = params['id_div'];
             let id_button = params['id_button'];
-            let id_input = 'id-input-file';
 
             // add input to div
+            let id_input = 'id-input-file';
             let div = document.getElementById(id_div);
             div.innerHTML = "<input id='id-input-file' type='file' name='file' />";
 
@@ -89,7 +89,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
 
                 // add file to flow and upload
                 flow.addFile(event.target.files[0]);
-                flow.upload();  // or triggered by button click
+                flow.upload();  // or triggered by event
 
                 // reset input value
                 event.target.value = '';

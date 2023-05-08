@@ -30,9 +30,10 @@ def layout(pathname, search, **kwargs):
     )
 
     # return result
+    style = {"height": "500px"}
     return html.Div(children=[
         # define components
-        html.Div(id=f"id-{TAG}-div-chart", style={"height": "500px"}),  # div to show chart
+        html.Div(id=f"id-{TAG}-div-chart", style=style),  # div to show chart
         fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
 
         # params to trigger clientside callback
