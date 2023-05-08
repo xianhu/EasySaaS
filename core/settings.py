@@ -14,9 +14,10 @@ ENV_PRE = "ES"
 
 
 class Settings(BaseSettings):
-    # settings -- security
+    # settings -- session or token
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
+    NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
 
     # settings from environment -- base
     APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", "EasySaaS")
