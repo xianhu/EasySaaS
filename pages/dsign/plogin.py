@@ -110,8 +110,8 @@ def _button_click(n_clicks, email, pwd, cpc, image, next_path):
     with DbMaker() as db:
         user_db = crud_user.get_by_email(db, email=email)
 
-    # check user -- not existed
-    if not (user_db and user_db.status == 1):
+    # check user
+    if not user_db:
         out_email["status"] = "error"
         out_email["help"] = error_tips.EMAIL_NOT_EXISTED
         out_others["cpc_refresh"] = True if cpc else False

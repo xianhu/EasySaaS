@@ -39,11 +39,9 @@ def layout(pathname, search, **kwargs):
         project_db = crud_project.get(db, _id=project_id)
     user_title = user_db.email.split("@")[0]
 
-    # check if project is exist or inactivated
-    if (not project_db) or (project_db.status != 1):
+    # check project
+    if (not project_db) or (project_db.user_id != user_db.id):
         return palert.layout_404(pathname, search)
-    if project_db.user_id != user_db.id:
-        return palert.layout_403(pathname, search)
     store_data = dict(project_id=project_db.id, project_name=project_db.name)
 
     # define components

@@ -96,9 +96,6 @@ def _update_page(data_addedit, data_delete, user_id):
     # table data
     data_table = []
     for project in projects_list:
-        if project.status != 1:
-            continue
-
         # operation
         operation = [
             {"content": "Analysis", "type": "link", "href": f"{PATH_ANALYSIS}?id={project.id}"},

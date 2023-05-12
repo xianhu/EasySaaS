@@ -127,14 +127,14 @@ def _button_click(n_clicks, email, cpc, image, pathname):
         user_db = crud_user.get_by_email(db, email=email)
 
     # check user -- existed
-    if pathname == PATH_SIGNUP and (user_db and user_db.status is not None):
+    if pathname == PATH_SIGNUP and user_db:
         out_email["status"] = "error"
         out_email["help"] = error_tips.EMAIL_EXISTED
         out_others["cpc_refresh"] = True if cpc else False
         return out_email, out_cpc, out_others
 
     # check user -- not existed
-    if pathname == PATH_RESET and (not (user_db and user_db.status == 1)):
+    if pathname == PATH_RESET and (not user_db):
         out_email["status"] = "error"
         out_email["help"] = error_tips.EMAIL_NOT_EXISTED
         out_others["cpc_refresh"] = True if cpc else False
