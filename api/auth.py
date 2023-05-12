@@ -83,72 +83,69 @@ def _send_code(email: str, _type: TypeName, db: Session = Depends(get_db)):
     return Token(token=token, token_type="code")
 
 
-@router.post("/signup", response_model=Result)
-def _signup(
+@router.post("/verify-code-xxx", response_model=Result)
+def _verify_code_xxx(
         form_data: OAuth2PasswordRequestForm = Depends(),
         code: int = Query(..., ge=100000, le=999999),
         token: str = Query(..., min_length=10),
         db: Session = Depends(get_db),
 ):
     """
-    sign up by email and password. email_verified = True
+    verify code and token, then create user or update password
     """
     email, pwd_plain = form_data.username, form_data.password
-
-    # check token: code and email
     sub_dict = json.loads(get_token_sub(token) or "{}")
-    if (not sub_dict.get("code")) or (not sub_dict.get("email")):
+
+    # check token: _type
+    if not sub_dict.get("_type"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.TOKEN_INVALID,
         )
 
-    # user not existed, or raise exception
-    user_not_existed(email=email, db=db)
+    # check token: email
+    if (not sub_dict.get("email")) or (sub_dict["email"] != email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.TOKEN_INVALID,
+        )
+
+    # check token: code
+    if (not sub_dict.get("code")) or (sub_dict["code"] != code):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.TOKEN_INVALID,
+        )
     pwd_hash = get_pwd_hash(pwd_plain)
 
-    # create user with email (unverified)
-    user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=False)
-    user_db = crud_user.create(db, obj_schema=user_schema)
-    logging.warning("create user: %s", user_db.to_dict())
+    # check token: _type == signup
+    if sub_dict["_type"] == TypeName.signup:
+        # user not existed, or raise exception
+        user_not_existed(email=email, db=db)
 
-    # return result
-    return Result(msg="Sign up successfully")
+        # create user with email (verified)
+        user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
+        user_db = crud_user.create(db, obj_schema=user_schema)
+        logging.warning("create user: %s", user_db.to_dict())
 
+        # return result
+        return Result(msg="Sign up successfully")
 
-@router.post("/reset", response_model=Result)
-def _reset(code: str, pwd_plain: str, token: str, db: Session = Depends(get_db)):
-    """
-    reset password based on code and token
-    """
-    # parse token to get sub_dict
-    sub_dict = json.loads(get_token_sub(token) or "{}")
+    # check token: _type == reset
+    if sub_dict["_type"] == TypeName.reset:
+        # user existed, or raise exception
+        user_db = user_existed(email=email, db=db)
 
-    # check token: code and email
-    if (not sub_dict.get("code")) or (not sub_dict.get("email")):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.TOKEN_INVALID,
-        )
-    code_token = str(sub_dict["code"])
+        # update user's pwd with UserUpdatePri
+        user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
+        user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
+        logging.warning("reset password: %s", user_db.to_dict())
 
-    # check code
-    code = (code or "").strip()
-    if (not code) or (code != code_token):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.CODE_INVALID,
-        )
-    email = sub_dict["email"]
+        # return result
+        return Result(msg="Reset password successfully")
 
-    # get user, or raise exception
-    user_db = user_existed(email=email, db=db)
-    logging.warning("get user: %s", user_db.to_dict())
-
-    # update user's pwd with UserUpdatePri
-    user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
-    user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
-    logging.warning("reset password: %s", user_db.to_dict())
-
-    # return result
-    return Result(msg="Reset password successfully")
+    # raise exception
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=error_tips.TOKEN_INVALID,
+    )
