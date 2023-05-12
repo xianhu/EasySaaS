@@ -15,12 +15,10 @@ from flask import jsonify, request
 from flask import session as flask_session
 
 from app import server
+from core.settings import settings
 
 TAG_BASE = "analysis"
 TAG = "analysis-upload"
-
-# upload folder
-FOLDER_UPLOAD = "/tmp"
 
 
 def layout(pathname, search, **kwargs):
@@ -74,8 +72,9 @@ def _route_upload():
     str_uuid = flask_session.get("uuid")
 
     # get file_name and file_target
+    file_dir = settings.FOLDER_UPLOAD
     file_name = request.form.get("flowFilename")
-    file_target = os.path.join(FOLDER_UPLOAD, f"{str_uuid}_{file_name}")
+    file_target = os.path.join(file_dir, f"{str_uuid}_{file_name}")
 
     # get chunk_number
     chunk_number = int(request.form.get("flowChunkNumber", 1))

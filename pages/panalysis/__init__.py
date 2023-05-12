@@ -39,11 +39,9 @@ def layout(pathname, search, **kwargs):
         project_db = crud_project.get(db, _id=project_id)
     user_title = user_db.email.split("@")[0]
 
-    # check if project is exist or inactivated
-    if (not project_db) or (project_db.status != 1):
+    # check project -- exists and belongs to user
+    if (not project_db) or (project_db.user_id != user_db.id):
         return palert.layout_404(pathname, search)
-    if project_db.user_id != user_db.id:
-        return palert.layout_403(pathname, search)
     store_data = dict(project_id=project_db.id, project_name=project_db.name)
 
     # define components
@@ -90,13 +88,12 @@ def _update_page(current_key, store_data):
     # check triggered_id and current_key
     triggered_id = dash.ctx.triggered_id
     if not triggered_id:
-        triggered_id = f"id-{TAG}-menu"
+        # triggered_id = f"id-{TAG}-menu"
         current_key = ROUTER_MENU[0]["props"]["key"]
     out_others["current_key"] = current_key
 
     # define header of main
-    project_name = store_data["project_name"]
-    text_title = f"{current_key}-{project_name}"
+    text_title = f"{current_key}-{store_data['project_name']}"
     out_main["header"] = fac.AntdTitle(text_title, level=4, className="m-0")
 
     # define content of main

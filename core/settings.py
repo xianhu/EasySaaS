@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     REDIS_URI: str = os.getenv(f"{ENV_PRE}_REDIS_URI")
     DATABASE_URI: str = os.getenv(f"{ENV_PRE}_DATABASE_URI")
 
+    # settings -- others
+    FOLDER_UPLOAD = "/tmp"
+
     # Config
     class Config:
         case_sensitive = True
@@ -44,9 +47,9 @@ settings = Settings()
 
 class ErrorTips(BaseSettings):
     # error tips -- common
-    CAPTCHA_INCORRECT: str = "Captcha is incorrect"
-    TOKEN_INVALID: str = "Token is invalid or expired"
     CODE_INVALID: str = "Code is invalid or expired"
+    TOKEN_INVALID: str = "Token is invalid or expired"
+    CAPTCHA_INCORRECT: str = "Captcha is incorrect"
 
     # error tips -- password
     PWD_INCORRECT: str = "Password is incorrect"

@@ -30,12 +30,6 @@ flow.on('fileAdded', function (file) {
 // define flow events
 flow.on('fileProgress', function (file) {
     let percent = Math.floor(file.progress() * 100);
-    // sessionStorage.setItem(id_storage_flow, JSON.stringify({
-    //     status: 'fileProgress',
-    //     file_name: file.name,
-    //     file_size: file.size,
-    //     _timestamp: new Date().getTime(),
-    // }));
     console.log('file progress: ' + percent + '%');
 });
 

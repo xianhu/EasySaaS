@@ -65,3 +65,7 @@ with DbMaker() as db:
     project_db_list = crud_project.get_multi(db, offset=0, limit=100)
     logging.warning("user_db_list: %s", user_db_list)
     logging.warning("project_db_list: %s", project_db_list)
+
+    # test delete =======================================================================
+    project_db = crud_project.delete(db, _id=project_db.id)
+    logging.warning("delete project: %s", project_db.to_dict())
