@@ -47,9 +47,9 @@ settings = Settings()
 
 class ErrorTips(BaseSettings):
     # error tips -- common
-    CAPTCHA_INCORRECT: str = "Captcha is incorrect"
-    TOKEN_INVALID: str = "Token is invalid or expired"
     CODE_INVALID: str = "Code is invalid or expired"
+    TOKEN_INVALID: str = "Token is invalid or expired"
+    CAPTCHA_INCORRECT: str = "Captcha is incorrect"
 
     # error tips -- password
     PWD_INCORRECT: str = "Password is incorrect"
