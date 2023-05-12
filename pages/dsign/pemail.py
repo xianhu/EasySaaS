@@ -142,10 +142,15 @@ def _button_click(n_clicks, email, cpc, image, pathname):
 
     # create token with code, and send email
     token = send_email_verify(email, is_code=True)
-    flask_session["token"] = token if token else ""
+    if not token:
+        out_email["status"] = "error"
+        out_email["help"] = error_tips.EMAIL_SEND_FAIL
+        out_others["cpc_refresh"] = True if cpc else False
+        return out_email, out_cpc, out_others
+    flask_session["token"] = token
+    out_others["button_disabled"] = True
 
     # return result
-    out_others["button_disabled"] = True
     return out_email, out_cpc, out_others
 
 

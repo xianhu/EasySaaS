@@ -51,11 +51,37 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
     return AccessToken(access_token=access_token)
 
 
+@router.post("/send-code", response_model=Token)
+def _send_code(email: str, _type: str, db: Session = Depends(get_db)):
+    """
+    send a code to email, and return token
+    """
+    # get user, or raise exception
+    user_db = user_existed(email=email, db=db)
+    logging.warning("get user: %s", user_db.to_dict())
+
+    # create token with code
+    token = send_email_verify(email, is_code=True)
+    logging.warning("send code: %s - %s", email, token)
+
+    # check token
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.EMAIL_SEND_FAILED,
+        )
+
+    # return token with code or link
+    return Token(token=token, token_type="code")
+
+
 @router.post("/signup", response_model=Result)
 def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     sign up by email and password. email_verified = False
     """
+    client_id = form_data.client_id
+    client_secret = form_data.client_secret
     email, pwd_plain = form_data.username, form_data.password
 
     # user not existed, or raise exception
@@ -69,23 +95,6 @@ def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
 
     # return result
     return Result(msg="Sign up successfully")
-
-
-@router.post("/send-code", response_model=Token)
-def _send_code(email: str, db: Session = Depends(get_db)):
-    """
-    send a code to email, and return token
-    """
-    # get user, or raise exception
-    user_db = user_existed(email=email, db=db)
-    logging.warning("get user: %s", user_db.to_dict())
-
-    # create token with code
-    token = send_email_verify(email, is_code=True)
-    logging.warning("send code: %s - %s", email, token)
-
-    # return token: code or link
-    return Token(token=token, token_type="code")
 
 
 @router.post("/reset", response_model=Result)
