@@ -19,25 +19,24 @@ def layout(pathname, search, **kwargs):
     """
     layout of page
     """
-    # define params
-    params_chart = dict(
-        # id_xxx of chart
-        id_div=f"id-{TAG}-div-chart",  # div to show chart
-        id_storage=f"id-{TAG}-storage-chart",  # storage of chart click data
-        # data of chart
-        x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        y_data=[random.randint(50, 100) for _ in range(10)],
-    )
+    # define variables
+    id_div = f"id-{TAG}-div-chart"  # div to show chart
+    id_storage = f"id-{TAG}-storage-chart"  # storage of chart click data
 
     # return result
-    style = {"height": "500px"}
     return html.Div(children=[
         # define components
-        html.Div(id=f"id-{TAG}-div-chart", style=style),  # div to show chart
-        fuc.FefferySessionStorage(id=f"id-{TAG}-storage-chart"),  # storage of chart click data
+        html.Div(style={"height": "500px"}, id=id_div),
+        fuc.FefferySessionStorage(id=id_storage),
 
         # params to trigger clientside callback
-        dcc.Store(id=f"id-{TAG}-params-chart", data=params_chart),
+        dcc.Store(id=f"id-{TAG}-params-chart", data=dict(
+            id_div=id_div,
+            id_storage=id_storage,
+            # data of chart
+            x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y_data=[random.randint(50, 100) for _ in range(10)],
+        )),
 
         # message to show information
         html.Div(id=f"id-{TAG}-message-chart"),
