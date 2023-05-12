@@ -6,8 +6,9 @@ auth api
 
 import json
 import logging
+from enum import Enum
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -23,6 +24,12 @@ from .utils import user_existed, user_not_existed
 
 # define router
 router = APIRouter()
+
+
+# define name of type
+class TypeName(str, Enum):
+    signup = "signup"
+    reset = "reset"
 
 
 @router.post("/access-token", response_model=AccessToken)
@@ -52,37 +59,49 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: str, db: Session = Depends(get_db)):
+def _send_code(email: str, _type: TypeName, db: Session = Depends(get_db)):
     """
     send a code to email, and return token
     """
-    # get user, or raise exception
-    user_db = user_existed(email=email, db=db)
-    logging.warning("get user: %s", user_db.to_dict())
+    if _type == TypeName.signup:
+        # user not existed, or raise exception
+        user_not_existed(email=email, db=db)
+    elif _type == TypeName.reset:
+        # user existed, or raise exception
+        user_existed(email=email, db=db)
 
-    # create token with code
-    token = send_email_verify(email, is_code=True)
-    logging.warning("send code: %s - %s", email, token)
-
-    # check token
+    # create token with code and _type
+    token = send_email_verify(email, is_code=True, _type=_type)
     if not token:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.EMAIL_SEND_FAILED,
         )
+    logging.warning("send code: %s - %s - %s", email, _type, token)
 
     # return token with code or link
     return Token(token=token, token_type="code")
 
 
 @router.post("/signup", response_model=Result)
-def _signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def _signup(
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        code: int = Query(..., ge=100000, le=999999),
+        token: str = Query(..., min_length=10),
+        db: Session = Depends(get_db),
+):
     """
-    sign up by email and password. email_verified = False
+    sign up by email and password. email_verified = True
     """
-    client_id = form_data.client_id
-    client_secret = form_data.client_secret
     email, pwd_plain = form_data.username, form_data.password
+
+    # check token: code and email
+    sub_dict = json.loads(get_token_sub(token) or "{}")
+    if (not sub_dict.get("code")) or (not sub_dict.get("email")):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.TOKEN_INVALID,
+        )
 
     # user not existed, or raise exception
     user_not_existed(email=email, db=db)
