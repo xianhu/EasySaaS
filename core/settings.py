@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     REDIS_URI: str = os.getenv(f"{ENV_PRE}_REDIS_URI")
     DATABASE_URI: str = os.getenv(f"{ENV_PRE}_DATABASE_URI")
 
+    # settings -- others
+    FOLDER_UPLOAD = "/tmp"
+
     # Config
     class Config:
         case_sensitive = True
