@@ -40,11 +40,11 @@ def send_email(_from: Union[str, tuple], _to: Union[str, tuple], subject: str, h
 
 def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Optional[str]:
     """
-    send code or link to email: sub: {email, code, type}
+    send code or link to email, and return token with sub: {email, code, type}
     :return token or None if send failed
     """
     # define code and token
-    code = random.randint(1001, 9999) if is_code else 0
+    code = random.randint(100001, 999999) if is_code else 0
     sub = json.dumps(dict(email=email, code=code, type=_type))
     token = create_sub_token(sub, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
 
