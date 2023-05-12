@@ -39,7 +39,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
     """
     email, pwd_plain = form_data.username, form_data.password
 
-    # get user, or raise exception
+    # user existed, or raise exception
     user_db = user_existed(email=email, db=db)
     logging.warning("get user: %s", user_db.to_dict())
 
@@ -70,7 +70,7 @@ def _send_code(email: str, _type: TypeName, db: Session = Depends(get_db)):
         # user existed, or raise exception
         user_existed(email=email, db=db)
 
-    # create token with code and _type
+    # create token with code and type(!!!)
     token = send_email_verify(email, is_code=True, _type=_type)
     if not token:
         raise HTTPException(
@@ -94,14 +94,18 @@ def _verify_code_xxx(
     verify code and token, then create user or update password
     """
     email, pwd_plain = form_data.username, form_data.password
-    sub_dict = json.loads(get_token_sub(token) or "{}")
 
-    # check token: _type
-    if not sub_dict.get("_type"):
+    # get sub_dict from token
+    sub_dict = json.loads(get_token_sub(token) or "{}")
+    logging.warning("get sub_dict: %s - %s", sub_dict, code)
+
+    # check token: type
+    if not sub_dict.get("type"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.TOKEN_INVALID,
         )
+    _type = sub_dict["type"]
 
     # check token: email
     if (not sub_dict.get("email")) or (sub_dict["email"] != email):
@@ -114,12 +118,12 @@ def _verify_code_xxx(
     if (not sub_dict.get("code")) or (sub_dict["code"] != code):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.TOKEN_INVALID,
+            detail=error_tips.CODE_INVALID,
         )
     pwd_hash = get_pwd_hash(pwd_plain)
 
-    # check token: _type == signup
-    if sub_dict["_type"] == TypeName.signup:
+    # check token type: signup
+    if _type == TypeName.signup:
         # user not existed, or raise exception
         user_not_existed(email=email, db=db)
 
@@ -131,8 +135,8 @@ def _verify_code_xxx(
         # return result
         return Result(msg="Sign up successfully")
 
-    # check token: _type == reset
-    if sub_dict["_type"] == TypeName.reset:
+    # check token type: reset
+    if _type == TypeName.reset:
         # user existed, or raise exception
         user_db = user_existed(email=email, db=db)
 
