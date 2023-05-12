@@ -34,10 +34,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, UpdatePriS
 
     def delete(self, db: Session, _id: int) -> Optional[ModelType]:
         obj_db = db.query(self.model).get(_id)
-        if obj_db:
-            db.delete(obj_db)
-            db.commit()
-            # db.refresh(obj_db)
+        db.delete(obj_db)
+        db.commit()
+        # db.refresh(obj_db)
         return obj_db
 
     def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:
