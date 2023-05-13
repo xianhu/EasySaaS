@@ -33,14 +33,14 @@ class TypeName(str, Enum):
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
     get access token by email and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
     # user existed, or raise exception
-    user_model = user_existed(email=email)
+    user_model = user_existed(email=email, session=session)
     logging.warning("get user: %s", user_model.to_dict())
 
     # check password
@@ -50,7 +50,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends()):
             detail=error_tips.PWD_INCORRECT,
         )
 
-    # create access_token
+    # create access_token with user_id
     access_token = create_sub_token(user_model.id)
     logging.warning("create access_token: %s", access_token)
 
@@ -59,16 +59,16 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: TypeName):
+def _send_code(email: str, _type: TypeName, session: Session = Depends(get_session)):
     """
     send a code to email, and return token
     """
     if _type == TypeName.signup:
         # user not existed, or raise exception
-        user_not_existed(email=email)
+        user_not_existed(email=email, session=session)
     elif _type == TypeName.reset:
         # user existed, or raise exception
-        user_existed(email=email)
+        user_existed(email=email, session=session)
 
     # create token with code and type(!!!)
     token = send_email_verify(email, is_code=True, _type=_type)
@@ -88,7 +88,7 @@ def _verify_code_xxx(
         form_data: OAuth2PasswordRequestForm = Depends(),
         code: int = Query(..., ge=100000, le=999999),
         token: str = Query(..., min_length=10),
-        db: Session = Depends(get_session),
+        session: Session = Depends(get_session),
 ):
     """
     verify code and token, then create user or update password
@@ -125,11 +125,11 @@ def _verify_code_xxx(
     # check token type: signup
     if _type == TypeName.signup:
         # user not existed, or raise exception
-        user_not_existed(email=email)
+        user_not_existed(email=email, session=session)
 
         # create user with email (verified)
         user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
-        user_model = crud_user.create(db, obj_schema=user_schema)
+        user_model = crud_user.create(session, obj_schema=user_schema)
         logging.warning("create user: %s", user_model.to_dict())
 
         # return result
@@ -138,11 +138,11 @@ def _verify_code_xxx(
     # check token type: reset
     if _type == TypeName.reset:
         # user existed, or raise exception
-        user_model = user_existed(email=email)
+        user_model = user_existed(email=email, session=session)
 
         # update user's pwd with UserUpdatePri
         user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
-        user_model = crud_user.update(db, obj_model=user_model, obj_schema=user_schema)
+        user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
         logging.warning("reset password: %s", user_model.to_dict())
 
         # return result
