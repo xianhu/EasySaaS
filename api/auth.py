@@ -33,25 +33,25 @@ class TypeName(str, Enum):
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     get access token by email and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
     # user existed, or raise exception
-    user_db = user_existed(email=email)
-    logging.warning("get user: %s", user_db.to_dict())
+    user_model = user_existed(email=email)
+    logging.warning("get user: %s", user_model.to_dict())
 
     # check password
-    if not check_pwd_hash(pwd_plain, user_db.pwd):
+    if not check_pwd_hash(pwd_plain, user_model.pwd):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.PWD_INCORRECT,
         )
 
     # create access_token
-    access_token = create_sub_token(user_db.id)
+    access_token = create_sub_token(user_model.id)
     logging.warning("create access_token: %s", access_token)
 
     # return access_token
@@ -59,16 +59,16 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: TypeName, db: Session = Depends(get_session)):
+def _send_code(email: str, _type: TypeName):
     """
     send a code to email, and return token
     """
     if _type == TypeName.signup:
         # user not existed, or raise exception
-        user_not_existed(email=email, db=db)
+        user_not_existed(email=email)
     elif _type == TypeName.reset:
         # user existed, or raise exception
-        user_existed(email=email, db=db)
+        user_existed(email=email)
 
     # create token with code and type(!!!)
     token = send_email_verify(email, is_code=True, _type=_type)
@@ -125,12 +125,12 @@ def _verify_code_xxx(
     # check token type: signup
     if _type == TypeName.signup:
         # user not existed, or raise exception
-        user_not_existed(email=email, db=db)
+        user_not_existed(email=email)
 
         # create user with email (verified)
         user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
-        user_db = crud_user.create(db, obj_schema=user_schema)
-        logging.warning("create user: %s", user_db.to_dict())
+        user_model = crud_user.create(db, obj_schema=user_schema)
+        logging.warning("create user: %s", user_model.to_dict())
 
         # return result
         return Result(msg="Sign up successfully")
@@ -138,12 +138,12 @@ def _verify_code_xxx(
     # check token type: reset
     if _type == TypeName.reset:
         # user existed, or raise exception
-        user_db = user_existed(email=email, db=db)
+        user_model = user_existed(email=email)
 
         # update user's pwd with UserUpdatePri
         user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
-        user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
-        logging.warning("reset password: %s", user_db.to_dict())
+        user_model = crud_user.update(db, obj_model=user_model, obj_schema=user_schema)
+        logging.warning("reset password: %s", user_model.to_dict())
 
         # return result
         return Result(msg="Reset password successfully")

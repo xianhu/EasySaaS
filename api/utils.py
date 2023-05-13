@@ -31,36 +31,36 @@ def get_current_user(access_token: str = Depends(oauth2), session: Session = Dep
         )
 
     # check user by user_id
-    user_db = crud_user.get(session, _id=user_id)
-    if not user_db:
+    user_model = crud_user.get(session, _id=user_id)
+    if not user_model:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=error_tips.EMAIL_NOT_EXISTED,
         )
 
     # return
-    return user_db
+    return user_model
 
 
 def user_existed(email: str, session: Session = Depends(get_session)) -> User:
     """
     check if user existed by email, raise exception or return user model
     """
-    user_db = crud_user.get_by_email(session, email=email)
-    if not user_db:
+    user_model = crud_user.get_by_email(session, email=email)
+    if not user_model:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.EMAIL_NOT_EXISTED,
         )
-    return user_db
+    return user_model
 
 
 def user_not_existed(email: str, session: Session = Depends(get_session)) -> None:
     """
     check if user not existed by email, raise exception or return None
     """
-    user_db = crud_user.get_by_email(session, email=email)
-    if user_db:
+    user_model = crud_user.get_by_email(session, email=email)
+    if user_model:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.EMAIL_EXISTED,
