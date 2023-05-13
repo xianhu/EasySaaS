@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from core.consts import RE_EMAIL, RE_PWD
 from core.settings import error_tips
 from core.utils.security import check_pwd_hash, get_pwd_hash
 from core.utils.security import create_sub_token, get_token_sub
@@ -99,6 +100,20 @@ def _verify_code_xxx(
     verify code and token, then create user or update password
     """
     email, pwd_plain = form_data.username, form_data.password
+
+    # check email
+    if not RE_EMAIL.match(email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.EMAIL_INVALID,
+        )
+
+    # check password
+    if not RE_PWD.match(pwd_plain):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.PWD_FMT_ERROR,
+        )
 
     # get sub_dict from token
     sub_dict = json.loads(get_token_sub(token) or "{}")
