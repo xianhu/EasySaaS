@@ -9,7 +9,7 @@ from typing import Generic, List, Optional, Type, TypeVar
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from ..base import Model
+from ..models import Model
 
 # define generic type
 ModelType = TypeVar("ModelType", bound=Model)
@@ -24,41 +24,41 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, UpdatePriS
         self.model = model
         return
 
-    def get(self, db: Session, _id: int) -> Optional[ModelType]:
-        obj_db = db.query(self.model).get(_id)
+    def get(self, session: Session, _id: int) -> Optional[ModelType]:
+        obj_db = session.query(self.model).get(_id)
         return obj_db
 
-    def get_multi(self, db: Session, offset: int = 0, limit: int = 100) -> List[ModelType]:
-        obj_db_list = db.query(self.model).offset(offset).limit(limit).all()
+    def get_multi(self, session: Session, offset: int = 0, limit: int = 100) -> List[ModelType]:
+        obj_db_list = session.query(self.model).offset(offset).limit(limit).all()
         return obj_db_list
 
-    def delete(self, db: Session, _id: int) -> Optional[ModelType]:
-        obj_db = db.query(self.model).get(_id)
-        db.delete(obj_db)
-        db.commit()
-        # db.refresh(obj_db)
+    def delete(self, session: Session, _id: int) -> Optional[ModelType]:
+        obj_db = session.query(self.model).get(_id)
+        session.delete(obj_db)
+        session.commit()
+        # session.refresh(obj_db)
         return obj_db
 
-    def create(self, db: Session, obj_schema: CreateSchemaType) -> ModelType:
+    def create(self, session: Session, obj_schema: CreateSchemaType) -> ModelType:
         obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
         obj_db = self.model(**obj_schema)
-        db.add(obj_db)
-        db.commit()
-        db.refresh(obj_db)
+        session.add(obj_db)
+        session.commit()
+        session.refresh(obj_db)
         return obj_db
 
-    def update(self, db: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
+    def update(self, session: Session, obj_db: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
         obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
         [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
-        db.merge(obj_db)
-        db.commit()
-        db.refresh(obj_db)
+        session.merge(obj_db)
+        session.commit()
+        session.refresh(obj_db)
         return obj_db
 
-    def update_pri(self, db: Session, obj_db: ModelType, obj_schema: UpdatePriSchemaType) -> ModelType:
+    def update_pri(self, session: Session, obj_db: ModelType, obj_schema: UpdatePriSchemaType) -> ModelType:
         obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
         [setattr(obj_db, field, obj_schema[field]) for field in obj_schema]
-        db.merge(obj_db)
-        db.commit()
-        db.refresh(obj_db)
+        session.merge(obj_db)
+        session.commit()
+        session.refresh(obj_db)
         return obj_db

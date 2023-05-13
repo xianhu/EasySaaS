@@ -9,7 +9,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from .base import CRUDBase
-from .. import User  # Model
+from ..models import User  # Model
 from ..schemas import UserCreate, UserUpdate, UserUpdatePri
 
 
