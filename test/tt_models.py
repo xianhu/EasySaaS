@@ -24,48 +24,48 @@ with SessionLocal() as session:
 
     # create user
     user_schema = UserCreate(id=1001, pwd=pwd_hash, email=email, email_verified=False)
-    user_db = crud_user.create(session, obj_schema=user_schema)
-    logging.warning("create user: %s", user_db.to_dict())
+    user_model = crud_user.create(session, obj_schema=user_schema)
+    logging.warning("create user: %s", user_model.to_dict())
 
     # update user -- public
     user_schema = UserUpdate(name="admin")
-    user_db = crud_user.update(session, obj_db=user_db, obj_schema=user_schema)
-    logging.warning("update user [public]: %s", user_db.to_dict())
+    user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
+    logging.warning("update user [public]: %s", user_model.to_dict())
 
     # update user -- private
     user_schema = UserUpdatePri(pwd=pwd_hash, email_verified=True)
-    user_db = crud_user.update(session, obj_db=user_db, obj_schema=user_schema)
-    logging.warning("update user [private]: %s", user_db.to_dict())
+    user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
+    logging.warning("update user [private]: %s", user_model.to_dict())
 
     # project info ======================================================================
-    user_id = user_db.id
+    user_id = user_model.id
     project_name = "demo project"
 
     # create project
     project_schema = ProjectCreate(id=10001, name=project_name, user_id=user_id)
-    project_db = crud_project.create(session, obj_schema=project_schema)
-    logging.warning("create project: %s", project_db.to_dict())
+    project_model = crud_project.create(session, obj_schema=project_schema)
+    logging.warning("create project: %s", project_model.to_dict())
 
     # update project -- public
     project_schema = ProjectUpdate(desc="demo project description")
-    project_db = crud_project.update(session, obj_db=project_db, obj_schema=project_schema)
-    logging.warning("update project [public]: %s", project_db.to_dict())
+    project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
+    logging.warning("update project [public]: %s", project_model.to_dict())
 
     # update project -- private
     project_schema = ProjectUpdatePri(desc="demo project description - private")
-    project_db = crud_project.update(session, obj_db=project_db, obj_schema=project_schema)
-    logging.warning("update project [private]: %s", project_db.to_dict())
+    project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
+    logging.warning("update project [private]: %s", project_model.to_dict())
 
     # test relationship =================================================================
-    logging.warning("user -> projects: %s", user_db.projects[0].to_dict())
-    logging.warning("project -> user: %s", project_db.user.to_dict())
+    logging.warning("user -> projects: %s", user_model.projects[0].to_dict())
+    logging.warning("project -> user: %s", project_model.user.to_dict())
 
     # test get_multi ====================================================================
-    user_db_list = crud_user.get_multi(session, offset=0, limit=100)
-    project_db_list = crud_project.get_multi(session, offset=0, limit=100)
-    logging.warning("user_db_list: %s", user_db_list)
-    logging.warning("project_db_list: %s", project_db_list)
+    user_model_list = crud_user.get_multi(session, offset=0, limit=100)
+    project_model_list = crud_project.get_multi(session, offset=0, limit=100)
+    logging.warning("user_model_list: %s", user_model_list)
+    logging.warning("project_model_list: %s", project_model_list)
 
     # test delete =======================================================================
-    project_db = crud_project.delete(session, _id=project_db.id)
-    logging.warning("delete project: %s", project_db.to_dict())
+    project_model = crud_project.delete(session, _id=project_model.id)
+    logging.warning("delete project: %s", project_model.to_dict())

@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-user crud
+crud of user
 """
 
 from typing import Optional
@@ -15,9 +15,9 @@ from ..schemas import UserCreate, UserUpdate, UserUpdatePri
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserUpdatePri]):
 
-    def get_by_email(self, db: Session, email: str) -> Optional[User]:
-        obj_db = db.query(User).filter(User.email == email).first()
-        return obj_db
+    def get_by_email(self, session: Session, email: str) -> Optional[User]:
+        obj_model = session.query(User).filter(User.email == email).first()
+        return obj_model
 
 
-user = CRUDUser(User)
+crud_user = CRUDUser(User)
