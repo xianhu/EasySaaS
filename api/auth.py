@@ -35,7 +35,7 @@ class TypeName(str, Enum):
 @router.post("/access-token", response_model=AccessToken)
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
-    get access token by email and password
+    get access_token by email and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
@@ -43,7 +43,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     user_model = user_existed(email=email, session=session)
     logging.warning("get user: %s", user_model.to_dict())
 
-    # check password
+    # check user password
     if not check_pwd_hash(pwd_plain, user_model.pwd):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -69,6 +69,11 @@ def _send_code(email: str, _type: TypeName, session: Session = Depends(get_sessi
     elif _type == TypeName.reset:
         # user existed, or raise exception
         user_existed(email=email, session=session)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.EMAIL_SEND_FAILED,
+        )
 
     # create token with code and type(!!!)
     token = send_email_verify(email, is_code=True, _type=_type)
@@ -99,7 +104,7 @@ def _verify_code_xxx(
     sub_dict = json.loads(get_token_sub(token) or "{}")
     logging.warning("get sub_dict: %s - %s", sub_dict, code)
 
-    # check token: type
+    # check token: type(!!!)
     if not sub_dict.get("type"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

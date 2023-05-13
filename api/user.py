@@ -8,8 +8,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from data import get_session
-from data.models import User
 from data.crud import crud_user
+from data.models import User
 from data.schemas import UserSchema, UserUpdate
 from .utils import get_current_user
 
