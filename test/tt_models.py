@@ -7,17 +7,17 @@ test models
 import logging
 
 from core.utils import security
-from models import DbMaker, engine
-from models.base import Model
-from models.crud import crud_project, crud_user
-from models.schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
-from models.schemas import UserCreate, UserUpdate, UserUpdatePri
+from data import SessionLocal, engine
+from data.crud import crud_project, crud_user
+from data.models import Model
+from data.schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
+from data.schemas import UserCreate, UserUpdate, UserUpdatePri
 
 # initialize database
 Model.metadata.drop_all(engine, checkfirst=True)
 Model.metadata.create_all(engine, checkfirst=True)
 
-with DbMaker() as db:
+with SessionLocal() as db:
     # user info =========================================================================
     email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")

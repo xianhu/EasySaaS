@@ -9,7 +9,7 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from .base import CRUDBase
-from .. import Project  # Model
+from ..models import Project  # Model
 from ..schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
 
 
