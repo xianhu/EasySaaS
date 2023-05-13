@@ -16,10 +16,10 @@ from core.settings import error_tips
 from core.utils.security import check_pwd_hash, get_pwd_hash
 from core.utils.security import create_sub_token, get_token_sub
 from core.utils.utemail import send_email_verify
-from models import get_db
-from models.crud import crud_user
-from models.schemas import AccessToken, Result, Token
-from models.schemas import UserCreate, UserUpdatePri
+from data import get_session
+from data.crud import crud_user
+from data.schemas import AccessToken, Result, Token
+from data.schemas import UserCreate, UserUpdatePri
 from .utils import user_existed, user_not_existed
 
 # define router
@@ -33,14 +33,14 @@ class TypeName(str, Enum):
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
     get access token by email and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
     # user existed, or raise exception
-    user_db = user_existed(email=email, db=db)
+    user_db = user_existed(email=email)
     logging.warning("get user: %s", user_db.to_dict())
 
     # check password
@@ -59,7 +59,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: TypeName, db: Session = Depends(get_db)):
+def _send_code(email: str, _type: TypeName, db: Session = Depends(get_session)):
     """
     send a code to email, and return token
     """
@@ -88,7 +88,7 @@ def _verify_code_xxx(
         form_data: OAuth2PasswordRequestForm = Depends(),
         code: int = Query(..., ge=100000, le=999999),
         token: str = Query(..., min_length=10),
-        db: Session = Depends(get_db),
+        db: Session = Depends(get_session),
 ):
     """
     verify code and token, then create user or update password

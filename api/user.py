@@ -7,9 +7,10 @@ user api
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from models import User, get_db
-from models.crud import crud_user
-from models.schemas import UserSchema, UserUpdate
+from data import get_session
+from data.models import User
+from data.crud import crud_user
+from data.schemas import UserSchema, UserUpdate
 from .utils import get_current_user
 
 # define router
@@ -25,7 +26,7 @@ def _get(current_user: User = Depends(get_current_user)):
 
 
 @router.post("/update", response_model=UserSchema)
-def _update(user_schema: UserUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def _update(user_schema: UserUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_session)):
     """
     update current_user's schema
     """
