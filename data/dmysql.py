@@ -10,6 +10,7 @@ import sqlalchemy.orm
 from sqlalchemy.orm import Session
 
 from core.settings import settings
+from .models import Model
 
 # create engine and session_maker
 engine = sqlalchemy.create_engine(settings.DATABASE_URI, pool_pre_ping=True)
@@ -22,3 +23,12 @@ def get_session() -> Generator[Session, None, None]:
     """
     with SessionLocal() as session:
         yield session
+
+
+def init_db() -> None:
+    """
+    initialize database
+    """
+    Model.metadata.drop_all(engine, checkfirst=True)
+    Model.metadata.create_all(engine, checkfirst=True)
+    return None

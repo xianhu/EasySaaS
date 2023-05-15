@@ -7,15 +7,14 @@ test models
 import logging
 
 from core.utils import security
-from data import SessionLocal, engine
+from data import SessionLocal
 from data.crud import crud_project, crud_user
-from data.models import Model
+from data.dmysql import init_db
 from data.schemas import ProjectCreate, ProjectUpdate
 from data.schemas import UserCreate, UserUpdate, UserUpdatePri
 
 # initialize database
-Model.metadata.drop_all(engine, checkfirst=True)
-Model.metadata.create_all(engine, checkfirst=True)
+init_db()
 
 with SessionLocal() as session:
     # user info =========================================================================
