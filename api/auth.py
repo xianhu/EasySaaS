@@ -10,6 +10,7 @@ from enum import Enum
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from core.consts import RE_EMAIL, RE_PWD
@@ -60,7 +61,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: TypeName, session: Session = Depends(get_session)):
+def _send_code(email: EmailStr, _type: TypeName, session: Session = Depends(get_session)):
     """
     send a code to email, and return token
     """
@@ -89,8 +90,8 @@ def _send_code(email: str, _type: TypeName, session: Session = Depends(get_sessi
     return Token(token=token, token_type="code")
 
 
-@router.post("/verify-code-xxx", response_model=Result)
-def _verify_code_xxx(
+@router.post("/verify-code", response_model=Result)
+def _verify_code(
         form_data: OAuth2PasswordRequestForm = Depends(),
         code: int = Query(..., ge=100000, le=999999),
         token: str = Query(..., min_length=10),
