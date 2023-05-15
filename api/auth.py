@@ -93,7 +93,7 @@ def _send_code(email: EmailStr, _type: TypeName, session: Session = Depends(get_
 def _verify_code(
         token: str = Query(..., min_length=10),
         code: int = Query(..., ge=100000, le=999999),
-        password: str = Body(..., min_length=6, max_length=20),
+        password: str = Body(..., min_length=6, media_type="text/plain"),
         session: Session = Depends(get_session),
 ):
     """
