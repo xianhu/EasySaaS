@@ -31,3 +31,4 @@ class UserUpdate(BaseModel):
 class UserUpdatePri(UserUpdate):
     pwd: Optional[str] = None
     email_verified: Optional[bool] = None
+    is_admin: Optional[bool] = None

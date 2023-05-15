@@ -23,3 +23,6 @@ class User(AbstractModel):
 
     # relationship: projects
     projects = sqlalchemy.orm.relationship("Project", back_populates="user")
+
+    # information -- permission
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
