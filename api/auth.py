@@ -12,14 +12,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from core.consts import RE_EMAIL, RE_PWD
 from core.settings import error_tips
 from core.utils.security import check_pwd_hash, get_pwd_hash
 from core.utils.security import create_sub_token, get_token_sub
 from core.utils.utemail import send_email_verify
-from models import get_db
-from models.crud import crud_user
-from models.schemas import AccessToken, Result, Token
-from models.schemas import UserCreate, UserUpdatePri
+from data import get_session
+from data.crud import crud_user
+from data.schemas import AccessToken, Result, Token
+from data.schemas import UserCreate, UserUpdatePri
 from .utils import user_existed, user_not_existed
 
 # define router
@@ -33,25 +34,25 @@ class TypeName(str, Enum):
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
-    get access token by email and password
+    get access_token by email and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
     # user existed, or raise exception
-    user_db = user_existed(email=email, db=db)
-    logging.warning("get user: %s", user_db.to_dict())
+    user_model = user_existed(email=email, session=session)
+    logging.warning("get user: %s", user_model.to_dict())
 
-    # check password
-    if not check_pwd_hash(pwd_plain, user_db.pwd):
+    # check user password
+    if not check_pwd_hash(pwd_plain, user_model.pwd):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.PWD_INCORRECT,
         )
 
-    # create access_token
-    access_token = create_sub_token(user_db.id)
+    # create access_token with user_id
+    access_token = create_sub_token(user_model.id)
     logging.warning("create access_token: %s", access_token)
 
     # return access_token
@@ -59,16 +60,21 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session 
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: TypeName, db: Session = Depends(get_db)):
+def _send_code(email: str, _type: TypeName, session: Session = Depends(get_session)):
     """
     send a code to email, and return token
     """
     if _type == TypeName.signup:
         # user not existed, or raise exception
-        user_not_existed(email=email, db=db)
+        user_not_existed(email=email, session=session)
     elif _type == TypeName.reset:
         # user existed, or raise exception
-        user_existed(email=email, db=db)
+        user_existed(email=email, session=session)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.EMAIL_SEND_FAILED,
+        )
 
     # create token with code and type(!!!)
     token = send_email_verify(email, is_code=True, _type=_type)
@@ -88,18 +94,32 @@ def _verify_code_xxx(
         form_data: OAuth2PasswordRequestForm = Depends(),
         code: int = Query(..., ge=100000, le=999999),
         token: str = Query(..., min_length=10),
-        db: Session = Depends(get_db),
+        session: Session = Depends(get_session),
 ):
     """
     verify code and token, then create user or update password
     """
     email, pwd_plain = form_data.username, form_data.password
 
+    # check email
+    if not RE_EMAIL.match(email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.EMAIL_INVALID,
+        )
+
+    # check password
+    if not RE_PWD.match(pwd_plain):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_tips.PWD_FMT_ERROR,
+        )
+
     # get sub_dict from token
     sub_dict = json.loads(get_token_sub(token) or "{}")
     logging.warning("get sub_dict: %s - %s", sub_dict, code)
 
-    # check token: type
+    # check token: type(!!!)
     if not sub_dict.get("type"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -125,12 +145,12 @@ def _verify_code_xxx(
     # check token type: signup
     if _type == TypeName.signup:
         # user not existed, or raise exception
-        user_not_existed(email=email, db=db)
+        user_not_existed(email=email, session=session)
 
         # create user with email (verified)
         user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
-        user_db = crud_user.create(db, obj_schema=user_schema)
-        logging.warning("create user: %s", user_db.to_dict())
+        user_model = crud_user.create(session, obj_schema=user_schema)
+        logging.warning("create user: %s", user_model.to_dict())
 
         # return result
         return Result(msg="Sign up successfully")
@@ -138,12 +158,12 @@ def _verify_code_xxx(
     # check token type: reset
     if _type == TypeName.reset:
         # user existed, or raise exception
-        user_db = user_existed(email=email, db=db)
+        user_model = user_existed(email=email, session=session)
 
         # update user's pwd with UserUpdatePri
         user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
-        user_db = crud_user.update(db, obj_db=user_db, obj_schema=user_schema)
-        logging.warning("reset password: %s", user_db.to_dict())
+        user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
+        logging.warning("reset password: %s", user_model.to_dict())
 
         # return result
         return Result(msg="Reset password successfully")
