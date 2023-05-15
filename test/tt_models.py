@@ -32,7 +32,7 @@ with SessionLocal() as session:
     logging.warning("update user [public]: %s", user_model.to_dict())
 
     # update user -- private
-    user_schema = UserUpdatePri(name="admin", email_verified=True)
+    user_schema = UserUpdatePri(name="admin", email_verified=True, is_admin=True)
     user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
     logging.warning("update user [private]: %s", user_model.to_dict())
 

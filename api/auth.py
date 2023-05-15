@@ -8,11 +8,11 @@ import json
 import logging
 from enum import Enum
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-from core.consts import RE_EMAIL, RE_PWD
 from core.settings import error_tips
 from core.utils.security import check_pwd_hash, get_pwd_hash
 from core.utils.security import create_sub_token, get_token_sub
@@ -60,7 +60,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
 
 
 @router.post("/send-code", response_model=Token)
-def _send_code(email: str, _type: TypeName, session: Session = Depends(get_session)):
+def _send_code(email: EmailStr, _type: TypeName, session: Session = Depends(get_session)):
     """
     send a code to email, and return token
     """
@@ -89,38 +89,22 @@ def _send_code(email: str, _type: TypeName, session: Session = Depends(get_sessi
     return Token(token=token, token_type="code")
 
 
-@router.post("/verify-code-xxx", response_model=Result)
-def _verify_code_xxx(
-        form_data: OAuth2PasswordRequestForm = Depends(),
-        code: int = Query(..., ge=100000, le=999999),
+@router.post("/verify-code", response_model=Result)
+def _verify_code(
         token: str = Query(..., min_length=10),
+        code: int = Query(..., ge=100000, le=999999),
+        password: str = Body(..., min_length=6, media_type="text/plain"),
         session: Session = Depends(get_session),
 ):
     """
     verify code and token, then create user or update password
     """
-    email, pwd_plain = form_data.username, form_data.password
-
-    # check email
-    if not RE_EMAIL.match(email):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_INVALID,
-        )
-
-    # check password
-    if not RE_PWD.match(pwd_plain):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.PWD_FMT_ERROR,
-        )
-
     # get sub_dict from token
     sub_dict = json.loads(get_token_sub(token) or "{}")
     logging.warning("get sub_dict: %s - %s", sub_dict, code)
 
     # check token: type(!!!)
-    if not sub_dict.get("type"):
+    if (not sub_dict.get("type")) or (sub_dict["type"] not in TypeName.__members__):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.TOKEN_INVALID,
@@ -128,11 +112,12 @@ def _verify_code_xxx(
     _type = sub_dict["type"]
 
     # check token: email
-    if (not sub_dict.get("email")) or (sub_dict["email"] != email):
+    if not sub_dict.get("email"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.TOKEN_INVALID,
         )
+    email = sub_dict["email"]
 
     # check token: code
     if (not sub_dict.get("code")) or (sub_dict["code"] != code):
@@ -140,7 +125,7 @@ def _verify_code_xxx(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.CODE_INVALID,
         )
-    pwd_hash = get_pwd_hash(pwd_plain)
+    pwd_hash = get_pwd_hash(password)
 
     # check token type: signup
     if _type == TypeName.signup:
@@ -152,24 +137,15 @@ def _verify_code_xxx(
         user_model = crud_user.create(session, obj_schema=user_schema)
         logging.warning("create user: %s", user_model.to_dict())
 
-        # return result
-        return Result(msg="Sign up successfully")
-
     # check token type: reset
     if _type == TypeName.reset:
         # user existed, or raise exception
         user_model = user_existed(email=email, session=session)
 
         # update user's pwd with UserUpdatePri
-        user_schema = UserUpdatePri(pwd=get_pwd_hash(pwd_plain))
+        user_schema = UserUpdatePri(pwd=pwd_hash)
         user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
         logging.warning("reset password: %s", user_model.to_dict())
 
-        # return result
-        return Result(msg="Reset password successfully")
-
-    # raise exception
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail=error_tips.TOKEN_INVALID,
-    )
+    # return result
+    return Result(msg=f"{_type} successfully")
