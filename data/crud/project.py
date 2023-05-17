@@ -4,7 +4,7 @@
 crud of project
 """
 
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy.orm import Session
 
@@ -21,7 +21,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
         ).offset(offset).limit(limit).all()
         return obj_model_list
 
-    def get_current_of_user(self, session: Session, user_id: int) -> Project:
+    def get_current_of_user(self, session: Session, user_id: int) -> Optional[Project]:
         obj_model = session.query(Project).filter(
             Project.user_id == user_id,
             Project.is_current == True,
@@ -38,6 +38,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
             Project.user_id == user_id,
             Project.id == project_id,
         ).update({Project.is_current: True})
+        session.commit()
         return True
 
 
