@@ -39,7 +39,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_model
 
     def create(self, session: Session, obj_schema: CreateSchemaType) -> ModelType:
-        obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
+        obj_schema = obj_schema.dict(exclude_unset=True)  # include default value
         obj_model = self.model(**obj_schema)
         session.add(obj_model)
         session.commit()

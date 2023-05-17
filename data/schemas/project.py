@@ -21,6 +21,7 @@ class ProjectSchema(BaseModel):
 class ProjectCreate(ProjectSchema):
     name: str  # required
     user_id: int  # required
+    is_current: bool = False
 
 
 # used for request body
