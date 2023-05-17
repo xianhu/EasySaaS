@@ -23,7 +23,10 @@ def _get(current_user: User = Depends(get_current_user)):
     """
     get schema of current_user
     """
-    return UserSchema(**current_user.to_dict())
+    user_model = current_user
+
+    # return UserSchema
+    return UserSchema(**user_model.to_dict())
 
 
 @router.post("/update", response_model=UserSchema)
