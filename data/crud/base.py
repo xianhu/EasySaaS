@@ -9,7 +9,7 @@ from typing import Generic, List, Optional, Type, TypeVar
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from ..models import Model
+from ..models.base import Model
 
 # define generic type
 ModelType = TypeVar("ModelType", bound=Model)

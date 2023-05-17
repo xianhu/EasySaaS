@@ -10,7 +10,7 @@ import sqlalchemy.orm
 from sqlalchemy.orm import Session
 
 from core.settings import settings
-from .models import Model
+from .models.base import Model
 
 # create engine and session_maker
 engine = sqlalchemy.create_engine(settings.DATABASE_URI, pool_pre_ping=True)
