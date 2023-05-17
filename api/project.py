@@ -13,7 +13,9 @@ from core.settings import error_tips
 from data import get_session
 from data.crud import crud_project
 from data.models import User
-from data.schemas import ProjectCreate, ProjectCreatePri, ProjectSchema
+from data.schemas import ProjectCreate, ProjectCreatePri
+from data.schemas import ProjectSchema
+from data.schemas import ProjectUpdate, ProjectUpdatePri
 from .utils import get_current_user
 
 # define router
@@ -67,11 +69,11 @@ def _get_by_id(project_id: int, current_user: User = Depends(get_current_user), 
 
 
 @router.post("/update", response_model=ProjectSchema)
-def _update(project_schema: ProjectCreate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+def _update(project_schema: ProjectUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     """
     update project, and return schema of project
     """
     user_id = current_user.id
-    project_schema = ProjectCreatePri(user_id=user_id, **project_schema.dict(exclude_unset=True))
+    project_schema = ProjectUpdatePri(user_id=user_id, **project_schema.dict(exclude_unset=True))
     project_model = crud_project.update(session, obj_schema=project_schema)
     return ProjectSchema(**project_model.to_dict())
