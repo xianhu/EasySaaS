@@ -42,13 +42,22 @@ def _create(project_schema: ProjectCreate, current_user: User = Depends(get_curr
     return ProjectSchema(**project_model.to_dict())
 
 
-@router.get("/get", response_model=ProjectSchema)
-def _get(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+@router.get("/get-current", response_model=ProjectSchema)
+def _get_current(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     """
     get schema of project which is current
     """
     user_id = current_user.id
+
+    # get current project of user
     project_model = crud_project.get_current_of_user(session, user_id=user_id)
+    if (not project_model) or (project_model.user_id != user_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=error_tips.QUERY_FAILED,
+        )
+
+    # return ProjectSchema
     return ProjectSchema(**project_model.to_dict())
 
 
@@ -58,7 +67,11 @@ def _get_multi(current_user: User = Depends(get_current_user), session: Session 
     get schema of projects which belong to current_user
     """
     user_id = current_user.id
+
+    # get project_model list of user
     project_model_list = crud_project.get_multi_of_user(session, user_id=user_id)
+
+    # return ProjectSchema list
     return [ProjectSchema(**project_model.to_dict()) for project_model in project_model_list]
 
 
@@ -68,12 +81,16 @@ def _get_by_id(project_id: int, current_user: User = Depends(get_current_user), 
     get schema of project by project_id
     """
     user_id = current_user.id
+
+    # get project_model by project_id
     project_model = crud_project.get(session, _id=project_id)
     if (not project_model) or (project_model.user_id != user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=error_tips.QUERY_FAILED,
         )
+
+    # return ProjectSchema
     return ProjectSchema(**project_model.to_dict())
 
 
