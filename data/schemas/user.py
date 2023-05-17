@@ -16,6 +16,8 @@ class UserSchema(BaseModel):
     avatar: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
+    # password: Optional[str] = None
+    # is_admin: Optional[bool] = None
 
 
 # used for request body
@@ -36,11 +38,11 @@ class UserCreatePri(UserCreate):
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     avatar: Optional[HttpUrl] = None
+    # email: Optional[EmailStr] = None
 
 
 # used for internal call
 class UserUpdatePri(UserUpdate):
-    # email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
     password: Optional[str] = None
     is_admin: Optional[bool] = None

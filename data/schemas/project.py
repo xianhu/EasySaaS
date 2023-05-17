@@ -14,6 +14,7 @@ class ProjectSchema(BaseModel):
     id: Optional[int] = None
     name: Optional[str] = None
     desc: Optional[str] = None
+    # user_id: Optional[int] = None
     is_current: Optional[bool] = None
 
 
@@ -37,4 +38,5 @@ class ProjectUpdate(BaseModel):
 
 # used for internal call
 class ProjectUpdatePri(ProjectUpdate):
+    # user_id: Optional[int] = None
     is_current: Optional[bool] = None
