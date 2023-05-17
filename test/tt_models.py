@@ -21,13 +21,13 @@ with SessionLocal() as session:
     email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")
 
-    # create user -- public
+    # create user
     user_schema = UserCreate(email=email, password=pwd_hash)
-    user_schema = UserCreatePri(name="admin", avatar="https://www.example.com")
+    user_schema = UserCreatePri(id=1001, is_admin=True, **user_schema.dict())
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
 
-    # update user -- public
+    # update user
     user_schema = UserUpdate(name="admin-temp", avatar="https://www.example.com")
     user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
     logging.warning("update user [public]: %s", user_model.to_dict())
