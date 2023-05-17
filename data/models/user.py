@@ -21,8 +21,8 @@ class User(AbstractModel):
     email = sqlalchemy.Column(sqlalchemy.String(255), index=True, unique=True)
     email_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
+    # information -- permission
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Admin")
+
     # relationship: projects
     projects = sqlalchemy.orm.relationship("Project", back_populates="user")
-
-    # information -- permission
-    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
