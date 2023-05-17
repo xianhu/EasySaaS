@@ -28,8 +28,17 @@ def _create(project_schema: ProjectCreate, current_user: User = Depends(get_curr
     create project, and return schema of project
     """
     user_id = current_user.id
-    project_schema = ProjectCreatePri(user_id=user_id, **project_schema.dict(exclude_unset=True))
+    project_dict = project_schema.dict(exclude_unset=True)
+
+    # create project based on ProjectCreatePri
+    project_schema = ProjectCreatePri(user_id=user_id, **project_dict)
     project_model = crud_project.create(session, obj_schema=project_schema)
+
+    # update current project of user and refresh project_model
+    crud_project.update_current_of_user(session, user_id=user_id, project_id=project_model.id)
+    project_model = crud_project.get(session, _id=project_model.id)
+
+    # return ProjectSchema
     return ProjectSchema(**project_model.to_dict())
 
 
@@ -60,7 +69,7 @@ def _get_by_id(project_id: int, current_user: User = Depends(get_current_user), 
     """
     user_id = current_user.id
     project_model = crud_project.get(session, _id=project_id)
-    if project_model.user_id != user_id:
+    if (not project_model) or (project_model.user_id != user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=error_tips.QUERY_FAILED,
@@ -69,11 +78,23 @@ def _get_by_id(project_id: int, current_user: User = Depends(get_current_user), 
 
 
 @router.post("/update", response_model=ProjectSchema)
-def _update(project_schema: ProjectUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+def _update(project_id: int, project_schema: ProjectUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     """
     update project, and return schema of project
     """
     user_id = current_user.id
-    project_schema = ProjectUpdatePri(user_id=user_id, **project_schema.dict(exclude_unset=True))
-    project_model = crud_project.update(session, obj_schema=project_schema)
+
+    # get project_model by project_id
+    project_model = crud_project.get(session, _id=project_id)
+    if (not project_model) or (project_model.user_id != user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=error_tips.UPDATE_FAILED,
+        )
+
+    # update project based on ProjectUpdatePri
+    project_schema = ProjectUpdatePri(**project_schema.dict(exclude_unset=True))
+    project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
+
+    # return ProjectSchema
     return ProjectSchema(**project_model.to_dict())
