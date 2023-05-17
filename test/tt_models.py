@@ -21,13 +21,13 @@ with SessionLocal() as session:
     email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")
 
-    # create user
-    user_schema = UserCreate(id=1001, pwd=pwd_hash, email=email, email_verified=False)
+    # create user, is_admin=False
+    user_schema = UserCreate(id=1001, email=email, email_verified=False, password=pwd_hash)
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
 
     # update user -- public
-    user_schema = UserUpdate(name="admin-t", email_verified=True)
+    user_schema = UserUpdate(name="admin-temp")
     user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
     logging.warning("update user [public]: %s", user_model.to_dict())
 
@@ -41,7 +41,7 @@ with SessionLocal() as session:
     project_name = "demo project"
 
     # create project
-    project_schema = ProjectCreate(id=10001, name=project_name, user_id=user_id)
+    project_schema = ProjectCreate(id=10001, name=project_name, user_id=user_id, is_current=True)
     project_model = crud_project.create(session, obj_schema=project_schema)
     logging.warning("create project: %s", project_model.to_dict())
 
@@ -62,4 +62,4 @@ with SessionLocal() as session:
 
     # test delete =======================================================================
     project_model = crud_project.delete(session, _id=project_model.id)
-    logging.warning("delete project: %s", project_model.to_dict())
+    logging.warning("delete project: %s\n", project_model.to_dict())
