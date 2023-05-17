@@ -10,7 +10,7 @@ from core.utils import security
 from data import SessionLocal
 from data.crud import crud_project, crud_user
 from data.dmysql import init_db
-from data.schemas import ProjectCreate, ProjectUpdate
+from data.schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
 from data.schemas import UserCreate, UserUpdate, UserUpdatePri
 
 # initialize database
@@ -22,12 +22,12 @@ with SessionLocal() as session:
     pwd_hash = security.get_pwd_hash("a123456")
 
     # create user, is_admin=False
-    user_schema = UserCreate(id=1001, email=email, email_verified=False, password=pwd_hash)
+    user_schema = UserCreate(id=1001, email=email, password=pwd_hash)
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
 
     # update user -- public
-    user_schema = UserUpdate(name="admin-temp")
+    user_schema = UserUpdate(name="admin-temp", avatar="https://www.example.com")
     user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
     logging.warning("update user [public]: %s", user_model.to_dict())
 
@@ -41,14 +41,19 @@ with SessionLocal() as session:
     project_name = "demo project"
 
     # create project
-    project_schema = ProjectCreate(id=10001, name=project_name, user_id=user_id, is_current=True)
+    project_schema = ProjectCreate(id=10001, name=project_name, user_id=user_id)
     project_model = crud_project.create(session, obj_schema=project_schema)
     logging.warning("create project: %s", project_model.to_dict())
 
-    # update project
+    # update project -- public
     project_schema = ProjectUpdate(desc="demo project description")
     project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
-    logging.warning("update project: %s", project_model.to_dict())
+    logging.warning("update project [public]: %s", project_model.to_dict())
+
+    # update project -- private
+    project_schema = ProjectUpdatePri(is_current=True)
+    project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
+    logging.warning("update project [private]: %s", project_model.to_dict())
 
     # test relationship =================================================================
     logging.warning("user -> projects: %s", user_model.projects[0].to_dict())
