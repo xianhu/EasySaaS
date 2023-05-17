@@ -20,7 +20,7 @@ from core.utils.utemail import send_email_verify
 from data import get_session
 from data.crud import crud_user
 from data.schemas import AccessToken, Result, Token
-from data.schemas import UserCreate, UserUpdatePri
+from data.schemas import UserCreatePri, UserUpdatePri
 from .utils import user_existed, user_not_existed
 
 # define router
@@ -133,7 +133,7 @@ def _verify_code(
         user_not_existed(email=email, session=session)
 
         # create user with email (verified)
-        user_schema = UserCreate(email=email, email_verified=True, password=pwd_hash)
+        user_schema = UserCreatePri(email=email, password=pwd_hash, email_verified=True)
         user_model = crud_user.create(session, obj_schema=user_schema)
         logging.warning("create user: %s", user_model.to_dict())
 
