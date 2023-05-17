@@ -20,7 +20,7 @@ router = APIRouter()
 @router.get("/get", response_model=UserSchema)
 def _get(current_user: User = Depends(get_current_user)):
     """
-    get current_user's schema
+    get schema of current_user
     """
     return UserSchema(**current_user.to_dict())
 
@@ -28,7 +28,7 @@ def _get(current_user: User = Depends(get_current_user)):
 @router.post("/update", response_model=UserSchema)
 def _update(user_schema: UserUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     """
-    update current_user's schema
+    update schema of current_user
     """
     current_user = crud_user.update(session, obj_model=current_user, obj_schema=user_schema)
     return UserSchema(**current_user.to_dict())

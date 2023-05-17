@@ -9,20 +9,36 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+# used for response_model
 class ProjectSchema(BaseModel):
     id: Optional[int] = None
     name: Optional[str] = None
     desc: Optional[str] = None
+    # user_id: Optional[int] = None
+    is_current: Optional[bool] = None
 
 
-class ProjectCreate(ProjectSchema):
+# used for request body
+class ProjectCreate(BaseModel):
     name: str  # required
-    user_id: int  # required
-
-
-class ProjectUpdate(BaseModel):
     desc: Optional[str] = None
 
 
+# used for internal call
+class ProjectCreatePri(ProjectCreate):
+    id: Optional[int] = None
+    user_id: int  # required
+    is_current: bool = False
+
+
+# used for request body
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = None
+    desc: Optional[str] = None
+
+
+# used for internal call
 class ProjectUpdatePri(ProjectUpdate):
-    pass
+    # id: Optional[int] = None
+    # user_id: Optional[int] = None
+    is_current: Optional[bool] = None

@@ -6,8 +6,12 @@ schemas module
 
 from pydantic import BaseModel
 
-from .project import ProjectCreate, ProjectSchema, ProjectUpdate, ProjectUpdatePri
-from .user import UserCreate, UserSchema, UserUpdate, UserUpdatePri
+from .project import ProjectCreate, ProjectCreatePri
+from .project import ProjectSchema
+from .project import ProjectUpdate, ProjectUpdatePri
+from .user import UserCreate, UserCreatePri
+from .user import UserSchema
+from .user import UserUpdate, UserUpdatePri
 
 
 class Token(BaseModel):

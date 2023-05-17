@@ -6,7 +6,7 @@ Flask-Compress~=1.13.0
 uWSGI~=2.0.21
 
 # FastAPI
-fastapi~=0.95.1
+fastapi~=0.95.2
 uvicorn~=0.22.0
 
 # Database

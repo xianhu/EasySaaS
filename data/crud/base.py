@@ -39,7 +39,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_model
 
     def create(self, session: Session, obj_schema: CreateSchemaType) -> ModelType:
-        obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
+        obj_schema = obj_schema.dict(exclude_unset=True)  # include default value
         obj_model = self.model(**obj_schema)
         session.add(obj_model)
         session.commit()
@@ -47,7 +47,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_model
 
     def update(self, session: Session, obj_model: ModelType, obj_schema: UpdateSchemaType) -> ModelType:
-        obj_schema = obj_schema.dict(exclude_unset=True, exclude_defaults=True)
+        obj_schema = obj_schema.dict(exclude_unset=True)  # include default value
         [setattr(obj_model, field, obj_schema[field]) for field in obj_schema]
         session.merge(obj_model)
         session.commit()

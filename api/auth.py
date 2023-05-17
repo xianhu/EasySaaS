@@ -45,7 +45,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     logging.warning("get user: %s", user_model.to_dict())
 
     # check user password
-    if not check_pwd_hash(pwd_plain, user_model.pwd):
+    if not check_pwd_hash(pwd_plain, user_model.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_tips.PWD_INCORRECT,
@@ -85,7 +85,7 @@ def _send_code(email: EmailStr, _type: TypeName, session: Session = Depends(get_
         )
     logging.warning("send code: %s - %s - %s", email, _type, token)
 
-    # return token with code or link
+    # return token with code
     return Token(token=token, token_type="code")
 
 
@@ -133,7 +133,7 @@ def _verify_code(
         user_not_existed(email=email, session=session)
 
         # create user with email (verified)
-        user_schema = UserCreate(pwd=pwd_hash, email=email, email_verified=True)
+        user_schema = UserCreate(email=email, email_verified=True, password=pwd_hash)
         user_model = crud_user.create(session, obj_schema=user_schema)
         logging.warning("create user: %s", user_model.to_dict())
 
@@ -142,8 +142,8 @@ def _verify_code(
         # user existed, or raise exception
         user_model = user_existed(email=email, session=session)
 
-        # update user's pwd with UserUpdatePri
-        user_schema = UserUpdatePri(pwd=pwd_hash)
+        # update user's password with UserUpdatePri
+        user_schema = UserUpdatePri(password=pwd_hash)
         user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
         logging.warning("reset password: %s", user_model.to_dict())
 
