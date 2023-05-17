@@ -132,7 +132,7 @@ def _verify_code(
         # user not existed, or raise exception
         user_not_existed(email=email, session=session)
 
-        # create user with email (verified)
+        # create user based on UserCreatePri
         user_schema = UserCreatePri(email=email, password=pwd_hash, email_verified=True)
         user_model = crud_user.create(session, obj_schema=user_schema)
         logging.warning("create user: %s", user_model.to_dict())
@@ -142,7 +142,7 @@ def _verify_code(
         # user existed, or raise exception
         user_model = user_existed(email=email, session=session)
 
-        # update user's password with UserUpdatePri
+        # update password based on UserUpdatePri
         user_schema = UserUpdatePri(password=pwd_hash)
         user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
         logging.warning("reset password: %s", user_model.to_dict())
