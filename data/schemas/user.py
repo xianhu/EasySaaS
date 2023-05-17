@@ -21,9 +21,9 @@ class UserSchema(BaseModel):
 # used for internal call
 class UserCreate(UserSchema):
     email: EmailStr  # required
-    email_verified: bool  # required
+    email_verified: bool = False
     password: str  # required
-    is_admin: bool = False  # default
+    is_admin: bool = False
 
 
 # used for request body
