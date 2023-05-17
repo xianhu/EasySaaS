@@ -19,4 +19,4 @@ def _get(current_user: User = Depends(get_current_user)):
     """
     get schema of project which is current
     """
-    return 
+    return
