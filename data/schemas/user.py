@@ -40,11 +40,11 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     # email: Optional[EmailStr] = None
+    password: Optional[str] = None
 
 
 # used for internal call
 class UserUpdatePri(UserUpdate):
     # id: Optional[int] = None
     email_verified: Optional[bool] = None
-    password: Optional[str] = None
     is_admin: Optional[bool] = None

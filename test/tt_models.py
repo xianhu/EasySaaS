@@ -39,13 +39,13 @@ with SessionLocal() as session:
     user_id = user_model.id
     project_name = "demo project"
 
-    # create project
+    # create project -- ProjectCreate and ProjectCreatePri
     project_schema = ProjectCreate(name=project_name, desc=None)
     project_schema = ProjectCreatePri(id=10001, user_id=user_id, **project_schema.dict(exclude_unset=True))
     project_model = crud_project.create(session, obj_schema=project_schema)
     logging.warning("create project: %s", project_model.to_dict())
 
-    # update project -- public
+    # update project -- ProjectUpdate and ProjectUpdatePri
     project_schema = ProjectUpdate(desc="demo project description")
     project_schema = ProjectUpdatePri(is_current=True, **project_schema.dict(exclude_unset=True))
     project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
