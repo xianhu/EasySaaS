@@ -30,6 +30,7 @@ class UserCreate(BaseModel):
 
 # used for internal call
 class UserCreatePri(UserCreate):
+    id: Optional[int] = None
     email_verified: bool = False
     is_admin: bool = False
 
@@ -43,6 +44,7 @@ class UserUpdate(BaseModel):
 
 # used for internal call
 class UserUpdatePri(UserUpdate):
+    # id: Optional[int] = None
     email_verified: Optional[bool] = None
     password: Optional[str] = None
     is_admin: Optional[bool] = None

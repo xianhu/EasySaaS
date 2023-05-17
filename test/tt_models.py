@@ -11,7 +11,7 @@ from data import SessionLocal
 from data.crud import crud_project, crud_user
 from data.dmysql import init_db
 from data.schemas import ProjectCreate, ProjectUpdate, ProjectUpdatePri
-from data.schemas import UserCreate, UserUpdate, UserUpdatePri
+from data.schemas import UserCreate, UserCreatePri, UserUpdate, UserUpdatePri
 
 # initialize database
 init_db()
@@ -21,8 +21,9 @@ with SessionLocal() as session:
     email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")
 
-    # create user, is_admin=False
-    user_schema = UserCreate(id=1001, email=email, password=pwd_hash)
+    # create user -- public
+    user_schema = UserCreate(email=email, password=pwd_hash)
+    user_schema = UserCreatePri(name="admin", avatar="https://www.example.com")
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
 

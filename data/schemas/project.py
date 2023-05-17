@@ -26,6 +26,7 @@ class ProjectCreate(BaseModel):
 
 # used for internal call
 class ProjectCreatePri(ProjectCreate):
+    id: Optional[int] = None
     user_id: int  # required
     is_current: bool = False
 
@@ -38,5 +39,6 @@ class ProjectUpdate(BaseModel):
 
 # used for internal call
 class ProjectUpdatePri(ProjectUpdate):
+    # id: Optional[int] = None
     # user_id: Optional[int] = None
     is_current: Optional[bool] = None
