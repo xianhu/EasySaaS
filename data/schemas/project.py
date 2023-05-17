@@ -17,9 +17,14 @@ class ProjectSchema(BaseModel):
     is_current: Optional[bool] = None
 
 
-# used for internal call
-class ProjectCreate(ProjectSchema):
+# used for request body
+class ProjectCreate(BaseModel):
     name: str  # required
+    desc: Optional[str] = None
+
+
+# used for internal call
+class ProjectCreatePri(ProjectCreate):
     user_id: int  # required
     is_current: bool = False
 

@@ -18,11 +18,17 @@ class UserSchema(BaseModel):
     email_verified: Optional[bool] = None
 
 
-# used for internal call
-class UserCreate(UserSchema):
+# used for request body
+class UserCreate(BaseModel):
+    name: Optional[str] = None
+    avatar: Optional[HttpUrl] = None
     email: EmailStr  # required
-    email_verified: bool = False
     password: str  # required
+
+
+# used for internal call
+class UserCreatePri(UserCreate):
+    email_verified: bool = False
     is_admin: bool = False
 
 
