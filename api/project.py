@@ -28,15 +28,15 @@ def _create(project_schema: ProjectCreate, current_user: User = Depends(get_curr
     create project, and return schema of project
     """
     user_id = current_user.id
-    project_dict = project_schema.dict(exclude_unset=True)
 
     # create project based on ProjectCreatePri
-    project_schema = ProjectCreatePri(user_id=user_id, **project_dict)
+    project_schema = ProjectCreatePri(user_id=user_id, **project_schema.dict(exclude_unset=True))
     project_model = crud_project.create(session, obj_schema=project_schema)
+    project_id = project_model.id
 
     # update current project of user and refresh project_model
-    crud_project.update_current_of_user(session, user_id=user_id, project_id=project_model.id)
-    project_model = crud_project.get(session, _id=project_model.id)
+    crud_project.update_current_of_user(session, user_id=user_id, project_id=project_id)
+    project_model = crud_project.get(session, _id=project_id)
 
     # return ProjectSchema
     return ProjectSchema(**project_model.to_dict())

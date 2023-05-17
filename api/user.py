@@ -31,6 +31,11 @@ def _update(user_schema: UserUpdate, current_user: User = Depends(get_current_us
     """
     update schema of current_user
     """
+    user_model = current_user
+
+    # update user based on UserUpdatePri
     user_schema = UserUpdatePri(**user_schema.dict(exclude_unset=True))
-    current_user = crud_user.update(session, obj_model=current_user, obj_schema=user_schema)
-    return UserSchema(**current_user.to_dict())
+    user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
+
+    # return UserSchema
+    return UserSchema(**user_model.to_dict())
