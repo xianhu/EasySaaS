@@ -23,7 +23,7 @@ with SessionLocal() as session:
     # user info =========================================================================
     email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")
-    role_json = json.dumps({"role": "admin"})
+    role_json = json.dumps({"role": "admin"})  # json.dumps
 
     # create user -- UserCreate and UserCreatePri
     user_schema = UserCreate(email=email, password=pwd_hash)
