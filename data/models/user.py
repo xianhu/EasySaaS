@@ -18,6 +18,9 @@ class User(AbstractModel):
     email = sqlalchemy.Column(sqlalchemy.String(255), index=True, unique=True)
     email_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
+    # information -- others (model -> schema -> crud)
+    # ts_expires = sqlalchemy.Column(sqlalchemy.Integer, doc="Timestamp Expires")
+
     # information -- permission
     password = sqlalchemy.Column(sqlalchemy.String(512), doc="Password")
     is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Admin")
