@@ -36,7 +36,7 @@ class TypeName(str, Enum):
 @router.post("/access-token", response_model=AccessToken)
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
-    get access_token by email and password
+    get access_token by username and password
     """
     email, pwd_plain = form_data.username, form_data.password
 

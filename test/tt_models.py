@@ -4,6 +4,7 @@
 test models
 """
 
+import json
 import logging
 
 from core.utils import security
@@ -15,17 +16,18 @@ from data.schemas import ProjectUpdate, ProjectUpdatePri
 from data.schemas import UserCreate, UserCreatePri
 from data.schemas import UserUpdate, UserUpdatePri
 
-# initialize database
+# init db
 init_db()
 
 with SessionLocal() as session:
     # user info =========================================================================
     email = "admin@easysaas.com"
     pwd_hash = security.get_pwd_hash("a123456")
+    role_json = json.dumps({"role": "admin"})  # json.dumps
 
     # create user -- UserCreate and UserCreatePri
     user_schema = UserCreate(email=email, password=pwd_hash)
-    user_schema = UserCreatePri(id=1001, **user_schema.dict(exclude_unset=True))
+    user_schema = UserCreatePri(id=1001, role_json=role_json, **user_schema.dict(exclude_unset=True))
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
 

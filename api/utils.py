@@ -22,7 +22,7 @@ def get_current_user(access_token: str = Depends(oauth2), session: Session = Dep
     """
     check access_token, return user model or raise exception
     """
-    # check access_token and get user_id
+    # get user_id from access_token
     user_id = get_token_sub(access_token)
     if not user_id:
         raise HTTPException(

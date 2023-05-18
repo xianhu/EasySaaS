@@ -14,7 +14,10 @@ class Project(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
-    # information -- others
+    # information -- others (model -> schema -> crud)
+    # ts_expires = sqlalchemy.Column(sqlalchemy.Integer, doc="Timestamp Expires")
+
+    # information -- foreign_key and is_current
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     is_current = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Current")
 

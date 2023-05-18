@@ -18,9 +18,13 @@ class User(AbstractModel):
     email = sqlalchemy.Column(sqlalchemy.String(255), index=True, unique=True)
     email_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
+    # information -- others (model -> schema -> crud)
+    # ts_expires = sqlalchemy.Column(sqlalchemy.Integer, doc="Timestamp Expires")
+
     # information -- permission
-    password = sqlalchemy.Column(sqlalchemy.String(512), nullable=True, doc="Password")
+    password = sqlalchemy.Column(sqlalchemy.String(512), doc="Password")
     is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Admin")
+    role_json = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="Role Json")
 
     # relationship: projects
     projects = sqlalchemy.orm.relationship("Project", back_populates="user")
