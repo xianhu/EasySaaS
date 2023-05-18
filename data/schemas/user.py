@@ -6,7 +6,7 @@ user schema
 
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, Json
 
 
 # used for response_model
@@ -18,6 +18,7 @@ class UserSchema(BaseModel):
     email_verified: Optional[bool] = None
     # password: Optional[str] = None
     # is_admin: Optional[bool] = None
+    # role_json: Optional[Json] = None
 
 
 # used for request body
@@ -33,6 +34,7 @@ class UserCreatePri(UserCreate):
     id: Optional[int] = None
     email_verified: bool = False
     is_admin: bool = False
+    role_json: Json = {}
 
 
 # used for request body
@@ -48,3 +50,4 @@ class UserUpdatePri(UserUpdate):
     # id: Optional[int] = None
     email_verified: Optional[bool] = None
     is_admin: Optional[bool] = None
+    role_json: Optional[Json] = None
