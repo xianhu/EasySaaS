@@ -35,7 +35,7 @@ def _create(project_schema: ProjectCreate, current_user: User = Depends(get_curr
     project_id = project_model.id
 
     # update current project of user and refresh project_model
-    crud_project.update_current_of_user(session, user_id=user_id, project_id=project_id)
+    crud_project.update_current_of_user(session, user_id=user_id, _id=project_id)
     project_model = crud_project.get(session, _id=project_id)
 
     # return ProjectSchema
