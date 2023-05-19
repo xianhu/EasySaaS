@@ -64,6 +64,11 @@ with SessionLocal() as session:
     logging.warning("update project: %s", project_model.to_dict())
     logging.warning("update project: %s", ProjectSchema(**project_model.to_dict()))
 
+    # project test ======================================================================
+    result = crud_project.update_current_of_user(session, user_id=user_id, _id=project_model.id)
+    project_model = crud_project.get_current_of_user(session, user_id=user_id)
+    logging.warning("update_current_of_user: %s", project_model.to_dict())
+
     # test relationship =================================================================
     logging.warning("user -> projects: %s", user_model.projects[0].to_dict())
     logging.warning("project -> user: %s", project_model.user.to_dict())
