@@ -28,7 +28,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreatePri, ProjectUpdatePri]):
         ).offset(offset).limit(limit).all()
         return obj_model_list
 
-    def update_current_of_user(self, session: Session, user_id: int, project_id: int) -> bool:
+    def update_current_of_user(self, session: Session, user_id: int, _id: int) -> bool:
         # update all projects
         session.query(Project).filter(
             Project.user_id == user_id,
@@ -36,7 +36,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreatePri, ProjectUpdatePri]):
         # update current project
         session.query(Project).filter(
             Project.user_id == user_id,
-            Project.id == project_id,
+            Project.id == _id,
         ).update({Project.is_current: True})
         session.commit()
         return True
