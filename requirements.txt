@@ -8,6 +8,7 @@ uWSGI~=2.0.21
 # FastAPI
 fastapi~=0.95.2
 uvicorn~=0.22.0
+gunicorn~=20.1.0
 
 # Database
 redis~=4.5.5

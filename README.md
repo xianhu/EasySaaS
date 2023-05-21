@@ -43,11 +43,11 @@ pip3.10 install -r requirements.txt
 ### Run Application With uwsgi / gunicorn / uvicorn
 
 ```
-.venv/bin/uwsgi --module index:server --http :8000 --pidfile index.pid 
-                --master --enable-threads --daemonize index.log
+.venv/bin/uwsgi --module index:server --http :8000 --virtualenv .venv 
+                --pidfile index.pid --master --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
 
-.venv/bin/uvicorn main:app --port 8000 --workers 2 --reload
+.venv/bin/gunicorn main:app --bind 127.0.0.1:8000 --workers 2 --worker-class uvicorn.workers.UvicornWorker
 ```
 
 ### Frontend
