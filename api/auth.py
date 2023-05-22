@@ -7,6 +7,7 @@ auth api
 import json
 import logging
 from enum import Enum
+from typing import Union
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -19,9 +20,8 @@ from core.utils.security import create_sub_token, get_token_sub
 from core.utils.utemail import send_email_verify
 from data import get_session
 from data.crud import crud_user
-from data.schemas import AccessToken, Resp, Token
+from data.schemas import AccessToken, Resp
 from data.schemas import UserCreatePri, UserUpdatePri
-from .utils import user_existed, user_not_existed
 
 # define router
 router = APIRouter()
@@ -33,60 +33,52 @@ class TypeName(str, Enum):
     reset = "reset"
 
 
-@router.post("/access-token", response_model=AccessToken)
+@router.post("/access-token", response_model=Union[AccessToken, Resp])
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
     get access_token by username and password
     """
     email, pwd_plain = form_data.username, form_data.password
 
-    # user existed, or raise exception
-    user_model = user_existed(email=email, session=session)
+    # check user existed
+    user_model = crud_user.get_by_email(session, email=email)
+    if not user_model:
+        return Resp(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
     logging.warning("get user: %s", user_model.to_dict())
 
     # check user password
     if not check_pwd_hash(pwd_plain, user_model.password):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.PWD_INCORRECT,
-        )
+        return Resp(status=-2, msg=error_tips.PWD_INCORRECT)
 
     # create access_token with user_id
     access_token = create_sub_token(user_model.id)
     logging.warning("create access_token: %s", access_token)
 
     # return access_token
-    return AccessToken(access_token=access_token)
+    return AccessToken(access_token=access_token, token_type="bearer")
 
 
-@router.post("/send-code", response_model=Token)
-def _send_code(email: EmailStr, _type: TypeName, session: Session = Depends(get_session)):
+@router.post("/send-code", response_model=Resp)
+def _send_code(email: EmailStr = Body(...),
+               _type: TypeName = Body(...),
+               session: Session = Depends(get_session)):
     """
     send a code to email, and return token
     """
-    if _type == TypeName.signup:
-        # user not existed, or raise exception
-        user_not_existed(email=email, session=session)
-    elif _type == TypeName.reset:
-        # user existed, or raise exception
-        user_existed(email=email, session=session)
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_SEND_FAILED,
-        )
+    user_model = crud_user.get_by_email(session, email=email)
+    if _type == TypeName.signup and user_model:
+        return Resp(status=-1, msg=error_tips.EMAIL_EXISTED)
+    if _type == TypeName.reset and (not user_model):
+        return Resp(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
 
     # create token with code and type(!!!)
     token = send_email_verify(email, is_code=True, _type=_type)
     if not token:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_SEND_FAILED,
-        )
+        return Resp(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
     logging.warning("send code: %s - %s - %s", email, _type, token)
 
     # return token with code
-    return Token(token=token, token_type="code")
+    return Resp(data={"token": token})
 
 
 @router.post("/verify-code", response_model=Resp)

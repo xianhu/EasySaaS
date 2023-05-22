@@ -14,3 +14,7 @@ api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(user.router, prefix="/user", tags=["user"])
 api_router.include_router(project.router, prefix="/project", tags=["project"])
 api_router.include_router(files.router, prefix="/files", tags=["files"])
+
+
+@api_router.get("/")
+async def root(): return {"message": "visit /docs for more information"}

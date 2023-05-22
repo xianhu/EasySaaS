@@ -20,7 +20,7 @@ oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
 
 def get_current_user(access_token: str = Depends(oauth2), session: Session = Depends(get_session)) -> User:
     """
-    check access_token, return user model or raise exception
+    check access_token, return user model or raise exception(401)
     """
     # get user_id from access_token
     user_id = get_token_sub(access_token)
@@ -35,29 +35,3 @@ def get_current_user(access_token: str = Depends(oauth2), session: Session = Dep
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=error_tips.TOKEN_INVALID,
     )
-
-
-def user_existed(email: str, session: Session) -> User:
-    """
-    ensure user existed, return user model or raise exception
-    """
-    user_model = crud_user.get_by_email(session, email=email)
-    if not user_model:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_NOT_EXISTED,
-        )
-    return user_model
-
-
-def user_not_existed(email: str, session: Session) -> True:
-    """
-    ensure user not existed, return True or raise exception
-    """
-    user_model = crud_user.get_by_email(session, email=email)
-    if user_model:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_tips.EMAIL_EXISTED,
-        )
-    return True
