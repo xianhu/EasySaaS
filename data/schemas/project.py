@@ -15,7 +15,6 @@ class ProjectSchema(BaseModel):
     name: Optional[str] = None
     desc: Optional[str] = None
     # user_id: Optional[int] = None
-    is_current: Optional[bool] = None
 
 
 # used for request body
@@ -28,7 +27,6 @@ class ProjectCreate(BaseModel):
 class ProjectCreatePri(ProjectCreate):
     id: Optional[int] = None
     user_id: int  # required
-    is_current: bool = False
 
 
 # used for request body
@@ -41,4 +39,4 @@ class ProjectUpdate(BaseModel):
 class ProjectUpdatePri(ProjectUpdate):
     # id: Optional[int] = None
     # user_id: Optional[int] = None
-    is_current: Optional[bool] = None
+    pass

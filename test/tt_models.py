@@ -59,15 +59,10 @@ with SessionLocal() as session:
     project_schema = ProjectUpdate(desc=desc)
 
     # update project -- ProjectUpdatePri
-    project_schema = ProjectUpdatePri(is_current=True, **project_schema.dict(exclude_unset=True))
+    project_schema = ProjectUpdatePri(**project_schema.dict(exclude_unset=True))
     project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
     logging.warning("update project: %s", project_model.to_dict())
     logging.warning("update project: %s", ProjectSchema(**project_model.to_dict()))
-
-    # project test ======================================================================
-    result = crud_project.update_current_of_user(session, user_id=user_id, _id=project_model.id)
-    project_model = crud_project.get_current_of_user(session, user_id=user_id)
-    logging.warning("update_current_of_user: %s", project_model.to_dict())
 
     # test relationship =================================================================
     logging.warning("user -> projects: %s", user_model.projects[0].to_dict())
