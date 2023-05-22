@@ -58,14 +58,17 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     return AccessToken(access_token=access_token, token_type="bearer")
 
 
+# response model
 class RespSend(Resp):
-    data: str = Field(None, description="token with code")
+    data: str = Field(None, description="token")
 
 
 @router.post("/send-code", response_model=RespSend)
-def _send_code(email: EmailStr = Body(...), _type: TypeName = Body(...), session: Session = Depends(get_session)):
+def _send_code(email: EmailStr = Body(...),
+               _type: TypeName = Body(...),
+               session: Session = Depends(get_session)):
     """
-    send a code to email, and return token
+    send a code to email, and return token with code
     """
     # check user existed or not
     user_model = crud_user.get_by_email(session, email=email)
@@ -105,6 +108,7 @@ def _verify_code(token: str = Body(..., min_length=10),
     if not sub_dict.get("email"):
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     email = sub_dict["email"]
+    user_model = crud_user.get_by_email(session, email=email)
 
     # check token: code
     if (not sub_dict.get("code")) or (sub_dict["code"] != code):
@@ -112,13 +116,12 @@ def _verify_code(token: str = Body(..., min_length=10),
     pwd_hash = get_pwd_hash(password)
 
     # check token type: signup
-    user_model = crud_user.get_by_email(session, email=email)
     if _type == TypeName.signup and (not user_model):
         # create user based on UserCreatePri
         user_schema = UserCreatePri(email=email, password=pwd_hash, email_verified=True)
         user_model = crud_user.create(session, obj_schema=user_schema)
 
-        # create user and return result
+        # logging and return result
         logging.warning("create user: %s", user_model.to_dict())
         return Resp(msg=f"{_type} successfully")
 
@@ -128,7 +131,7 @@ def _verify_code(token: str = Body(..., min_length=10),
         user_schema = UserUpdatePri(password=pwd_hash)
         user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
 
-        # update password and return result
+        # logging and return result
         logging.warning("reset password: %s", user_model.to_dict())
         return Resp(msg=f"{_type} successfully")
 
