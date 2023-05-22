@@ -59,7 +59,7 @@ with SessionLocal() as session:
     project_schema = ProjectUpdate(desc=desc)
 
     # update project -- ProjectUpdatePri
-    project_schema = ProjectUpdatePri(is_current=True, **project_schema.dict(exclude_unset=True))
+    project_schema = ProjectUpdatePri(**project_schema.dict(exclude_unset=True))
     project_model = crud_project.update(session, obj_model=project_model, obj_schema=project_schema)
     logging.warning("update project: %s", project_model.to_dict())
     logging.warning("update project: %s", ProjectSchema(**project_model.to_dict()))
