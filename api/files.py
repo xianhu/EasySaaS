@@ -24,7 +24,7 @@ def _upload(file: UploadFile = File(...), current_user: User = Depends(get_curre
     file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
     with open(file_path, "wb") as file_in:
         file_in.write(file.file.read())
-    return Result(msg="upload success")
+    return Resp(msg="upload success")
 
 
 @router.post("/upload-multi", response_model=Resp)
@@ -37,7 +37,7 @@ def _upload_multi(files: list[UploadFile] = File(...), current_user: User = Depe
         file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
         with open(file_path, "wb") as file_in:
             file_in.write(file.file.read())
-    return Result(msg="upload success")
+    return Resp(msg="upload success")
 
 
 @router.post("/upload-flow", response_model=Resp)

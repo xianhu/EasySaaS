@@ -59,7 +59,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
 
 
 class RespSend(Resp):
-    data: str = Field("", description="token with code")
+    data: str = Field(None, description="token with code")
 
 
 @router.post("/send-code", response_model=RespSend)
@@ -67,6 +67,7 @@ def _send_code(email: EmailStr = Body(...), _type: TypeName = Body(...), session
     """
     send a code to email, and return token
     """
+    # check user existed or not
     user_model = crud_user.get_by_email(session, email=email)
     if _type == TypeName.signup and user_model:
         return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
@@ -84,12 +85,10 @@ def _send_code(email: EmailStr = Body(...), _type: TypeName = Body(...), session
 
 
 @router.post("/verify-code", response_model=Resp)
-def _verify_code(
-        token: str = Body(..., min_length=10),
-        code: int = Body(..., ge=100000, le=999999),
-        password: str = Body(..., min_length=6),
-        session: Session = Depends(get_session),
-):
+def _verify_code(token: str = Body(..., min_length=10),
+                 code: int = Body(..., ge=100000, le=999999),
+                 password: str = Body(..., min_length=6),
+                 session: Session = Depends(get_session)):
     """
     verify code and token, then create user or update password
     """
@@ -109,7 +108,7 @@ def _verify_code(
 
     # check token: code
     if (not sub_dict.get("code")) or (sub_dict["code"] != code):
-        return Resp(status=-1, msg=error_tips.CODE_INVALID)
+        return Resp(status=-2, msg=error_tips.CODE_INVALID)
     pwd_hash = get_pwd_hash(password)
 
     # check token type: signup
@@ -119,6 +118,7 @@ def _verify_code(
         user_schema = UserCreatePri(email=email, password=pwd_hash, email_verified=True)
         user_model = crud_user.create(session, obj_schema=user_schema)
 
+        # create user and return result
         logging.warning("create user: %s", user_model.to_dict())
         return Resp(msg=f"{_type} successfully")
 
@@ -128,6 +128,7 @@ def _verify_code(
         user_schema = UserUpdatePri(password=pwd_hash)
         user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
 
+        # update password and return result
         logging.warning("reset password: %s", user_model.to_dict())
         return Resp(msg=f"{_type} successfully")
 
