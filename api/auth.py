@@ -19,7 +19,7 @@ from core.utils.security import create_sub_token, get_token_sub
 from core.utils.utemail import send_email_verify
 from data import get_session
 from data.crud import crud_user
-from data.schemas import AccessToken, Result, Token
+from data.schemas import AccessToken, Resp, Token
 from data.schemas import UserCreatePri, UserUpdatePri
 from .utils import user_existed, user_not_existed
 
@@ -89,7 +89,7 @@ def _send_code(email: EmailStr, _type: TypeName, session: Session = Depends(get_
     return Token(token=token, token_type="code")
 
 
-@router.post("/verify-code", response_model=Result)
+@router.post("/verify-code", response_model=Resp)
 def _verify_code(
         token: str = Query(..., min_length=10),
         code: int = Query(..., ge=100000, le=999999),

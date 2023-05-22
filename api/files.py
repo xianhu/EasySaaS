@@ -8,14 +8,14 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from core.settings import settings
 from data.models import User
-from data.schemas import Result
+from data.schemas import Resp
 from .utils import get_current_user
 
 # define router
 router = APIRouter()
 
 
-@router.post("/upload", response_model=Result)
+@router.post("/upload", response_model=Resp)
 def _upload(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
     """
     upload file
@@ -27,7 +27,7 @@ def _upload(file: UploadFile = File(...), current_user: User = Depends(get_curre
     return Result(msg="upload success")
 
 
-@router.post("/upload-multi", response_model=Result)
+@router.post("/upload-multi", response_model=Resp)
 def _upload_multi(files: list[UploadFile] = File(...), current_user: User = Depends(get_current_user)):
     """
     upload multi files
@@ -40,7 +40,7 @@ def _upload_multi(files: list[UploadFile] = File(...), current_user: User = Depe
     return Result(msg="upload success")
 
 
-@router.post("/upload-flow", response_model=Result)
+@router.post("/upload-flow", response_model=Resp)
 def _upload_flow(file: UploadFile = File(...),
                  flow_chunk_number: int = Form(...),
                  flow_chunk_total: int = Form(...),
@@ -58,5 +58,5 @@ def _upload_flow(file: UploadFile = File(...),
 
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
-        return Result(msg="uploading")
-    return Result(msg="upload success")
+        return Resp(msg="uploading")
+    return Resp(msg="upload success")

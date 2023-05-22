@@ -47,7 +47,7 @@ pip3.10 install -r requirements.txt
                 --pidfile index.pid --master --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
 
-.venv/bin/gunicorn main:app --bind 127.0.0.1:8000 --workers 2 --worker-class uvicorn.workers.UvicornWorker
+.venv/bin/gunicorn main:app --bind localhost:8000 --workers 2 --worker-class uvicorn.workers.UvicornWorker
 ```
 
 ### Frontend
