@@ -18,7 +18,7 @@ from .utils import get_current_user
 router = APIRouter()
 
 
-# define response
+# response model
 class RespUser(Resp):
     data: UserSchema = None
 
@@ -35,7 +35,9 @@ def _get(current_user: User = Depends(get_current_user)):
 
 
 @router.post("/update", response_model=RespUser)
-def _update(user_schema: UserUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+def _update(user_schema: UserUpdate,
+            current_user: User = Depends(get_current_user),
+            session: Session = Depends(get_session)):
     """
     update schema of current_user
     """
