@@ -19,11 +19,6 @@ class AccessToken(BaseModel):
     token_type: str = "bearer"
 
 
-class Token(BaseModel):
-    token: str
-    token_type: str
-
-
 class Resp(BaseModel):
     status: int = 0
     msg: str = "success"
