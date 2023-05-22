@@ -36,6 +36,7 @@ class Settings(BaseSettings):
 
     # settings -- others
     FOLDER_UPLOAD = "/tmp"
+    MAX_FILE_SIZE = 1024 * 1024 * 25
 
     # Config
     class Config:
