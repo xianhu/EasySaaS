@@ -14,16 +14,16 @@ from .user import UserSchema
 from .user import UserUpdate, UserUpdatePri
 
 
-class Token(BaseModel):
-    token: str
-    token_type: str
-
-
 class AccessToken(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
 
-class Result(BaseModel):
-    status: int = 1
-    msg: str
+class Token(BaseModel):
+    token: str
+    token_type: str
+
+
+class Resp(BaseModel):
+    status: int = 0
+    msg: str = "success"
