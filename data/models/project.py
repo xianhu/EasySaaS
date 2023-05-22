@@ -17,8 +17,6 @@ class Project(AbstractModel):
     # information -- others (model -> schema -> crud)
     # ts_expires = sqlalchemy.Column(sqlalchemy.Integer, doc="Timestamp Expires")
 
-    # information -- foreign_key
+    # relationship: foreign_key and user
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-
-    # relationship: user
     user = sqlalchemy.orm.relationship("User", back_populates="projects")

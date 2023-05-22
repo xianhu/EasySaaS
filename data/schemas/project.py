@@ -37,4 +37,6 @@ class ProjectUpdate(BaseModel):
 
 # used for internal call
 class ProjectUpdatePri(ProjectUpdate):
+    # id: Optional[int] = None
+    # user_id: Optional[int] = None
     pass
