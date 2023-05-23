@@ -27,12 +27,6 @@ from data.schemas import UserCreatePri, UserUpdatePri
 router = APIRouter()
 
 
-# define name of type
-class TypeName(str, Enum):
-    signup = "signup"
-    reset = "reset"
-
-
 @router.post("/access-token", response_model=Union[AccessToken, Resp])
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
@@ -56,6 +50,12 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
 
     # return access_token
     return AccessToken(access_token=access_token, token_type="bearer")
+
+
+# define name of type
+class TypeName(str, Enum):
+    signup = "signup"
+    reset = "reset"
 
 
 # response model
