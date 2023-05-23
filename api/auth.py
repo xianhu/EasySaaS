@@ -9,7 +9,7 @@ import logging
 from enum import Enum
 from typing import Union
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
@@ -37,12 +37,18 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     # check user existed
     user_model = crud_user.get_by_email(session, email=email)
     if not user_model:
-        return Resp(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=error_tips.EMAIL_NOT_EXISTED,
+        )
     logging.warning("get user: %s", user_model.to_dict())
 
     # check user password
     if not check_pwd_hash(pwd_plain, user_model.password):
-        return Resp(status=-2, msg=error_tips.PWD_INCORRECT)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=error_tips.PWD_INCORRECT,
+        )
 
     # create access_token with user_id
     access_token = create_sub_token(user_model.id)
