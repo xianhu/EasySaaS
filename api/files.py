@@ -4,7 +4,8 @@
 files api
 """
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import File, Form, UploadFile
 
 from core.settings import settings
 from data.models import User
