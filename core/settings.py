@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # settings from environment -- base
     APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", "EasySaaS")
-    APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN", "http://localhost:8000")
+    APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN", "http://127.0.0.1:8000")
     SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
     # settings from environment -- email

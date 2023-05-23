@@ -7,9 +7,8 @@ auth api
 import json
 import logging
 from enum import Enum
-from typing import Union
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
@@ -27,35 +26,41 @@ from data.schemas import UserCreatePri, UserUpdatePri
 router = APIRouter()
 
 
-# define name of type
-class TypeName(str, Enum):
-    signup = "signup"
-    reset = "reset"
-
-
-@router.post("/access-token", response_model=Union[AccessToken, Resp])
+@router.post("/access-token", response_model=AccessToken)
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
-    get access_token by username and password
+    get access_token by username and password, return access_token or raise exception(401)
     """
     email, pwd_plain = form_data.username, form_data.password
 
     # check user existed
     user_model = crud_user.get_by_email(session, email=email)
     if not user_model:
-        return Resp(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=error_tips.EMAIL_NOT_EXISTED,
+        )
     logging.warning("get user: %s", user_model.to_dict())
 
     # check user password
     if not check_pwd_hash(pwd_plain, user_model.password):
-        return Resp(status=-2, msg=error_tips.PWD_INCORRECT)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=error_tips.PWD_INCORRECT,
+        )
 
     # create access_token with user_id
     access_token = create_sub_token(user_model.id)
     logging.warning("create access_token: %s", access_token)
 
     # return access_token
-    return AccessToken(access_token=access_token, token_type="bearer")
+    return AccessToken(access_token=access_token)
+
+
+# name of verify type
+class TypeName(str, Enum):
+    signup = "signup"
+    reset = "reset"
 
 
 # response model
