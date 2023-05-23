@@ -33,3 +33,13 @@ app.add_middleware(
 
 # set router
 app.include_router(api_router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    logging.warning("startup...")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    logging.warning("shutdown...")
