@@ -45,15 +45,15 @@ def get_token_sub(token: str) -> Optional[str]:
     return payload["sub"] if payload else None
 
 
-def get_pwd_hash(pwd_plain: str) -> str:
+def get_password_hash(pwd_plain: str) -> str:
     """
-    get password hash
+    get hash value of password
     """
     return pwd_context.hash(pwd_plain)
 
 
-def check_pwd_hash(pwd_plain: str, pwd_hash: str) -> bool:
+def check_password(pwd_plain: str, pwd_hash: str) -> bool:
     """
-    check password hash
+    check password with hash value
     """
     return pwd_context.verify(pwd_plain, pwd_hash)

@@ -35,8 +35,8 @@ class Settings(BaseSettings):
     DATABASE_URI: str = os.getenv(f"{ENV_PRE}_DATABASE_URI")
 
     # settings -- others
-    FOLDER_UPLOAD = "/tmp"
-    MAX_FILE_SIZE = 1024 * 1024 * 25
+    FOLDER_UPLOAD: str = "/tmp"
+    MAX_FILE_SIZE: int = 1024 * 1024 * 25
 
     # Config
     class Config:
@@ -69,10 +69,10 @@ class ErrorTips(BaseSettings):
     USER_NOT_EXISTED: str = "This user not existed in system"
 
     # error tips -- crud
+    QUERY_FAILED: str = "Query failed"
     CREATE_FAILED: str = "Create failed"
     UPDATE_FAILED: str = "Update failed"
     DELETE_FAILED: str = "Delete failed"
-    QUERY_FAILED: str = "Query failed"
 
 
 error_tips = ErrorTips()
