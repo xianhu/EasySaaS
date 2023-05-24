@@ -5,7 +5,9 @@ settings file
 """
 
 import os
+import re
 import secrets
+from re import Pattern
 
 from pydantic import BaseSettings
 
@@ -35,8 +37,13 @@ class Settings(BaseSettings):
     DATABASE_URI: str = os.getenv(f"{ENV_PRE}_DATABASE_URI")
 
     # settings -- others
-    FOLDER_UPLOAD = "/tmp"
-    MAX_FILE_SIZE = 1024 * 1024 * 25
+    FOLDER_UPLOAD: str = "/tmp"
+    MAX_FILE_SIZE: int = 1024 * 1024 * 25
+
+    # settings -- regular of data field
+    RE_PHONE: Pattern = re.compile(r"^(13\d|14[5|7]|15\d|18\d)\d{8}$")
+    RE_EMAIL: Pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
+    RE_PASSWORD: Pattern = re.compile(r"^(?!\d+$)(?![a-zA-Z]+$)[\d\D]{6,20}$")
 
     # Config
     class Config:
@@ -69,10 +76,10 @@ class ErrorTips(BaseSettings):
     USER_NOT_EXISTED: str = "This user not existed in system"
 
     # error tips -- crud
+    QUERY_FAILED: str = "Query failed"
     CREATE_FAILED: str = "Create failed"
     UPDATE_FAILED: str = "Update failed"
     DELETE_FAILED: str = "Delete failed"
-    QUERY_FAILED: str = "Query failed"
 
 
 error_tips = ErrorTips()

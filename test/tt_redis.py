@@ -6,8 +6,13 @@ test redis
 
 import logging
 
-from data import get_redis
+import redis
 
-rd = get_redis()
+from data import RedisPool
+
+# init redis
+rd = redis.Redis(connection_pool=RedisPool)
+
+# test redis
 rd.set("test", "test")
 logging.warning("test: %s", rd.get("test"))

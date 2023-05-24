@@ -12,16 +12,16 @@ from sqlalchemy.orm import Session
 from core.settings import settings
 from .models.base import Model
 
-# create engine and session_maker
+# create engine and SessionMaker
 engine = sqlalchemy.create_engine(settings.DATABASE_URI, pool_pre_ping=True)
-SessionLocal = sqlalchemy.orm.sessionmaker(bind=engine, autocommit=False, autoflush=True)
+SessionMaker = sqlalchemy.orm.sessionmaker(bind=engine, autocommit=False, autoflush=True)
 
 
 def get_session() -> Generator[Session, None, None]:
     """
     generate session of mysql
     """
-    with SessionLocal() as session:
+    with SessionMaker() as session:
         yield session
 
 
