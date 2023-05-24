@@ -33,7 +33,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     """
     email, pwd_plain = form_data.username, form_data.password
 
-    # check user existed
+    # check user existed (must raise exception)
     user_model = crud_user.get_by_email(session, email=email)
     if not user_model:
         raise HTTPException(
