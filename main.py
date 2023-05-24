@@ -9,6 +9,8 @@ import time
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from api import api_router
 from core.settings import settings
@@ -32,6 +34,18 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# set middleware
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=[
+        "127.0.0.1",
+        "127.0.0.1:8000",
+    ],
+)
+
+# set middleware
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # set router
 app.include_router(api_router)
