@@ -15,7 +15,7 @@ from .user import UserUpdate, UserUpdatePri
 
 
 class AccessToken(BaseModel):
-    access_token: str
+    access_token: str  # required
     token_type: str = "bearer"
 
 
