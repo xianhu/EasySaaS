@@ -14,7 +14,7 @@ from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips
-from core.utils.security import check_pwd_hash, get_pwd_hash
+from core.utils.security import check_password_hash, get_password_hash
 from core.utils.security import create_sub_token, get_token_sub
 from core.utils.utemail import send_email_verify
 from data import get_session
@@ -43,7 +43,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     logging.warning("get user: %s", user_model.to_dict())
 
     # check user password
-    if not check_pwd_hash(pwd_plain, user_model.password):
+    if not check_password_hash(pwd_plain, user_model.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.PWD_INCORRECT,
@@ -95,7 +95,7 @@ def _send_code(email: EmailStr = Body(...),
 @router.post("/verify-code", response_model=Resp)
 def _verify_code(token: str = Body(..., min_length=10),
                  code: int = Body(..., ge=100000, le=999999),
-                 password: str = Body(..., min_length=6),
+                 password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
     verify code and token, then create user or update password
@@ -118,7 +118,7 @@ def _verify_code(token: str = Body(..., min_length=10),
     # check token: code
     if (not sub_dict.get("code")) or (sub_dict["code"] != code):
         return Resp(status=-2, msg=error_tips.CODE_INVALID)
-    pwd_hash = get_pwd_hash(password)
+    pwd_hash = get_password_hash(password)
 
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
