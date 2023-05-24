@@ -52,7 +52,7 @@ def get_password_hash(pwd_plain: str) -> str:
     return pwd_context.hash(pwd_plain)
 
 
-def check_password(pwd_plain: str, pwd_hash: str) -> bool:
+def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
     """
     check password with hash value
     """

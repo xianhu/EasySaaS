@@ -5,7 +5,9 @@ settings file
 """
 
 import os
+import re
 import secrets
+from re import Pattern
 
 from pydantic import BaseSettings
 
@@ -37,6 +39,11 @@ class Settings(BaseSettings):
     # settings -- others
     FOLDER_UPLOAD: str = "/tmp"
     MAX_FILE_SIZE: int = 1024 * 1024 * 25
+
+    # settings -- regular of data field
+    RE_PHONE: Pattern = re.compile(r"^(13\d|14[5|7]|15\d|18\d)\d{8}$")
+    RE_EMAIL: Pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
+    RE_PASSWORD: Pattern = re.compile(r"^(?!\d+$)(?![a-zA-Z]+$)[\d\D]{6,20}$")
 
     # Config
     class Config:
