@@ -4,5 +4,5 @@
 data module
 """
 
-from .dmysql import SessionLocal, get_session
+from .dmysql import SessionMaker, get_session
 from .dredis import RedisPool, get_redis

@@ -26,7 +26,7 @@ class UserCreate(BaseModel):
     name: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     email: EmailStr  # required
-    password: str  # required
+    password: str  # plain or hashed
 
 
 # used for internal call
