@@ -5,7 +5,8 @@ files api
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi import File, Form, UploadFile
+from fastapi import File, Form, Path, UploadFile
+from fastapi.responses import FileResponse
 
 from core.settings import settings
 from data.models import User
@@ -28,13 +29,13 @@ def _upload(file: UploadFile = File(...),
     if file.size > settings.MAX_FILE_SIZE:
         return Resp(status=-1, msg="file size too large")
 
-    # define file path and save file
+    # define file path
     file_name = f"{current_user.id}_{file.filename}"
     file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
+
+    # save file and return result
     with open(file_path, "wb") as file_in:
         file_in.write(file.file.read())
-
-    # return result
     return Resp(msg="upload success")
 
 
@@ -56,7 +57,7 @@ def _upload_flow(file: UploadFile = File(...),
             detail="file size too large",
         )
 
-    # define file path and save file
+    # define file path
     file_name = f"{current_user.id}_{file.filename}"
     file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
 
@@ -69,3 +70,16 @@ def _upload_flow(file: UploadFile = File(...),
     if flow_chunk_number != flow_chunk_total:
         return Resp(msg="uploading")
     return Resp(msg="upload success")
+
+
+@router.get("/download/{file_name}", response_class=FileResponse)
+def _download(file_name: str = Path(...), current_user: User = Depends(get_current_user)):
+    """
+    download file
+    """
+    # define file path
+    file_name = f"{current_user.id}_{file_name}"
+    file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
+
+    # return file response
+    return FileResponse(file_path, filename=file_name)
