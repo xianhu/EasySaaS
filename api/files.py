@@ -18,8 +18,7 @@ router = APIRouter()
 
 
 @router.post("/upload", response_model=Resp)
-def _upload(file: UploadFile = File(...),
-            current_user: User = Depends(get_current_user)):
+def _upload(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
     """
     upload file
     - **status=0**: upload success
