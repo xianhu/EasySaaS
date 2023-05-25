@@ -27,7 +27,7 @@ with SessionMaker() as session:
     user_schema = UserCreate(**dict(email=email, password=pwd_hash))
 
     # create user -- UserCreatePri
-    role_json = {"role": "admin", "permissions": ["*"]}
+    role_json = {"role": "admin", "permissions": ["select"]}
     user_schema = UserCreatePri(id=100001, role_json=role_json, **user_schema.dict(exclude_unset=True))
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
@@ -37,8 +37,13 @@ with SessionMaker() as session:
     avatar = "https://www.example.com"
     user_schema = UserUpdate(**dict(name="admin", avatar=avatar))
 
+    # test update json: must create a new object
+    permissions = user_model.role_json["permissions"]
+    permissions.extend(["insert", "update", "delete"])
+    role_json = {"role": "member", "permissions": permissions}
+
     # update user -- UserUpdatePri
-    user_schema = UserUpdatePri(email_verified=True, is_admin=True, **user_schema.dict(exclude_unset=True))
+    user_schema = UserUpdatePri(email_verified=True, role_json=role_json, **user_schema.dict(exclude_unset=True))
     user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
     logging.warning("update user: %s", user_model.to_dict())
     logging.warning("update user: %s", UserSchema(**user_model.to_dict()))

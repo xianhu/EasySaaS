@@ -13,7 +13,7 @@ gunicorn~=20.1.0
 # Database
 redis~=4.5.5
 pymysql~=1.0.3
-SQLAlchemy~=2.0.13
+SQLAlchemy~=2.0.15
 
 # Tasks
 celery~=5.2.7
@@ -26,6 +26,6 @@ python-jose[cryptography]~=3.3.0
 
 # Others
 emails~=0.6.0
-orjson~=3.8.12
-pydantic[email]~=1.10.7
+orjson~=3.8.13
+pydantic[email]~=1.10.8
 python-multipart~=0.0.6

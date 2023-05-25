@@ -30,7 +30,10 @@ router = APIRouter()
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
     get access_token by username and password, return access_token or raise exception(401)
+    - **username**: value of email
+    - **password**: value of password
     """
+    # get username and password from form_data
     email, pwd_plain = form_data.username, form_data.password
 
     # check user existed (must raise exception)
@@ -74,6 +77,9 @@ def _send_code(email: EmailStr = Body(...),
                session: Session = Depends(get_session)):
     """
     send a code to email, and return token with code
+    - **status=0**: send email success, data=token
+    - **status=-1**: email existed or not existed
+    - **status=-2**: send email failed
     """
     # check user existed or not
     user_model = crud_user.get_by_email(session, email=email)
@@ -99,6 +105,9 @@ def _verify_code(token: str = Body(..., min_length=10),
                  session: Session = Depends(get_session)):
     """
     verify code and token, then create user or update password
+    - **status=0**: verify success
+    - **status=-1**: token invalid
+    - **status=-2**: code invalid
     """
     # get sub_dict from token
     sub_dict = json.loads(get_token_sub(token) or "{}")

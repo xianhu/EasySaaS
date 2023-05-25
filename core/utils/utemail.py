@@ -27,7 +27,7 @@ smtp_options = {
 
 def send_email(_from: Union[str, tuple], _to: Union[str, tuple], subject: str, html: str, render: Dict[str, Any]) -> int:
     """
-    send email via smtp
+    send email via smtp, return status code or -1 if failed
     """
     try:
         message = emails.Message(mail_from=_from, subject=JinjaTemplate(subject), html=JinjaTemplate(html))
@@ -35,7 +35,7 @@ def send_email(_from: Union[str, tuple], _to: Union[str, tuple], subject: str, h
         return response.status_code  # 250
     except Exception as excep:
         logging.error("send email error: %s", excep)
-        return 0
+        return -1  # failed
 
 
 def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Optional[str]:
