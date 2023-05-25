@@ -27,6 +27,7 @@ class RespUser(Resp):
 def _get(current_user: User = Depends(get_current_user)):
     """
     get schema of current_user
+    - **status=0**: data=UserSchema
     """
     user_model = current_user
 
@@ -40,6 +41,7 @@ def _update(user_schema: UserUpdate,
             session: Session = Depends(get_session)):
     """
     update schema of current_user
+    - **status=0**: data=UserSchema
     """
     user_model = current_user
 

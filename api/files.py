@@ -21,6 +21,8 @@ def _upload(file: UploadFile = File(...),
             current_user: User = Depends(get_current_user)):
     """
     upload file
+    - **status=0**: upload success
+    - **status=-1**: file size too large
     """
     # check file size
     if file.size > settings.MAX_FILE_SIZE:
@@ -36,27 +38,6 @@ def _upload(file: UploadFile = File(...),
     return Resp(msg="upload success")
 
 
-@router.post("/upload-multi", response_model=Resp)
-def _upload_multi(files: list[UploadFile] = File(...),
-                  current_user: User = Depends(get_current_user)):
-    """
-    upload multi files
-    """
-    for file in files:
-        # check file size
-        if file.size > settings.MAX_FILE_SIZE:
-            return Resp(status=-1, msg="file size too large")
-
-        # define file path and save file
-        file_name = f"{current_user.id}_{file.filename}"
-        file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
-        with open(file_path, "wb") as file_in:
-            file_in.write(file.file.read())
-
-    # return result
-    return Resp(msg="upload success")
-
-
 @router.post("/upload-flow", response_model=Resp)
 def _upload_flow(file: UploadFile = File(...),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
@@ -65,6 +46,8 @@ def _upload_flow(file: UploadFile = File(...),
                  current_user: User = Depends(get_current_user)):
     """
     upload file by flow.js
+    - **status=0**: upload success
+    - **status_code=400**: file size too large
     """
     # check file size: raise exception
     if flow_total_size > settings.MAX_FILE_SIZE:
