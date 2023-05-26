@@ -34,7 +34,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     - **password**: value of password
     """
     # get username and password from form_data
-    email, pwd_plain = form_data.username, form_data.password
+    email, pwd_plain, scopes = form_data.username, form_data.password, form_data.scopes
 
     # check user existed (must raise exception)
     user_model = crud_user.get_by_email(session, email=email)

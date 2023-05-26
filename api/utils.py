@@ -3,26 +3,50 @@
 """
 utils functions
 """
+import logging
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips
-from core.utils.security import get_token_sub
+from core.utils.security import get_token_data
 from data import get_session
 from data.crud import crud_user
 from data.models import User
+from data.schemas import TokenData
 
 # define OAuth2PasswordBearer
-oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
+oauth2 = OAuth2PasswordBearer(
+    tokenUrl="/auth/access-token",
+    scopes={
+        "user:read": "Read users.",
+        "user:write": "Write users.",
+    },
+)
 
 
-def get_current_user(access_token: str = Depends(oauth2), session: Session = Depends(get_session)) -> User:
+def get_current_user(security_scopes: SecurityScopes,
+                     access_token: str = Depends(oauth2),
+                     session: Session = Depends(get_session)) -> User:
     """
-    check access_token, return user model or raise exception(401)
+    check security_scopes and access_token, return user model or raise exception(401)
     """
-    # get user_id from access_token
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = "Bearer"
+    logging.warning(security_scopes.scopes)
+    logging.warning(security_scopes.scope_str)
+
+    # get data from access_token
+    payload = get_token_data(access_token)
+
+    username: str = payload.get("sub")
+    if username is None:
+        raise credentials_exception
+    token_scopes = payload.get("scopes", [])
+    token_data = TokenData(scopes=token_scopes, user_id=payload.get("user_id"), user_name=payload.get("user_name"))
     user_id = get_token_sub(access_token)
     if user_id:
         # check user by user_id
