@@ -57,6 +57,7 @@ class ErrorTips(BaseSettings):
     # error tips -- common
     CODE_INVALID: str = "Code is invalid or expired"
     TOKEN_INVALID: str = "Token is invalid or expired"
+    SCOPE_INVALID: str = "Scope is no permission"
     CAPTCHA_INCORRECT: str = "Captcha is incorrect"
 
     # error tips -- password
@@ -80,6 +81,10 @@ class ErrorTips(BaseSettings):
     CREATE_FAILED: str = "Create failed"
     UPDATE_FAILED: str = "Update failed"
     DELETE_FAILED: str = "Delete failed"
+
+    # Config
+    class Config:
+        case_sensitive = True
 
 
 error_tips = ErrorTips()
