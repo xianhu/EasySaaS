@@ -33,7 +33,6 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     - **password**: value of password
     - **scopes**: value of scopes
     """
-    logging.warning(form_data.scopes)
     # get username and password from form_data
     email, pwd_plain = form_data.username, form_data.password
 
@@ -44,7 +43,6 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.EMAIL_NOT_EXISTED,
         )
-    logging.warning("get user: %s", user_model.to_dict())
 
     # check user password
     if not check_password_hash(pwd_plain, user_model.password):
@@ -56,7 +54,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
 
     # create access_token with user_id and scopes
     access_token = create_token_data({"sub": str(user_model.id), "scopes": scopes})
-    logging.warning("create access_token: %s", access_token)
+    logging.warning("create access_token: %s - %s - %s", user_model.id, scopes, access_token)
 
     # return access_token
     return AccessToken(access_token=access_token)
