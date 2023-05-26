@@ -32,7 +32,7 @@ with SessionMaker() as session:
     avatar = "https://www.example.com"
     user_schema = UserUpdate(**dict(name="admin", avatar=avatar))
 
-    # test update json: must create a new object
+    # update json: must create a new object
     scopes = user_model.role_json["scopes"]
     scopes.append("user:write")
     role_json = {"role": "member", "scopes": scopes}

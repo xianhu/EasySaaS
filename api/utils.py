@@ -17,11 +17,11 @@ from data.crud import crud_user
 from data.models import User
 
 
-# define scopes
+# define enum of scopes
 class ScopeName(str, Enum):
     user_read = "user:read"
     user_write = "user:write"
-    files = "files"
+    files = "files:upload/download"
 
 
 # define OAuth2PasswordBearer

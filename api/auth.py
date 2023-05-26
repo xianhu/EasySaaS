@@ -37,7 +37,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     # get username and password from form_data
     email, pwd_plain = form_data.username, form_data.password
 
-    # check user existed (must raise exception)
+    # check if user existed (must raise exception)
     user_model = crud_user.get_by_email(session, email=email)
     if not user_model:
         raise HTTPException(
@@ -45,7 +45,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
             detail=error_tips.EMAIL_NOT_EXISTED,
         )
 
-    # check user password
+    # check if user password correct (must raise exception)
     if not check_password_hash(pwd_plain, user_model.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
