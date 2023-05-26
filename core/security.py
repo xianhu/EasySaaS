@@ -3,6 +3,7 @@
 """
 utils of security
 """
+
 import logging
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
@@ -10,7 +11,7 @@ from typing import Any, Dict, Optional
 from jose import jwt
 from passlib.context import CryptContext
 
-from ..settings import settings
+from .settings import settings
 
 # global
 ALGORITHM = "HS256"

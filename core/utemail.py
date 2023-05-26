@@ -12,7 +12,7 @@ import emails
 from emails.template import JinjaTemplate
 
 from .security import create_token_data
-from ..settings import settings
+from .settings import settings
 
 # email config
 smtp_options = {
