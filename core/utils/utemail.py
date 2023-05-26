@@ -4,7 +4,6 @@
 utils of email
 """
 
-import json
 import logging
 import random
 from typing import Any, Dict, Optional, Union
@@ -12,7 +11,7 @@ from typing import Any, Dict, Optional, Union
 import emails
 from emails.template import JinjaTemplate
 
-from .security import create_sub_token
+from .security import create_token_data
 from ..settings import settings
 
 # email config
@@ -45,8 +44,8 @@ def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Op
     """
     # define code and token
     code = random.randint(100000, 999999) if is_code else 0
-    sub = json.dumps(dict(email=email, code=code, type=_type))
-    token = create_sub_token(sub, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
+    data = dict(sub=email, code=code, type=_type)
+    token = create_token_data(data, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
 
     # define email content
     mail_subject = "Verify of {{ app_name }}"

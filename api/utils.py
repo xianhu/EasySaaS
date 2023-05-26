@@ -3,6 +3,7 @@
 """
 utils functions
 """
+import logging
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
@@ -34,6 +35,10 @@ def get_current_user(security_scopes: SecurityScopes,
     auth_value = "Bearer"
     if security_scopes.scopes:
         auth_value = f'Bearer scope="{security_scopes.scope_str}"'
+    logging.warning("auth_value: %s", auth_value)
+    logging.warning("access_token: %s", access_token)
+    logging.warning(security_scopes.scopes)
+    logging.warning(security_scopes.scope_str)
 
     # define credentials_exception
     credentials_exception = HTTPException(
@@ -57,7 +62,7 @@ def get_current_user(security_scopes: SecurityScopes,
         if scope not in user_scopes:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=error_tips.SCOPE_INVALID,
+                detail=error_tips.TOKEN_INVALID,
                 headers={"WWW-Authenticate": auth_value},
             )
 

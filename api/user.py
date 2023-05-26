@@ -4,7 +4,8 @@
 user api
 """
 
-from fastapi import APIRouter, Depends
+from typing import Annotated
+from fastapi import APIRouter, Depends, Security
 from sqlalchemy.orm import Session
 
 from data import get_session
@@ -24,7 +25,7 @@ class RespUser(Resp):
 
 
 @router.get("/get", response_model=RespUser)
-def _get(current_user: User = Depends(get_current_user)):
+def _get(current_user: Annotated[User, Security(get_current_user, scopes=["user:read"])]):
     """
     get schema of current_user
     - **status=0**: data=UserSchema

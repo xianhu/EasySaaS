@@ -3,7 +3,7 @@
 """
 utils of security
 """
-
+import logging
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
@@ -39,10 +39,13 @@ def get_token_payload(token: str) -> Optional[Dict[str, Any]]:
     """
     get payload from token, return None if token is invalid
     """
+    print(token)
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
-    except jwt.JWTError:
+    except jwt.JWTError as excep:
+        logging.error("get token payload error: %s", excep)
         payload = None
+    print(payload)
 
     # return
     return payload

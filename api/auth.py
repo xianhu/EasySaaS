@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 
 from core.settings import error_tips
 from core.utils.security import check_password_hash, get_password_hash
-from core.utils.security import create_token_data, get_token_payload
+from core.utils.security import create_token_data
 from core.utils.utemail import send_email_verify
 from data import get_session
 from data.crud import crud_user
@@ -52,8 +52,8 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
             detail=error_tips.PWD_INCORRECT,
         )
 
-    # create access_token with user_id
-    access_token = create_token_data({"sub": user_model.id, "scopes": scopes})
+    # create access_token with user_id and scopes
+    access_token = create_token_data({"sub": str(user_model.id), "scopes": scopes})
     logging.warning("create access_token: %s", access_token)
 
     # return access_token
