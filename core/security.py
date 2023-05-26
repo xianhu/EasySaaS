@@ -29,7 +29,7 @@ def create_token_data(data: Dict[str, Any], expires_duration: int = None) -> str
     expire = datetime.utcnow() + timedelta(seconds=seconds)
 
     # define payload and token
-    payload = {**data, "exp": expire}
+    payload = dict(**data, exp=expire)
     token = jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
 
     # return
@@ -38,15 +38,14 @@ def create_token_data(data: Dict[str, Any], expires_duration: int = None) -> str
 
 def get_token_payload(token: str) -> Optional[Dict[str, Any]]:
     """
-    get payload from token, return None if token is invalid
+    get payload from token
+    :return payload or None if failed
     """
-    print(token)
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
     except jwt.JWTError as excep:
         logging.error("get token payload error: %s", excep)
         payload = None
-    print(payload)
 
     # return
     return payload

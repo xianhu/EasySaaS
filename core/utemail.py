@@ -29,8 +29,15 @@ def send_email(_from: Union[str, tuple], _to: Union[str, tuple], subject: str, h
     send email via smtp, return status code or -1 if failed
     """
     try:
-        message = emails.Message(mail_from=_from, subject=JinjaTemplate(subject), html=JinjaTemplate(html))
+        # define Jinja
+        html = JinjaTemplate(html)
+        subject = JinjaTemplate(subject)
+
+        # define message and send it
+        message = emails.Message(mail_from=_from, subject=subject, html=html)
         response = message.send(to=_to, render=render, smtp=smtp_options)
+
+        # return status_code
         return response.status_code  # 250
     except Exception as excep:
         logging.error("send email error: %s", excep)
@@ -42,8 +49,10 @@ def send_email_verify(email: str, is_code: bool = True, _type: str = None) -> Op
     send code or link to email, and return token with sub: {email, code, type}
     :return token or None if send failed
     """
-    # define code and token
+    # define code
     code = random.randint(100000, 999999) if is_code else 0
+
+    # define data and token
     data = dict(sub=email, code=code, type=_type)
     token = create_token_data(data, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
 
