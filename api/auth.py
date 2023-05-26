@@ -5,6 +5,7 @@ auth api
 """
 
 import logging
+import random
 from enum import Enum
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
@@ -14,8 +15,8 @@ from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
 from core.security import create_token_data, get_token_payload
-from core.settings import error_tips
-from core.utemail import send_email_verify
+from core.settings import error_tips, settings
+from core.utemail import send_email
 from data import get_session
 from data.crud import crud_user
 from data.schemas import AccessToken, Resp
@@ -88,10 +89,31 @@ def _send_code(email: EmailStr = Body(...),
     if _type == TypeName.reset and (not user_model):
         return RespSend(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
 
-    # create token with code and type(!!!)
-    token = send_email_verify(email, is_code=True, _type=_type)
-    if not token:
+    # define code
+    code = random.randint(100000, 999999)
+
+    # define data and token
+    data = dict(sub=email, code=code, type=_type)
+    token = create_token_data(data, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
+
+    # define email content
+    mail_subject = "Verify of {{ app_name }}"
+    mail_html = "Verify code: <b>{{ code }}</b>"
+
+    # define link and render
+    link = f"{settings.APP_DOMAIN}?token={token}"
+    render = dict(app_name=settings.APP_NAME, code=code, link=link)
+
+    # send email and check status
+    _from = (settings.APP_NAME, settings.MAIL_USERNAME)
+    status_code = send_email(_from, email, subject=mail_subject, html=mail_html, render=render)
+    if status_code != 250:
         return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
+
+    # # create token with code and type(!!!)
+    # token = send_email_verify(email, is_code=True, _type=_type)
+    # if not token:
+    #     return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
     logging.warning("send code: %s - %s - %s", email, _type, token)
 
     # return token with code

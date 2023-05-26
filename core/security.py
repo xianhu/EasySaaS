@@ -20,7 +20,7 @@ pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 def create_token_data(data: Dict[str, Any], expires_duration: int = None) -> str:
     """
-    create token based on data and expires_duration
+    create token based on data and expires_duration, return token
     :param data: {"sub": user_id, "scopes": ["user:read", ...,], ...}
     :param expires_duration: seconds, default ACCESS_TOKEN_EXPIRE_DURATION
     """
@@ -38,8 +38,7 @@ def create_token_data(data: Dict[str, Any], expires_duration: int = None) -> str
 
 def get_token_payload(token: str) -> Dict[str, Any]:
     """
-    get payload from token
-    :return payload or {} if failed
+    get payload from token, return payload or {} if failed
     """
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
