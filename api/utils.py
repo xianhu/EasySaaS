@@ -4,6 +4,8 @@
 utils functions
 """
 
+from enum import Enum
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from sqlalchemy.orm import Session
@@ -14,14 +16,18 @@ from data import get_session
 from data.crud import crud_user
 from data.models import User
 
+
+# define scopes
+class ScopeName(str, Enum):
+    user_read = "user:read"
+    user_write = "user:write"
+    files = "files"
+
+
 # define OAuth2PasswordBearer
 oauth2 = OAuth2PasswordBearer(
     tokenUrl="/auth/access-token",
-    scopes={
-        "user:read": "Read users.",
-        "user:write": "Write users.",
-        "files": "Upload or Download files.",
-    },
+    scopes={scope.value: scope.name for scope in ScopeName},
 )
 
 

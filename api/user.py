@@ -14,7 +14,7 @@ from data.crud import crud_user
 from data.models import User
 from data.schemas import Resp, UserSchema
 from data.schemas import UserUpdate, UserUpdatePri
-from .utils import get_current_user
+from .utils import ScopeName, get_current_user
 
 # define router
 router = APIRouter()
@@ -26,7 +26,7 @@ class RespUser(Resp):
 
 
 @router.get("/get", response_model=RespUser)
-def _get(current_user: Annotated[User, Security(get_current_user, scopes=["user:read"])]):
+def _get(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.user_read, ])]):
     """
     get schema of current_user
     - **status=0**: data=UserSchema
@@ -39,7 +39,7 @@ def _get(current_user: Annotated[User, Security(get_current_user, scopes=["user:
 
 @router.post("/update", response_model=RespUser)
 def _update(user_schema: UserUpdate,
-            current_user: Annotated[User, Security(get_current_user, scopes=["user:write"])],
+            current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.user_write, ])],
             session: Session = Depends(get_session)):
     """
     update schema of current_user

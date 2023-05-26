@@ -13,14 +13,14 @@ from fastapi.responses import FileResponse
 from core.settings import settings
 from data.models import User
 from data.schemas import Resp
-from .utils import get_current_user
+from .utils import ScopeName, get_current_user
 
 # define router
 router = APIRouter()
 
 
 @router.post("/upload", response_model=Resp)
-def _upload(current_user: Annotated[User, Security(get_current_user, scopes=["files"])],
+def _upload(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.files, ])],
             file: UploadFile = File(...)):
     """
     upload file
@@ -42,7 +42,7 @@ def _upload(current_user: Annotated[User, Security(get_current_user, scopes=["fi
 
 
 @router.post("/upload-flow", response_model=Resp)
-def _upload_flow(current_user: Annotated[User, Security(get_current_user, scopes=["files"])],
+def _upload_flow(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.files, ])],
                  file: UploadFile = File(...),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
@@ -75,7 +75,7 @@ def _upload_flow(current_user: Annotated[User, Security(get_current_user, scopes
 
 
 @router.get("/download/{file_name}", response_class=FileResponse)
-def _download(current_user: Annotated[User, Security(get_current_user, scopes=["files"])],
+def _download(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.files, ])],
               file_name: str = Path(...)):
     """
     download file
