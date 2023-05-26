@@ -4,8 +4,6 @@
 schemas module
 """
 
-from typing import List
-
 from pydantic import BaseModel
 
 from .project import ProjectCreate, ProjectCreatePri
@@ -19,11 +17,6 @@ from .user import UserUpdate, UserUpdatePri
 class AccessToken(BaseModel):
     access_token: str  # required
     token_type: str = "bearer"
-
-
-class TokenData(BaseModel):
-    user_id: int  # required
-    scopes: List[str] = []
 
 
 class Resp(BaseModel):
