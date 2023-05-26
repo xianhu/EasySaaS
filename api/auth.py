@@ -13,10 +13,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
 
+from core.security import check_password_hash, get_password_hash
+from core.security import create_token_data, get_token_payload
 from core.settings import error_tips
-from core.utils.security import check_password_hash, get_password_hash
-from core.utils.security import create_token_data
-from core.utils.utemail import send_email_verify
+from core.utemail import send_email_verify
 from data import get_session
 from data.crud import crud_user
 from data.schemas import AccessToken, Resp
@@ -32,9 +32,11 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     get access_token by username and password, return access_token or raise exception(401)
     - **username**: value of email
     - **password**: value of password
+    - **scopes**: value of scopes
     """
+    logging.warning(form_data.scopes)
     # get username and password from form_data
-    email, pwd_plain, scopes = form_data.username, form_data.password, form_data.scopes
+    email, pwd_plain = form_data.username, form_data.password
 
     # check user existed (must raise exception)
     user_model = crud_user.get_by_email(session, email=email)
@@ -51,6 +53,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.PWD_INCORRECT,
         )
+    scopes = form_data.scopes
 
     # create access_token with user_id and scopes
     access_token = create_token_data({"sub": str(user_model.id), "scopes": scopes})
@@ -110,7 +113,7 @@ def _verify_code(token: str = Body(..., min_length=10),
     - **status=-2**: code invalid
     """
     # get sub_dict from token
-    sub_dict = json.loads(get_token_sub(token) or "{}")
+    sub_dict = json.loads(get_token_payload(token) or "{}")
     logging.warning("get sub_dict: %s - %s", sub_dict, code)
 
     # check token: type(!!!)

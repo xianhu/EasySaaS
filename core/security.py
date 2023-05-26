@@ -6,7 +6,7 @@ utils of security
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from jose import jwt
 from passlib.context import CryptContext
@@ -36,7 +36,7 @@ def create_token_data(data: Dict[str, Any], expires_duration: int = None) -> str
     return token
 
 
-def get_token_payload(token: str) -> Optional[Dict[str, Any]]:
+def get_token_payload(token: str) -> Dict[str, Any]:
     """
     get payload from token
     :return payload or {} if failed

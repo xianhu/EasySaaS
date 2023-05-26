@@ -31,38 +31,37 @@ def get_current_user(security_scopes: SecurityScopes,
     """
     check security_scopes and access_token, return user model or raise exception(401)
     """
-    # define authenticate_value
-    authenticate_value = "Bearer"
-    if security_scopes.scopes:
-        scope_str = security_scopes.scope_str
-        authenticate_value = f"Bearer scope=\"{scope_str}\""
-
-    # define credentials_exception
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=error_tips.TOKEN_INVALID,
-        headers={"WWW-Authenticate": authenticate_value},
-    )
-
     # get payload from access_token
     payload = get_token_payload(access_token)
-    user_id, scopes = payload.get("sub"), payload.get("scopes", [])
-    if not user_id:
-        raise credentials_exception
+    scope_str = security_scopes.scope_str
+
+    # check user_id (sub)
+    if not payload.get("sub"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=error_tips.TOKEN_INVALID,
+            headers={"WWW-Authenticate": f"Bearer scope=\"{scope_str}\""},
+        )
 
     # check user scopes
+    scopes = payload.get("scopes", [])
     for scope in security_scopes.scopes:
         if scope not in scopes:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=error_tips.TOKEN_INVALID,
-                headers={"WWW-Authenticate": authenticate_value},
+                detail=error_tips.SCOPE_INVALID,
+                headers={"WWW-Authenticate": f"Bearer scope=\"{scope_str}\""},
             )
 
-    # get user model
+    # check user model
+    user_id = payload.get("sub")
     user_model = crud_user.get(session, _id=user_id)
     if not user_model:
-        raise credentials_exception
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=error_tips.TOKEN_INVALID,
+            headers={"WWW-Authenticate": f"Bearer scope=\"{scope_str}\""},
+        )
 
     # return user
     return user_model
