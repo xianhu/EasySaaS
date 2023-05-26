@@ -32,7 +32,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     get access_token by username and password, return access_token or raise exception(401)
     - **username**: value of email
     - **password**: value of password
-    - **scopes**: value of scopes
+    - **scopes**: value of scopes, split by space
     """
     # get username and password from form_data
     email, pwd_plain = form_data.username, form_data.password
@@ -51,11 +51,11 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.PWD_INCORRECT,
         )
-    scopes = form_data.scopes
+    user_id = user_model.id
 
     # create access_token with user_id and scopes
-    access_token = create_token_data({"sub": str(user_model.id), "scopes": scopes})
-    logging.warning("create access_token: %s - %s - %s", user_model.id, scopes, access_token)
+    access_token = create_token_data({"sub": str(user_id), "scopes": form_data.scopes})
+    logging.warning("create access_token: %s - %s - %s", user_id, form_data.scopes, access_token)
 
     # return access_token
     return AccessToken(access_token=access_token)
