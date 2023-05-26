@@ -39,13 +39,13 @@ def create_token_data(data: Dict[str, Any], expires_duration: int = None) -> str
 def get_token_payload(token: str) -> Optional[Dict[str, Any]]:
     """
     get payload from token
-    :return payload or None if failed
+    :return payload or {} if failed
     """
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=ALGORITHM)
     except jwt.JWTError as excep:
         logging.error("get token payload error: %s", excep)
-        payload = None
+        payload = {}
 
     # return
     return payload
