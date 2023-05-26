@@ -4,7 +4,6 @@
 auth api
 """
 
-import json
 import logging
 from enum import Enum
 
@@ -112,23 +111,23 @@ def _verify_code(token: str = Body(..., min_length=10),
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """
-    # get sub_dict from token
-    sub_dict = json.loads(get_token_payload(token) or "{}")
-    logging.warning("get sub_dict: %s - %s", sub_dict, code)
+    # get payload from token
+    payload = get_token_payload(token)
+    logging.warning("get payload: %s - %s", payload, code)
 
     # check token: type(!!!)
-    if (not sub_dict.get("type")) or (sub_dict["type"] not in TypeName.__members__):
+    if (not payload.get("type")) or (payload["type"] not in TypeName.__members__):
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
-    _type = sub_dict["type"]
+    _type = payload["type"]
 
     # check token: email
-    if not sub_dict.get("email"):
+    if not payload.get("email"):
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
-    email = sub_dict["email"]
+    email = payload["email"]
     user_model = crud_user.get_by_email(session, email=email)
 
     # check token: code
-    if (not sub_dict.get("code")) or (sub_dict["code"] != code):
+    if (not payload.get("code")) or (payload["code"] != code):
         return Resp(status=-2, msg=error_tips.CODE_INVALID)
     pwd_hash = get_password_hash(password)
 
