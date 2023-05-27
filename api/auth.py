@@ -29,7 +29,7 @@ router = APIRouter()
 @router.post("/access-token", response_model=AccessToken)
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     """
-    get access_token by username and password, return access_token or raise exception(401)
+    get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
     - **username**: value of email
     - **password**: value of password
     - **scopes**: value of scopes, split by space
@@ -44,16 +44,17 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.EMAIL_NOT_EXISTED,
         )
+    pwd_hash = user_model.password
 
-    # check if user password correct (must raise exception)
-    if not check_password_hash(pwd_plain, user_model.password):
+    # check password (must raise exception)
+    if not check_password_hash(pwd_plain, pwd_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.PWD_INCORRECT,
         )
     user_id = user_model.id
 
-    # create access_token with user_id and scopes
+    # create access_token with user_id and scopes: List[str]
     access_token = create_token_data({"sub": str(user_id), "scopes": form_data.scopes})
     logging.warning("create access_token: %s - %s - %s", user_id, form_data.scopes, access_token)
 
@@ -61,7 +62,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     return AccessToken(access_token=access_token)
 
 
-# name of verify type
+# define enum of type
 class TypeName(str, Enum):
     signup = "signup"
     reset = "reset"
@@ -89,40 +90,30 @@ def _send_code(email: EmailStr = Body(...),
     if _type == TypeName.reset and (not user_model):
         return RespSend(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
 
-    # define code
+    # define code, data and token
     code = random.randint(100000, 999999)
-
-    # define data and token
     data = dict(sub=email, code=code, type=_type)
     token = create_token_data(data, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
 
-    # define email content
+    # define email content and render
     mail_subject = "Verify of {{ app_name }}"
     mail_html = "Verify code: <b>{{ code }}</b>"
+    render = dict(app_name=settings.APP_NAME, code=code)
 
-    # define link and render
-    link = f"{settings.APP_DOMAIN}?token={token}"
-    render = dict(app_name=settings.APP_NAME, code=code, link=link)
-
-    # send email and check status
+    # send email and check status_code
     _from = (settings.APP_NAME, settings.MAIL_USERNAME)
     status_code = send_email(_from, email, subject=mail_subject, html=mail_html, render=render)
     if status_code != 250:
         return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
-
-    # # create token with code and type(!!!)
-    # token = send_email_verify(email, is_code=True, _type=_type)
-    # if not token:
-    #     return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
-    logging.warning("send code: %s - %s - %s", email, _type, token)
+    logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
 
     # return token with code
     return RespSend(data=token)
 
 
 @router.post("/verify-code", response_model=Resp)
-def _verify_code(token: str = Body(..., min_length=10),
-                 code: int = Body(..., ge=100000, le=999999),
+def _verify_code(code: int = Body(..., ge=100000, le=999999),
+                 token: str = Body(..., min_length=10),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
@@ -133,7 +124,7 @@ def _verify_code(token: str = Body(..., min_length=10),
     """
     # get payload from token
     payload = get_token_payload(token)
-    logging.warning("get payload: %s - %s", payload, code)
+    logging.warning("get payload: %s - %s", code, payload)
 
     # check token: type(!!!)
     if (not payload.get("type")) or (payload["type"] not in TypeName.__members__):
@@ -144,12 +135,14 @@ def _verify_code(token: str = Body(..., min_length=10),
     if not payload.get("email"):
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     email = payload["email"]
-    user_model = crud_user.get_by_email(session, email=email)
 
     # check token: code
     if (not payload.get("code")) or (payload["code"] != code):
         return Resp(status=-2, msg=error_tips.CODE_INVALID)
     pwd_hash = get_password_hash(password)
+
+    # get user from db
+    user_model = crud_user.get_by_email(session, email=email)
 
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
