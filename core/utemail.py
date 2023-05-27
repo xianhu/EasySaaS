@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-utils of email
+email module
 """
 
 import logging

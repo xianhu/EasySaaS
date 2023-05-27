@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-settings file
+settings module
 """
 
 import os
