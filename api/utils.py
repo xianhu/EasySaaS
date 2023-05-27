@@ -21,7 +21,7 @@ from data.models import User
 class ScopeName(str, Enum):
     user_read = "user:read"
     user_write = "user:write"
-    files = "files:upload/download"
+    files_ud = "files:updown"
 
 
 # define OAuth2PasswordBearer
@@ -37,37 +37,38 @@ def get_current_user(security_scopes: SecurityScopes,
     """
     check security_scopes and access_token, return user model or raise exception(401)
     """
+    # define authenticate
+    scope_str = security_scopes.scope_str
+    authenticate = f"Bearer scope=\"{scope_str}\""
+
     # get payload from access_token
     payload = get_token_payload(access_token)
-    scope_str = security_scopes.scope_str
 
     # check user_id (sub)
     if not payload.get("sub"):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.TOKEN_INVALID,
-            headers={"WWW-Authenticate": f"Bearer scope=\"{scope_str}\""},
+            headers={"WWW-Authenticate": authenticate},
         )
-
-    # check user scopes
-    scopes = payload.get("scopes", [])
-    for scope in security_scopes.scopes:
-        if scope not in scopes:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=error_tips.SCOPE_INVALID,
-                headers={"WWW-Authenticate": f"Bearer scope=\"{scope_str}\""},
-            )
+    user_model = crud_user.get(session, _id=payload["sub"])
 
     # check user model
-    user_id = payload.get("sub")
-    user_model = crud_user.get(session, _id=user_id)
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.TOKEN_INVALID,
-            headers={"WWW-Authenticate": f"Bearer scope=\"{scope_str}\""},
+            headers={"WWW-Authenticate": authenticate},
         )
+
+    # check user scopes
+    for scope in security_scopes.scopes:  # needed scopes
+        if scope not in payload.get("scopes", []):  # provided scopes
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=error_tips.SCOPE_INVALID,
+                headers={"WWW-Authenticate": authenticate},
+            )
 
     # return user
     return user_model
