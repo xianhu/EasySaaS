@@ -6,16 +6,11 @@ test mysql
 
 import logging
 
-from core.utils import security
+from core import security
 from data import SessionMaker
 from data.crud import crud_project, crud_user
 from data.dmysql import init_db
-from data.schemas import ProjectCreate, ProjectCreatePri
-from data.schemas import ProjectSchema
-from data.schemas import ProjectUpdate, ProjectUpdatePri
-from data.schemas import UserCreate, UserCreatePri
-from data.schemas import UserSchema
-from data.schemas import UserUpdate, UserUpdatePri
+from data.schemas import *
 
 # init db
 init_db()
@@ -27,7 +22,7 @@ with SessionMaker() as session:
     user_schema = UserCreate(**dict(email=email, password=pwd_hash))
 
     # create user -- UserCreatePri
-    role_json = {"role": "admin", "permissions": ["select"]}
+    role_json = {"role": "admin", "scopes": ["user:read", ]}
     user_schema = UserCreatePri(id=100001, role_json=role_json, **user_schema.dict(exclude_unset=True))
     user_model = crud_user.create(session, obj_schema=user_schema)
     logging.warning("create user: %s", user_model.to_dict())
@@ -37,10 +32,10 @@ with SessionMaker() as session:
     avatar = "https://www.example.com"
     user_schema = UserUpdate(**dict(name="admin", avatar=avatar))
 
-    # test update json: must create a new object
-    permissions = user_model.role_json["permissions"]
-    permissions.extend(["insert", "update", "delete"])
-    role_json = {"role": "member", "permissions": permissions}
+    # update json: must create a new object
+    scopes = user_model.role_json["scopes"]
+    scopes.append("user:write")
+    role_json = {"role": "member", "scopes": scopes}
 
     # update user -- UserUpdatePri
     user_schema = UserUpdatePri(email_verified=True, role_json=role_json, **user_schema.dict(exclude_unset=True))

@@ -4,21 +4,27 @@
 files api
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, Security, status
 from fastapi import File, Form, Path, UploadFile
 from fastapi.responses import FileResponse
 
 from core.settings import settings
 from data.models import User
 from data.schemas import Resp
-from .utils import get_current_user
+from .utils import ScopeName, get_current_user
 
 # define router
 router = APIRouter()
 
+# define security scopes
+security_scopes = Security(get_current_user, scopes=[ScopeName.files_ud, ])
+
 
 @router.post("/upload", response_model=Resp)
-def _upload(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+def _upload(current_user: Annotated[User, security_scopes],
+            file: UploadFile = File(...)):
     """
     upload file
     - **status=0**: upload success
@@ -39,11 +45,11 @@ def _upload(file: UploadFile = File(...), current_user: User = Depends(get_curre
 
 
 @router.post("/upload-flow", response_model=Resp)
-def _upload_flow(file: UploadFile = File(...),
+def _upload_flow(current_user: Annotated[User, security_scopes],
+                 file: UploadFile = File(...),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
-                 flow_total_size: int = Form(..., alias="flowTotalSize"),
-                 current_user: User = Depends(get_current_user)):
+                 flow_total_size: int = Form(..., alias="flowTotalSize")):
     """
     upload file by flow.js
     - **status=0**: upload success
@@ -72,7 +78,8 @@ def _upload_flow(file: UploadFile = File(...),
 
 
 @router.get("/download/{file_name}", response_class=FileResponse)
-def _download(file_name: str = Path(...), current_user: User = Depends(get_current_user)):
+def _download(current_user: Annotated[User, security_scopes],
+              file_name: str = Path(...)):
     """
     download file
     """
