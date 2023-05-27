@@ -131,10 +131,10 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     _type = payload["type"]
 
-    # check token: email
-    if not payload.get("email"):
+    # check token: email (sub)
+    if not payload.get("sub"):
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
-    email = payload["email"]
+    email = payload["sub"]
 
     # check token: code
     if (not payload.get("code")) or (payload["code"] != code):
