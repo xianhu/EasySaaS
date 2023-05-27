@@ -18,9 +18,12 @@ from .utils import ScopeName, get_current_user
 # define router
 router = APIRouter()
 
+# define security scopes
+security_scopes = Security(get_current_user, scopes=[ScopeName.files_ud, ])
+
 
 @router.post("/upload", response_model=Resp)
-def _upload(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.files_ud, ])],
+def _upload(current_user: Annotated[User, security_scopes],
             file: UploadFile = File(...)):
     """
     upload file
@@ -42,7 +45,7 @@ def _upload(current_user: Annotated[User, Security(get_current_user, scopes=[Sco
 
 
 @router.post("/upload-flow", response_model=Resp)
-def _upload_flow(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.files_ud, ])],
+def _upload_flow(current_user: Annotated[User, security_scopes],
                  file: UploadFile = File(...),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
@@ -75,7 +78,7 @@ def _upload_flow(current_user: Annotated[User, Security(get_current_user, scopes
 
 
 @router.get("/download/{file_name}", response_class=FileResponse)
-def _download(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.files_ud, ])],
+def _download(current_user: Annotated[User, security_scopes],
               file_name: str = Path(...)):
     """
     download file

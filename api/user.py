@@ -19,6 +19,10 @@ from .utils import ScopeName, get_current_user
 # define router
 router = APIRouter()
 
+# define security scopes
+security_scopes_read = Security(get_current_user, scopes=[ScopeName.user_read, ])
+security_scopes_write = Security(get_current_user, scopes=[ScopeName.user_read, ScopeName.user_write])
+
 
 # response model
 class RespUser(Resp):
@@ -26,7 +30,7 @@ class RespUser(Resp):
 
 
 @router.get("/get", response_model=RespUser)
-def _get(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.user_read, ])]):
+def _get(current_user: Annotated[User, security_scopes_read]):
     """
     get schema of current_user
     - **status=0**: data=UserSchema
@@ -39,7 +43,7 @@ def _get(current_user: Annotated[User, Security(get_current_user, scopes=[ScopeN
 
 @router.post("/update", response_model=RespUser)
 def _update(user_schema: UserUpdate,
-            current_user: Annotated[User, Security(get_current_user, scopes=[ScopeName.user_read, ScopeName.user_write])],
+            current_user: Annotated[User, security_scopes_write],
             session: Session = Depends(get_session)):
     """
     update schema of current_user
