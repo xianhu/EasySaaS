@@ -15,20 +15,20 @@ docker inspect mysql/redis | grep IPAddress
 ### Update System Environs
 
 ```
-vim .bash_profile / .zshrc
-# export {PRE}_APP_NAME=EasySaaS
-# export {PRE}_APP_DOMAIN=http://127.0.0.1:8000
-# export {PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+# vim .bash_profile / .zshrc
+export {PRE}_APP_NAME=EasySaaS
+export {PRE}_APP_DOMAIN=http://127.0.0.1:8000
+export {PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
-# export {PRE}_MAIL_SERVER=smtp.exmail.xx.com
-# export {PRE}_MAIL_PORT=465
-# export {PRE}_MAIL_USERNAME=noreply@easysaas.com
-# export {PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxxx
+export {PRE}_MAIL_SERVER=smtp.exmail.xx.com
+export {PRE}_MAIL_PORT=465
+export {PRE}_MAIL_USERNAME=noreply@easysaas.com
+export {PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxxx
 
-# export {PRE}_REDIS_URI=redis://:password@host:port
-# export {PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
+export {PRE}_REDIS_URI=redis://:password@host:port
+export {PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
 # mysql+pymysql://user:password@host:port/dbname
-source .bash_profile / .zshrc
+# source .bash_profile / .zshrc
 ```
 
 ### Install venv And requirements.txt
@@ -47,7 +47,7 @@ pip3.10 install -r requirements.txt
                 --pidfile index.pid --master --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
 
-.vnev/bin/uvicorn main:app --port 8000 --reload
+.vnev/bin/uvicorn main:app --port 8000 --reload  # for test
 .venv/bin/gunicorn main:app --bind 127.0.0.1:8000 --workers 2 --worker-class uvicorn.workers.UvicornWorker
 ```
 

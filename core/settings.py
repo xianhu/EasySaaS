@@ -16,11 +16,6 @@ ENV_PRE = "ES"
 
 
 class Settings(BaseSettings):
-    # settings -- session or token
-    PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
-    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
-    NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
-
     # settings from environment -- base
     APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", "EasySaaS")
     APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN", "http://127.0.0.1:8000")
@@ -39,6 +34,11 @@ class Settings(BaseSettings):
     # settings -- others
     FOLDER_UPLOAD: str = "/tmp"
     MAX_FILE_SIZE: int = 1024 * 1024 * 25
+
+    # settings -- session or token
+    PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
+    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
+    NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
 
     # settings -- regular of data field
     RE_PHONE: Pattern = re.compile(r"^(13\d|14[5|7]|15\d|18\d)\d{8}$")
