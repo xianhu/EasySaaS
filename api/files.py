@@ -52,7 +52,7 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
                  flow_total_size: int = Form(..., alias="flowTotalSize")):
     """
     upload file by flow.js
-    - **status=0**: upload success
+    - **status=0**: uploading or upload success
     - **status_code=400**: file size too large
     """
     # check file size: raise exception
