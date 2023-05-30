@@ -6,7 +6,7 @@ user api
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Security
+from fastapi import APIRouter, Body, Depends, Security
 from sqlalchemy.orm import Session
 
 from data import get_session
@@ -42,8 +42,8 @@ def _get(current_user: Annotated[User, security_scopes_read]):
 
 
 @router.post("/update", response_model=RespUser)
-def _update(user_schema: UserUpdate,
-            current_user: Annotated[User, security_scopes_write],
+def _update(current_user: Annotated[User, security_scopes_write],
+            user_schema: UserUpdate = Body(...),
             session: Session = Depends(get_session)):
     """
     update schema of current_user
