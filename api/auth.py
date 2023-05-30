@@ -37,7 +37,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
     # get username and password from form_data
     email, pwd_plain = form_data.username, form_data.password
 
-    # check if user existed (must raise exception)
+    # check if user existed or raise exception
     user_model = crud_user.get_by_email(session, email=email)
     if not user_model:
         raise HTTPException(
@@ -46,7 +46,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Ses
         )
     pwd_hash = user_model.password
 
-    # check password (must raise exception)
+    # check if password correct or raise exception
     if not check_password_hash(pwd_plain, pwd_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -83,7 +83,7 @@ def _send_code(email: EmailStr = Body(...),
     - **status=-1**: email existed or not existed
     - **status=-2**: send email failed
     """
-    # check user existed or not
+    # check user existed or not by _type
     user_model = crud_user.get_by_email(session, email=email)
     if _type == TypeName.signup and user_model:
         return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
@@ -102,7 +102,7 @@ def _send_code(email: EmailStr = Body(...),
 
     # send email and check status_code
     _from = (settings.APP_NAME, settings.MAIL_USERNAME)
-    status_code = send_email(_from, email, subject=mail_subject, html=mail_html, render=render)
+    status_code = send_email(_from, email, subject=mail_subject, html_raw=mail_html, render=render)
     if status_code != 250:
         return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
     logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
@@ -131,7 +131,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     _type = payload["type"]
 
-    # check token: email (sub)
+    # check token: email(sub)
     if not payload.get("sub"):
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     email = payload["sub"]
@@ -141,7 +141,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-2, msg=error_tips.CODE_INVALID)
     pwd_hash = get_password_hash(password)
 
-    # get user from db
+    # get user_model from db
     user_model = crud_user.get_by_email(session, email=email)
 
     # check token type: signup

@@ -44,14 +44,17 @@ def get_current_user(security_scopes: SecurityScopes,
     # get payload from access_token
     payload = get_token_payload(access_token)
 
-    # check user_id (sub)
+    # check user_id(sub)
     if not payload.get("sub"):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=error_tips.TOKEN_INVALID,
             headers={"WWW-Authenticate": authenticate},
         )
-    user_model = crud_user.get(session, _id=payload["sub"])
+    user_id = int(payload["sub"])
+
+    # get user_model from db
+    user_model = crud_user.get(session, _id=user_id)
 
     # check user model
     if not user_model:
@@ -60,10 +63,11 @@ def get_current_user(security_scopes: SecurityScopes,
             detail=error_tips.TOKEN_INVALID,
             headers={"WWW-Authenticate": authenticate},
         )
+    user_scopes = payload.get("scopes", [])
 
     # check user scopes
     for scope in security_scopes.scopes:  # needed scopes
-        if scope not in payload.get("scopes", []):  # provided scopes
+        if scope not in user_scopes:  # provided scopes
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=error_tips.SCOPE_INVALID,
