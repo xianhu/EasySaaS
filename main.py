@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from api import api_router
 from core.settings import settings
@@ -46,6 +47,9 @@ app.add_middleware(
 
 # set middleware
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # set router
 app.include_router(api_router)
