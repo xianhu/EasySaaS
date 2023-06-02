@@ -24,7 +24,7 @@ security_scopes = Security(get_current_user, scopes=[ScopeName.files_ud, ])
 
 @router.post("/upload", response_model=Resp)
 def _upload(current_user: Annotated[User, security_scopes],
-            file: UploadFile = File(...)):
+            file: UploadFile = File(..., description="max file size")):
     """
     upload file
     - **status=0**: upload success
@@ -46,7 +46,7 @@ def _upload(current_user: Annotated[User, security_scopes],
 
 @router.post("/upload-flow", response_model=Resp)
 def _upload_flow(current_user: Annotated[User, security_scopes],
-                 file: UploadFile = File(...),
+                 file: UploadFile = File(..., description="max file size"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize")):
@@ -79,7 +79,7 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
 
 @router.get("/download/{file_name}", response_class=FileResponse)
 def _download(current_user: Annotated[User, security_scopes],
-              file_name: str = Path(...)):
+              file_name: str = Path(..., description="file name")):
     """
     download file
     """

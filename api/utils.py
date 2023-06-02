@@ -67,7 +67,7 @@ def get_current_user(security_scopes: SecurityScopes,
 
     # check user scopes
     for scope in security_scopes.scopes:  # needed scopes
-        if scope not in user_scopes:  # provided scopes
+        if scope not in user_scopes:  # provided scopes by user
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=error_tips.SCOPE_INVALID,

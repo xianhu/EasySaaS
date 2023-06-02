@@ -8,7 +8,8 @@ import logging
 import random
 from enum import Enum
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks
+from fastapi import Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
@@ -74,7 +75,8 @@ class RespSend(Resp):
 
 
 @router.post("/send-code", response_model=RespSend)
-def _send_code(email: EmailStr = Body(...),
+def _send_code(background_tasks: BackgroundTasks,
+               email: EmailStr = Body(...),
                _type: TypeName = Body(...),
                session: Session = Depends(get_session)):
     """
@@ -100,11 +102,15 @@ def _send_code(email: EmailStr = Body(...),
     mail_html = "Verify code: <b>{{ code }}</b>"
     render = dict(app_name=settings.APP_NAME, code=code)
 
-    # send email and check status_code
+    # define _from and kwargs
     _from = (settings.APP_NAME, settings.MAIL_USERNAME)
-    status_code = send_email(_from, email, subject=mail_subject, html_raw=mail_html, render=render)
-    if status_code != 250:
-        return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
+    kwargs = dict(subject=mail_subject, html_raw=mail_html, render=render)
+
+    # send email in background or not
+    background_tasks.add_task(send_email, _from, email, **kwargs)
+    # status_code = send_email(_from, email, **kwargs)
+    # if status_code != 250:
+    #     return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
     logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
 
     # return token with code

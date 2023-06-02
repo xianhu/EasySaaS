@@ -35,6 +35,7 @@ def _get(current_user: Annotated[User, security_scopes_read]):
     get schema of current_user
     - **status=0**: data=UserSchema
     """
+    # get user_model
     user_model = current_user
 
     # return UserSchema
@@ -49,6 +50,7 @@ def _update(current_user: Annotated[User, security_scopes_write],
     update schema of current_user
     - **status=0**: data=UserSchema
     """
+    # get user_model
     user_id = current_user.id
     user_model = crud_user.get(session, _id=user_id)
 
