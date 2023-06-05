@@ -16,7 +16,11 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 # vim .bash_profile / .zshrc
+export {PRE}_DEBUG=1
+
 export {PRE}_APP_NAME=EasySaaS
+export {PRE}_APP_VERSION=0.0.1
+
 export {PRE}_APP_DOMAIN=http://127.0.0.1:8000
 export {PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
