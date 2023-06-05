@@ -18,6 +18,7 @@ ENV_PRE = "ES"
 class Settings(BaseSettings):
     # settings from environment -- debug
     DEBUG: bool = int(os.getenv(f"{ENV_PRE}_DEBUG", "1"))
+    VERSION: str = os.getenv(f"{ENV_PRE}_VERSION", "0.0.1-beta")
 
     # settings from environment -- base
     APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", "EasySaaS")

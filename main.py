@@ -20,6 +20,8 @@ from core.settings import settings
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
+
+
 # create app
 app = FastAPI(
     debug=settings.DEBUG,
@@ -80,12 +82,14 @@ async def shutdown_event():
 
 
 @app.middleware("http")
-async def add_process_time(request: Request, call_next):
+async def add_values_to_headers(request: Request, call_next):
     """
-    add process time to response header
+    add some values to response headers
     """
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
+    response.headers["X-Debug"] = str(settings.DEBUG)
+    response.headers["X-Version"] = str(app.version)
     response.headers["X-Process-Time"] = str(process_time)
     return response
