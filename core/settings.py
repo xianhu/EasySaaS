@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     DEBUG: bool = int(os.getenv(f"{ENV_PRE}_DEBUG", "1"))
 
     # settings from environment -- base
-    APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", "EasySaaS")
+    APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", ENV_PRE)
     APP_VERSION: str = os.getenv(f"{ENV_PRE}_APP_VERSION", "0.0.1-beta")
 
     # settings from environment -- security
