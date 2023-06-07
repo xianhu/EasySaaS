@@ -1,12 +1,12 @@
 # Dash
-dash~=2.10.0
-feffery-antd-components~=0.2.8
-feffery-utils-components~=0.1.28
+dash~=2.10.2
+feffery-antd-components~=0.2.9
+feffery-utils-components~=0.1.29
 Flask-Compress~=1.13.0
 uWSGI~=2.0.21
 
 # FastAPI
-fastapi~=0.95.2
+fastapi~=0.96.0
 uvicorn~=0.22.0
 gunicorn~=20.1.0
 
@@ -16,7 +16,7 @@ pymysql~=1.0.3
 SQLAlchemy~=2.0.15
 
 # Tasks
-celery~=5.2.7
+celery~=5.3.0
 flower~=1.2.0
 
 # Security
@@ -27,6 +27,6 @@ python-jose[cryptography]~=3.3.0
 # Others
 emails~=0.6.0
 Jinja2~=3.1.2
-orjson~=3.8.13
+orjson~=3.9.0
 pydantic[email]~=1.10.8
 python-multipart~=0.0.6

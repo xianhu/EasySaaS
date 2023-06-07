@@ -28,7 +28,8 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
+                  session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
     - **username**: value of email
@@ -71,7 +72,7 @@ class TypeName(str, Enum):
 
 # response model
 class RespSend(Resp):
-    data: str = Field(None, description="token")
+    token: str = Field(None)
 
 
 @router.post("/send-code", response_model=RespSend)
@@ -114,7 +115,7 @@ def _send_code(background_tasks: BackgroundTasks,
     logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
 
     # return token with code
-    return RespSend(data=token)
+    return RespSend(token=token)
 
 
 @router.post("/verify-code", response_model=Resp)

@@ -4,11 +4,13 @@
 files api
 """
 
+import time
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Security, status
 from fastapi import File, Form, Path, UploadFile
 from fastapi.responses import FileResponse
+from pydantic import Field
 
 from core.settings import settings
 from data.models import User
@@ -22,7 +24,12 @@ router = APIRouter()
 security_scopes = Security(get_current_user, scopes=[ScopeName.files_ud, ])
 
 
-@router.post("/upload", response_model=Resp)
+# response model
+class RespFile(Resp):
+    file_id: str = Field(None)
+
+
+@router.post("/upload", response_model=RespFile)
 def _upload(current_user: Annotated[User, security_scopes],
             file: UploadFile = File(..., description="max file size")):
     """
@@ -32,19 +39,19 @@ def _upload(current_user: Annotated[User, security_scopes],
     """
     # check file size
     if file.size > settings.MAX_FILE_SIZE:
-        return Resp(status=-1, msg="file size too large")
+        return RespFile(status=-1, msg="file size too large")
+    file_id = f"{current_user.id}-{int(time.time())}-{file.filename}"
 
-    # define file path
-    file_name = f"{current_user.id}_{file.filename}"
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
-
-    # save file and return result
+    # define file path and save file
+    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     with open(file_path, "wb") as file_in:
         file_in.write(file.file.read())
-    return Resp(msg="upload success")
+
+    # return file_id
+    return RespFile(msg="upload success", file_id=file_id)
 
 
-@router.post("/upload-flow", response_model=Resp)
+@router.post("/upload-flow", response_model=RespFile)
 def _upload_flow(current_user: Annotated[User, security_scopes],
                  file: UploadFile = File(..., description="max file size"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
@@ -62,30 +69,38 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
             detail="file size too large",
         )
 
-    # define file path
-    file_name = f"{current_user.id}_{file.filename}"
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
+    # define file path temp
+    file_name = f"{current_user.id}-{file.filename}"
+    file_path_temp = f"{settings.FOLDER_UPLOAD}/{file_name}"
 
     # save flow_chunk_number part
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
-    with open(file_path, file_mode) as file_in:
+    with open(file_path_temp, file_mode) as file_in:
         file_in.write(file.file.read())
 
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
-        return Resp(msg="uploading")
-    return Resp(msg="upload success")
+        return RespFile(msg="uploading")
+    file_id = f"{current_user.id}-{int(time.time())}-{file.filename}"
+
+    # define file path and save file
+    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    with open(file_path, "wb") as file_in:
+        with open(file_path_temp, "rb") as file_temp:
+            file_in.write(file_temp.read())
+
+    # return file_id
+    return RespFile(msg="upload success", file_id=file_id)
 
 
-@router.get("/download/{file_name}", response_class=FileResponse)
+@router.get("/download/{file_id}", response_class=FileResponse)
 def _download(current_user: Annotated[User, security_scopes],
-              file_name: str = Path(..., description="file name")):
+              file_id: str = Path(..., description="file id")):
     """
     download file
     """
     # define file path
-    file_name = f"{current_user.id}_{file_name}"
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_name}"
+    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
 
     # return file response
-    return FileResponse(file_path, filename=file_name)
+    return FileResponse(file_path, filename=file_id)
