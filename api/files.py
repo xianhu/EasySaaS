@@ -9,6 +9,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Security, status
 from fastapi import File, Form, Path, UploadFile
 from fastapi.responses import FileResponse
+from pydantic import Field
 
 from core.settings import settings
 from data.models import User
@@ -22,7 +23,12 @@ router = APIRouter()
 security_scopes = Security(get_current_user, scopes=[ScopeName.files_ud, ])
 
 
-@router.post("/upload", response_model=Resp)
+# response model
+class RespFile(Resp):
+    data: str = Field(None, description="file id")
+
+
+@router.post("/upload", response_model=RespFile)
 def _upload(current_user: Annotated[User, security_scopes],
             file: UploadFile = File(..., description="max file size")):
     """
@@ -32,7 +38,7 @@ def _upload(current_user: Annotated[User, security_scopes],
     """
     # check file size
     if file.size > settings.MAX_FILE_SIZE:
-        return Resp(status=-1, msg="file size too large")
+        return RespFile(status=-1, msg="file size too large")
 
     # define file path
     file_name = f"{current_user.id}_{file.filename}"
@@ -41,10 +47,10 @@ def _upload(current_user: Annotated[User, security_scopes],
     # save file and return result
     with open(file_path, "wb") as file_in:
         file_in.write(file.file.read())
-    return Resp(msg="upload success")
+    return RespFile(msg="upload success", )
 
 
-@router.post("/upload-flow", response_model=Resp)
+@router.post("/upload-flow", response_model=RespFile)
 def _upload_flow(current_user: Annotated[User, security_scopes],
                  file: UploadFile = File(..., description="max file size"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
@@ -73,8 +79,8 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
 
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
-        return Resp(msg="uploading")
-    return Resp(msg="upload success")
+        return RespFile(msg="uploading")
+    return RespFile(msg="upload success")
 
 
 @router.get("/download/{file_name}", response_class=FileResponse)

@@ -28,7 +28,8 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
+                  session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
     - **username**: value of email
