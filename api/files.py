@@ -4,15 +4,16 @@
 files api
 """
 
+import os
 import time
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Security, status
 from fastapi import File, Form, Path, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 
-from core.settings import settings
+from core.settings import error_tips, settings
 from data.models import User
 from data.schemas import Resp
 from .utils import ScopeName, get_current_user
@@ -35,11 +36,14 @@ def _upload(current_user: Annotated[User, security_scopes],
     """
     upload file, return file_id
     - **status=0**: upload success
-    - **status=-1**: file size too large
+    - **status_code=500**: file size too large
     """
     # check file size
     if file.size > settings.MAX_FILE_SIZE:
-        return RespFile(status=-1, msg="file size too large")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_tips.FILE_SIZE_EXCEEDED,
+        )
     file_id = f"{current_user.id}-{int(time.time())}-{file.filename}"
 
     # define file path and save file
@@ -61,13 +65,13 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
     """
     upload file by flow.js
     - **status=0**: uploading or upload success
-    - **status_code=400**: file size too large
+    - **status_code=500**: file size too large
     """
     # check file size: raise exception
     if flow_total_size > settings.MAX_FILE_SIZE:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="file size too large",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_tips.FILE_SIZE_EXCEEDED,
         )
 
     # define file path temp
@@ -99,10 +103,42 @@ def _download(current_user: Annotated[User, security_scopes],
               file_id: str = Path(..., description="file id")):
     """
     download file by file_id
+    - **status_code=500**: file not existed
     """
     # define file path
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    if not os.path.exists(file_path):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_tips.FILE_NOT_EXISTED,
+        )
 
     # define file name and return file
     file_name = "-".join(file_id.split("-")[2:])
     return FileResponse(file_path, filename=file_name)
+
+
+@router.get("/download-stream/{file_id}", response_class=StreamingResponse)
+def _download_stream(current_user: Annotated[User, security_scopes],
+                     file_id: str = Path(..., description="file id")):
+    """
+    download file by file_id
+    - **status_code=500**: file not existed
+    """
+    # define file path
+    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    if not os.path.exists(file_path):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_tips.FILE_NOT_EXISTED,
+        )
+
+    # define iter file
+    def iter_file() -> iter:
+        with open(file_path, "rb") as file_in:
+            yield from file_in
+
+    # define file name and return file
+    file_name = "-".join(file_id.split("-")[2:])
+    headers = {"Content-Disposition": f"attachment; filename={file_name}"}
+    return StreamingResponse(iter_file(), media_type="audio/mpeg", headers=headers)
