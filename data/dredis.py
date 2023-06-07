@@ -10,7 +10,7 @@ from redis import ConnectionPool
 from core.settings import settings
 
 # create connection pool
-url = f"{settings.REDIS_URI}/0"
+url = f"{settings.REDIS_URI}/{0 if not settings.DEBUG else 1}"
 RedisPool = ConnectionPool.from_url(url, decode_responses=True)
 
 
