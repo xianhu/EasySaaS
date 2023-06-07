@@ -20,6 +20,11 @@ from core.settings import settings
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
+# define description
+description = """
+- only 
+"""
+
 # create app
 app = FastAPI(
     debug=settings.DEBUG,
