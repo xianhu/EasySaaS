@@ -13,7 +13,7 @@ from fastapi import File, Form, Path, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import Field
 
-from core.settings import settings
+from core.settings import error_tips, settings
 from data.models import User
 from data.schemas import Resp
 from .utils import ScopeName, get_current_user
@@ -42,7 +42,7 @@ def _upload(current_user: Annotated[User, security_scopes],
     if file.size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large",
+            detail=error_tips.FILE_SIZE_EXCEEDED,
         )
     file_id = f"{current_user.id}-{int(time.time())}-{file.filename}"
 
@@ -65,13 +65,13 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
     """
     upload file by flow.js
     - **status=0**: uploading or upload success
-    - **status_code=400**: file size too large
+    - **status_code=500**: file size too large
     """
     # check file size: raise exception
     if flow_total_size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large",
+            detail=error_tips.FILE_SIZE_EXCEEDED,
         )
 
     # define file path temp
@@ -102,14 +102,14 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
 def _download(current_user: Annotated[User, security_scopes],
               file_id: str = Path(..., description="file id")):
     """
-    download file by file_id, return 500 if file not exist
+    download file by file_id
     """
     # define file path
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     if not os.path.exists(file_path):
         raise HTTPException(
-            status_code=status.,
-            detail="file not exist",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_tips.FILE_NOT_EXISTED,
         )
 
     # define file name and return file
