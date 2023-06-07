@@ -37,5 +37,5 @@ def send_email(_from: Union[str, tuple],
     message = emails.Message(mail_from=_from, subject=jj_subject, html=jj_html)
     response = message.send(to=_to, render=render, smtp=smtp_options)
 
-    # return status_code
-    return response.status_code  # 250
+    # return status_code - 250
+    return response.status_code

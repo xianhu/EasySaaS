@@ -19,11 +19,11 @@ class Settings(BaseSettings):
     # settings from environment -- debug
     DEBUG: bool = int(os.getenv(f"{ENV_PRE}_DEBUG", "1"))
 
-    # settings from environment -- base
+    # settings from environment -- name and version
     APP_NAME: str = os.getenv(f"{ENV_PRE}_APP_NAME", ENV_PRE)
     APP_VERSION: str = os.getenv(f"{ENV_PRE}_APP_VERSION", "0.0.1-beta")
 
-    # settings from environment -- security
+    # settings from environment -- domain and secret key
     APP_DOMAIN: str = os.getenv(f"{ENV_PRE}_APP_DOMAIN", "http://127.0.0.1:8000")
     SECRET_KEY: str = os.getenv(f"{ENV_PRE}_SECRET_KEY", secrets.token_urlsafe(32))
 
