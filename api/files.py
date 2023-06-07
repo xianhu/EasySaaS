@@ -10,7 +10,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Security, status
 from fastapi import File, Form, Path, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 
 from core.settings import error_tips, settings
@@ -103,6 +103,7 @@ def _download(current_user: Annotated[User, security_scopes],
               file_id: str = Path(..., description="file id")):
     """
     download file by file_id
+    - **status_code=500**: file not existed
     """
     # define file path
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
@@ -115,3 +116,29 @@ def _download(current_user: Annotated[User, security_scopes],
     # define file name and return file
     file_name = "-".join(file_id.split("-")[2:])
     return FileResponse(file_path, filename=file_name)
+
+
+@router.get("/download-stream/{file_id}", response_class=StreamingResponse)
+def _download_stream(current_user: Annotated[User, security_scopes],
+                     file_id: str = Path(..., description="file id")):
+    """
+    download file by file_id
+    - **status_code=500**: file not existed
+    """
+    # define file path
+    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    if not os.path.exists(file_path):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_tips.FILE_NOT_EXISTED,
+        )
+
+    # define iter file
+    def iter_file() -> iter:
+        with open(file_path, "rb") as file_in:
+            yield from file_in
+
+    # define file name and return file
+    file_name = "-".join(file_id.split("-")[2:])
+    headers = {"Content-Disposition": f"attachment; filename={file_name}"}
+    return StreamingResponse(iter_file(), media_type="audio/mpeg", headers=headers)
