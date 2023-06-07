@@ -82,6 +82,11 @@ class ErrorTips(BaseSettings):
     USER_EXISTED: str = "This user existed in system"
     USER_NOT_EXISTED: str = "This user not existed in system"
 
+    # error tips -- file
+    FILE_NOT_EXISTED: str = "file not existed"
+    FILE_TYPE_INVALID: str = "file type invalid"
+    FILE_SIZE_EXCEEDED: str = "file size too large"
+
     # error tips -- crud
     QUERY_FAILED: str = "Query failed"
     CREATE_FAILED: str = "Create failed"
