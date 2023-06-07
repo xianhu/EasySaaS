@@ -9,6 +9,7 @@ from typing import Union
 from fastapi import APIRouter, Cookie, Header
 from fastapi import Request, Response
 
+from core.settings import settings
 from . import auth, files, project, user
 
 # define api_router
@@ -20,7 +21,13 @@ api_router.include_router(files.router, prefix="/files", tags=["files"])
 
 
 @api_router.get("/")
-async def root(): return {"message": "visit /docs for more information"}
+async def root():
+    """
+    root router
+    """
+    if not settings.DEBUG:
+        return {"message": "Hello World"}
+    return {"message": "visit /docs for more information"}
 
 
 @api_router.get("/test")
@@ -28,6 +35,13 @@ async def test(request: Request,
                response: Response,
                session: Union[str, None] = Cookie(default=None),
                user_agent: Union[str, None] = Header(default=None)):
+    """
+    test router
+    """
+    if not settings.DEBUG:
+        return {"message": "Hello World"}
+
+    # set cookie and headers of response
     response.set_cookie(key="fake-session", value="1234567890")
     response.headers["X-Fake-Header"] = "1234567890"
     return {

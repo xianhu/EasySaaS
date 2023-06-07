@@ -33,7 +33,7 @@ class RespFile(Resp):
 def _upload(current_user: Annotated[User, security_scopes],
             file: UploadFile = File(..., description="max file size")):
     """
-    upload file
+    upload file, return file_id
     - **status=0**: upload success
     - **status=-1**: file size too large
     """
@@ -48,7 +48,7 @@ def _upload(current_user: Annotated[User, security_scopes],
         file_in.write(file.file.read())
 
     # return file_id
-    return RespFile(msg="upload success", file_id=file_id)
+    return RespFile(file_id=file_id)
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -56,7 +56,8 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
                  file: UploadFile = File(..., description="max file size"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
-                 flow_total_size: int = Form(..., alias="flowTotalSize")):
+                 flow_total_size: int = Form(..., alias="flowTotalSize"),
+                 flow_identifier: str = Form(..., alias="flowIdentifier")):
     """
     upload file by flow.js
     - **status=0**: uploading or upload success
@@ -70,8 +71,8 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
         )
 
     # define file path temp
-    file_name = f"{current_user.id}-{file.filename}"
-    file_path_temp = f"{settings.FOLDER_UPLOAD}/{file_name}"
+    file_name_temp = f"{flow_identifier}-{file.filename}"
+    file_path_temp = f"{settings.FOLDER_UPLOAD}/{file_name_temp}"
 
     # save flow_chunk_number part
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
@@ -90,17 +91,18 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
             file_in.write(file_temp.read())
 
     # return file_id
-    return RespFile(msg="upload success", file_id=file_id)
+    return RespFile(file_id=file_id)
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
 def _download(current_user: Annotated[User, security_scopes],
               file_id: str = Path(..., description="file id")):
     """
-    download file
+    download file by file_id
     """
     # define file path
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
 
-    # return file response
-    return FileResponse(file_path, filename=file_id)
+    # define file name and return file
+    file_name = "-".join(file_id.split("-")[2:])
+    return FileResponse(file_path, filename=file_name)

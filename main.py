@@ -20,10 +20,18 @@ from core.settings import settings
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
 logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 
+# define description
+description = """
+- return 0 when success
+- return -1, -2, ... when something wrong in server
+- return HttpException(401) only when access_token is invalid
+"""
+
 # create app
 app = FastAPI(
     debug=settings.DEBUG,
     title=settings.APP_NAME,
+    description=description,
     version=settings.APP_VERSION,
     docs_url="/docs" if settings.DEBUG else None,
     redoc_url="/redoc" if settings.DEBUG else None,
