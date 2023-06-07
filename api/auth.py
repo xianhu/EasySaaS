@@ -72,7 +72,7 @@ class TypeName(str, Enum):
 
 # response model
 class RespSend(Resp):
-    data: str = Field(None, description="token")
+    token: str = Field(None)
 
 
 @router.post("/send-code", response_model=RespSend)
@@ -115,7 +115,7 @@ def _send_code(background_tasks: BackgroundTasks,
     logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
 
     # return token with code
-    return RespSend(data=token)
+    return RespSend(token=token)
 
 
 @router.post("/verify-code", response_model=Resp)
