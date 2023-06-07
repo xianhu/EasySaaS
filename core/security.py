@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-security module
+security functions
 """
 
 import logging
