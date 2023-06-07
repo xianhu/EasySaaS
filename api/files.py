@@ -98,7 +98,7 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
 def _download(current_user: Annotated[User, security_scopes],
               file_id: str = Path(..., description="file id")):
     """
-    download file
+    download file by file_id
     """
     # define file path
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
