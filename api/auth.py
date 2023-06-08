@@ -63,9 +63,9 @@ def _access_token(request: Request,  # request
 
     # create access_token with user_id and scopes: List[str]
     access_token = create_token_data({"sub": str(user_id), "scopes": scopes})
-    logging.warning("access_token_1: %s - %s", client_host, access_token)
+    logging.warning("access_token_1: %s - %s - %s", client_host, email, access_token)
 
-    # return access_token
+    # return access_token with scopes
     return AccessToken(access_token=access_token)
 
 
