@@ -6,7 +6,8 @@ user api
 
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, Path, Security
+from fastapi import APIRouter, Security
+from fastapi import Body, Depends, Path
 from sqlalchemy.orm import Session
 
 from data import get_session
