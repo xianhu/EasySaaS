@@ -9,8 +9,8 @@ from celery import Celery
 from core.settings import settings
 
 # define broker and backend
-broker = f"{settings.REDIS_URI}/{11 if settings.DEBUG else 13}"
-backend = f"{settings.REDIS_URI}/{12 if settings.DEBUG else 14}"
+broker = f"{settings.REDIS_URI}/{11 if not settings.DEBUG else 13}"
+backend = f"{settings.REDIS_URI}/{12 if not settings.DEBUG else 14}"
 
 # celery -A tasks worker -l INFO --purge
 # celery -A tasks flower --port=5555 -l INFO
