@@ -8,8 +8,8 @@ import logging
 import random
 from enum import Enum
 
-from fastapi import APIRouter, BackgroundTasks, Request
-from fastapi import Body, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
+from fastapi import BackgroundTasks, Body, Depends, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
