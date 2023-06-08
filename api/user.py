@@ -6,7 +6,9 @@ user api
 
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, Path, Security
+from fastapi import APIRouter, Security
+from fastapi import Body, Depends, Path
+from pydantic import Field
 from sqlalchemy.orm import Session
 
 from data import get_session
@@ -26,7 +28,7 @@ security_scopes_write = Security(get_current_user, scopes=[ScopeName.user_read, 
 
 # response model
 class RespUser(Resp):
-    data: UserSchema = None
+    data: UserSchema = Field(None)
 
 
 @router.get("/get", response_model=RespUser)

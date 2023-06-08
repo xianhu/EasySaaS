@@ -8,7 +8,7 @@ import logging
 import random
 from enum import Enum
 
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Request
 from fastapi import Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
@@ -28,7 +28,8 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
+def _access_token(request: Request,  # request
+                  form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
@@ -36,8 +37,12 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     - **password**: value of password
     - **scopes**: value of scopes, split by space
     """
-    # get username and password from form_data
-    email, pwd_plain = form_data.username, form_data.password
+    # get variables from request
+    client_host = request.client.host
+
+    # get username、password and scopes from form_data
+    email, pwd_plain, scopes = form_data.username, form_data.password, form_data.scopes
+    logging.warning("access_token_0: %s - %s - %s - %s", client_host, email, pwd_plain, scopes)
 
     # check if user existed or raise exception
     user_model = crud_user.get_by_email(session, email=email)
@@ -57,10 +62,10 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     user_id = user_model.id
 
     # create access_token with user_id and scopes: List[str]
-    access_token = create_token_data({"sub": str(user_id), "scopes": form_data.scopes})
-    logging.warning("create access_token: %s - %s - %s", user_id, form_data.scopes, access_token)
+    access_token = create_token_data({"sub": str(user_id), "scopes": scopes})
+    logging.warning("access_token_1: %s - %s - %s", client_host, email, access_token)
 
-    # return access_token
+    # return access_token with scopes
     return AccessToken(access_token=access_token)
 
 
