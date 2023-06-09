@@ -38,7 +38,7 @@ def _upload(current_user: Annotated[User, security_scopes],
     - **status=0**: upload success
     - **status_code=500**: file size too large
     """
-    # check file size
+    # check file size: raise exception
     if file.size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -105,7 +105,7 @@ def _download(current_user: Annotated[User, security_scopes],
     download file by file_id
     - **status_code=500**: file not existed
     """
-    # define file path
+    # define file path: raise exception
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     if not os.path.exists(file_path):
         raise HTTPException(
@@ -125,7 +125,7 @@ def _download_stream(current_user: Annotated[User, security_scopes],
     download file by file_id
     - **status_code=500**: file not existed
     """
-    # define file path
+    # define file path: raise exception
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     if not os.path.exists(file_path):
         raise HTTPException(
@@ -133,7 +133,7 @@ def _download_stream(current_user: Annotated[User, security_scopes],
             detail=error_tips.FILE_NOT_EXISTED,
         )
 
-    # define iter file
+    # define iter function
     def iter_file() -> iter:
         with open(file_path, "rb") as file_in:
             yield from file_in
