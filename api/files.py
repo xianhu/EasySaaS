@@ -16,7 +16,7 @@ from pydantic import Field
 from core.settings import error_tips, settings
 from data.models import User
 from data.schemas import Resp
-from .utils import ScopeName, get_current_user
+from .utils import ScopeName, get_current_user, iter_file
 
 # define router
 router = APIRouter()
@@ -133,12 +133,7 @@ def _download_stream(current_user: Annotated[User, security_scopes],
             detail=error_tips.FILE_NOT_EXISTED,
         )
 
-    # define iter function
-    def iter_file() -> iter:
-        with open(file_path, "rb") as file_in:
-            yield from file_in
-
     # define file name and return file
     file_name = "-".join(file_id.split("-")[2:])
-    headers = {"Content-Disposition": f"attachment; filename={file_name}"}
-    return StreamingResponse(iter_file(), media_type="audio/mpeg", headers=headers)
+    headers = {"Content-Disposition": f"attachment; filename=\"{file_name}\""}
+    return StreamingResponse(iter_file(file_path), media_type="application/octet-stream", headers=headers)
