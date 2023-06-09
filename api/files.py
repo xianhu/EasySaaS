@@ -16,7 +16,7 @@ from pydantic import Field
 from core.settings import error_tips, settings
 from data.models import User
 from data.schemas import Resp
-from .utils import ScopeName, get_current_user
+from .utils import ScopeName, get_current_user, iter_file
 
 # define router
 router = APIRouter()
@@ -38,7 +38,7 @@ def _upload(current_user: Annotated[User, security_scopes],
     - **status=0**: upload success
     - **status_code=500**: file size too large
     """
-    # check file size
+    # check file size: raise exception
     if file.size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -105,7 +105,7 @@ def _download(current_user: Annotated[User, security_scopes],
     download file by file_id
     - **status_code=500**: file not existed
     """
-    # define file path
+    # define file path: raise exception
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     if not os.path.exists(file_path):
         raise HTTPException(
@@ -125,7 +125,7 @@ def _download_stream(current_user: Annotated[User, security_scopes],
     download file by file_id
     - **status_code=500**: file not existed
     """
-    # define file path
+    # define file path: raise exception
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     if not os.path.exists(file_path):
         raise HTTPException(
@@ -133,12 +133,7 @@ def _download_stream(current_user: Annotated[User, security_scopes],
             detail=error_tips.FILE_NOT_EXISTED,
         )
 
-    # define iter file
-    def iter_file() -> iter:
-        with open(file_path, "rb") as file_in:
-            yield from file_in
-
     # define file name and return file
     file_name = "-".join(file_id.split("-")[2:])
-    headers = {"Content-Disposition": f"attachment; filename={file_name}"}
-    return StreamingResponse(iter_file(), media_type="audio/mpeg", headers=headers)
+    headers = {"Content-Disposition": f"attachment; filename=\"{file_name}\""}
+    return StreamingResponse(iter_file(file_path), media_type="application/octet-stream", headers=headers)

@@ -76,3 +76,15 @@ def get_current_user(security_scopes: SecurityScopes,
 
     # return user
     return user_model
+
+
+def iter_file(file_path) -> iter:
+    """
+    iter file, yield chunk
+    """
+    with open(file_path, "rb") as file_in:
+        while True:
+            chunk = file_in.read(1024 * 1024)
+            if not chunk:
+                break
+            yield chunk
