@@ -17,14 +17,14 @@ class UserSchema(BaseModel):
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
     # password: Optional[str] = None
-    # is_admin: Optional[bool] = None
-    # role_json: Optional[dict] = None
+    # system_admin: Optional[bool] = None
+    # system_role: Optional[dict] = None
 
 
 # used for request body
 class UserCreate(BaseModel):
     email: EmailStr  # required
-    password: str  # plain or hashed
+    password: str  # plain or hash value
 
 
 # used for internal call
@@ -33,8 +33,8 @@ class UserCreatePri(UserCreate):
     name: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     email_verified: bool = False
-    is_admin: bool = False
-    role_json: dict = {}
+    system_admin: bool = False
+    system_role: dict = {}
 
 
 # used for request body
@@ -49,5 +49,5 @@ class UserUpdatePri(UserUpdate):
     # email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
     password: Optional[str] = None
-    is_admin: Optional[bool] = None
-    role_json: Optional[dict] = None
+    system_admin: Optional[bool] = None
+    system_role: Optional[dict] = None
