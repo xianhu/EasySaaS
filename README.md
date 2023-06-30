@@ -16,21 +16,21 @@ docker inspect mysql/redis | grep IPAddress
 
 ```
 # vim .bash_profile / .zshrc
-export {PRE}_DEBUG=1
+export {ENV_PRE}_DEBUG=1
 
-export {PRE}_APP_NAME=EasySaaS
-export {PRE}_APP_VERSION=0.0.1
+export {ENV_PRE}_APP_NAME=EasySaaS
+export {ENV_PRE}_APP_VERSION=0.0.1
 
-export {PRE}_APP_DOMAIN=http://127.0.0.1:8000
-export {PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+export {ENV_PRE}_APP_DOMAIN=http://127.0.0.1:8000
+export {ENV_PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
 
-export {PRE}_MAIL_SERVER=smtp.exmail.xx.com
-export {PRE}_MAIL_PORT=465
-export {PRE}_MAIL_USERNAME=noreply@easysaas.com
-export {PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxxx
+export {ENV_PRE}_MAIL_SERVER=smtp.exmail.xx.com
+export {ENV_PRE}_MAIL_PORT=465
+export {ENV_PRE}_MAIL_USERNAME=noreply@easysaas.com
+export {ENV_PRE}_MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxxxx
 
-export {PRE}_REDIS_URI=redis://:password@host:port
-export {PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
+export {ENV_PRE}_REDIS_URI=redis://:password@host:port
+export {ENV_PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
 # mysql+pymysql://user:password@host:port/dbname
 # source .bash_profile / .zshrc
 ```
@@ -39,9 +39,9 @@ export {PRE}_DATABASE_URI=sqlite:///{DIR}/main.db
 
 ```
 # Python3.10+ required
-cd {DIR} && python3.10 -m venv .venv
+cd {DIR} && python3 -m venv .venv
 source .venv/bin/activate / deactivate
-pip3.10 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Run Application With uwsgi / gunicorn / uvicorn
@@ -52,7 +52,8 @@ pip3.10 install -r requirements.txt
 .venv/bin/uwsig --stop / --reload index.pid
 
 .vnev/bin/uvicorn main:app --port 8000 --reload  # for test
-.venv/bin/gunicorn main:app --bind 127.0.0.1:8000 --workers 2 --worker-class uvicorn.workers.UvicornWorker
+.venv/bin/gunicorn main:app --bind 127.0.0.1:8000 --workers 2 
+                            --worker-class uvicorn.workers.UvicornWorker
 ```
 
 ### Frontend
