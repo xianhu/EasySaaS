@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     FOLDER_UPLOAD: str = "/tmp"
     MAX_FILE_SIZE: int = 1024 * 1024 * 25
 
-    # settings -- session or token
+    # settings -- session or token duration
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
     NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
@@ -63,7 +63,7 @@ class ErrorTips(BaseSettings):
     # error tips -- common
     CODE_INVALID: str = "Code is invalid or expired"
     TOKEN_INVALID: str = "Token is invalid or expired"
-    SCOPE_INVALID: str = "Scope is no permission"
+    SCOPE_INVALID: str = "Scope is no permission or invalid"
     CAPTCHA_INCORRECT: str = "Captcha is incorrect"
 
     # error tips -- password

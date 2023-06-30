@@ -54,6 +54,7 @@ def get_password_hash(pwd_plain: str) -> str:
     """
     get hash value of password
     """
+    global pwd_context
     return pwd_context.hash(pwd_plain)
 
 
@@ -61,4 +62,5 @@ def check_password_hash(pwd_plain: str, pwd_hash: str) -> bool:
     """
     check password with hash value
     """
+    global pwd_context
     return pwd_context.verify(pwd_plain, pwd_hash)
