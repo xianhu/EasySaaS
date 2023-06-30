@@ -15,7 +15,7 @@ class Project(AbstractModel):
     desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # information -- others (model -> schema -> crud)
-    # ts_expires = sqlalchemy.Column(sqlalchemy.Integer, doc="Timestamp Expires")
+    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
     # relationship: foreign_key and user
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
