@@ -2,7 +2,10 @@
 
 """
 models module
+Company  <-  User
+User     <-  Project
+User     <-  File
 """
 
 from .project import Project
-from .user import User
+from .user import Company, User
