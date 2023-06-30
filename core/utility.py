@@ -18,6 +18,8 @@ def get_logger(name, interval=1, backup=60, level=logging.WARNING):
 
     # define logger
     logger = logging.getLogger(name)
+
+    # set logger
     logger.setLevel(level)
     logger.addHandler(handler)
 
