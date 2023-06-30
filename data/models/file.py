@@ -17,7 +17,7 @@ class FileTag(AbstractModel):
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
-    # relationship: foreign_key and user
+    # relationship: foreign_key to user (filetag.user, user.filetags)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = sqlalchemy.orm.relationship("User", back_populates="filetags")
 
@@ -27,7 +27,7 @@ class FileTag(AbstractModel):
 
 class File(AbstractModel):
     # information -- basic
-    full_name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
+    fullname = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     location = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
 
     # information -- others (model -> schema -> crud)
@@ -38,5 +38,6 @@ class File(AbstractModel):
 
 
 class FileTagFile(AbstractModel):
+    # relationship: foreign_key to filetag and file
     filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"), primary_key=True)
     file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"), primary_key=True)

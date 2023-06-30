@@ -4,13 +4,10 @@
 test mysql
 """
 
-import logging
-
 from core import security
 from data import SessionMaker
-from data.crud import crud_project, crud_user
 from data.dmysql import init_db
-from data.schemas import *
+from data.models import *
 
 # init db
 init_db()
@@ -19,6 +16,27 @@ with SessionMaker() as session:
     # user info =========================================================================
     email = "admin@easysaas.com"
     pwd_hash = security.get_password_hash("a123456")
+    user = User(email=email, password=pwd_hash)
+    session.add(user)
+    session.commit()
+
+    file_tag = FileTag(name="test", user_id=user.id)
+    session.add(file_tag)
+    session.commit()
+
+    file = File(full_name="test", location="test")
+    session.add(file)
+    session.commit()
+
+    file_tag_file = FileTagFile(filetag_id=file_tag.id, file_id=file.id)
+    session.add(file_tag_file)
+    session.commit()
+
+    print(user.filetags)
+    print(file.filetags)
+    print(file_tag.files)
+    exit()
+
     user_schema = UserCreate(**dict(email=email, password=pwd_hash))
 
     # create user -- UserCreatePri

@@ -9,19 +9,6 @@ import sqlalchemy.orm
 from .base import AbstractModel
 
 
-class Company(AbstractModel):
-    # information -- basic
-    name = sqlalchemy.Column(sqlalchemy.String(255))
-    avatar = sqlalchemy.Column(sqlalchemy.String(255), doc="Avatar Url")
-    location = sqlalchemy.Column(sqlalchemy.String(255), doc="Location")
-
-    # information -- others (model -> schema -> crud)
-    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
-
-    # relationship: users (company.users, user.company)
-    # users = sqlalchemy.orm.relationship("User", back_populates="company")
-
-
 class User(AbstractModel):
     # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255))
@@ -38,15 +25,6 @@ class User(AbstractModel):
 
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
-
-    # relationship: foreign_key and company
-    # company_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("companies.id"))
-    # company = sqlalchemy.orm.relationship("Company", back_populates="users")
-    company_name = sqlalchemy.Column(sqlalchemy.String(255), doc="Company Name")
-
-    # information -- permission of company
-    company_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=True, doc="Is Company Admin")
-    company_role = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="Company Role Json")
 
     # relationship: projects (user.projects, project.user)
     projects = sqlalchemy.orm.relationship("Project", back_populates="user")

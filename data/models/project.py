@@ -17,6 +17,6 @@ class Project(AbstractModel):
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
-    # relationship: foreign_key and user
+    # relationship: foreign_key to user (project.user, user.projects)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = sqlalchemy.orm.relationship("User", back_populates="projects")
