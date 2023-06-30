@@ -50,3 +50,6 @@ class User(AbstractModel):
 
     # relationship: projects (user.projects, project.user)
     projects = sqlalchemy.orm.relationship("Project", back_populates="user")
+
+    # relationship: filetags (user.filetags, filetag.user)
+    filetags = sqlalchemy.orm.relationship("FileTag", back_populates="user")
