@@ -12,7 +12,6 @@ from .base import AbstractModel
 class FileTag(AbstractModel):
     # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
 
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
