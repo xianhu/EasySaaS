@@ -22,34 +22,21 @@ with SessionMaker() as session:
     email = EmailStr("admin@easysaas.com")
     password = security.get_password_hash("a123456")
 
-    # create user -- schemas of UserCreate and UserCreatePri
+    # create user -- schema of UserCreate
     user_schema = UserCreate(email=email, password=password)
-    user_schema = UserCreatePri(id=100000, name="admin", **user_schema.dict(exclude_unset=True))
 
     # create user -- model of User
-    user_model = User(**user_schema.dict(exclude_unset=True))
+    user_model = User(id=100000, name=email, **user_schema.dict(exclude_unset=True))
     session.add(user_model)
     session.commit()
     logging.warning(user_model.to_dict())
 
-    # update user -- schemas of UserUpdate and UserUpdatePri
+    # update user -- schema of UserUpdate
     user_schema = UserUpdate(name="admin", avatar="http://www.easysaas.com")
-    system_role = {"role": "admin", "scopes": ["user:read", ]}
-    user_schema = UserUpdatePri(system_role=system_role, **user_schema.dict(exclude_unset=True))
-    [setattr(user_model, field, getattr(user_schema, field)) for field in user_schema]
+    for field in user_schema.dict(exclude_unset=True):
+        setattr(user_model, field, getattr(user_schema, field))
+    user_model.system_admin = True
+    user_model.system_role = {"role": "admin", "scopes": ["user:read", ]}
     session.merge(user_model)
     session.commit()
     logging.warning(user_model.to_dict())
-
-    # project info ======================================================================
-    try:
-        project = Project(name="test", desc="test")
-        session.add(project)
-        session.flush()
-
-        user_project = UserProject(user_id=user_model.id, project_id=project.id)
-        session.add(user_project)
-        session.commit()
-    except Exception as excep:
-        logging.error(excep)
-        session.rollback()
