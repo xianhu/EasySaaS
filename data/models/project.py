@@ -29,10 +29,10 @@ class UserProject(AbstractModel):
     # information -- permission
     permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
 
-    # relationship -- foreign_key to user (user.userprojects, userproject.user)
+    # relationship -- foreign_key to user (userproject.user, user.userprojects)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = sqlalchemy.orm.relationship("User", back_populates="userprojects")
 
-    # relationship -- foreign_key to project (project.userprojects, userproject.project)
+    # relationship -- foreign_key to project (userproject.project, project.userprojects)
     project_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("projects.id"))
     project = sqlalchemy.orm.relationship("Project", back_populates="userprojects")

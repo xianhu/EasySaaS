@@ -18,11 +18,11 @@ class FileTag(AbstractModel):
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
-    # relationship: foreign_key to user (filetag.user, user.filetags)
+    # relationship -- foreign_key to user (filetag.user, user.filetags)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = sqlalchemy.orm.relationship("User", back_populates="filetags")
 
-    # relationship: files (filetag.files, file.filetags)
+    # relationship -- files (filetag.files, file.filetags)
     files = sqlalchemy.orm.relationship("File", secondary="filetagfiles", back_populates="filetags")
 
 
@@ -34,7 +34,7 @@ class File(AbstractModel):
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
-    # relationship: filetags (file.filetags, filetag.files)
+    # relationship -- filetags (file.filetags, filetag.files)
     filetags = sqlalchemy.orm.relationship("FileTag", secondary="filetagfiles", back_populates="files")
 
 
@@ -43,12 +43,16 @@ class FileTagFile(AbstractModel):
         sqlalchemy.UniqueConstraint("filetag_id", "file_id", name="unique_filetag_file"),
     )
 
-    # relationship: foreign_key to filetag and file
-    filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"))
-    file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"))
-
     # information -- permission
-    file_role = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="File Role Json")
+    permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
 
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
+
+    # relationship -- foreign_key to filetag (filetagfile.filetag, filetag.filetagfiles)
+    filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"))
+    filetag = sqlalchemy.orm.relationship("FileTag", back_populates="filetagfiles")
+
+    # relationship -- foreign_key to file (filetagfile.file, file.filetagfiles)
+    file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"))
+    file = sqlalchemy.orm.relationship("File", back_populates="filetags")
