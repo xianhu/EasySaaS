@@ -39,6 +39,13 @@ class File(AbstractModel):
 
 
 class FileTagFile(AbstractModel):
+    __table_args__ = (
+        sqlalchemy.UniqueConstraint("filetag_id", "file_id", name="unique_filetag_file"),
+    )
+
     # relationship: foreign_key to filetag and file
-    filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"), primary_key=True)
-    file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"), primary_key=True)
+    filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"))
+    file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"))
+
+    # information -- others (model -> schema -> crud)
+    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
