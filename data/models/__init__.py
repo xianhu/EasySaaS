@@ -2,8 +2,8 @@
 
 """
 models module
-User(N)  <-  UserProject ->  Project(N)
-User(1)  <-  FileTag(N)  <-  FileTagFile  ->  File(N)
+User(N)  <-  UserProject  ->  Project(N)
+User(1)  <-  FileTag(N)   <-  FileTagFile  ->  File(N)
 """
 
 from .file import File, FileTag, FileTagFile
