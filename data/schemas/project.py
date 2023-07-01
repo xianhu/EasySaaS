@@ -22,18 +22,7 @@ class ProjectCreate(BaseModel):
     desc: Optional[str] = None
 
 
-# used for internal call
-class ProjectCreatePri(ProjectCreate):
-    id: Optional[int] = None
-
-
 # used for request body
 class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     desc: Optional[str] = None
-
-
-# used for internal call
-class ProjectUpdatePri(ProjectUpdate):
-    # id: Optional[int] = None
-    pass
