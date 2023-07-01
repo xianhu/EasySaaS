@@ -46,9 +46,6 @@ class FileTagFile(AbstractModel):
     # information -- permission
     permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
 
-    # information -- others (model -> schema -> crud)
-    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
-
     # relationship -- foreign_key to filetag (filetagfile.filetag, filetag.filetagfiles)
     filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"))
     filetag = sqlalchemy.orm.relationship("FileTag", back_populates="filetagfiles")
