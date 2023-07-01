@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-file schema
+file schema (FileTag and File)
 """
 
 from typing import Optional
