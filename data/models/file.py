@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-file model
+file model (FileTag and File)
 """
 
 import sqlalchemy.orm
