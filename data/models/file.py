@@ -12,6 +12,8 @@ from .base import AbstractModel
 class FileTag(AbstractModel):
     # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
+    icon = sqlalchemy.Column(sqlalchemy.String(255), doc="Icon Value")
+    color = sqlalchemy.Column(sqlalchemy.String(255), doc="Color Code")
 
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")

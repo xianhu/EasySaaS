@@ -12,7 +12,8 @@ from .base import AbstractModel
 class Project(AbstractModel):
     # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    desc = sqlalchemy.Column(sqlalchemy.String(512), nullable=True)
+    desc = sqlalchemy.Column(sqlalchemy.String(255), doc="Description")
+    logo = sqlalchemy.Column(sqlalchemy.String(255), doc="Logo Url")
 
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
