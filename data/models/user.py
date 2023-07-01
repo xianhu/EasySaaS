@@ -11,7 +11,7 @@ from .base import AbstractModel
 
 class User(AbstractModel):
     # information -- basic
-    name = sqlalchemy.Column(sqlalchemy.String(255))
+    name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     avatar = sqlalchemy.Column(sqlalchemy.String(255), doc="Avatar Url")
 
     # information -- email
@@ -26,8 +26,8 @@ class User(AbstractModel):
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
-    # relationship: projects (user.projects, project.user)
-    projects = sqlalchemy.orm.relationship("Project", back_populates="user")
+    # relationship -- userprojects (user.userprojects, userproject.user)
+    userprojects = sqlalchemy.orm.relationship("UserProject", back_populates="user")
 
-    # relationship: filetags (user.filetags, filetag.user)
+    # relationship -- filetags (user.filetags, filetag.user)
     filetags = sqlalchemy.orm.relationship("FileTag", back_populates="user")

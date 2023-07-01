@@ -2,10 +2,10 @@
 
 """
 models module
-User(1)  <-  Project(N)
-User(1)  <-  FileTag(N)   <->  File(N)
+User(N)  <-  UserProject  ->  Project(N)
+User(1)  <-  FileTag(N)   <-  FileTagFile  ->  File(N)
 """
 
 from .file import File, FileTag, FileTagFile
-from .project import Project
+from .project import Project, UserProject
 from .user import User
