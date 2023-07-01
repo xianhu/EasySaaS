@@ -47,5 +47,8 @@ class FileTagFile(AbstractModel):
     filetag_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("filetags.id"))
     file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"))
 
+    # information -- permission
+    file_role = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="File Role Json")
+
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
