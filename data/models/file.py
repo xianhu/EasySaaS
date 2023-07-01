@@ -22,8 +22,8 @@ class FileTag(AbstractModel):
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = sqlalchemy.orm.relationship("User", back_populates="filetags")
 
-    # relationship -- files (filetag.files, file.filetags)
-    files = sqlalchemy.orm.relationship("File", secondary="filetagfiles", back_populates="filetags")
+    # relationship -- filetagfiles (filetag.filetagfiles, filetagfile.filetag)
+    filetagfiles = sqlalchemy.orm.relationship("FileTagFile", back_populates="filetag")
 
 
 class File(AbstractModel):
@@ -34,8 +34,8 @@ class File(AbstractModel):
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
-    # relationship -- filetags (file.filetags, filetag.files)
-    filetags = sqlalchemy.orm.relationship("FileTag", secondary="filetagfiles", back_populates="files")
+    # relationship -- filetagfiles (file.filetagfiles, filetagfile.file)
+    filetagfiles = sqlalchemy.orm.relationship("FileTagFile", back_populates="file")
 
 
 class FileTagFile(AbstractModel):
@@ -55,4 +55,4 @@ class FileTagFile(AbstractModel):
 
     # relationship -- foreign_key to file (filetagfile.file, file.filetagfiles)
     file_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("files.id"))
-    file = sqlalchemy.orm.relationship("File", back_populates="filetags")
+    file = sqlalchemy.orm.relationship("File", back_populates="filetagfiles")
