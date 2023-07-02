@@ -19,6 +19,7 @@ from core.security import create_token_data, get_token_payload
 from core.settings import error_tips, settings
 from core.utemail import send_email
 from data import get_session
+from data.models import User
 from data.schemas import AccessToken, Resp
 
 # define router
@@ -26,7 +27,7 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(request: Request,  # request
+def _access_token(request: Request,  # request object for test
                   form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
@@ -38,12 +39,12 @@ def _access_token(request: Request,  # request
     # get variables from request
     client_host = request.client.host
 
-    # get username、password and scopes from form_data
-    email, pwd_plain, scopes = form_data.username, form_data.password, form_data.scopes
-    logging.warning("access_token_0: %s - %s - %s - %s", client_host, email, pwd_plain, scopes)
+    # get username、password from form_data
+    email, pwd_plain = form_data.username, form_data.password
+    logging.warning("access_token_0: %s - %s - %s", client_host, email, pwd_plain)
 
     # check if user existed or raise exception
-    user_model = crud_user.get_by_email(session, email=email)
+    user_model = session.query(User).filter(User.email == email).first()
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -59,8 +60,8 @@ def _access_token(request: Request,  # request
         )
     user_id = user_model.id
 
-    # create access_token with user_id and scopes: List[str]
-    access_token = create_token_data({"sub": str(user_id), "scopes": scopes})
+    # create access_token with user_id
+    access_token = create_token_data({"sub": str(user_id)})
     logging.warning("access_token_1: %s - %s - %s", client_host, email, access_token)
 
     # return access_token with scopes
@@ -90,7 +91,7 @@ def _send_code(background_tasks: BackgroundTasks,
     - **status=-2**: send email failed
     """
     # check user existed or not by _type
-    user_model = crud_user.get_by_email(session, email=email)
+    user_model = session.query(User).filter(User.email == email).first()
     if _type == TypeName.signup and user_model:
         return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
     if _type == TypeName.reset and (not user_model):
@@ -152,13 +153,14 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     pwd_hash = get_password_hash(password)
 
     # get user_model from db
-    user_model = crud_user.get_by_email(session, email=email)
+    user_model = session.query(User).filter(User.email == email).first()
 
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
-        # create user based on UserCreatePri
-        user_schema = UserCreatePri(email=email, password=pwd_hash, email_verified=True)
-        user_model = crud_user.create(session, obj_schema=user_schema)
+        # create user based on email and password
+        user_model = User(name=email, email=email, password=pwd_hash, email_verified=True)
+        session.add(user_model)
+        session.commit()
 
         # logging and return result
         logging.warning("create user: %s", user_model.to_dict())
@@ -166,9 +168,10 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
     # check token type: reset
     if _type == TypeName.reset and user_model:
-        # update password based on UserUpdatePri
-        user_schema = UserUpdatePri(password=pwd_hash)
-        user_model = crud_user.update(session, obj_model=user_model, obj_schema=user_schema)
+        # update password based on password
+        user_model.password = pwd_hash
+        session.merge(user_model)
+        session.commit()
 
         # logging and return result
         logging.warning("reset password: %s", user_model.to_dict())
