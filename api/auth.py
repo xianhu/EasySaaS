@@ -19,9 +19,7 @@ from core.security import create_token_data, get_token_payload
 from core.settings import error_tips, settings
 from core.utemail import send_email
 from data import get_session
-from data.crud import crud_user
 from data.schemas import AccessToken, Resp
-from data.schemas import UserCreatePri, UserUpdatePri
 
 # define router
 router = APIRouter()

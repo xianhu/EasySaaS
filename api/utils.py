@@ -13,7 +13,6 @@ from sqlalchemy.orm import Session
 from core.security import get_token_payload
 from core.settings import error_tips
 from data import get_session
-from data.crud import crud_user
 from data.models import User
 
 
