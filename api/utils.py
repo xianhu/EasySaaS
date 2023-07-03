@@ -33,7 +33,7 @@ def get_current_user(access_token: str = Depends(oauth2),
         )
     user_id = int(payload["sub"])
 
-    # get user model and check
+    # check if user existed or raise exception
     user_model = session.query(User).get(user_id)
     if not user_model:
         raise HTTPException(

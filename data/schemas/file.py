@@ -32,21 +32,4 @@ class FileTagUpdate(BaseModel):
     icon: Optional[str] = None
     color: Optional[str] = None
 
-
-# used for response_model
-class FileSchema(BaseModel):
-    id: Optional[int] = None
-    fullname: Optional[str] = None
-    location: Optional[str] = None
-
-
-# used for request body
-class FileCreate(BaseModel):
-    fullname: str  # required
-    location: str  # required
-
-
-# used for request body
-class FileUpdate(BaseModel):
-    fullname: Optional[str] = None
-    location: Optional[str] = None
+# file schema ignored

@@ -9,7 +9,7 @@ import random
 from enum import Enum
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import BackgroundTasks, Body, Depends, Request
+from fastapi import BackgroundTasks, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
@@ -27,21 +27,16 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(request: Request,  # request object for test
-                  form_data: OAuth2PasswordRequestForm = Depends(),
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
     - **username**: value of email
     - **password**: value of password
-    - **scopes**: value of scopes, split by space
     """
-    # get variables from request
-    client_host = request.client.host
-
     # get username、password from form_data
     email, pwd_plain = form_data.username, form_data.password
-    logging.warning("access_token_0: %s - %s - %s", client_host, email, pwd_plain)
+    logging.warning("access_token_0: %s - %s", email, pwd_plain)
 
     # check if user existed or raise exception
     user_model = session.query(User).filter(User.email == email).first()
@@ -62,7 +57,7 @@ def _access_token(request: Request,  # request object for test
 
     # create access_token with user_id
     access_token = create_token_data({"sub": str(user_id)})
-    logging.warning("access_token_1: %s - %s - %s", client_host, email, access_token)
+    logging.warning("access_token_1: %s - %s", email, access_token)
 
     # return access_token with scopes
     return AccessToken(access_token=access_token)
@@ -90,7 +85,7 @@ def _send_code(background_tasks: BackgroundTasks,
     - **status=-1**: email existed or not existed
     - **status=-2**: send email failed
     """
-    # check user existed or not by _type
+    # check if user existed or not by _type
     user_model = session.query(User).filter(User.email == email).first()
     if _type == TypeName.signup and user_model:
         return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
@@ -111,11 +106,8 @@ def _send_code(background_tasks: BackgroundTasks,
     _from = (settings.APP_NAME, settings.MAIL_USERNAME)
     kwargs = dict(subject=mail_subject, html_raw=mail_html, render=render)
 
-    # send email in background or not
+    # send email in background (check status_code == 250)
     background_tasks.add_task(send_email, _from, email, **kwargs)
-    # status_code = send_email(_from, email, **kwargs)
-    # if status_code != 250:
-    #     return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
     logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
 
     # return token with code
@@ -124,12 +116,12 @@ def _send_code(background_tasks: BackgroundTasks,
 
 @router.post("/verify-code", response_model=Resp)
 def _verify_code(code: int = Body(..., ge=100000, le=999999),
-                 token: str = Body(..., min_length=10),
+                 token: str = Body(..., min_length=10, max_length=500),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
     verify code and token, then create user or update password
-    - **status=0**: verify success
+    - **status=0**: verify success, create or update success
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """
@@ -147,7 +139,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     email = payload["sub"]
 
-    # check token: code
+    # check token: code(int)
     if (not payload.get("code")) or (payload["code"] != code):
         return Resp(status=-2, msg=error_tips.CODE_INVALID)
     pwd_hash = get_password_hash(password)
