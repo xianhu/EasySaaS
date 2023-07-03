@@ -19,7 +19,7 @@ docker inspect mysql/redis | grep IPAddress
 export {ENV_PRE}_DEBUG=1
 
 export {ENV_PRE}_APP_NAME=EasySaaS
-export {ENV_PRE}_APP_VERSION=0.0.1
+export {ENV_PRE}_APP_VERSION=0.0.1-beta
 
 export {ENV_PRE}_APP_DOMAIN=http://127.0.0.1:8000
 export {ENV_PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
