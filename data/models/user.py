@@ -23,9 +23,6 @@ class User(AbstractModel):
     system_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is System Admin")
     system_role = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="System Role Json")
 
-    # information -- others (model -> schema -> crud)
-    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
-
     # relationship -- userprojects (user.userprojects, userproject.user)
     userprojects = sqlalchemy.orm.relationship("UserProject", back_populates="user")
 

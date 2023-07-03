@@ -14,9 +14,6 @@ class Project(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     desc = sqlalchemy.Column(sqlalchemy.String(255), doc="Description")
 
-    # information -- others (model -> schema -> crud)
-    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
-
     # relationship -- userprojects (project.userprojects, userproject.project)
     userprojects = sqlalchemy.orm.relationship("UserProject", back_populates="project")
 
