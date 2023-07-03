@@ -25,6 +25,7 @@ description = """
 - return 0 when success
 - return -1, -2, ... when something wrong in server
 - return HttpException(401) only when access_token is invalid
+- return HttpException(500) only when file size too large or something wrong in client
 """
 
 # create app

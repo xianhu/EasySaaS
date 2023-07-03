@@ -1,14 +1,14 @@
 # _*_ coding: utf-8 _*_
 
 """
-files api
+file api
 """
 
 import os
 import time
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi import File, Form, Path, UploadFile
+from fastapi import APIRouter, HTTPException, status
+from fastapi import Depends, File, Form, Path, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 
@@ -28,13 +28,13 @@ class RespFile(Resp):
 
 @router.post("/upload", response_model=RespFile)
 def _upload(current_user: User = Depends(get_current_user),
-            file: UploadFile = File(..., description="max file size")):
+            file: UploadFile = File(..., description="upload file")):
     """
     upload file, return file_id
     - **status=0**: upload success
     - **status_code=500**: file size too large
     """
-    # check file size: raise exception
+    # check file size or raise exception
     if file.size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -46,6 +46,7 @@ def _upload(current_user: User = Depends(get_current_user),
     file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
     with open(file_path, "wb") as file_in:
         file_in.write(file.file.read())
+
 
     # return file_id
     return RespFile(file_id=file_id)
