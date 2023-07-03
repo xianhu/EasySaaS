@@ -33,7 +33,7 @@ async def root():
 @api_router.get("/test")
 async def test(request: Request,
                response: Response,
-               cookie: Union[str, None] = Cookie(default=None),
+               fake_cookie: Union[str, None] = Cookie(default=None),
                user_agent: Union[str, None] = Header(default=None)):
     """
     test router
@@ -42,7 +42,7 @@ async def test(request: Request,
         return {"message": "Hello World"}
 
     # set cookie and headers of response
-    response.set_cookie(key="fake-session", value="1234567890")
+    response.set_cookie(key="fake-cookie", value="1234567890")
     response.headers["X-Fake-Header"] = "1234567890"
     return {
         "request": {
@@ -51,6 +51,6 @@ async def test(request: Request,
             "client.host": request.client.host,
             "client.port": request.client.port,
         },
-        "cookie": cookie,
+        "fake-cookie": fake_cookie,
         "user_agent": user_agent,
     }
