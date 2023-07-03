@@ -36,8 +36,8 @@ def _get(current_user: User = Depends(get_current_user)):
 
 
 @router.post("/update", response_model=RespUser)
-def _update(current_user: User = Depends(get_current_user),
-            user_schema: UserUpdate = Body(...),
+def _update(user_schema: UserUpdate = Body(...),
+            current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
     update schema of current_user

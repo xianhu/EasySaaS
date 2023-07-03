@@ -11,8 +11,10 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi import Depends, File, Form, Path, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
+from sqlalchemy.orm import Session
 
 from core.settings import error_tips, settings
+from data import get_session
 from data.models import User
 from data.schemas import Resp
 from .utils import get_current_user, iter_file
@@ -27,8 +29,9 @@ class RespFile(Resp):
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(current_user: User = Depends(get_current_user),
-            file: UploadFile = File(..., description="upload file")):
+def _upload(file: UploadFile = File(..., description="upload file"),
+            current_user: User = Depends(get_current_user),
+            session: Session = Depends(get_session)):
     """
     upload file, return file_id
     - **status=0**: upload success
@@ -40,13 +43,14 @@ def _upload(current_user: User = Depends(get_current_user),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_tips.FILE_SIZE_EXCEEDED,
         )
-    file_id = f"{current_user.id}-{int(time.time())}-{file.filename}"
+    fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
 
-    # define file path and save file
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
-    with open(file_path, "wb") as file_in:
+    # define location and save file
+    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
+    with open(location, "wb") as file_in:
         file_in.write(file.file.read())
 
+    # save file data to db
 
     # return file_id
     return RespFile(file_id=file_id)

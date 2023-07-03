@@ -33,7 +33,7 @@ async def root():
 @api_router.get("/test")
 async def test(request: Request,
                response: Response,
-               session: Union[str, None] = Cookie(default=None),
+               cookie: Union[str, None] = Cookie(default=None),
                user_agent: Union[str, None] = Header(default=None)):
     """
     test router
@@ -51,6 +51,6 @@ async def test(request: Request,
             "client.host": request.client.host,
             "client.port": request.client.port,
         },
-        "session": session,
+        "cookie": cookie,
         "user_agent": user_agent,
     }
