@@ -14,6 +14,7 @@ class FileTag(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     icon = sqlalchemy.Column(sqlalchemy.String(255), doc="Icon Value")
     color = sqlalchemy.Column(sqlalchemy.String(255), doc="Color Code")
+    _type = sqlalchemy.Column(sqlalchemy.String(255), default="default", doc="default, system, custom")
 
     # information -- others (model -> schema -> crud)
     # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
