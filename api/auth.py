@@ -106,11 +106,8 @@ def _send_code(background_tasks: BackgroundTasks,
     _from = (settings.APP_NAME, settings.MAIL_USERNAME)
     kwargs = dict(subject=mail_subject, html_raw=mail_html, render=render)
 
-    # send email in background or not
+    # send email in background (check status_code == 250)
     background_tasks.add_task(send_email, _from, email, **kwargs)
-    # status_code = send_email(_from, email, **kwargs)
-    # if status_code != 250:
-    #     return RespSend(status=-2, msg=error_tips.EMAIL_SEND_FAILED)
     logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
 
     # return token with code
@@ -119,12 +116,12 @@ def _send_code(background_tasks: BackgroundTasks,
 
 @router.post("/verify-code", response_model=Resp)
 def _verify_code(code: int = Body(..., ge=100000, le=999999),
-                 token: str = Body(..., min_length=10),
+                 token: str = Body(..., min_length=10, max_length=500),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
     verify code and token, then create user or update password
-    - **status=0**: verify success
+    - **status=0**: verify success, create or update success
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """
@@ -142,7 +139,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
     email = payload["sub"]
 
-    # check token: code
+    # check token: code(int)
     if (not payload.get("code")) or (payload["code"] != code):
         return Resp(status=-2, msg=error_tips.CODE_INVALID)
     pwd_hash = get_password_hash(password)
