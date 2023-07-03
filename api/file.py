@@ -8,14 +8,15 @@ import os
 import time
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import Depends, File, Form, Path, UploadFile
+from fastapi import Body, Depends, Form, Path, UploadFile
+from fastapi import File as UploadFileType
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips, settings
 from data import get_session
-from data.models import User
+from data.models import File, FileTag, FileTagFile, User
 from data.schemas import Resp
 from .utils import get_current_user, iter_file
 
@@ -25,11 +26,12 @@ router = APIRouter()
 
 # response model
 class RespFile(Resp):
-    file_id: str = Field(None)
+    file_id: int = Field(None)
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(file: UploadFile = File(..., description="upload file"),
+def _upload(file: UploadFile = UploadFileType(..., description="upload file"),
+            filetags: str = Body('', description="file tags"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -50,10 +52,24 @@ def _upload(file: UploadFile = File(..., description="upload file"),
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
 
-    # save file data to db
+    # save file to db
+    file_model = File(filename=file.filename, fullname=fullname, location=location)
+    session.add(file_model)
+
+    # check filetags
+    if not filetags:
+        try:
+            filetag_model = FileTag(name="default", type="default", user_id=current_user.id)
+            session.add(filetag_model)
+            session.flush(filetag_model)
+
+            filetagfile_model = FileTagFile(filetag_id=filetag_model.id, file_id=file_model.id)
+        except:
+            pass
+        session.commit()
 
     # return file_id
-    return RespFile(file_id=file_id)
+    return RespFile(file_id=file_model.id)
 
 
 @router.post("/upload-flow", response_model=RespFile)

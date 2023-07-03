@@ -40,7 +40,7 @@ def _update(user_schema: UserUpdate = Body(...),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    update schema of current_user
+    update current_user based on schema
     - **status=0**: data=UserSchema
     """
     # get user_model
