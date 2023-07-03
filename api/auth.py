@@ -85,7 +85,7 @@ def _send_code(background_tasks: BackgroundTasks,
     - **status=-1**: email existed or not existed
     - **status=-2**: send email failed
     """
-    # check user existed or not by _type
+    # check if user existed or not by _type
     user_model = session.query(User).filter(User.email == email).first()
     if _type == TypeName.signup and user_model:
         return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
