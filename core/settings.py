@@ -86,6 +86,7 @@ class ErrorTips(BaseSettings):
     FILE_NOT_EXISTED: str = "file not existed"
     FILE_TYPE_INVALID: str = "file type invalid"
     FILE_SIZE_EXCEEDED: str = "file size too large"
+    FILE_UPLOAD_FAILED: str = "file upload failed"
 
     # error tips -- crud
     QUERY_FAILED: str = "Query failed"

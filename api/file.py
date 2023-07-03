@@ -3,20 +3,20 @@
 """
 file api
 """
-
+import logging
 import os
 import time
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Body, Depends, Form, Path, UploadFile
-from fastapi import File as UploadFileType
+from fastapi import File as UploadFileType  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips, settings
 from data import get_session
-from data.models import File, FileTag, FileTagFile, User
+from data.models import File, FileTag, User
 from data.schemas import Resp
 from .utils import get_current_user, iter_file
 
@@ -31,12 +31,13 @@ class RespFile(Resp):
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileType(..., description="upload file"),
-            filetags: str = Body('', description="file tags"),
+            filetags: str = Body('', description="tag_id list, split by ','"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
     upload file, return file_id
     - **status=0**: upload success
+    - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
     # check file size or raise exception
@@ -52,21 +53,24 @@ def _upload(file: UploadFile = UploadFileType(..., description="upload file"),
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
 
-    # save file to db
-    file_model = File(filename=file.filename, fullname=fullname, location=location)
-    session.add(file_model)
+    # save file to db and link to filetags
+    try:
+        file_model = File(filename=file.filename, fullname=fullname, location=location)
+        session.add(file_model)
+        session.flush(file_model)
 
-    # check filetags
-    if not filetags:
-        try:
+        filetags_list = [int(_id) for _id in filetags.split(',')]
+        if not filetags_list:
             filetag_model = FileTag(name="default", type="default", user_id=current_user.id)
             session.add(filetag_model)
             session.flush(filetag_model)
-
-            filetagfile_model = FileTagFile(filetag_id=filetag_model.id, file_id=file_model.id)
-        except:
-            pass
-        session.commit()
+            filetag_model_list = [filetag_model, ]
+        else:
+            filetag_model_list = session.query(FileTag).filter(FileTag.id.in_(filetags_list)).all()
+    except Exception as excep:
+        logging.error("upload file error: %s", excep)
+        session.rollback()
+        return RespFile(status=-1, msg=error_tips.FILE_UPLOAD_FAILED)
 
     # return file_id
     return RespFile(file_id=file_model.id)
