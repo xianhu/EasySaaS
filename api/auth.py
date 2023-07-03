@@ -9,7 +9,7 @@ import random
 from enum import Enum
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import BackgroundTasks, Body, Depends, Request
+from fastapi import BackgroundTasks, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
@@ -27,21 +27,16 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(request: Request,  # request object for test
-                  form_data: OAuth2PasswordRequestForm = Depends(),
+def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
     - **username**: value of email
     - **password**: value of password
-    - **scopes**: value of scopes, split by space
     """
-    # get variables from request
-    client_host = request.client.host
-
     # get username、password from form_data
     email, pwd_plain = form_data.username, form_data.password
-    logging.warning("access_token_0: %s - %s - %s", client_host, email, pwd_plain)
+    logging.warning("access_token_0: %s - %s", email, pwd_plain)
 
     # check if user existed or raise exception
     user_model = session.query(User).filter(User.email == email).first()
@@ -62,7 +57,7 @@ def _access_token(request: Request,  # request object for test
 
     # create access_token with user_id
     access_token = create_token_data({"sub": str(user_id)})
-    logging.warning("access_token_1: %s - %s - %s", client_host, email, access_token)
+    logging.warning("access_token_1: %s - %s", email, access_token)
 
     # return access_token with scopes
     return AccessToken(access_token=access_token)
