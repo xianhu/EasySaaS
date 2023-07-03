@@ -19,7 +19,7 @@ docker inspect mysql/redis | grep IPAddress
 export {ENV_PRE}_DEBUG=1
 
 export {ENV_PRE}_APP_NAME=EasySaaS
-export {ENV_PRE}_APP_VERSION=0.0.1
+export {ENV_PRE}_APP_VERSION=0.0.1-beta
 
 export {ENV_PRE}_APP_DOMAIN=http://127.0.0.1:8000
 export {ENV_PRE}_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxx
@@ -51,19 +51,7 @@ pip3 install -r requirements.txt
                 --pidfile index.pid --master --daemonize index.log
 .venv/bin/uwsig --stop / --reload index.pid
 
-.vnev/bin/uvicorn main:app --port 8000 --reload  # for test
+.venv/bin/uvicorn main:app --port 8000 --reload  # for test
 .venv/bin/gunicorn main:app --bind 127.0.0.1:8000 --workers 2 
                             --worker-class uvicorn.workers.UvicornWorker
 ```
-
-### Frontend
-
-- Bootstrap: https://getbootstrap.com/docs/5.1/utilities/api/
-- CheatSheet: https://dashcheatsheet.pythonanywhere.com/
-- Front4.0: https://htmlstream.com/front-v4.0/index.html
-- Echarts: https://echarts.apache.org/examples/zh/index.html
-- Antd: https://ant-design.gitee.io/index-cn
-- Fac: https://fac.feffery.tech/what-is-fac
-- Fuc: https://fuc.feffery.tech/what-is-fuc
-- FastAPI: https://fastapi.tiangolo.com
-- Pydantic: https://pydantic-docs.helpmanual.io

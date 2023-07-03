@@ -6,9 +6,8 @@ files api
 
 import os
 import time
-from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Security, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi import File, Form, Path, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
@@ -16,13 +15,10 @@ from pydantic import Field
 from core.settings import error_tips, settings
 from data.models import User
 from data.schemas import Resp
-from .utils import ScopeName, get_current_user, iter_file
+from .utils import get_current_user, iter_file
 
 # define router
 router = APIRouter()
-
-# define security scopes
-security_scopes = Security(get_current_user, scopes=[ScopeName.files_ud, ])
 
 
 # response model
@@ -31,7 +27,7 @@ class RespFile(Resp):
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(current_user: Annotated[User, security_scopes],
+def _upload(current_user: User = Depends(get_current_user),
             file: UploadFile = File(..., description="max file size")):
     """
     upload file, return file_id
@@ -56,7 +52,7 @@ def _upload(current_user: Annotated[User, security_scopes],
 
 
 @router.post("/upload-flow", response_model=RespFile)
-def _upload_flow(current_user: Annotated[User, security_scopes],
+def _upload_flow(current_user: User = Depends(get_current_user),
                  file: UploadFile = File(..., description="max file size"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
@@ -99,7 +95,7 @@ def _upload_flow(current_user: Annotated[User, security_scopes],
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
-def _download(current_user: Annotated[User, security_scopes],
+def _download(current_user: User = Depends(get_current_user),
               file_id: str = Path(..., description="file id")):
     """
     download file by file_id
@@ -119,7 +115,7 @@ def _download(current_user: Annotated[User, security_scopes],
 
 
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
-def _download_stream(current_user: Annotated[User, security_scopes],
+def _download_stream(current_user: User = Depends(get_current_user),
                      file_id: str = Path(..., description="file id")):
     """
     download file by file_id

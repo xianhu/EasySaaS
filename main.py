@@ -25,7 +25,6 @@ description = """
 - return 0 when success
 - return -1, -2, ... when something wrong in server
 - return HttpException(401) only when access_token is invalid
-- return HttpException(500) in files apis when file size too large or file not existed
 """
 
 # create app
@@ -95,7 +94,7 @@ async def add_values_to_headers(request: Request, call_next):
     """
     start_time = time.time()
     response = await call_next(request)
-    response.headers["X-Debug"] = str(settings.DEBUG)
-    response.headers["X-Version"] = str(settings.APP_VERSION)
     response.headers["X-Duration"] = str(time.time() - start_time)
+    response.headers["X-Version"] = str(settings.APP_VERSION)
+    response.headers["X-Debug"] = str(settings.DEBUG)
     return response

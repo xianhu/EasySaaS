@@ -14,9 +14,7 @@ class FileTag(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     icon = sqlalchemy.Column(sqlalchemy.String(255), doc="Icon Value")
     color = sqlalchemy.Column(sqlalchemy.String(255), doc="Color Code")
-
-    # information -- others (model -> schema -> crud)
-    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
+    _type = sqlalchemy.Column(sqlalchemy.String(255), default="default", doc="default, system, custom")
 
     # relationship -- foreign_key to user (filetag.user, user.filetags)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
@@ -30,9 +28,6 @@ class File(AbstractModel):
     # information -- basic
     fullname = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     location = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-
-    # information -- others (model -> schema -> crud)
-    # xxx_xxxx = sqlalchemy.Column(sqlalchemy.String(255), doc="xxx xxxxx")
 
     # relationship -- filetagfiles (file.filetagfiles, filetagfile.file)
     filetagfiles = sqlalchemy.orm.relationship("FileTagFile", back_populates="file")
