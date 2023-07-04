@@ -31,7 +31,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
-    - **username**: value of email
+    - **username**: value of email, or phone number, etc.
     - **password**: value of password
     """
     # get username、password from form_data
@@ -59,7 +59,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     access_token = create_token_data({"sub": str(user_id)})
     logging.warning("access_token_1: %s - %s", email, access_token)
 
-    # return access_token with scopes
+    # return access_token
     return AccessToken(access_token=access_token)
 
 
@@ -83,7 +83,6 @@ def _send_code(background_tasks: BackgroundTasks,
     send a code to email, and return token with code
     - **status=0**: send email success, data=token
     - **status=-1**: email existed or not existed
-    - **status=-2**: send email failed
     """
     # check if user existed or not by _type
     user_model = session.query(User).filter(User.email == email).first()
