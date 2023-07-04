@@ -29,7 +29,7 @@ class RespFile(Resp):
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(file: UploadFile = UploadFileClass(..., description="upload file"),
+def _upload(file: UploadFile = UploadFileClass(...),
             current_user: User = Depends(get_current_user)):
     """
     upload file, return file_id
@@ -56,7 +56,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="upload file"),
 
 
 @router.post("/upload-flow", response_model=RespFile)
-def _upload_flow(file: UploadFile = UploadFileClass(..., description="upload file"),
+def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of file"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
@@ -64,11 +64,11 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="upload fil
                  current_user: User = Depends(get_current_user)):
     """
     upload file by flow.js, return file_id
-    - **status=0**: uploading or upload success
+    - **status=0**: upload success
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
-    # check file size: raise exception
+    # check file size or raise exception
     if flow_total_size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -77,7 +77,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="upload fil
     fullname_temp = f"{flow_identifier}-{file.filename}"
     location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
 
-    # save flow_chunk_number part
+    # save flow_chunk_number part of file
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
     with open(location_temp, file_mode) as file_in:
         file_in.write(file.file.read())
@@ -111,10 +111,10 @@ def _download(file_id: str = Path(..., description="file id")):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_tips.FILE_NOT_EXISTED,
         )
-    file_name = "-".join(file_id.split("-")[2:])
+    filename = "-".join(file_id.split("-")[2:])
 
     # return file response
-    return FileResponse(location, filename=file_name)
+    return FileResponse(location, filename=filename)
 
 
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
@@ -130,8 +130,8 @@ def _download_stream(file_id: str = Path(..., description="file id")):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_tips.FILE_NOT_EXISTED,
         )
-    file_name = "-".join(file_id.split("-")[2:])
+    filename = "-".join(file_id.split("-")[2:])
 
     # return file response
-    headers = {"Content-Disposition": f"attachment; filename=\"{file_name}\""}
+    headers = {"Content-Disposition": f"attachment; filename=\"{filename}\""}
     return StreamingResponse(iter_file(location), media_type="application/octet-stream", headers=headers)
