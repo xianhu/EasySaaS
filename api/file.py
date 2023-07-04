@@ -3,21 +3,19 @@
 """
 file api
 """
-import logging
+
 import os
 import time
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import Body, Depends, Form, Path, UploadFile
-from fastapi import File as UploadFileType  # rename File
+from fastapi import Depends, Form, Path, UploadFile
+from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
-from sqlalchemy.orm import Session
 
 from core.settings import error_tips, settings
 from core.utility import iter_file
-from data import get_session
-from data.models import File, FileTag, User
+from data.models import User
 from data.schemas import Resp
 from .utils import get_current_user
 
@@ -27,14 +25,12 @@ router = APIRouter()
 
 # response model
 class RespFile(Resp):
-    file_id: int = Field(None)
+    file_id: str = Field(None)
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(file: UploadFile = UploadFileType(..., description="upload file"),
-            filetags: str = Body('', description="tag_id list, split by ','"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+def _upload(file: UploadFile = UploadFileClass(..., description="upload file"),
+            current_user: User = Depends(get_current_user)):
     """
     upload file, return file_id
     - **status=0**: upload success
@@ -53,40 +49,23 @@ def _upload(file: UploadFile = UploadFileType(..., description="upload file"),
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
-
-    # save file to db and link to filetags
-    try:
-        file_model = File(filename=file.filename, fullname=fullname, location=location)
-        session.add(file_model)
-        session.flush(file_model)
-
-        filetags_list = [int(_id) for _id in filetags.split(',')]
-        if not filetags_list:
-            filetag_model = FileTag(name="default", type="default", user_id=current_user.id)
-            session.add(filetag_model)
-            session.flush(filetag_model)
-            filetag_model_list = [filetag_model, ]
-        else:
-            filetag_model_list = session.query(FileTag).filter(FileTag.id.in_(filetags_list)).all()
-    except Exception as excep:
-        logging.error("upload file error: %s", excep)
-        session.rollback()
-        return RespFile(status=-1, msg=error_tips.FILE_UPLOAD_FAILED)
+    # save file to database, return file_id
 
     # return file_id
-    return RespFile(file_id=file_model.id)
+    return RespFile(file_id=fullname)
 
 
 @router.post("/upload-flow", response_model=RespFile)
-def _upload_flow(current_user: User = Depends(get_current_user),
-                 file: UploadFile = UploadFileType(..., description="max file size"),
+def _upload_flow(file: UploadFile = UploadFileClass(..., description="upload file"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
-                 flow_identifier: str = Form(..., alias="flowIdentifier")):
+                 flow_identifier: str = Form(..., alias="flowIdentifier"),
+                 current_user: User = Depends(get_current_user)):
     """
-    upload file by flow.js
+    upload file by flow.js, return file_id
     - **status=0**: uploading or upload success
+    - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
     # check file size: raise exception
@@ -95,67 +74,64 @@ def _upload_flow(current_user: User = Depends(get_current_user),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_tips.FILE_SIZE_EXCEEDED,
         )
-
-    # define file path temp
-    file_name_temp = f"{flow_identifier}-{file.filename}"
-    file_path_temp = f"{settings.FOLDER_UPLOAD}/{file_name_temp}"
+    fullname_temp = f"{flow_identifier}-{file.filename}"
+    location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
 
     # save flow_chunk_number part
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
-    with open(file_path_temp, file_mode) as file_in:
+    with open(location_temp, file_mode) as file_in:
         file_in.write(file.file.read())
 
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    file_id = f"{current_user.id}-{int(time.time())}-{file.filename}"
+    fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
 
-    # define file path and save file
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
-    with open(file_path, "wb") as file_in:
-        with open(file_path_temp, "rb") as file_temp:
+    # define location and save file
+    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
+    with open(location, "wb") as file_in:
+        with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
+    # save file to database, return file_id
 
     # return file_id
-    return RespFile(file_id=file_id)
+    return RespFile(file_id=fullname)
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
-def _download(current_user: User = Depends(get_current_user),
-              file_id: str = Path(..., description="file id")):
+def _download(file_id: str = Path(..., description="file id")):
     """
     download file by file_id
     - **status_code=500**: file not existed
     """
-    # define file path: raise exception
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
-    if not os.path.exists(file_path):
+    # define location and check if file existed
+    location = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_tips.FILE_NOT_EXISTED,
         )
-
-    # define file name and return file
     file_name = "-".join(file_id.split("-")[2:])
-    return FileResponse(file_path, filename=file_name)
+
+    # return file response
+    return FileResponse(location, filename=file_name)
 
 
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
-def _download_stream(current_user: User = Depends(get_current_user),
-                     file_id: str = Path(..., description="file id")):
+def _download_stream(file_id: str = Path(..., description="file id")):
     """
     download file by file_id
     - **status_code=500**: file not existed
     """
-    # define file path: raise exception
-    file_path = f"{settings.FOLDER_UPLOAD}/{file_id}"
-    if not os.path.exists(file_path):
+    # define location and check if file existed
+    location = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_tips.FILE_NOT_EXISTED,
         )
-
-    # define file name and return file
     file_name = "-".join(file_id.split("-")[2:])
+
+    # return file response
     headers = {"Content-Disposition": f"attachment; filename=\"{file_name}\""}
-    return StreamingResponse(iter_file(file_path), media_type="application/octet-stream", headers=headers)
+    return StreamingResponse(iter_file(location), media_type="application/octet-stream", headers=headers)
