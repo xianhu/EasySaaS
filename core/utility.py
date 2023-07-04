@@ -25,3 +25,15 @@ def get_logger(name, interval=1, backup=60, level=logging.WARNING):
 
     # return
     return logger
+
+
+def iter_file(file_path: str, chunk_size: int = 1024 * 1024) -> iter:
+    """
+    iter file, yield chunk
+    """
+    with open(file_path, "rb") as file_in:
+        while True:
+            chunk = file_in.read(chunk_size)
+            if not chunk:
+                break
+            yield chunk

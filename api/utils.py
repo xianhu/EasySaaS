@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-utils functions
+utility functions used for api
 """
 
 from fastapi import Depends, HTTPException, status
@@ -43,15 +43,3 @@ def get_current_user(access_token: str = Depends(oauth2),
 
     # return user
     return user_model
-
-
-def iter_file(file_path: str) -> iter:
-    """
-    iter file, yield chunk
-    """
-    with open(file_path, "rb") as file_in:
-        while True:
-            chunk = file_in.read(1024 * 1024)
-            if not chunk:
-                break
-            yield chunk
