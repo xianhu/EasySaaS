@@ -15,10 +15,11 @@ from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.settings import error_tips, settings
+from core.utility import iter_file
 from data import get_session
 from data.models import File, FileTag, User
 from data.schemas import Resp
-from .utils import get_current_user, iter_file
+from .utils import get_current_user
 
 # define router
 router = APIRouter()
@@ -78,7 +79,7 @@ def _upload(file: UploadFile = UploadFileType(..., description="upload file"),
 
 @router.post("/upload-flow", response_model=RespFile)
 def _upload_flow(current_user: User = Depends(get_current_user),
-                 file: UploadFile = File(..., description="max file size"),
+                 file: UploadFile = UploadFileType(..., description="max file size"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
