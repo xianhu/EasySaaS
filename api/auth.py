@@ -76,8 +76,8 @@ class RespSend(Resp):
 
 @router.post("/send-code", response_model=RespSend)
 def _send_code(background_tasks: BackgroundTasks,
-               email: EmailStr = Body(...),
-               _type: TypeName = Body(...),
+               email: EmailStr = Body(..., description="email address"),
+               _type: TypeName = Body(..., description="type of send"),
                session: Session = Depends(get_session)):
     """
     send a code to email, and return token with code
