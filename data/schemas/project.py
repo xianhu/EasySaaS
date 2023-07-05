@@ -6,7 +6,7 @@ project schema
 
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # used for response_model
@@ -18,12 +18,12 @@ class ProjectSchema(BaseModel):
 
 # used for request body
 class ProjectCreate(BaseModel):
-    name: str  # required
-    desc: Optional[str] = None
+    name: str = Field(..., min_length=4, max_length=100)
+    desc: Optional[str] = Field(description="Description")
 
 
 # used for request body
 class ProjectUpdate(BaseModel):
-    id: int  # required
-    name: Optional[str] = None
-    desc: Optional[str] = None
+    id: int = Field(...)
+    name: Optional[str] = Field(min_length=4, max_length=100)
+    desc: Optional[str] = Field(description="Description")
