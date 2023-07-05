@@ -4,6 +4,8 @@
 filetag api
 """
 
+from typing import List
+
 from fastapi import APIRouter, Body, Depends
 from pydantic import Field
 from sqlalchemy.orm import Session
@@ -35,57 +37,78 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     for filetag_model in current_user.filetags:
         if filetag_model.name == filetag_schema.name:
             return Resp(status=-1, msg="filetag existed")
-    filetag_params = filetag_schema.dict(exclude_unset=True)
+    user_id = current_user.id
 
     # create filetag model and save to database
-    filetag_model = FileTag(user_id=current_user.id, **filetag_params)
+    filetag_params = filetag_schema.dict(exclude_unset=True)
+    filetag_model = FileTag(user_id=user_id, **filetag_params)
     session.add(filetag_model)
     session.commit()
 
     # return RespFileTag
-    return FileTagSchema(**filetag_model.to_dict())
+    return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
 
 
-@router.post("/delete", response_model=Resp)
+@router.post("/delete", response_model=RespFileTag)
 def _delete(filetag_id: int = Body(..., description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
     delete filetag
-    - **status=0**: data=None
+    - **status=0**: delete success
+    - **status=-1**: filetag not existed
     """
+    # check if filetag existed
+    for filetag_model in current_user.filetags:
+        if filetag_model._type != "custom":
+            continue
+        if filetag_model.id == filetag_id:
+            session.delete(filetag_model)
+            session.commit()
+            return RespFileTag()
 
-    # return Resp
-    return Resp()
+    # return RespFileTag
+    return RespFileTag(status=-1, msg="filetag not existed")
 
 
-@router.post("/update", response_model=Resp)
+@router.post("/update", response_model=RespFileTag)
 def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    update filetag
-    - **status=0**: data=None
+    update filetag based on update schema
+    - **status=0**: update success
+    - **status=-1**: filetag not existed
     """
-    # return Resp
-    return Resp()
+    # check if filetag existed
+    for filetag_model in current_user.filetags:
+        if filetag_model.id == filetag_schema.id:
+            for field in filetag_schema.dict(exclude_unset=True):
+                setattr(filetag_model, field, getattr(filetag_schema, field))
+            session.merge(filetag_model)
+            session.commit()
+            return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
+
+    # return RespFileTag
+    return RespFileTag(status=-1, msg="filetag not existed")
 
 
-@router.get("/list", response_model=RespFileTag)
+# response model
+class RespFileTagList(Resp):
+    data: List[FileTagSchema] = Field(None)
+
+
+@router.get("/list", response_model=RespFileTagList)
 def _list(current_user: User = Depends(get_current_user),
           session: Session = Depends(get_session)):
     """
-    get filetag
-    - **status=0**: data=FiletagSchema
+    get filetag schema list
+    - **status=0**: get success
     """
-
-    # data of response
     filetag_schema_list = []
-    session.refresh(current_user)
     for filetag_model in current_user.filetags:
         filetag_schema = FileTagSchema(**filetag_model.to_dict())
         filetag_schema_list.append(filetag_schema)
 
-    # return FiletagSchema
-
-    return RespFileTag()
+    # return RespFileTagList
+    return RespFileTagList(data=filetag_schema_list)
