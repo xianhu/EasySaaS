@@ -57,7 +57,7 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     return RespUser(data=UserSchema(**user_model.to_dict()))
 
 
-@router.post("/update/password", response_model=Resp)
+@router.post("/update/password", response_model=RespUser)
 def _update_password(password_old: str = Body(..., description="old password"),
                      password_new: str = Body(..., min_length=6, max_length=20),
                      current_user: User = Depends(get_current_user),
@@ -80,5 +80,5 @@ def _update_password(password_old: str = Body(..., description="old password"),
     session.merge(user_model)
     session.commit()
 
-    # return
-    return Resp()
+    # return UserSchema
+    return RespUser(data=UserSchema(**user_model.to_dict()))
