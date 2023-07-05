@@ -33,13 +33,13 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     - **status=0**: create success
     - **status=-1**: filetag existed
     """
-    # check if filetag existed
+    # check if filetag name existed
     for filetag_model in current_user.filetags:
         if filetag_model.name == filetag_schema.name:
             return Resp(status=-1, msg="filetag existed")
     user_id = current_user.id
 
-    # create filetag model and save to database
+    # create custom filetag model and save to database
     filetag_params = filetag_schema.dict(exclude_unset=True)
     filetag_model = FileTag(user_id=user_id, **filetag_params)
     session.add(filetag_model)
@@ -47,28 +47,6 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
 
     # return RespFileTag
     return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
-
-
-@router.post("/delete", response_model=RespFileTag)
-def _delete(filetag_id: int = Body(..., description="id of filetag"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
-    """
-    delete filetag
-    - **status=0**: delete success
-    - **status=-1**: filetag not existed
-    """
-    # check if filetag existed
-    for filetag_model in current_user.filetags:
-        if filetag_model._type != "custom":
-            continue
-        if filetag_model.id == filetag_id:
-            session.delete(filetag_model)
-            session.commit()
-            return RespFileTag()
-
-    # return RespFileTag
-    return RespFileTag(status=-1, msg="filetag not existed")
 
 
 @router.post("/update", response_model=RespFileTag)
@@ -80,12 +58,34 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
     - **status=0**: update success
     - **status=-1**: filetag not existed
     """
-    # check if filetag existed
+    # check if filetag id existed
     for filetag_model in current_user.filetags:
         if filetag_model.id == filetag_schema.id:
             for field in filetag_schema.dict(exclude_unset=True):
                 setattr(filetag_model, field, getattr(filetag_schema, field))
             session.merge(filetag_model)
+            session.commit()
+            return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
+
+    # return RespFileTag
+    return RespFileTag(status=-1, msg="filetag not existed")
+
+
+@router.post("/delete", response_model=RespFileTag)
+def _delete(filetag_id: int = Body(..., description="id of filetag"),
+            current_user: User = Depends(get_current_user),
+            session: Session = Depends(get_session)):
+    """
+    delete filetag based on filetag id
+    - **status=0**: delete success
+    - **status=-1**: filetag not existed
+    """
+    # check if filetag id existed
+    for filetag_model in current_user.filetags:
+        if filetag_model.ttype != "custom":
+            continue
+        if filetag_model.id == filetag_id:
+            session.delete(filetag_model)
             session.commit()
             return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
 
@@ -99,8 +99,7 @@ class RespFileTagList(Resp):
 
 
 @router.get("/list", response_model=RespFileTagList)
-def _list(current_user: User = Depends(get_current_user),
-          session: Session = Depends(get_session)):
+def _list(current_user: User = Depends(get_current_user)):
     """
     get filetag schema list
     - **status=0**: get success

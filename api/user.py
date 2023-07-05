@@ -27,7 +27,7 @@ class RespUser(Resp):
 def _get(current_user: User = Depends(get_current_user)):
     """
     get schema of current_user
-    - **status=0**: data=UserSchema
+    - **status=0**: get success
     """
     # get user_model
     user_model = current_user
@@ -42,7 +42,7 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
             session: Session = Depends(get_session)):
     """
     update current_user based on update schema
-    - **status=0**: data=UserSchema
+    - **status=0**: update success
     """
     # get user_model
     user_model = current_user
