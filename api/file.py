@@ -13,7 +13,7 @@ from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 
-from core.settings import error_tips, settings
+from core.settings import settings
 from core.utility import iter_file
 from data.models import User
 from data.schemas import Resp
@@ -41,7 +41,7 @@ def _upload(file: UploadFile = UploadFileClass(...),
     if file.size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_SIZE_EXCEEDED,
+            detail="file size too large"
         )
     fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
 
@@ -72,7 +72,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     if flow_total_size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_SIZE_EXCEEDED,
+            detail="file size too large",
         )
     fullname_temp = f"{flow_identifier}-{file.filename}"
     location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
@@ -109,7 +109,7 @@ def _download(file_id: str = Path(..., description="file id")):
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_NOT_EXISTED,
+            detail="file not existed",
         )
     filename = "-".join(file_id.split("-")[2:])
 
@@ -128,7 +128,7 @@ def _download_stream(file_id: str = Path(..., description="file id")):
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_NOT_EXISTED,
+            detail="file not existed",
         )
     filename = "-".join(file_id.split("-")[2:])
 

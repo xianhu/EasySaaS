@@ -9,7 +9,6 @@ from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
-from core.settings import error_tips
 from data import get_session
 from data.models import User
 from data.schemas import Resp, UserSchema, UserUpdate
@@ -73,7 +72,7 @@ def _update_password(password_old: str = Body(..., description="old password"),
 
     # check password of user_model
     if not check_password_hash(password_old, user_model.password):
-        return Resp(status=-1, msg=error_tips.PWD_INCORRECT)
+        return Resp(status=-1, msg="password incorrect")
     pwd_hash = get_password_hash(password_new)
 
     # update password of user_model

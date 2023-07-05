@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
 from core.security import create_token_data, get_token_payload
-from core.settings import error_tips, settings
+from core.settings import settings
 from core.utemail import send_email
 from data import get_session
 from data.models import User
@@ -43,7 +43,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error_tips.EMAIL_NOT_EXISTED,
+            detail="user not found",
         )
     pwd_hash = user_model.password
 
@@ -51,7 +51,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     if not check_password_hash(pwd_plain, pwd_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error_tips.PWD_INCORRECT,
+            detail="password incorrect"
         )
     user_id = user_model.id
 
@@ -87,9 +87,9 @@ def _send_code(background_tasks: BackgroundTasks,
     # check if user existed or not by _type
     user_model = session.query(User).filter(User.email == email).first()
     if _type == TypeName.signup and user_model:
-        return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
+        return RespSend(status=-1, msg="email existed")
     if _type == TypeName.reset and (not user_model):
-        return RespSend(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
+        return RespSend(status=-1, msg="email not existed")
 
     # define code, data and token
     code = random.randint(100000, 999999)
@@ -130,17 +130,17 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
     # check token: type(!!!)
     if (not payload.get("type")) or (payload["type"] not in TypeName.__members__):
-        return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
+        return Resp(status=-1, msg="token invalid")
     _type = payload["type"]
 
     # check token: email(sub)
     if not payload.get("sub"):
-        return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
+        return Resp(status=-1, msg="token invalid")
     email = payload["sub"]
 
     # check token: code(int)
     if (not payload.get("code")) or (payload["code"] != code):
-        return Resp(status=-2, msg=error_tips.CODE_INVALID)
+        return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
 
     # get user_model from db
@@ -169,4 +169,4 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(msg=f"{_type} successfully")
 
     # return result
-    return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
+    return Resp(status=-1, msg="token invalid")

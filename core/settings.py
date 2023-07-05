@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-settings and error tips
+settings file
 """
 
 import os
@@ -58,51 +58,7 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-
-class ErrorTips(BaseSettings):
-    # error tips -- common
-    CODE_INVALID: str = "Code is invalid or expired"
-    TOKEN_INVALID: str = "Token is invalid or expired"
-    SCOPE_INVALID: str = "Scope is no permission or invalid"
-    CAPTCHA_INCORRECT: str = "Captcha is incorrect"
-
-    # error tips -- password
-    PWD_INCORRECT: str = "Password is incorrect"
-    PWD_FMT_SHORT: str = "Password is too short"
-    PWD_FMT_ERROR: str = "Password must contain numbers and letters"
-    PWD_FMT_INCONSISTENT: str = "Passwords are inconsistent"
-
-    # error tips -- email
-    EMAIL_INVALID: str = "Format of email is invalid"
-    EMAIL_SEND_FAILED: str = "Email send failed"
-    EMAIL_EXISTED: str = "This email existed in system"
-    EMAIL_NOT_EXISTED: str = "This email not existed in system"
-
-    # error tips -- user
-    USER_EXISTED: str = "This user existed in system"
-    USER_NOT_EXISTED: str = "This user not existed in system"
-
-    # error tips -- file
-    FILE_NOT_EXISTED: str = "file not existed"
-    FILE_TYPE_INVALID: str = "file type invalid"
-    FILE_SIZE_EXCEEDED: str = "file size too large"
-    FILE_UPLOAD_FAILED: str = "file upload failed"
-
-    # error tips -- crud
-    QUERY_FAILED: str = "Query failed"
-    CREATE_FAILED: str = "Create failed"
-    UPDATE_FAILED: str = "Update failed"
-    DELETE_FAILED: str = "Delete failed"
-
-    # Config
-    class Config:
-        case_sensitive = True
-
-
-error_tips = ErrorTips()
-
 if __name__ == "__main__":
     import pprint
 
     pprint.pprint(settings.dict())
-    pprint.pprint(error_tips.dict())

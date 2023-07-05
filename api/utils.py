@@ -9,7 +9,6 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from core.security import get_token_payload
-from core.settings import error_tips
 from data import get_session
 from data.models import User
 
@@ -29,7 +28,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     if not payload.get("sub"):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error_tips.TOKEN_INVALID,
+            detail="token invalid",
         )
     user_id = int(payload["sub"])
 
@@ -38,7 +37,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error_tips.TOKEN_INVALID,
+            detail="token invalid",
         )
 
     # return user
