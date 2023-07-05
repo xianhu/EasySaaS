@@ -29,5 +29,6 @@ class UserCreate(BaseModel):
 
 # used for request body
 class UserUpdate(BaseModel):
+    # id: Optional[int] = None
     name: Optional[str] = None
     avatar: Optional[HttpUrl] = None

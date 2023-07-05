@@ -24,5 +24,6 @@ class ProjectCreate(BaseModel):
 
 # used for request body
 class ProjectUpdate(BaseModel):
+    id: int  # required
     name: Optional[str] = None
     desc: Optional[str] = None

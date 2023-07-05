@@ -14,7 +14,7 @@ class FileTag(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     icon = sqlalchemy.Column(sqlalchemy.String(255), doc="Icon Value")
     color = sqlalchemy.Column(sqlalchemy.String(255), doc="Color Code")
-    _type = sqlalchemy.Column(sqlalchemy.String(255), default="custom", doc="system, custom")
+    ttype = sqlalchemy.Column(sqlalchemy.String(255), default="custom", doc="system, custom")
 
     # relationship -- foreign_key to user (filetag.user, user.filetags)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))

@@ -15,7 +15,7 @@ class FileTagSchema(BaseModel):
     name: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
-    # _type: Optional[str] = None
+    # ttype: Optional[str] = None
     # user_id: Optional[int] = None
 
 
@@ -28,6 +28,7 @@ class FileTagCreate(BaseModel):
 
 # used for request body
 class FileTagUpdate(BaseModel):
+    id: int  # required
     name: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
@@ -49,4 +50,5 @@ class FileCreate(BaseModel):
 
 # used for request body
 class FileUpdate(BaseModel):
+    id: int  # required
     filename: Optional[str] = None
