@@ -40,3 +40,13 @@ class FileSchema(BaseModel):
     filetype: Optional[str] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
+
+
+# used for request body
+class FileCreate(BaseModel):
+    filename: str  # required
+
+
+# used for request body
+class FileUpdate(BaseModel):
+    filename: Optional[str] = None
