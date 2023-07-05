@@ -135,6 +135,6 @@ def _download_stream(file_id: str = Path(..., description="file id")):
         )
     filename = "-".join(file_id.split("-")[2:])
 
-    # return file response
+    # return streaming response
     headers = {"Content-Disposition": f"attachment; filename=\"{filename}\""}
     return StreamingResponse(iter_file(location), media_type="application/octet-stream", headers=headers)

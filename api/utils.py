@@ -19,7 +19,8 @@ oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
 def get_current_user(access_token: str = Depends(oauth2),
                      session: Session = Depends(get_session)) -> User:
     """
-    check access_token, return user model or raise exception(401)
+    check access_token, return user model
+    - **status_code=401**: token invalid
     """
     # get payload from access_token
     payload = get_token_payload(access_token)

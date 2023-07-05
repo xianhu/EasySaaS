@@ -168,5 +168,5 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         logging.warning("reset password: %s", user_model.to_dict())
         return Resp(msg=f"{_type} success")
 
-    # return result
+    # return -1 (token invalid)
     return Resp(status=-1, msg="token invalid")
