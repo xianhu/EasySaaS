@@ -32,4 +32,11 @@ class FileTagUpdate(BaseModel):
     icon: Optional[str] = None
     color: Optional[str] = None
 
-# file schema ignored
+
+# used for response_model
+class FileSchema(BaseModel):
+    id: Optional[int] = None
+    filename: Optional[str] = None
+    filetype: Optional[str] = None
+    # fullname: Optional[str] = None
+    # location: Optional[str] = None

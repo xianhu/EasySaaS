@@ -6,6 +6,7 @@ schemas module
 
 from pydantic import BaseModel
 
+from .file import FileSchema
 from .file import FileTagCreate, FileTagSchema, FileTagUpdate
 from .project import ProjectCreate, ProjectSchema, ProjectUpdate
 from .user import UserCreate, UserSchema, UserUpdate

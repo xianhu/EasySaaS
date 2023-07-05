@@ -16,7 +16,7 @@ from pydantic import Field
 from core.settings import settings
 from core.utility import iter_file
 from data.models import User
-from data.schemas import Resp
+from data.schemas import FileSchema, Resp
 from .utils import get_current_user
 
 # define router
@@ -25,7 +25,7 @@ router = APIRouter()
 
 # response model
 class RespFile(Resp):
-    file_id: str = Field(None)
+    data: FileSchema = Field(None)
 
 
 @router.post("/upload", response_model=RespFile)
@@ -51,8 +51,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
         file_in.write(file.file.read())
     # save file model (filename, filetype, fullname, location) to database
 
-    # return file_id
-    return RespFile(file_id=fullname)
+    # return FileSchema
+    return RespFile(data=FileSchema(filename=file.filename))
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -94,8 +94,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
             file_in.write(file_temp.read())
     # save file model (filename, filetype, fullname, location) to database
 
-    # return file_id
-    return RespFile(file_id=fullname)
+    # return FileSchema
+    return RespFile(data=FileSchema(filename=file.filename))
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
