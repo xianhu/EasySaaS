@@ -13,10 +13,10 @@ from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 
-from core.settings import error_tips, settings
+from core.settings import settings
 from core.utility import iter_file
 from data.models import User
-from data.schemas import Resp
+from data.schemas import FileSchema, Resp
 from .utils import get_current_user
 
 # define router
@@ -25,14 +25,14 @@ router = APIRouter()
 
 # response model
 class RespFile(Resp):
-    file_id: str = Field(None)
+    data: FileSchema = Field(None)
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(file: UploadFile = UploadFileClass(...),
+def _upload(file: UploadFile = UploadFileClass(..., description="file"),
             current_user: User = Depends(get_current_user)):
     """
-    upload file, return file_id
+    upload file, return file schema
     - **status=0**: upload success
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
@@ -41,18 +41,19 @@ def _upload(file: UploadFile = UploadFileClass(...),
     if file.size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_SIZE_EXCEEDED,
+            detail="file size too large"
         )
-    fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
+    filename = file.filename
+    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
 
     # define location and save file
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
-    # save file to database, return file_id
+    # save file model (filename, fullname, location) to database
 
-    # return file_id
-    return RespFile(file_id=fullname)
+    # return FileSchema
+    return RespFile(data=FileSchema(filename=filename))
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -63,7 +64,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  current_user: User = Depends(get_current_user)):
     """
-    upload file by flow.js, return file_id
+    upload file by flow.js, return file schema
     - **status=0**: upload success
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
@@ -72,9 +73,10 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     if flow_total_size > settings.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_SIZE_EXCEEDED,
+            detail="file size too large",
         )
-    fullname_temp = f"{flow_identifier}-{file.filename}"
+    filename_temp = file.filename
+    fullname_temp = f"{flow_identifier}-{filename_temp}"
     location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
 
     # save flow_chunk_number part of file
@@ -85,23 +87,24 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
+    filename = file.filename
+    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
 
     # define location and save file
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
-    # save file to database, return file_id
+    # save file model (filename, fullname, location) to database
 
-    # return file_id
-    return RespFile(file_id=fullname)
+    # return FileSchema
+    return RespFile(data=FileSchema(filename=filename))
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
 def _download(file_id: str = Path(..., description="file id")):
     """
-    download file by file_id
+    download file by file_id, return FileResponse
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
@@ -109,7 +112,7 @@ def _download(file_id: str = Path(..., description="file id")):
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_NOT_EXISTED,
+            detail="file not existed",
         )
     filename = "-".join(file_id.split("-")[2:])
 
@@ -120,7 +123,7 @@ def _download(file_id: str = Path(..., description="file id")):
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
 def _download_stream(file_id: str = Path(..., description="file id")):
     """
-    download file by file_id
+    download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
@@ -128,7 +131,7 @@ def _download_stream(file_id: str = Path(..., description="file id")):
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error_tips.FILE_NOT_EXISTED,
+            detail="file not existed",
         )
     filename = "-".join(file_id.split("-")[2:])
 

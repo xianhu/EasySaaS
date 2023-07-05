@@ -6,13 +6,13 @@ user schema
 
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
 
 # used for response_model
 class UserSchema(BaseModel):
     id: Optional[int] = None
-    name: Optional[str] = None
+    nickname: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
@@ -23,11 +23,12 @@ class UserSchema(BaseModel):
 
 # used for request body
 class UserCreate(BaseModel):
-    email: EmailStr  # required
-    password: str  # plain value
+    email: EmailStr = Field(..., description="Email")
+    password: str = Field(..., min_length=6, max_length=20)
 
 
 # used for request body
 class UserUpdate(BaseModel):
-    name: Optional[str] = None
-    avatar: Optional[HttpUrl] = None
+    # id: int = Field(...)
+    nickname: Optional[str] = Field(min_length=2, max_length=20)
+    avatar: Optional[HttpUrl] = Field(description="Avatar Url")

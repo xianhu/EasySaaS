@@ -29,4 +29,4 @@ emails~=0.6.0
 Jinja2~=3.1.2
 orjson~=3.9.1
 python-multipart~=0.0.6
-pydantic[email]~=1.10.10
+pydantic[email]~=1.10.11

@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
 from core.security import create_token_data, get_token_payload
-from core.settings import error_tips, settings
+from core.settings import settings
 from core.utemail import send_email
 from data import get_session
 from data.models import User
@@ -30,9 +30,10 @@ router = APIRouter()
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
-    get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
+    get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
-    - **password**: value of password
+    - **password**: value of password, plain text
+    - **status_code=401**: user not found or password incorrect
     """
     # get username、password from form_data
     email, pwd_plain = form_data.username, form_data.password
@@ -43,7 +44,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error_tips.EMAIL_NOT_EXISTED,
+            detail="user not found",
         )
     pwd_hash = user_model.password
 
@@ -51,7 +52,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     if not check_password_hash(pwd_plain, pwd_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error_tips.PWD_INCORRECT,
+            detail="password incorrect"
         )
     user_id = user_model.id
 
@@ -76,25 +77,26 @@ class RespSend(Resp):
 
 @router.post("/send-code", response_model=RespSend)
 def _send_code(background_tasks: BackgroundTasks,
-               email: EmailStr = Body(..., description="email address"),
-               _type: TypeName = Body(..., description="type of send"),
+               email: EmailStr = Body(..., description="email"),
+               _type: TypeName = Body(..., alias="type", description="type of send"),
                session: Session = Depends(get_session)):
     """
-    send a code to email, and return token with code
-    - **status=0**: send email success, data=token
+    send a code to email, return token with code
+    - **status=0**: send email success
     - **status=-1**: email existed or not existed
     """
     # check if user existed or not by _type
     user_model = session.query(User).filter(User.email == email).first()
     if _type == TypeName.signup and user_model:
-        return RespSend(status=-1, msg=error_tips.EMAIL_EXISTED)
+        return RespSend(status=-1, msg="user existed")
     if _type == TypeName.reset and (not user_model):
-        return RespSend(status=-1, msg=error_tips.EMAIL_NOT_EXISTED)
+        return RespSend(status=-1, msg="user not existed")
 
     # define code, data and token
     code = random.randint(100000, 999999)
     data = dict(sub=email, code=code, type=_type)
-    token = create_token_data(data, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
+    expires_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
+    token = create_token_data(data, expires_duration=expires_duration)
 
     # define email content and render
     mail_subject = "Verify of {{ app_name }}"
@@ -115,7 +117,7 @@ def _send_code(background_tasks: BackgroundTasks,
 
 @router.post("/verify-code", response_model=Resp)
 def _verify_code(code: int = Body(..., ge=100000, le=999999),
-                 token: str = Body(..., min_length=10, max_length=500),
+                 token: str = Body(..., description="token value"),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
@@ -130,43 +132,41 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
     # check token: type(!!!)
     if (not payload.get("type")) or (payload["type"] not in TypeName.__members__):
-        return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
+        return Resp(status=-1, msg="token invalid")
     _type = payload["type"]
 
-    # check token: email(sub)
-    if not payload.get("sub"):
-        return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
+    # check token: sub(email) and code(int)
+    if (not payload.get("sub")) and (not payload.get("code")):
+        return Resp(status=-1, msg="token invalid")
     email = payload["sub"]
 
-    # check token: code(int)
-    if (not payload.get("code")) or (payload["code"] != code):
-        return Resp(status=-2, msg=error_tips.CODE_INVALID)
+    # check code match or not
+    if code != payload["code"]:
+        return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
-
-    # get user_model from db
     user_model = session.query(User).filter(User.email == email).first()
 
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
         # create user based on email and password
-        user_model = User(name=email, email=email, password=pwd_hash, email_verified=True)
+        user_model = User(email=email, password=pwd_hash, email_verified=True)
         session.add(user_model)
         session.commit()
 
         # logging and return result
         logging.warning("create user: %s", user_model.to_dict())
-        return Resp(msg=f"{_type} successfully")
+        return Resp(msg=f"{_type} success")
 
     # check token type: reset
     if _type == TypeName.reset and user_model:
-        # update password based on password
+        # update user based on password
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()
 
         # logging and return result
         logging.warning("reset password: %s", user_model.to_dict())
-        return Resp(msg=f"{_type} successfully")
+        return Resp(msg=f"{_type} success")
 
     # return result
-    return Resp(status=-1, msg=error_tips.TOKEN_INVALID)
+    return Resp(status=-1, msg="token invalid")
