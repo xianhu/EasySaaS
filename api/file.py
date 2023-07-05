@@ -32,7 +32,7 @@ class RespFile(Resp):
 def _upload(file: UploadFile = UploadFileClass(..., description="file"),
             current_user: User = Depends(get_current_user)):
     """
-    upload file, return file_id
+    upload file, return file schema
     - **status=0**: upload success
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
@@ -43,7 +43,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
+    filename = file.filename
+    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
 
     # define location and save file
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
@@ -52,7 +53,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
     # save file model (filename, filetype, fullname, location) to database
 
     # return FileSchema
-    return RespFile(data=FileSchema(filename=file.filename))
+    return RespFile(data=FileSchema(filename=filename))
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -63,7 +64,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  current_user: User = Depends(get_current_user)):
     """
-    upload file by flow.js, return file_id
+    upload file by flow.js, return file schema
     - **status=0**: upload success
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
@@ -74,7 +75,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large",
         )
-    fullname_temp = f"{flow_identifier}-{file.filename}"
+    filename_temp = file.filename
+    fullname_temp = f"{flow_identifier}-{filename_temp}"
     location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
 
     # save flow_chunk_number part of file
@@ -85,7 +87,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    fullname = f"{current_user.id}-{int(time.time())}-{file.filename}"
+    filename = file.filename
+    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
 
     # define location and save file
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
@@ -95,7 +98,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # save file model (filename, filetype, fullname, location) to database
 
     # return FileSchema
-    return RespFile(data=FileSchema(filename=file.filename))
+    return RespFile(data=FileSchema(filename=filename))
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
