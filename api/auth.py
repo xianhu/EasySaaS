@@ -148,13 +148,13 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
         # create user based on email and password
-        user_model = User(name=email, email=email, password=pwd_hash, email_verified=True)
+        user_model = User(email=email, password=pwd_hash, email_verified=True)
         session.add(user_model)
         session.commit()
 
         # logging and return result
         logging.warning("create user: %s", user_model.to_dict())
-        return Resp(msg=f"{_type} successfully")
+        return Resp(msg=f"{_type} success")
 
     # check token type: reset
     if _type == TypeName.reset and user_model:
@@ -165,7 +165,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
         # logging and return result
         logging.warning("reset password: %s", user_model.to_dict())
-        return Resp(msg=f"{_type} successfully")
+        return Resp(msg=f"{_type} success")
 
     # return result
     return Resp(status=-1, msg="token invalid")
