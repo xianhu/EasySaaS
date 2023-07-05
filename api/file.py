@@ -50,7 +50,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
-    # save file model (filename, filetype, fullname, location) to database
+    # save file model (filename, fullname, location) to database
 
     # return FileSchema
     return RespFile(data=FileSchema(filename=filename))
@@ -95,7 +95,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
-    # save file model (filename, filetype, fullname, location) to database
+    # save file model (filename, fullname, location) to database
 
     # return FileSchema
     return RespFile(data=FileSchema(filename=filename))

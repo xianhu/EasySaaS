@@ -31,17 +31,16 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     """
     create filetag based on create schema
     - **status=0**: create success
-    - **status=-1**: filetag existed
-    - **status=-2**: filetag name invalid
+    - **status=-1**: filetag name invalid
     """
     # check if filetag name is valid
-    if (not filetag_schema.name.strip()) or (filetag_schema.name == "default"):
-        return Resp(status=-2, msg="filetag name invalid")
+    if filetag_schema.name == "default":
+        return Resp(status=-1, msg="filetag name invalid")
 
     # check if filetag name not existed
     for filetag_model in current_user.filetags:
-        if filetag_model.name == filetag_schema.name:
-            return Resp(status=-1, msg="filetag existed")
+        if filetag_schema.name == filetag_model.name:
+            return Resp(status=-1, msg="filetag name invalid")
     user_id = current_user.id
     filetag_params = filetag_schema.dict(exclude_unset=True)
 
@@ -61,26 +60,31 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
     """
     update filetag based on update schema
     - **status=0**: update success
-    - **status=-1**: filetag not existed
+    - **status=-1**: filetag name invalid
+    - **status=-2**: filetag not existed
     """
     # check if filetag name is valid
-    if (not filetag_schema.name.strip()) or (filetag_schema.name == "default"):
-        return Resp(status=-2, msg="filetag name invalid")
+    if filetag_schema.name == "default":
+        return Resp(status=-1, msg="filetag name invalid")
+
+    # check if filetag name not existed
     for filetag_model in current_user.filetags:
-        if filetag_model.name == filetag_schema.name:
-            return Resp(status=-2, msg="filetag name invalid")
+        if filetag_schema.name == filetag_model.name:
+            return Resp(status=-1, msg="filetag name invalid")
 
     # check if filetag id existed
     for filetag_model in current_user.filetags:
-        if filetag_model.id == filetag_schema.id:
+        if filetag_model.ttype != "custom":
+            continue
+        if filetag_schema.id == filetag_model.id:
             for field in filetag_schema.dict(exclude_unset=True):
                 setattr(filetag_model, field, getattr(filetag_schema, field))
             session.merge(filetag_model)
             session.commit()
             return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
 
-    # return RespFileTag
-    return RespFileTag(status=-1, msg="filetag not existed")
+    # return -2 (filetag not existed)
+    return RespFileTag(status=-2, msg="filetag not existed")
 
 
 @router.post("/delete", response_model=RespFileTag)
@@ -90,19 +94,19 @@ def _delete(filetag_id: int = Body(..., embed=True, description="id of filetag")
     """
     delete filetag based on filetag id
     - **status=0**: delete success
-    - **status=-1**: filetag not existed
+    - **status=-2**: filetag not existed
     """
     # check if filetag id existed
     for filetag_model in current_user.filetags:
         if filetag_model.ttype != "custom":
             continue
-        if filetag_model.id == filetag_id:
+        if filetag_id == filetag_model.id:
             session.delete(filetag_model)
             session.commit()
             return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
 
-    # return RespFileTag
-    return RespFileTag(status=-1, msg="filetag not existed")
+    # return -2 (filetag not existed)
+    return RespFileTag(status=-2, msg="filetag not existed")
 
 
 # response model
