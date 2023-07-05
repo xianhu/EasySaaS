@@ -30,9 +30,10 @@ router = APIRouter()
 def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                   session: Session = Depends(get_session)):
     """
-    get access_token by OAuth2PasswordRequestForm, return access_token or raise exception(401)
+    get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
-    - **password**: value of password
+    - **password**: value of password, plain text
+    - **status_code=401**: user not found or password incorrect
     """
     # get username、password from form_data
     email, pwd_plain = form_data.username, form_data.password
