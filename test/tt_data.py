@@ -19,11 +19,12 @@ init_db()
 
 with SessionMaker() as session:
     # user info -- email and password
-    email = EmailStr("admin@easysaas.com")
-    password = security.get_password_hash("a123456")
+    email, pwd_plain = EmailStr("admin@easysaas.com"), "a123456"
+    user_schema = UserCreate(email=email, password=pwd_plain)
 
     # create user -- model of User
-    user_model = User(id=100000, email=email, password=password)
+    pwd_hash = security.get_password_hash(user_schema.password)
+    user_model = User(id=100000, email=email, password=pwd_hash)
     session.add(user_model)
     session.commit()
     logging.warning(user_model.to_dict())
