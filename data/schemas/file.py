@@ -38,17 +38,16 @@ class FileTagUpdate(BaseModel):
 class FileSchema(BaseModel):
     id: Optional[int] = None
     filename: Optional[str] = None
-    filetype: Optional[str] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
 
 
 # used for request body
 class FileCreate(BaseModel):
-    filename: str = Field(..., min_length=2, max_length=100)
+    filename: str = Field(..., min_length=4, max_length=100)
 
 
 # used for request body
 class FileUpdate(BaseModel):
     id: int = Field(...)
-    filename: Optional[str] = Field(min_length=2, max_length=100)
+    filename: Optional[str] = Field(min_length=4, max_length=100)

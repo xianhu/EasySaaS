@@ -12,7 +12,7 @@ from pydantic import BaseModel, EmailStr, Field, HttpUrl
 # used for response_model
 class UserSchema(BaseModel):
     id: Optional[int] = None
-    name: Optional[str] = None
+    nickname: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
@@ -23,7 +23,7 @@ class UserSchema(BaseModel):
 
 # used for request body
 class UserCreate(BaseModel):
-    email: EmailStr = Field(..., description="Email Address")
+    email: EmailStr = Field(..., description="Email")
     password: str = Field(..., min_length=6, max_length=20)
 
 
