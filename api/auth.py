@@ -76,8 +76,8 @@ class RespSend(Resp):
 
 @router.post("/send-code", response_model=RespSend)
 def _send_code(background_tasks: BackgroundTasks,
-               email: EmailStr = Body(..., description="email address"),
-               _type: TypeName = Body(..., description="type of send"),
+               email: EmailStr = Body(..., description="email"),
+               _type: TypeName = Body(..., alias="type", description="type of send"),
                session: Session = Depends(get_session)):
     """
     send a code to email, return token with code
@@ -94,7 +94,8 @@ def _send_code(background_tasks: BackgroundTasks,
     # define code, data and token
     code = random.randint(100000, 999999)
     data = dict(sub=email, code=code, type=_type)
-    token = create_token_data(data, expires_duration=settings.NORMAL_TOKEN_EXPIRE_DURATION)
+    expires_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
+    token = create_token_data(data, expires_duration=expires_duration)
 
     # define email content and render
     mail_subject = "Verify of {{ app_name }}"
@@ -115,7 +116,7 @@ def _send_code(background_tasks: BackgroundTasks,
 
 @router.post("/verify-code", response_model=Resp)
 def _verify_code(code: int = Body(..., ge=100000, le=999999),
-                 token: str = Body(..., min_length=10, max_length=500),
+                 token: str = Body(..., description="token value"),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
@@ -157,7 +158,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
     # check token type: reset
     if _type == TypeName.reset and user_model:
-        # update password based on password
+        # update user based on password
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()
