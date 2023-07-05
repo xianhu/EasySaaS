@@ -80,16 +80,16 @@ def _send_code(background_tasks: BackgroundTasks,
                _type: TypeName = Body(..., description="type of send"),
                session: Session = Depends(get_session)):
     """
-    send a code to email, and return token with code
-    - **status=0**: send email success, data=token
+    send a code to email, return token with code
+    - **status=0**: send email success
     - **status=-1**: email existed or not existed
     """
     # check if user existed or not by _type
     user_model = session.query(User).filter(User.email == email).first()
     if _type == TypeName.signup and user_model:
-        return RespSend(status=-1, msg="email existed")
+        return RespSend(status=-1, msg="user existed")
     if _type == TypeName.reset and (not user_model):
-        return RespSend(status=-1, msg="email not existed")
+        return RespSend(status=-1, msg="user not existed")
 
     # define code, data and token
     code = random.randint(100000, 999999)
@@ -133,17 +133,15 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg="token invalid")
     _type = payload["type"]
 
-    # check token: email(sub)
-    if not payload.get("sub"):
+    # check token: sub(email) and code(int)
+    if (not payload.get("sub")) and (not payload.get("code")):
         return Resp(status=-1, msg="token invalid")
     email = payload["sub"]
 
-    # check token: code(int)
-    if (not payload.get("code")) or (payload["code"] != code):
+    # check code match or not
+    if code != payload["code"]:
         return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
-
-    # get user_model from db
     user_model = session.query(User).filter(User.email == email).first()
 
     # check token type: signup

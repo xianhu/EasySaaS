@@ -29,7 +29,7 @@ class RespFile(Resp):
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(file: UploadFile = UploadFileClass(...),
+def _upload(file: UploadFile = UploadFileClass(..., description="file"),
             current_user: User = Depends(get_current_user)):
     """
     upload file, return file_id
@@ -101,7 +101,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 @router.get("/download/{file_id}", response_class=FileResponse)
 def _download(file_id: str = Path(..., description="file id")):
     """
-    download file by file_id
+    download file by file_id, return FileResponse
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
@@ -120,7 +120,7 @@ def _download(file_id: str = Path(..., description="file id")):
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
 def _download_stream(file_id: str = Path(..., description="file id")):
     """
-    download file by file_id
+    download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
     """
     # define location and check if file existed

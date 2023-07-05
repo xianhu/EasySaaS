@@ -10,13 +10,14 @@ from fastapi import APIRouter, Cookie, Header
 from fastapi import Request, Response
 
 from core.settings import settings
-from . import auth, file, project, user
+from . import auth, file, filetag, project, user
 
 # define api_router
 api_router = APIRouter(prefix="")
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(user.router, prefix="/user", tags=["user"])
 api_router.include_router(file.router, prefix="/file", tags=["file"])
+api_router.include_router(filetag.router, prefix="/filetag", tags=["filetag"])
 api_router.include_router(project.router, prefix="/project", tags=["project"])
 
 
