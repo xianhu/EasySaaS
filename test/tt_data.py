@@ -18,20 +18,19 @@ from data.schemas import *
 init_db()
 
 with SessionMaker() as session:
-    # user info =========================================================================
+    # user info -- email and password
     email = EmailStr("admin@easysaas.com")
     password = security.get_password_hash("a123456")
 
-    # create user -- schema of UserCreate, model of User
-    user_schema = UserCreate(email=email, password=password)
-    user_model = User(id=100000, name=email, **user_schema.dict(exclude_unset=True))
+    # create user -- model of User
+    user_model = User(id=100000, email=email, password=password)
     session.add(user_model)
     session.commit()
     logging.warning(user_model.to_dict())
     logging.warning(UserSchema(**user_model.to_dict()).dict(exclude_unset=True))
 
     # update user -- schema of UserUpdate, model of User
-    user_schema = UserUpdate(name="admin", avatar="http://www.easysaas.com")
+    user_schema = UserUpdate(nickname="admin", avatar="http://www.easysaas.com")
     for field in user_schema.dict(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     user_model.email_verified = True

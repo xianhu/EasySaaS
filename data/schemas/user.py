@@ -30,5 +30,5 @@ class UserCreate(BaseModel):
 # used for request body
 class UserUpdate(BaseModel):
     # id: int = Field(...)
-    name: Optional[str] = Field(min_length=2, max_length=20)
+    nickname: Optional[str] = Field(min_length=2, max_length=20)
     avatar: Optional[HttpUrl] = Field(description="Avatar Url")
