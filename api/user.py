@@ -8,6 +8,8 @@ from fastapi import APIRouter, Body, Depends
 from pydantic import Field
 from sqlalchemy.orm import Session
 
+from core.security import check_password_hash, get_password_hash
+from core.settings import error_tips
 from data import get_session
 from data.models import User
 from data.schemas import Resp, UserSchema, UserUpdate
@@ -44,8 +46,7 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     - **status=0**: data=UserSchema
     """
     # get user_model
-    user_id = current_user.id
-    user_model = session.query(User).get(user_id)
+    user_model = current_user
 
     # update user based on UserUpdate
     for field in user_schema.dict(exclude_unset=True):
@@ -55,3 +56,30 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
 
     # return UserSchema
     return RespUser(data=UserSchema(**user_model.to_dict()))
+
+
+@router.post("/update/password", response_model=Resp)
+def _update_password(password_old: str = Body(..., description="old password"),
+                     password_new: str = Body(..., min_length=6, max_length=20),
+                     current_user: User = Depends(get_current_user),
+                     session: Session = Depends(get_session)):
+    """
+    update password of current_user
+    - **status=0**: update success
+    - **status=-1**: old password error
+    """
+    # get user_model
+    user_model = current_user
+
+    # check password of user_model
+    if not check_password_hash(password_old, user_model.password):
+        return Resp(status=-1, msg=error_tips.PWD_INCORRECT)
+    pwd_hash = get_password_hash(password_new)
+
+    # update password of user_model
+    user_model.password = pwd_hash
+    session.merge(user_model)
+    session.commit()
+
+    # return
+    return Resp()
