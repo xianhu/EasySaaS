@@ -140,10 +140,10 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token: sub(email) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
         return Resp(status=-1, msg="token invalid")
-    email = payload["sub"]
+    email, code_in_token = payload["sub"], payload["code"]
 
-    # check code match or not
-    if code != payload["code"]:
+    # check token: code
+    if code != code_in_token:
         return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
     user_model = session.query(User).filter(User.email == email).first()
@@ -155,7 +155,8 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.add(user_model)
         session.commit()
 
-        # return result
+        # logging user and return result
+        logging.warning("%s success: %s", _type, user_model.dict())
         return Resp(msg=f"{_type} success")
 
     # check token type: reset
@@ -165,7 +166,8 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.merge(user_model)
         session.commit()
 
-        # return result
+        # logging user and return result
+        logging.warning("%s success: %s", _type, user_model.dict())
         return Resp(msg=f"{_type} success")
 
     # return -1 (token invalid)
