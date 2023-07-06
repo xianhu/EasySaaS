@@ -27,6 +27,8 @@ class FileTag(AbstractModel):
 class File(AbstractModel):
     # information -- basic
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
+
+    # information -- fullname and location
     fullname = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="uid-time-filename")
     location = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="save_path + fullname")
 
