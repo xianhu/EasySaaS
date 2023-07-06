@@ -52,7 +52,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
         file_in.write(file.file.read())
     # save file model (filename, fullname, location) to database
 
-    # return FileSchema
+    # return FileSchema with permission
     return RespFile(data=FileSchema(filename=filename))
 
 
@@ -97,7 +97,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
             file_in.write(file_temp.read())
     # save file model (filename, fullname, location) to database
 
-    # return FileSchema
+    # return FileSchema with permission
     return RespFile(data=FileSchema(filename=filename))
 
 

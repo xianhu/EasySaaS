@@ -33,7 +33,7 @@ def _get(current_user: User = Depends(get_current_user)):
     user_model = current_user
 
     # return UserSchema
-    return RespUser(data=UserSchema(**user_model.to_dict()))
+    return RespUser(data=UserSchema(**user_model.dict()))
 
 
 @router.post("/update", response_model=RespUser)
@@ -54,7 +54,7 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     session.commit()
 
     # return UserSchema
-    return RespUser(data=UserSchema(**user_model.to_dict()))
+    return RespUser(data=UserSchema(**user_model.dict()))
 
 
 @router.post("/update/password", response_model=RespUser)
@@ -81,4 +81,4 @@ def _update_password(password_old: str = Body(..., description="old password"),
     session.commit()
 
     # return UserSchema
-    return RespUser(data=UserSchema(**user_model.to_dict()))
+    return RespUser(data=UserSchema(**user_model.dict()))

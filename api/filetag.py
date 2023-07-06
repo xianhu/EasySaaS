@@ -50,7 +50,7 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     session.commit()
 
     # return RespFileTag
-    return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
+    return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
 
 
 @router.post("/update", response_model=RespFileTag)
@@ -81,7 +81,7 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
                 setattr(filetag_model, field, getattr(filetag_schema, field))
             session.merge(filetag_model)
             session.commit()
-            return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
+            return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
 
     # return -2 (filetag not existed)
     return RespFileTag(status=-2, msg="filetag not existed")
@@ -103,7 +103,7 @@ def _delete(filetag_id: int = Body(..., embed=True, description="id of filetag")
         if filetag_id == filetag_model.id:
             session.delete(filetag_model)
             session.commit()
-            return RespFileTag(data=FileTagSchema(**filetag_model.to_dict()))
+            return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
 
     # return -2 (filetag not existed)
     return RespFileTag(status=-2, msg="filetag not existed")
@@ -122,7 +122,7 @@ def _list(current_user: User = Depends(get_current_user)):
     """
     filetag_schema_list = []
     for filetag_model in current_user.filetags:
-        filetag_schema = FileTagSchema(**filetag_model.to_dict())
+        filetag_schema = FileTagSchema(**filetag_model.dict())
         filetag_schema_list.append(filetag_schema)
 
     # return RespFileTagList
