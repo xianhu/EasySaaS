@@ -47,7 +47,7 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     # get user_model
     user_model = current_user
 
-    # update user model based on UserUpdate
+    # update user_model based on UserUpdate
     for field in user_schema.dict(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     session.merge(user_model)

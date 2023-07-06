@@ -77,6 +77,7 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
         if filetag_model.ttype != "custom":
             continue
         if filetag_schema.id == filetag_model.id:
+            # update filetag model based on FileTagUpdate
             for field in filetag_schema.dict(exclude_unset=True):
                 setattr(filetag_model, field, getattr(filetag_schema, field))
             session.merge(filetag_model)
@@ -101,6 +102,7 @@ def _delete(filetag_id: int = Body(..., embed=True, description="id of filetag")
         if filetag_model.ttype != "custom":
             continue
         if filetag_id == filetag_model.id:
+            # delete filetag model
             session.delete(filetag_model)
             session.commit()
             return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
