@@ -32,8 +32,8 @@ async def root():
 
 
 @api_router.get("/test")
-async def test(request: Request,
-               response: Response,
+async def test(request: Request,  # parameter of request
+               response: Response,  # parameter of response
                fake_cookie: Union[str, None] = Cookie(default=None),
                user_agent: Union[str, None] = Header(default=None)):
     """

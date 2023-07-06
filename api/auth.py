@@ -131,12 +131,14 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     logging.warning("get payload: %s - %s", code, payload)
 
     # check token: type(!!!)
-    if (not payload.get("type")) or (payload["type"] not in TypeName.__members__):
+    if not payload.get("type"):
+        return Resp(status=-1, msg="token invalid")
+    if payload["type"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid")
     _type = payload["type"]
 
     # check token: sub(email) and code(int)
-    if (not payload.get("sub")) and (not payload.get("code")):
+    if (not payload.get("sub")) or (not payload.get("code")):
         return Resp(status=-1, msg="token invalid")
     email = payload["sub"]
 
@@ -153,8 +155,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.add(user_model)
         session.commit()
 
-        # logging and return result
-        logging.warning("create user: %s", user_model.to_dict())
+        # return result
         return Resp(msg=f"{_type} success")
 
     # check token type: reset
@@ -164,8 +165,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.merge(user_model)
         session.commit()
 
-        # logging and return result
-        logging.warning("reset password: %s", user_model.to_dict())
+        # return result
         return Resp(msg=f"{_type} success")
 
     # return -1 (token invalid)
