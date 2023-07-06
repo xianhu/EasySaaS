@@ -40,6 +40,7 @@ class FileSchema(BaseModel):
     filename: Optional[str] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
+    permission: Optional[int] = None
 
 
 # used for request body

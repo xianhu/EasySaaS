@@ -15,8 +15,8 @@ class UserSchema(BaseModel):
     nickname: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
-    email_verified: Optional[bool] = None
     # password: Optional[str] = None
+    email_verified: Optional[bool] = None
     # system_admin: Optional[bool] = None
     # system_role: Optional[dict] = None
 
