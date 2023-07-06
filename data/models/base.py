@@ -12,11 +12,11 @@ from sqlalchemy.ext import declarative
 
 # define base model
 Model = declarative.declarative_base()
+exclude_fields = ("created_at", "updated_at")
 
 
 class AbstractModel(Model):
     __abstract__ = True
-    __ignore__ = ["created_at", "updated_at"]
 
     @declarative.declared_attr
     def __tablename__(cls) -> str:
@@ -25,8 +25,8 @@ class AbstractModel(Model):
     def get(self, field: str) -> Any:
         return getattr(self, field)
 
-    def to_dict(self) -> Dict[str, Any]:
-        columns = [c for c in self.__table__.columns if c.name not in self.__ignore__]
+    def dict(self, exclude=exclude_fields) -> Dict[str, Any]:
+        columns = [c for c in self.__table__.columns if c.name not in exclude]
         return {c.name: getattr(self, c.name) for c in columns}
 
     # information -- id, status, created_at, updated_at

@@ -33,7 +33,7 @@ def _get(current_user: User = Depends(get_current_user)):
     user_model = current_user
 
     # return UserSchema
-    return RespUser(data=UserSchema(**user_model.to_dict()))
+    return RespUser(data=UserSchema(**user_model.dict()))
 
 
 @router.post("/update", response_model=RespUser)
@@ -47,14 +47,14 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     # get user_model
     user_model = current_user
 
-    # update user based on UserUpdate
+    # update user model based on UserUpdate
     for field in user_schema.dict(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     session.merge(user_model)
     session.commit()
 
     # return UserSchema
-    return RespUser(data=UserSchema(**user_model.to_dict()))
+    return RespUser(data=UserSchema(**user_model.dict()))
 
 
 @router.post("/update/password", response_model=RespUser)
@@ -65,14 +65,14 @@ def _update_password(password_old: str = Body(..., description="old password"),
     """
     update password of current_user
     - **status=0**: update success
-    - **status=-1**: old password error
+    - **status=-1**: password_old incorrect
     """
     # get user_model
     user_model = current_user
 
     # check password of user_model
     if not check_password_hash(password_old, user_model.password):
-        return Resp(status=-1, msg="password incorrect")
+        return Resp(status=-1, msg="password_old incorrect")
     pwd_hash = get_password_hash(password_new)
 
     # update password of user_model
@@ -81,4 +81,4 @@ def _update_password(password_old: str = Body(..., description="old password"),
     session.commit()
 
     # return UserSchema
-    return RespUser(data=UserSchema(**user_model.to_dict()))
+    return RespUser(data=UserSchema(**user_model.dict()))

@@ -27,11 +27,14 @@ with SessionMaker() as session:
     user_model = User(id=100000, email=email, password=pwd_hash)
     session.add(user_model)
     session.commit()
-    logging.warning(user_model.to_dict())
-    logging.warning(UserSchema(**user_model.to_dict()).dict(exclude_unset=True))
+    logging.warning(user_model.dict())
+
+    # logging user -- schema of User
+    user_schema = UserSchema(**user_model.dict())
+    logging.warning(user_schema.dict(exclude_unset=True))
 
     # update user -- schema of UserUpdate, model of User
-    user_schema = UserUpdate(nickname="admin", avatar="http://www.easysaas.com")
+    user_schema = UserUpdate(nickname="admin", avatar="http://example.com")
     for field in user_schema.dict(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     user_model.email_verified = True
@@ -39,5 +42,8 @@ with SessionMaker() as session:
     user_model.system_role = {"scopes": ["user:read", ]}
     session.merge(user_model)
     session.commit()
-    logging.warning(user_model.to_dict())
-    logging.warning(UserSchema(**user_model.to_dict()).dict(exclude_unset=True))
+    logging.warning(user_model.dict())
+
+    # logging user -- schema of User
+    user_schema = UserSchema(**user_model.dict())
+    logging.warning(user_schema.dict(exclude_unset=True))

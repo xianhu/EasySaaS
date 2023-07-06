@@ -44,15 +44,15 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
             detail="file size too large"
         )
     filename = file.filename
-    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
 
-    # define location and save file
+    # define fullname, location and save file
+    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     # save file model (filename, fullname, location) to database
 
-    # return FileSchema
+    # return FileSchema with permission
     return RespFile(data=FileSchema(filename=filename))
 
 
@@ -76,10 +76,10 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
             detail="file size too large",
         )
     filename_temp = file.filename
-    fullname_temp = f"{flow_identifier}-{filename_temp}"
-    location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
 
     # save flow_chunk_number part of file
+    fullname_temp = f"{flow_identifier}-{filename_temp}"
+    location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
     with open(location_temp, file_mode) as file_in:
         file_in.write(file.file.read())
@@ -88,16 +88,16 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
     filename = file.filename
-    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
 
-    # define location and save file
+    # define fullname, location and save file
+    fullname = f"{current_user.id}-{int(time.time())}-{filename}"
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
     # save file model (filename, fullname, location) to database
 
-    # return FileSchema
+    # return FileSchema with permission
     return RespFile(data=FileSchema(filename=filename))
 
 
@@ -135,6 +135,6 @@ def _download_stream(file_id: str = Path(..., description="file id")):
         )
     filename = "-".join(file_id.split("-")[2:])
 
-    # return file response
+    # return streaming response
     headers = {"Content-Disposition": f"attachment; filename=\"{filename}\""}
     return StreamingResponse(iter_file(location), media_type="application/octet-stream", headers=headers)

@@ -131,17 +131,19 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     logging.warning("get payload: %s - %s", code, payload)
 
     # check token: type(!!!)
-    if (not payload.get("type")) or (payload["type"] not in TypeName.__members__):
+    if not payload.get("type"):
+        return Resp(status=-1, msg="token invalid")
+    if payload["type"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid")
     _type = payload["type"]
 
     # check token: sub(email) and code(int)
-    if (not payload.get("sub")) and (not payload.get("code")):
+    if (not payload.get("sub")) or (not payload.get("code")):
         return Resp(status=-1, msg="token invalid")
-    email = payload["sub"]
+    email, code_in_token = payload["sub"], payload["code"]
 
-    # check code match or not
-    if code != payload["code"]:
+    # check token: code
+    if code != code_in_token:
         return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
     user_model = session.query(User).filter(User.email == email).first()
@@ -153,8 +155,8 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.add(user_model)
         session.commit()
 
-        # logging and return result
-        logging.warning("create user: %s", user_model.to_dict())
+        # logging user and return result
+        logging.warning("%s success: %s", _type, user_model.dict())
         return Resp(msg=f"{_type} success")
 
     # check token type: reset
@@ -164,9 +166,9 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.merge(user_model)
         session.commit()
 
-        # logging and return result
-        logging.warning("reset password: %s", user_model.to_dict())
+        # logging user and return result
+        logging.warning("%s success: %s", _type, user_model.dict())
         return Resp(msg=f"{_type} success")
 
-    # return result
+    # return -1 (token invalid)
     return Resp(status=-1, msg="token invalid")

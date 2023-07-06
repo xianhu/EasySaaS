@@ -14,6 +14,7 @@ class ProjectSchema(BaseModel):
     id: Optional[int] = None
     name: Optional[str] = None
     desc: Optional[str] = None
+    permission: Optional[int] = None
 
 
 # used for request body
