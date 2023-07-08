@@ -11,7 +11,7 @@ from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
 # used for response_model
 class UserSchema(BaseModel):
-    id: Optional[int] = None
+    id: Optional[str] = None
     nickname: Optional[str] = None
     avatar: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
@@ -29,6 +29,6 @@ class UserCreate(BaseModel):
 
 # used for request body
 class UserUpdate(BaseModel):
-    # id: int = Field(...)
+    # id: str = Field(..., description="User ID")
     nickname: Optional[str] = Field(min_length=2, max_length=20)
     avatar: Optional[HttpUrl] = Field(description="Avatar Url")

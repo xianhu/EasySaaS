@@ -42,7 +42,7 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
         if filetag_schema.name == filetag_model.name:
             return Resp(status=-1, msg="filetag name invalid")
     user_id = current_user.id
-    filetag_params = filetag_schema.dict(exclude_unset=True)
+    filetag_params = filetag_schema.model_dump(exclude_unset=True)
 
     # create custom filetag model and save to database
     filetag_model = FileTag(user_id=user_id, **filetag_params)
@@ -78,7 +78,7 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
             continue
         if filetag_schema.id == filetag_model.id:
             # update filetag model based on FileTagUpdate
-            for field in filetag_schema.dict(exclude_unset=True):
+            for field in filetag_schema.model_dump(exclude_unset=True):
                 setattr(filetag_model, field, getattr(filetag_schema, field))
             session.merge(filetag_model)
             session.commit()

@@ -30,7 +30,7 @@ class AbstractModel(Model):
         return {c.name: getattr(self, c.name) for c in columns}
 
     # information -- id, status, created_at, updated_at
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    id = sqlalchemy.Column(sqlalchemy.String(128), primary_key=True)
     status = sqlalchemy.Column(sqlalchemy.SmallInteger, default=1, doc="Status: 1/0")
     created_at = sqlalchemy.Column(sqlalchemy.DateTime, default=func.now(), doc="Created At")
     updated_at = sqlalchemy.Column(sqlalchemy.DateTime, default=func.now(), onupdate=func.now(), doc="Updated At")

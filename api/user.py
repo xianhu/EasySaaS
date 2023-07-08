@@ -48,7 +48,7 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     user_model = current_user
 
     # update user_model based on UserUpdate
-    for field in user_schema.dict(exclude_unset=True):
+    for field in user_schema.model_dump(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     session.merge(user_model)
     session.commit()

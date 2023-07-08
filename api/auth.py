@@ -146,7 +146,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
-    user_model = session.query(User).filter(User.email == email).first()
+    user_model: User | None = session.query(User).filter(User.email == email).first()
 
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
