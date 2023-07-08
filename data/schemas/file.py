@@ -21,7 +21,7 @@ class FileTagSchema(BaseModel):
 
 # used for request body
 class FileTagCreate(BaseModel):
-    name: str = Field(..., min_length=2, max_length=10)
+    name: str = Field(..., min_length=2, max_length=20)
     icon: Optional[str] = Field(description="Icon Value")
     color: Optional[str] = Field(description="Color Code")
 
@@ -29,7 +29,7 @@ class FileTagCreate(BaseModel):
 # used for request body
 class FileTagUpdate(BaseModel):
     id: str = Field(..., description="FileTag ID")
-    name: Optional[str] = Field(min_length=2, max_length=10)
+    name: Optional[str] = Field(min_length=2, max_length=20)
     icon: Optional[str] = Field(description="Icon Value")
     color: Optional[str] = Field(description="Color Code")
 

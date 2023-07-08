@@ -12,7 +12,7 @@ from .base import AbstractModel
 class Project(AbstractModel):
     # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    desc = sqlalchemy.Column(sqlalchemy.String(255), doc="Description")
+    desc = sqlalchemy.Column(sqlalchemy.String(512), doc="Description")
 
     # relationship -- userprojects (project.userprojects, userproject.project)
     userprojects = sqlalchemy.orm.relationship("UserProject", back_populates="project")
