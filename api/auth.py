@@ -59,7 +59,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     user_id = user_model.id
 
     # create access_token with user_id
-    access_token = create_token_data({"sub": str(user_id)})
+    access_token = create_token_data({"sub": user_id})
     logging.warning("access_token_1: %s - %s", email, access_token)
 
     # return access_token
@@ -80,23 +80,23 @@ class RespSend(Resp):
 @router.post("/send-code", response_model=RespSend)
 def _send_code(background_tasks: BackgroundTasks,
                email: EmailStr = Body(..., description="email"),
-               _type: TypeName = Body(..., alias="type", description="type of send"),
+               ttype: TypeName = Body(..., description="type of send"),
                session: Session = Depends(get_session)):
     """
     send a code to email, return token with code
     - **status=0**: send email success
     - **status=-1**: email existed or not existed
     """
-    # check if user existed or not by _type
+    # check if user existed or not by ttype
     user_model = session.query(User).filter(User.email == email).first()
-    if _type == TypeName.signup and user_model:
+    if ttype == TypeName.signup and user_model:
         return RespSend(status=-1, msg="user existed")
-    if _type == TypeName.reset and (not user_model):
+    if ttype == TypeName.reset and (not user_model):
         return RespSend(status=-1, msg="user not existed")
 
     # define code, data and token
     code = random.randint(100000, 999999)
-    data = dict(sub=email, code=code, type=_type)
+    data = dict(sub=email, code=code, type=ttype)
     expires_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
     token = create_token_data(data, expires_duration=expires_duration)
 
@@ -111,7 +111,7 @@ def _send_code(background_tasks: BackgroundTasks,
 
     # send email in background (check status_code == 250)
     background_tasks.add_task(send_email, _from, email, **kwargs)
-    logging.warning("send code: %s - %s - %s - %s", email, code, _type, token)
+    logging.warning("send code: %s - %s - %s - %s", email, code, ttype, token)
 
     # return token with code
     return RespSend(token=token)
@@ -137,7 +137,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg="token invalid")
     if payload["type"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid")
-    _type = payload["type"]
+    ttype = payload["type"]
 
     # check token: sub(email) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
@@ -148,30 +148,30 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid")
     pwd_hash = get_password_hash(password)
-    user_model: User | None = session.query(User).filter(User.email == email).first()
+    user_model = session.query(User).filter(User.email == email).first()
 
     # check token type: signup
-    if _type == TypeName.signup and (not user_model):
+    if ttype == TypeName.signup and (not user_model):
         # create user based on email and password
-        _id = hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest()
-        user_model = User(id=_id, email=email, password=pwd_hash, email_verified=True)
+        user_id = hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest()
+        user_model = User(id=user_id, email=email, password=pwd_hash, email_verified=True)
         session.add(user_model)
         session.commit()
 
         # logging user and return result
-        logging.warning("%s success: %s", _type, user_model.dict())
-        return Resp(msg=f"{_type} success")
+        logging.warning("%s success: %s", ttype, user_model.dict())
+        return Resp(msg=f"{ttype} success")
 
     # check token type: reset
-    if _type == TypeName.reset and user_model:
+    if ttype == TypeName.reset and user_model:
         # update user based on password
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()
 
         # logging user and return result
-        logging.warning("%s success: %s", _type, user_model.dict())
-        return Resp(msg=f"{_type} success")
+        logging.warning("%s success: %s", ttype, user_model.dict())
+        return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid)
     return Resp(status=-1, msg="token invalid")

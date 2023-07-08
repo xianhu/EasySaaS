@@ -6,6 +6,7 @@ test models and schemas
 
 import hashlib
 import logging
+import time
 
 from core import security
 from data import SessionMaker
@@ -22,9 +23,9 @@ with SessionMaker() as session:
     user_schema = UserCreate(email=email, password=pwd_plain)
 
     # create user -- model of User
-    _id = hashlib.md5(email.encode()).hexdigest()
     pwd_hash = security.get_password_hash(user_schema.password)
-    user_model = User(id=_id, email=email, password=pwd_hash)
+    user_id = hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest()
+    user_model = User(id=user_id, email=email, password=pwd_hash, email_verified=False)
     session.add(user_model)
     session.commit()
     logging.warning(user_model.dict())
