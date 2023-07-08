@@ -6,8 +6,6 @@ test models and schemas
 
 import logging
 
-from pydantic import EmailStr
-
 from core import security
 from data import SessionMaker
 from data.dmysql import init_db
@@ -19,7 +17,7 @@ init_db()
 
 with SessionMaker() as session:
     # user info -- email and password
-    email, pwd_plain = EmailStr("admin@easysaas.com"), "a123456"
+    email, pwd_plain = "admin@easysaas.com", "a123456"
     user_schema = UserCreate(email=email, password=pwd_plain)
 
     # create user -- model of User
@@ -31,11 +29,11 @@ with SessionMaker() as session:
 
     # logging user -- schema of User
     user_schema = UserSchema(**user_model.dict())
-    logging.warning(user_schema.dict(exclude_unset=True))
+    logging.warning(user_schema.model_dump(exclude_unset=True))
 
     # update user -- schema of UserUpdate, model of User
-    user_schema = UserUpdate(nickname="admin", avatar="http://example.com")
-    for field in user_schema.dict(exclude_unset=True):
+    user_schema = UserUpdate(nickname="admin", avatar="https://example.com")
+    for field in user_schema.model_dump(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     user_model.email_verified = True
     user_model.system_admin = True
@@ -46,4 +44,4 @@ with SessionMaker() as session:
 
     # logging user -- schema of User
     user_schema = UserSchema(**user_model.dict())
-    logging.warning(user_schema.dict(exclude_unset=True))
+    logging.warning(user_schema.model_dump(exclude_unset=True))
