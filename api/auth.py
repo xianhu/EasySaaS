@@ -66,7 +66,7 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     return AccessToken(access_token=access_token)
 
 
-# define enum of type
+# define enum of ttype
 class TypeName(str, Enum):
     signup = "signup"
     reset = "reset"
@@ -96,7 +96,7 @@ def _send_code(background_tasks: BackgroundTasks,
 
     # define code, data and token
     code = random.randint(100000, 999999)
-    data = dict(sub=email, code=code, type=ttype)
+    data = dict(sub=email, code=code, ttype=ttype)
     expires_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
     token = create_token_data(data, expires_duration=expires_duration)
 
@@ -132,12 +132,12 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     payload = get_token_payload(token)
     logging.warning("get payload: %s - %s", code, payload)
 
-    # check token: type(!!!)
-    if not payload.get("type"):
+    # check token: ttype
+    if not payload.get("ttype"):
         return Resp(status=-1, msg="token invalid")
-    if payload["type"] not in TypeName.__members__:
+    if payload["ttype"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid")
-    ttype = payload["type"]
+    ttype = payload["ttype"]
 
     # check token: sub(email) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
@@ -150,7 +150,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     pwd_hash = get_password_hash(password)
     user_model = session.query(User).filter(User.email == email).first()
 
-    # check token type: signup
+    # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
         # create user based on email and password
         user_id = hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest()
@@ -162,7 +162,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         logging.warning("%s success: %s", ttype, user_model.dict())
         return Resp(msg=f"{ttype} success")
 
-    # check token type: reset
+    # check token ttype: reset
     if ttype == TypeName.reset and user_model:
         # update user based on password
         user_model.password = pwd_hash
