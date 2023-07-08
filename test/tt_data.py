@@ -4,6 +4,7 @@
 test models and schemas
 """
 
+import hashlib
 import logging
 
 from core import security
@@ -21,8 +22,9 @@ with SessionMaker() as session:
     user_schema = UserCreate(email=email, password=pwd_plain)
 
     # create user -- model of User
+    _id = hashlib.md5(email.encode()).hexdigest()
     pwd_hash = security.get_password_hash(user_schema.password)
-    user_model = User(id=100000, email=email, password=pwd_hash)
+    user_model = User(id=_id, email=email, password=pwd_hash)
     session.add(user_model)
     session.commit()
     logging.warning(user_model.dict())

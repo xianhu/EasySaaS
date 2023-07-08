@@ -4,8 +4,10 @@
 auth api
 """
 
+import hashlib
 import logging
 import random
+import time
 from enum import Enum
 
 from fastapi import APIRouter, HTTPException, status
@@ -151,7 +153,8 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token type: signup
     if _type == TypeName.signup and (not user_model):
         # create user based on email and password
-        user_model = User(email=email, password=pwd_hash, email_verified=True)
+        _id = hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest()
+        user_model = User(id=_id, email=email, password=pwd_hash, email_verified=True)
         session.add(user_model)
         session.commit()
 

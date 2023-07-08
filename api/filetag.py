@@ -3,7 +3,8 @@
 """
 filetag api
 """
-
+import hashlib
+import time
 from typing import List
 
 from fastapi import APIRouter, Body, Depends
@@ -42,10 +43,11 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
         if filetag_schema.name == filetag_model.name:
             return Resp(status=-1, msg="filetag name invalid")
     user_id = current_user.id
+    _id = hashlib.md5(f"{user_id}-{time.time()}".encode()).hexdigest()
     filetag_params = filetag_schema.model_dump(exclude_unset=True)
 
     # create custom filetag model and save to database
-    filetag_model = FileTag(user_id=user_id, **filetag_params)
+    filetag_model = FileTag(id=_id, user_id=user_id, **filetag_params)
     session.add(filetag_model)
     session.commit()
 

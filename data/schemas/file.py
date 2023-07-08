@@ -11,12 +11,12 @@ from pydantic import BaseModel, Field
 
 # used for response_model
 class FileTagSchema(BaseModel):
-    id: Optional[int] = None
+    id: Optional[str] = None
     name: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
     # ttype: Optional[str] = None
-    # user_id: Optional[int] = None
+    # user_id: Optional[str] = None
 
 
 # used for request body
@@ -28,7 +28,7 @@ class FileTagCreate(BaseModel):
 
 # used for request body
 class FileTagUpdate(BaseModel):
-    id: int = Field(...)
+    id: str = Field(..., description="FileTag ID")
     name: Optional[str] = Field(min_length=2, max_length=10)
     icon: Optional[str] = Field(description="Icon Value")
     color: Optional[str] = Field(description="Color Code")
@@ -36,7 +36,7 @@ class FileTagUpdate(BaseModel):
 
 # used for response_model
 class FileSchema(BaseModel):
-    id: Optional[int] = None
+    id: Optional[str] = None
     filename: Optional[str] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
@@ -50,5 +50,5 @@ class FileCreate(BaseModel):
 
 # used for request body
 class FileUpdate(BaseModel):
-    id: int = Field(...)
+    id: str = Field(..., description="File ID")
     filename: Optional[str] = Field(min_length=4, max_length=100)
