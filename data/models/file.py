@@ -30,7 +30,7 @@ class File(AbstractModel):
 
     # information -- fullname and location
     fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-time-filename")
-    location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path + fullname")
+    location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 
     # relationship -- filetagfiles (file.filetagfiles, filetagfile.file)
     filetagfiles = sqlalchemy.orm.relationship("FileTagFile", back_populates="file")

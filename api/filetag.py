@@ -43,11 +43,11 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
         if filetag_schema.name == filetag_model.name:
             return Resp(status=-1, msg="filetag name invalid")
     user_id = current_user.id
-    _id = hashlib.md5(f"{user_id}-{time.time()}".encode()).hexdigest()
     filetag_params = filetag_schema.model_dump(exclude_unset=True)
+    filetag_id = hashlib.md5(f"{user_id}-{time.time()}".encode()).hexdigest()
 
     # create custom filetag model and save to database
-    filetag_model = FileTag(id=_id, user_id=user_id, **filetag_params)
+    filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_params)
     session.add(filetag_model)
     session.commit()
 
@@ -74,7 +74,7 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
         if filetag_schema.name == filetag_model.name:
             return Resp(status=-1, msg="filetag name invalid")
 
-    # check if filetag id existed
+    # check if filetag existed
     for filetag_model in current_user.filetags:
         if filetag_model.ttype != "custom":
             continue
@@ -91,7 +91,7 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
 
 
 @router.post("/delete", response_model=RespFileTag)
-def _delete(filetag_id: int = Body(..., embed=True, description="id of filetag"),
+def _delete(filetag_id: str = Body(..., embed=True, description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -99,7 +99,7 @@ def _delete(filetag_id: int = Body(..., embed=True, description="id of filetag")
     - **status=0**: delete success
     - **status=-2**: filetag not existed
     """
-    # check if filetag id existed
+    # check if filetag existed
     for filetag_model in current_user.filetags:
         if filetag_model.ttype != "custom":
             continue
