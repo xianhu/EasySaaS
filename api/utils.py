@@ -31,7 +31,7 @@ def get_current_user(access_token: str = Depends(oauth2),
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="token invalid",
         )
-    user_id = int(payload["sub"])
+    user_id = payload["sub"]
 
     # check if user existed or raise exception
     user_model = session.query(User).get(user_id)

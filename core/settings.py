@@ -9,7 +9,7 @@ import re
 import secrets
 from re import Pattern
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 # prefix
 ENV_PRE = "ES"
@@ -61,4 +61,4 @@ settings = Settings()
 if __name__ == "__main__":
     import pprint
 
-    pprint.pprint(settings.dict())
+    pprint.pprint(settings.model_dump())

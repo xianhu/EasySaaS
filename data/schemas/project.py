@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 # used for response_model
 class ProjectSchema(BaseModel):
-    id: Optional[int] = None
+    id: Optional[str] = None
     name: Optional[str] = None
     desc: Optional[str] = None
     permission: Optional[int] = None
@@ -20,11 +20,11 @@ class ProjectSchema(BaseModel):
 # used for request body
 class ProjectCreate(BaseModel):
     name: str = Field(..., min_length=4, max_length=100)
-    desc: Optional[str] = Field(description="Description")
+    desc: Optional[str] = Field(None, description="Description")
 
 
 # used for request body
 class ProjectUpdate(BaseModel):
-    id: int = Field(...)
-    name: Optional[str] = Field(min_length=4, max_length=100)
-    desc: Optional[str] = Field(description="Description")
+    id: str = Field(..., description="Project ID")
+    name: Optional[str] = Field(None, min_length=4, max_length=100)
+    desc: Optional[str] = Field(None, description="Description")
