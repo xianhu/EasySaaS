@@ -105,7 +105,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 def _update(file: FileUpdate = Body(..., description="update schema"),
             current_user: User = Depends(get_current_user)):
     """
-    update file, return file schema
+    update file based on update schema, return file schema
     - **status=0**: update success
     - **status=-1**: update failed
     """
