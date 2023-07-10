@@ -15,7 +15,7 @@ class User(AbstractModel):
     avatar = sqlalchemy.Column(sqlalchemy.String(512), doc="Avatar Url")
 
     # information -- email and password
-    email = sqlalchemy.Column(sqlalchemy.String(255), index=True, unique=True)
+    email = sqlalchemy.Column(sqlalchemy.String(255), unique=True, index=True)
     password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
     email_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
 

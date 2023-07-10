@@ -5,6 +5,7 @@ file model (FileTag and File)
 """
 
 import sqlalchemy.orm
+from sqlalchemy import ForeignKey, UniqueConstraint
 
 from .base import AbstractModel
 
@@ -17,7 +18,7 @@ class FileTag(AbstractModel):
     ttype = sqlalchemy.Column(sqlalchemy.String(255), default="custom", doc="system, custom")
 
     # relationship -- foreign_key to user (filetag.user, user.filetags)
-    user_id = sqlalchemy.Column(sqlalchemy.String(128), sqlalchemy.ForeignKey("users.id"), index=True)
+    user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
     user = sqlalchemy.orm.relationship("User", back_populates="filetags")
 
     # relationship -- filetagfiles (filetag.filetagfiles, filetagfile.filetag)
@@ -38,16 +39,16 @@ class File(AbstractModel):
 
 class FileTagFile(AbstractModel):
     __table_args__ = (
-        sqlalchemy.UniqueConstraint("filetag_id", "file_id", name="unique_filetag_file"),
+        UniqueConstraint("filetag_id", "file_id", name="unique_filetag_file"),
     )
 
     # information -- permission
     permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
 
     # relationship -- foreign_key to filetag (filetagfile.filetag, filetag.filetagfiles)
-    filetag_id = sqlalchemy.Column(sqlalchemy.String(128), sqlalchemy.ForeignKey("filetags.id"), index=True)
+    filetag_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("filetags.id"), index=True)
     filetag = sqlalchemy.orm.relationship("FileTag", back_populates="filetagfiles")
 
     # relationship -- foreign_key to file (filetagfile.file, file.filetagfiles)
-    file_id = sqlalchemy.Column(sqlalchemy.String(128), sqlalchemy.ForeignKey("files.id"), index=True)
+    file_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("files.id"), index=True)
     file = sqlalchemy.orm.relationship("File", back_populates="filetagfiles")
