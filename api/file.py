@@ -8,7 +8,7 @@ import os
 import time
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import Depends, Form, Path, UploadFile
+from fastapi import Body, Depends, Form, Path, UploadFile
 from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
@@ -16,7 +16,7 @@ from pydantic import Field
 from core.settings import settings
 from core.utility import iter_file
 from data.models import User
-from data.schemas import FileSchema, Resp
+from data.schemas import FileSchema, FileUpdate, Resp
 from .utils import get_current_user
 
 # define router
@@ -95,6 +95,21 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
+    # save file model (filename, fullname, location) to database
+
+    # return FileSchema with permission
+    return RespFile(data=FileSchema(filename=filename))
+
+
+@router.post("/update", response_model=RespFile)
+def _update(file: FileUpdate = Body(..., description="update schema"),
+            current_user: User = Depends(get_current_user)):
+    """
+    update file, return file schema
+    - **status=0**: update success
+    - **status=-1**: update failed
+    """
+    filename = file.filename
     # save file model (filename, fullname, location) to database
 
     # return FileSchema with permission
