@@ -22,16 +22,16 @@ class FileTagSchema(BaseModel):
 # used for request body
 class FileTagCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=20)
-    icon: Optional[str] = Field(description="Icon Value")
-    color: Optional[str] = Field(description="Color Code")
+    icon: Optional[str] = Field(None, description="Icon Value")
+    color: Optional[str] = Field(None, description="Color Code")
 
 
 # used for request body
 class FileTagUpdate(BaseModel):
     id: str = Field(..., description="FileTag ID")
-    name: Optional[str] = Field(min_length=2, max_length=20)
-    icon: Optional[str] = Field(description="Icon Value")
-    color: Optional[str] = Field(description="Color Code")
+    name: Optional[str] = Field(None, min_length=2, max_length=20)
+    icon: Optional[str] = Field(None, description="Icon Value")
+    color: Optional[str] = Field(None, description="Color Code")
 
 
 # used for response_model
@@ -51,4 +51,4 @@ class FileCreate(BaseModel):
 # used for request body
 class FileUpdate(BaseModel):
     id: str = Field(..., description="File ID")
-    filename: Optional[str] = Field(min_length=4, max_length=100)
+    filename: str = Field(..., min_length=4, max_length=100)

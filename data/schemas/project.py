@@ -20,11 +20,11 @@ class ProjectSchema(BaseModel):
 # used for request body
 class ProjectCreate(BaseModel):
     name: str = Field(..., min_length=4, max_length=100)
-    desc: Optional[str] = Field(description="Description")
+    desc: Optional[str] = Field(None, description="Description")
 
 
 # used for request body
 class ProjectUpdate(BaseModel):
     id: str = Field(..., description="Project ID")
-    name: Optional[str] = Field(min_length=4, max_length=100)
-    desc: Optional[str] = Field(description="Description")
+    name: Optional[str] = Field(None, min_length=4, max_length=100)
+    desc: Optional[str] = Field(None, description="Description")
