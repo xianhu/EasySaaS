@@ -26,6 +26,10 @@ class RespFileTag(Resp):
     data: FileTagSchema = Field(None)
 
 
+# global variable
+FILETAG_DEFAULT_SET = {"default", "all", "untagged", "favorite"}
+
+
 @router.post("/create", response_model=RespFileTag)
 def _create(filetag_schema: FileTagCreate = Body(..., description="create schema"),
             current_user: User = Depends(get_current_user),
@@ -36,7 +40,7 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     - **status=-1**: filetag name invalid
     """
     # check if filetag name is valid
-    if filetag_schema.name == "default":
+    if filetag_schema.name in FILETAG_DEFAULT_SET:
         return Resp(status=-1, msg="filetag name invalid")
 
     # check if filetag name not existed
@@ -68,7 +72,7 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
     - **status=-2**: filetag not existed
     """
     # check if filetag name is valid
-    if filetag_schema.name == "default":
+    if filetag_schema.name in FILETAG_DEFAULT_SET:
         return Resp(status=-1, msg="filetag name invalid")
 
     # check if filetag name not existed
