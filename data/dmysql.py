@@ -25,10 +25,14 @@ def get_session() -> Generator[Session, None, None]:
         yield session
 
 
-def init_db() -> None:
+def init_db(model=None) -> None:
     """
     initialize database
     """
-    Model.metadata.drop_all(engine, checkfirst=True)
-    Model.metadata.create_all(engine, checkfirst=True)
+    if not model:
+        Model.metadata.drop_all(engine, checkfirst=True)
+        Model.metadata.create_all(engine, checkfirst=True)
+    else:
+        model.__table__.drop(engine, checkfirst=True)
+        model.__table__.create(engine, checkfirst=True)
     return None

@@ -22,11 +22,11 @@ app_celery = Celery(__name__, broker=broker, backend=backend, include=[
 
 
 @app_celery.task(bind=True, rate_limit="50/m")
-def test_add(self, x, y):
+def test_add(self, x, y, z=None):
     # task information
     request = self.request
-    logging.warning("%s: %s, %s, %s", request.id, request.retries, request.delivery_info)
-    logging.warning("%s: %s, %s, %s", request.id, request.args, request.kwargs)
+    logging.warning("%s: %s, %s", request.id, request.retries, request.delivery_info)
+    logging.warning("%s: %s, %s", request.id, request.args, request.kwargs)
 
     # task process
-    return x + y
+    return x + y + (z or 0)

@@ -20,7 +20,7 @@ from core.security import check_password_hash, get_password_hash
 from core.security import create_token_data, get_token_payload
 from core.settings import settings
 from core.utemail import send_email
-from data import get_session
+from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp
 
@@ -85,14 +85,21 @@ def _send_code(background_tasks: BackgroundTasks,
     """
     send a code to email, return token with code
     - **status=0**: send email success
-    - **status=-1**: email existed or not existed
+    - **status=-1**: send email too frequently
+    - **status=-2**: email existed or not existed
     """
-    # check if user existed or not by ttype
+    redis = get_redis()
+
+    # check if send email too frequently
+    if redis.get(f"{settings.APP_NAME}-{email}"):
+        return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
+
+    # check if user existed or not by ttype
     if ttype == TypeName.signup and user_model:
-        return RespSend(status=-1, msg="user existed")
+        return RespSend(status=-2, msg="user existed")
     if ttype == TypeName.reset and (not user_model):
-        return RespSend(status=-1, msg="user not existed")
+        return RespSend(status=-2, msg="user not existed")
 
     # define code, data and token
     code = random.randint(100000, 999999)
@@ -112,6 +119,9 @@ def _send_code(background_tasks: BackgroundTasks,
     # send email in background (check status_code == 250)
     background_tasks.add_task(send_email, _from, email, **kwargs)
     logging.warning("send code: %s - %s - %s - %s", email, code, ttype, token)
+
+    # set redis key and value
+    redis.set(f"{settings.APP_NAME}-{email}", code, ex=60)
 
     # return token with code
     return RespSend(token=token)
