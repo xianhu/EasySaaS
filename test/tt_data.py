@@ -16,6 +16,7 @@ from data.schemas import *
 
 # init db
 init_db()
+# init_db(User)
 
 with SessionMaker() as session:
     # user info -- email and password
