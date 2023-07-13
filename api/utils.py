@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from core.security import get_token_payload
+from core.security import get_jwt_payload
 from data import get_session
 from data.models import User
 
@@ -23,7 +23,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     - **status_code=401**: token invalid
     """
     # get payload from access_token
-    payload = get_token_payload(access_token)
+    payload = get_jwt_payload(access_token)
 
     # check user_id(sub)
     if not payload.get("sub"):

@@ -5,7 +5,6 @@ auth api
 """
 
 import hashlib
-import logging
 import random
 import time
 from enum import Enum
@@ -17,7 +16,7 @@ from pydantic import EmailStr, Field
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
-from core.security import create_token_data, get_token_payload
+from core.security import create_jwt_token, get_jwt_payload
 from core.settings import settings
 from core.utemail import send_email
 from data import get_redis, get_session
@@ -39,10 +38,9 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     """
     # get username、password from form_data
     email, pwd_plain = form_data.username, form_data.password
-    logging.warning("access_token_0: %s - %s", email, pwd_plain)
+    user_model = session.query(User).filter(User.email == email).first()
 
     # check if user existed or raise exception
-    user_model = session.query(User).filter(User.email == email).first()
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -58,11 +56,8 @@ def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
         )
     user_id = user_model.id
 
-    # create access_token with user_id
-    access_token = create_token_data({"sub": user_id})
-    logging.warning("access_token_1: %s - %s", email, access_token)
-
-    # return access_token
+    # create access_token and return
+    access_token = create_jwt_token(user_id)
     return AccessToken(access_token=access_token)
 
 
@@ -91,7 +86,7 @@ def _send_code(background_tasks: BackgroundTasks,
     redis = get_redis()
 
     # check if send email too frequently
-    if redis.get(f"{settings.APP_NAME}-{email}"):
+    if redis.get(f"{settings.APP_NAME}-send-{email}"):
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
@@ -100,12 +95,12 @@ def _send_code(background_tasks: BackgroundTasks,
         return RespSend(status=-2, msg="user existed")
     if ttype == TypeName.reset and (not user_model):
         return RespSend(status=-2, msg="user not existed")
-
-    # define code, data and token
     code = random.randint(100000, 999999)
-    data = dict(sub=email, code=code, ttype=ttype)
-    expires_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
-    token = create_token_data(data, expires_duration=expires_duration)
+
+    # define token based on email
+    data = dict(code=code, ttype=ttype)
+    expire_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
+    token = create_jwt_token(email, audience="send", expire_duration=expire_duration, **data)
 
     # define email content and render
     mail_subject = "Verify of {{ app_name }}"
@@ -118,10 +113,7 @@ def _send_code(background_tasks: BackgroundTasks,
 
     # send email in background (check status_code == 250)
     background_tasks.add_task(send_email, _from, email, **kwargs)
-    logging.warning("send code: %s - %s - %s - %s", email, code, ttype, token)
-
-    # set redis key and value
-    redis.set(f"{settings.APP_NAME}-{email}", code, ex=60)
+    redis.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)
@@ -139,8 +131,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     - **status=-2**: code invalid
     """
     # get payload from token
-    payload = get_token_payload(token)
-    logging.warning("get payload: %s - %s", code, payload)
+    payload = get_jwt_payload(token, audience="send")
 
     # check token: ttype
     if not payload.get("ttype"):
@@ -169,7 +160,6 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.commit()
 
         # logging user and return result
-        logging.warning("%s success: %s", ttype, user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # check token ttype: reset
@@ -180,7 +170,6 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.commit()
 
         # logging user and return result
-        logging.warning("%s success: %s", ttype, user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid)
