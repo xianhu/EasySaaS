@@ -86,7 +86,7 @@ def _send_code(background_tasks: BackgroundTasks,
     redis = get_redis()
 
     # check if send email too frequently
-    if redis.get(f"{settings.APP_NAME}-send-{email}"):
+    if redis.get(f"{settings.APP_NAME}-{ttype}-{email}"):
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
@@ -113,7 +113,7 @@ def _send_code(background_tasks: BackgroundTasks,
 
     # send email in background (check status_code == 250)
     background_tasks.add_task(send_email, _from, email, **kwargs)
-    redis.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
+    redis.set(f"{settings.APP_NAME}-{ttype}-{email}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)
