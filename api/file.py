@@ -117,7 +117,8 @@ def _update(file: FileUpdate = Body(..., description="update schema"),
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
-def _download(file_id: str = Path(..., description="file id")):
+def _download(file_id: str = Path(..., description="file id"),
+              current_user: User = Depends(get_current_user)):
     """
     download file by file_id, return FileResponse
     - **status_code=500**: file not existed
@@ -136,7 +137,8 @@ def _download(file_id: str = Path(..., description="file id")):
 
 
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
-def _download_stream(file_id: str = Path(..., description="file id")):
+def _download_stream(file_id: str = Path(..., description="file id"),
+                     current_user: User = Depends(get_current_user)):
     """
     download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
