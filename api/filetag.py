@@ -26,6 +26,11 @@ class RespFileTag(Resp):
     data: FileTagSchema = Field(None)
 
 
+# response model
+class RespFileTagList(Resp):
+    data: List[FileTagSchema] = Field(None)
+
+
 # global variable
 FILETAG_DEFAULT_SET = {"default", "all", "untagged", "favorite"}
 
@@ -37,13 +42,13 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     """
     create filetag based on create schema, return filetag schema
     - **status=0**: create success
-    - **status=-1**: filetag name invalid
+    - **status=-1**: filetag name invalid or existed
     """
-    # check if filetag name is valid
+    # check if filetag name is valid or raise exception
     if filetag_schema.name in FILETAG_DEFAULT_SET:
         return Resp(status=-1, msg="filetag name invalid")
 
-    # check if filetag name not existed
+    # check if filetag name not existed or raise exception
     for filetag_model in current_user.filetags:
         if filetag_schema.name != filetag_model.name:
             continue
@@ -68,14 +73,14 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
     """
     update filetag based on update schema, return filetag schema
     - **status=0**: update success
-    - **status=-1**: filetag name invalid
-    - **status=-2**: filetag not existed
+    - **status=-1**: filetag name invalid or existed
+    - **status=-2**: filetag not existed in current_user
     """
-    # check if filetag name is valid
+    # check if filetag name is valid or raise exception
     if filetag_schema.name in FILETAG_DEFAULT_SET:
         return Resp(status=-1, msg="filetag name invalid")
 
-    # check if filetag name not existed
+    # check if filetag name not existed or raise exception
     for filetag_model in current_user.filetags:
         if filetag_schema.name != filetag_model.name:
             continue
@@ -105,7 +110,7 @@ def _delete(filetag_id: str = Body(..., embed=True, description="id of filetag")
     """
     delete filetag based on filetag id, return filetag schema
     - **status=0**: delete success
-    - **status=-2**: filetag not existed
+    - **status=-2**: filetag not existed in current_user
     """
     # check if filetag existed
     for filetag_model in current_user.filetags:
@@ -119,11 +124,6 @@ def _delete(filetag_id: str = Body(..., embed=True, description="id of filetag")
 
     # return -2 (filetag not existed)
     return RespFileTag(status=-2, msg="filetag not existed")
-
-
-# response model
-class RespFileTagList(Resp):
-    data: List[FileTagSchema] = Field(None)
 
 
 @router.get("/list", response_model=RespFileTagList)
