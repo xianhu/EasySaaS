@@ -16,7 +16,7 @@ class User(AbstractModel):
 
     # information -- personal information
     birthday = sqlalchemy.Column(sqlalchemy.Date, doc="Date of Birthday")
-    gender = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="1-male, 2-female")
+    gender = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="1-Male, 2-Female")
 
     # information -- email and password
     email = sqlalchemy.Column(sqlalchemy.String(255), unique=True, index=True)
