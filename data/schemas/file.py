@@ -47,7 +47,7 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    filesize: int = Field(..., description="File Size")
+    filesize: int = Field(..., ge=0, description="File Size")
 
 
 # used for request body

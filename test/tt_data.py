@@ -38,8 +38,10 @@ with SessionMaker() as session:
     logging.warning(user_schema.model_dump(exclude_unset=True))
 
     # update user -- schema of UserUpdate, model of User
-    user_schema = UserUpdate(avatar="https://example.com", nickname="admin",
-                             birthday=date(1989, 6, 6), gender=1)
+    user_schema = UserUpdate(avatar="https://example.com",
+                             nickname="admin",
+                             birthday=date(1989, 6, 6),
+                             gender=1)
     for field in user_schema.model_dump(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     user_model.system_admin = True

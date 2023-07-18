@@ -89,7 +89,7 @@ async def _shutdown_event():
 
 
 @app.middleware("http")
-async def _headers(request: Request, call_next):
+async def _http_headers(request: Request, call_next):
     """
     add some values to response headers
     """
