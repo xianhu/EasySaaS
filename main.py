@@ -71,7 +71,7 @@ app.include_router(api_router)
 
 
 @app.on_event("startup")
-async def startup_event():
+async def _startup_event():
     """
     startup event
     """
@@ -80,7 +80,7 @@ async def startup_event():
 
 
 @app.on_event("shutdown")
-async def shutdown_event():
+async def _shutdown_event():
     """
     shutdown event
     """
@@ -89,7 +89,7 @@ async def shutdown_event():
 
 
 @app.middleware("http")
-async def add_values_to_headers(request: Request, call_next):
+async def _http_headers(request: Request, call_next):
     """
     add some values to response headers
     """

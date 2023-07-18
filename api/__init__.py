@@ -22,7 +22,7 @@ api_router.include_router(project.router, prefix="/project", tags=["project"])
 
 
 @api_router.get("/")
-async def root():
+async def _root():
     """
     root router
     """
@@ -32,10 +32,10 @@ async def root():
 
 
 @api_router.get("/test")
-async def test(request: Request,  # parameter of request
-               response: Response,  # parameter of response
-               fake_cookie: Union[str, None] = Cookie(default=None),
-               user_agent: Union[str, None] = Header(default=None)):
+async def _test(request: Request,  # parameter of request
+                response: Response,  # parameter of response
+                fake_cookie: Union[str, None] = Cookie(default=None),
+                user_agent: Union[str, None] = Header(default=None)):
     """
     test router
     """

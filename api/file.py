@@ -50,10 +50,10 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
     location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
-    # save file model (filename, fullname, location) to database
+    filesize = file.size
 
-    # return FileSchema with permission
-    return RespFile(data=FileSchema(filename=filename))
+    # return file schema with permission
+    return RespFile(data=FileSchema(filename=filename, filesize=filesize))
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -95,10 +95,10 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
-    # save file model (filename, fullname, location) to database
+    filesize = flow_total_size
 
-    # return FileSchema with permission
-    return RespFile(data=FileSchema(filename=filename))
+    # return file schema with permission
+    return RespFile(data=FileSchema(filename=filename, filesize=filesize))
 
 
 @router.post("/update", response_model=RespFile)
@@ -110,9 +110,8 @@ def _update(file: FileUpdate = Body(..., description="update schema"),
     - **status=-1**: update failed
     """
     filename = file.filename
-    # save file model (filename, fullname, location) to database
 
-    # return FileSchema with permission
+    # return file schema with permission
     return RespFile(data=FileSchema(filename=filename))
 
 
