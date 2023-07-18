@@ -4,10 +4,10 @@
 base model
 """
 
+from datetime import datetime
 from typing import Any, Dict
 
 import sqlalchemy
-from sqlalchemy import func
 from sqlalchemy.ext import declarative
 
 # define base model
@@ -32,5 +32,5 @@ class AbstractModel(Model):
     # information -- id, status, created_at, updated_at
     id = sqlalchemy.Column(sqlalchemy.String(128), primary_key=True)
     status = sqlalchemy.Column(sqlalchemy.SmallInteger, default=1, doc="Status: 1/0")
-    created_at = sqlalchemy.Column(sqlalchemy.DateTime, default=func.now(), doc="Created At")
-    updated_at = sqlalchemy.Column(sqlalchemy.DateTime, default=func.now(), onupdate=func.now(), doc="Updated At")
+    created_at = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.utcnow, doc="Created At")
+    updated_at = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, doc="Updated At")
