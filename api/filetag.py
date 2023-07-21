@@ -31,7 +31,7 @@ class RespFileTagList(Resp):
     data: List[FileTagSchema] = Field(None)
 
 
-# global variable
+# global variable of default filetag name set
 FILETAG_DEFAULT_SET = {"default", "all", "untagged", "favorite"}
 
 

@@ -101,11 +101,12 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     return RespFile(data=FileSchema(filename=filename, filesize=filesize))
 
 
-@router.post("/update", response_model=RespFile)
-def _update(file: FileUpdate = Body(..., description="update schema"),
-            current_user: User = Depends(get_current_user)):
+@router.patch("/{file_id}", response_model=RespFile)
+def _patch(file_id: str = Path(..., description="file id"),
+           file: FileUpdate = Body(..., description="update schema"),
+           current_user: User = Depends(get_current_user)):
     """
-    update file based on update schema, return file schema
+    update file of file_id, return file schema
     - **status=0**: update success
     - **status=-1**: update failed
     """
@@ -115,7 +116,7 @@ def _update(file: FileUpdate = Body(..., description="update schema"),
     return RespFile(data=FileSchema(filename=filename))
 
 
-@router.get("/download/{file_id}", response_class=FileResponse)
+@router.get("/{file_id}", response_class=FileResponse)
 def _download(file_id: str = Path(..., description="file id"),
               current_user: User = Depends(get_current_user)):
     """
@@ -135,7 +136,7 @@ def _download(file_id: str = Path(..., description="file id"),
     return FileResponse(location, filename=filename)
 
 
-@router.get("/download-stream/{file_id}", response_class=StreamingResponse)
+@router.get("/stream/{file_id}", response_class=StreamingResponse)
 def _download_stream(file_id: str = Path(..., description="file id"),
                      current_user: User = Depends(get_current_user)):
     """
