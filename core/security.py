@@ -43,7 +43,7 @@ def create_jwt_token(subject: str,  # user_id, email, ...
 def get_jwt_payload(token: str,  # token value
                     audience: str = None,  # client name or id, default None
                     secret_key: str = settings.SECRET_KEY,  # secret key
-                    algorithm: str = "HS256") -> Dict[str, Any]:
+                    algorithm: str = "HS256") -> Dict[str, Any]:  # algorithm of jwt
     """
     get payload from token, return payload or {} if failed
     """
