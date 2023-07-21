@@ -8,7 +8,7 @@ import hashlib
 import time
 from typing import List
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, Path
 from pydantic import Field
 from sqlalchemy.orm import Session
 
@@ -35,10 +35,10 @@ class RespFileTagList(Resp):
 FILETAG_DEFAULT_SET = {"default", "all", "untagged", "favorite"}
 
 
-@router.post("/create", response_model=RespFileTag)
-def _create(filetag_schema: FileTagCreate = Body(..., description="create schema"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+@router.post("/", response_model=RespFileTag)
+def _post(filetag_schema: FileTagCreate = Body(..., description="create schema"),
+          current_user: User = Depends(get_current_user),
+          session: Session = Depends(get_session)):
     """
     create filetag based on create schema, return filetag schema
     - **status=0**: create success
@@ -66,10 +66,11 @@ def _create(filetag_schema: FileTagCreate = Body(..., description="create schema
     return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
 
 
-@router.post("/update", response_model=RespFileTag)
-def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+@router.patch("/{filetag_id}", response_model=RespFileTag)
+def _patch(filetag_id: str = Path(..., description="id of filetag"),
+           filetag_schema: FileTagUpdate = Body(..., description="update schema"),
+           current_user: User = Depends(get_current_user),
+           session: Session = Depends(get_session)):
     """
     update filetag based on update schema, return filetag schema
     - **status=0**: update success
@@ -85,7 +86,6 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
         if filetag_schema.name != filetag_model.name:
             continue
         return Resp(status=-1, msg="filetag name existed")
-    filetag_id = filetag_schema.id
 
     # check if filetag existed
     for filetag_model in current_user.filetags:
@@ -105,8 +105,8 @@ def _update(filetag_schema: FileTagUpdate = Body(..., description="update schema
     return RespFileTag(status=-2, msg="filetag not existed")
 
 
-@router.post("/delete", response_model=RespFileTag)
-def _delete(filetag_id: str = Body(..., embed=True, description="id of filetag"),
+@router.delete("/{filetag_id}", response_model=RespFileTag)
+def _delete(filetag_id: str = Path(..., description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -130,8 +130,8 @@ def _delete(filetag_id: str = Body(..., embed=True, description="id of filetag")
     return RespFileTag(status=-2, msg="filetag not existed")
 
 
-@router.get("/list", response_model=RespFileTagList)
-def _list(current_user: User = Depends(get_current_user)):
+@router.get("/", response_model=RespFileTagList)
+def _get(current_user: User = Depends(get_current_user)):
     """
     get filetag schema list, return filetag schema list
     - **status=0**: get success
@@ -144,3 +144,21 @@ def _list(current_user: User = Depends(get_current_user)):
 
     # return filetag schema list
     return RespFileTagList(data=filetag_schema_list)
+
+
+@router.get("/{filetag_id}", response_model=RespFileTag)
+def _get(filetag_id: str = Path(..., description="id of filetag"),
+         current_user: User = Depends(get_current_user)):
+    """
+    get filetag schema based on filetag id, return filetag schema
+    - **status=0**: get success
+    - **status=-2**: filetag not existed in current_user
+    """
+    # get filetag schema
+    for filetag_model in current_user.filetags:
+        if filetag_id == filetag_model.id:
+            filetag_schema = FileTagSchema(**filetag_model.dict())
+            return RespFileTag(data=filetag_schema)
+
+    # return -2 (filetag not existed)
+    return RespFileTag(status=-2, msg="filetag not existed")

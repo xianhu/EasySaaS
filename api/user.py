@@ -23,8 +23,8 @@ class RespUser(Resp):
     data: UserSchema = Field(None)
 
 
-@router.get("/get", response_model=RespUser)
-def _get(current_user: User = Depends(get_current_user)):
+@router.get("/me", response_model=RespUser)
+def _get_me(current_user: User = Depends(get_current_user)):
     """
     get schema of current_user, return user schema
     - **status=0**: get success
@@ -36,10 +36,10 @@ def _get(current_user: User = Depends(get_current_user)):
     return RespUser(data=UserSchema(**user_model.dict()))
 
 
-@router.post("/update", response_model=RespUser)
-def _update(user_schema: UserUpdate = Body(..., description="update schema"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+@router.patch("/", response_model=RespUser)
+def _patch(user_schema: UserUpdate = Body(..., description="update schema"),
+           current_user: User = Depends(get_current_user),
+           session: Session = Depends(get_session)):
     """
     update current_user based on update schema, return user schema
     - **status=0**: update success

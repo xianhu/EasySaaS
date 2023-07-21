@@ -2,6 +2,15 @@
 
 """
 api module
+-------------------
+post -> create
+put/id -> update all fields
+post/id -> update one field
+patch/id -> update of schema
+get -> read object list
+get/id -> read one object
+delete/id -> delete one object
+-------------------
 """
 
 from typing import Union

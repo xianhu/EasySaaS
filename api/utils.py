@@ -24,7 +24,6 @@ def get_current_user(access_token: str = Depends(oauth2),
     """
     # get payload from access_token
     payload = get_jwt_payload(access_token)
-    print(payload)
 
     # check if user_id existed or raise exception
     if not payload.get("sub"):
