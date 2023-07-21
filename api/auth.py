@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from core.security import check_password_hash, get_password_hash
 from core.security import create_jwt_token, get_jwt_payload
 from core.settings import settings
-from core.utemail import send_email
+from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp
@@ -102,17 +102,8 @@ def _send_code(background_tasks: BackgroundTasks,
     expire_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
     token = create_jwt_token(email, audience="send", expire_duration=expire_duration, **data)
 
-    # define email content and render
-    mail_subject = "Verify of {{ app_name }}"
-    mail_html = "Verify code: <b>{{ code }}</b>"
-    render = dict(app_name=settings.APP_NAME, code=code)
-
-    # define _from and kwargs
-    _from = (settings.APP_NAME, settings.MAIL_USERNAME)
-    kwargs = dict(subject=mail_subject, html_raw=mail_html, render=render)
-
     # send email in background (check status_code == 250)
-    background_tasks.add_task(send_email, _from, email, **kwargs)
+    background_tasks.add_task(send_email_of_code, code, email)
     redis.set(f"{settings.APP_NAME}-{ttype}-{email}", token, ex=60)
 
     # return token with code
