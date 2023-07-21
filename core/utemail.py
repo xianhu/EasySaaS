@@ -22,13 +22,12 @@ smtp_options = {
 mail_from = (settings.APP_NAME, settings.MAIL_USERNAME)
 
 
-def _send_email(mail_to: Union[str, tuple],
-                subject: str,
-                html_raw: str,
-                render: Dict[str, Any]) -> int:
+def _send_email(mail_to: Union[str, tuple], subject: str, html_raw: str, render: Dict[str, Any]) -> int:
     """
     send email via smtp, return status code
     """
+    global mail_from
+
     # define Jinja template
     jj_subject = JinjaTemplate(subject)
     jj_html = JinjaTemplate(html_raw)
