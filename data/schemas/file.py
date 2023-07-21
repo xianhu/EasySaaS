@@ -52,3 +52,4 @@ class FileCreate(BaseModel):
 # used for request body
 class FileUpdate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
+    # filesize: int = Field(..., ge=0, description="File Size")
