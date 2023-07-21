@@ -4,12 +4,12 @@
 test models and schemas
 """
 
-import hashlib
 import logging
 import time
 from datetime import date
 
-from core import security
+from core.security import get_password_hash
+from core.utility import get_id_string
 from data import SessionMaker
 from data.dmysql import init_db
 from data.models import *
@@ -25,9 +25,9 @@ with SessionMaker() as session:
     user_schema = UserCreate(email=email, password=pwd_plain)
 
     # create user -- model of User
-    user_model = User(id=hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest(),
+    user_model = User(id=get_id_string(f"{email}-{time.time()}"),
                       email=user_schema.email,
-                      password=security.get_password_hash(user_schema.password),
+                      password=get_password_hash(user_schema.password),
                       email_verified=True)
     session.add(user_model)
     session.commit()

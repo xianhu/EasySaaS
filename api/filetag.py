@@ -4,7 +4,6 @@
 filetag api
 """
 
-import hashlib
 import time
 from typing import List
 
@@ -12,6 +11,7 @@ from fastapi import APIRouter, Body, Depends, Path
 from pydantic import Field
 from sqlalchemy.orm import Session
 
+from core.utility import get_id_string
 from data import get_session
 from data.models import FileTag, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
@@ -54,7 +54,7 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
             continue
         return Resp(status=-1, msg="filetag name existed")
     user_id = current_user.id
-    filetag_id = hashlib.md5(f"{user_id}-{time.time()}".encode()).hexdigest()
+    filetag_id = get_id_string(f"{user_id}-{time.time()}")
 
     # create custom filetag model and save to database
     filetag_params = filetag_schema.model_dump(exclude_unset=True)

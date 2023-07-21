@@ -11,7 +11,7 @@ from .base import AbstractModel
 
 class User(AbstractModel):
     # information -- basic
-    avatar = sqlalchemy.Column(sqlalchemy.String(512), doc="Avatar Url")
+    avatar = sqlalchemy.Column(sqlalchemy.String(255), doc="Avatar Url")
     nickname = sqlalchemy.Column(sqlalchemy.String(255), doc="Nickname")
 
     # information -- personal information

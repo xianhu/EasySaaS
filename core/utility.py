@@ -4,6 +4,8 @@
 utility functions
 """
 
+import hashlib
+
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
@@ -25,6 +27,14 @@ def get_logger(name, interval=1, backup=60, level=logging.WARNING):
 
     # return
     return logger
+
+
+def get_id_string(raw_string: str) -> str:
+    """
+    get id of string from raw string
+    """
+    encode = raw_string.encode()
+    return hashlib.md5(encode).hexdigest()
 
 
 def iter_file(file_path: str, chunk_size: int = 1024 * 1024) -> iter:
