@@ -86,7 +86,7 @@ def _send_code(background_tasks: BackgroundTasks,
     redis = get_redis()
 
     # check if send email too frequently
-    if redis.get(f"{settings.APP_NAME}-{ttype}-{email}"):
+    if redis.get(f"{settings.APP_NAME}-send-{email}"):
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
@@ -102,9 +102,9 @@ def _send_code(background_tasks: BackgroundTasks,
     expire_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
     token = create_jwt_token(email, audience="send", expire_duration=expire_duration, **data)
 
-    # send email in background (check status_code == 250)
+    # send email in background (status_code == 250)
     background_tasks.add_task(send_email_of_code, code, email)
-    redis.set(f"{settings.APP_NAME}-{ttype}-{email}", token, ex=60)
+    redis.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)

@@ -4,7 +4,7 @@
 api module
 -------------------
 post -> create
-put/id -> update all fields
+put/id -> replace object
 post/id -> update one field
 patch/id -> update of schema
 get -> read object list
