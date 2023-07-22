@@ -109,6 +109,7 @@ def _get_list(current_user: User = Depends(get_current_user)):
     """
     get filetag schema list and return
     """
+    # get filetag schema list
     filetag_schema_list = []
     for filetag_model in current_user.filetags:
         filetag_schema = FileTagSchema(**filetag_model.dict())

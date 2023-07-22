@@ -115,7 +115,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
-    verify code and token, then create user or update password
+    verify code and token, and create user or update password
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """
