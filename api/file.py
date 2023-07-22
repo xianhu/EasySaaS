@@ -52,7 +52,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     filesize = file.size
 
     # return file schema with permission
-    file_id = location  # todo: define file_id
+    file_id = fullname  # todo: define file_id
     return RespFile(data=FileSchema(id=file_id, filename=filename, filesize=filesize))
 
 
@@ -97,7 +97,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     filesize = flow_total_size
 
     # return file schema with permission
-    file_id = location  # todo: define file_id
+    file_id = fullname  # todo: define file_id
     return RespFile(data=FileSchema(id=file_id, filename=filename, filesize=filesize))
 
 
@@ -110,10 +110,11 @@ def _patch(file_id: str = Path(..., description="id of file"),
     - **status=-1**: file not existed
     """
     # define location and check if file existed
-    location = file_id  # todo: define location
+    location = f"{settings.FOLDER_UPLOAD}/{file_id}"  # todo: define location
     if not os.path.exists(location):
         return Resp(status=-1, msg="file not existed")
     filename = "-".join(file_id.split("-")[2:])
+    assert filename != file.filename, "filename not changed"
 
     # return file schema with permission
     return RespFile(data=FileSchema(filename=filename))
@@ -127,7 +128,7 @@ def _download(file_id: str = Path(..., description="id of file"),
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
-    location = file_id  # todo: define location
+    location = f"{settings.FOLDER_UPLOAD}/{file_id}"  # todo: define location
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -147,7 +148,7 @@ def _download_stream(file_id: str = Path(..., description="file id"),
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
-    location = file_id  # todo: define location
+    location = f"{settings.FOLDER_UPLOAD}/{file_id}"  # todo: define location
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
