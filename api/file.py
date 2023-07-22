@@ -52,7 +52,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     filesize = file.size
 
     # return file schema with permission
-    return RespFile(data=FileSchema(filename=filename, filesize=filesize))
+    file_id = location  # todo: define file_id
+    return RespFile(data=FileSchema(id=file_id, filename=filename, filesize=filesize))
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -96,7 +97,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     filesize = flow_total_size
 
     # return file schema with permission
-    return RespFile(data=FileSchema(filename=filename, filesize=filesize))
+    file_id = location  # todo: define file_id
+    return RespFile(data=FileSchema(id=file_id, filename=filename, filesize=filesize))
 
 
 @router.patch("/{file_id}", response_model=RespFile)
@@ -105,9 +107,13 @@ def _patch(file_id: str = Path(..., description="id of file"),
            current_user: User = Depends(get_current_user)):
     """
     update file model based on update schema, return file schema
-    - **status=-1**: update failed
+    - **status=-1**: file not existed
     """
-    filename = file.filename
+    # define location and check if file existed
+    location = file_id  # todo: define location
+    if not os.path.exists(location):
+        return Resp(status=-1, msg="file not existed")
+    filename = "-".join(file_id.split("-")[2:])
 
     # return file schema with permission
     return RespFile(data=FileSchema(filename=filename))
@@ -121,7 +127,7 @@ def _download(file_id: str = Path(..., description="id of file"),
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    location = file_id  # todo: define location
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -141,7 +147,7 @@ def _download_stream(file_id: str = Path(..., description="file id"),
     - **status_code=500**: file not existed
     """
     # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{file_id}"
+    location = file_id  # todo: define location
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
