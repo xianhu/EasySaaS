@@ -27,7 +27,6 @@ class RespUser(Resp):
 def _get_me(current_user: User = Depends(get_current_user)):
     """
     get schema of current_user, return user schema
-    - **status=0**: get success
     """
     # get user_model
     user_model = current_user
@@ -42,7 +41,6 @@ def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
               session: Session = Depends(get_session)):
     """
     update schema of current_user, return user schema
-    - **status=0**: update success
     """
     # get user_model
     user_model = current_user
@@ -64,7 +62,6 @@ def _post_password(password_old: str = Body(..., description="old password"),
                    session: Session = Depends(get_session)):
     """
     update password of current_user, return user schema
-    - **status=0**: update success
     - **status=-1**: password_old incorrect
     """
     # get user_model

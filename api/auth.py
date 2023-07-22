@@ -79,7 +79,6 @@ def _send_code(background_tasks: BackgroundTasks,
                session: Session = Depends(get_session)):
     """
     send a code to email, return token with code
-    - **status=0**: send email success
     - **status=-1**: send email too frequently
     - **status=-2**: email existed or not existed
     """
@@ -117,7 +116,6 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
                  session: Session = Depends(get_session)):
     """
     verify code and token, then create user or update password
-    - **status=0**: verify success, create or update success
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """

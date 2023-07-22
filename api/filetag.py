@@ -40,8 +40,7 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
           current_user: User = Depends(get_current_user),
           session: Session = Depends(get_session)):
     """
-    create filetag model based on create schema
-    - **status=0**: create success
+    create filetag model based on create schema, return filetag schema
     - **status=-1**: filetag name invalid or existed
     """
     # check if filetag name is valid
@@ -72,8 +71,7 @@ def _patch(filetag_id: str = Path(..., description="id of filetag"),
            current_user: User = Depends(get_current_user),
            session: Session = Depends(get_session)):
     """
-    update filetag model based on update schema
-    - **status=0**: update success
+    update filetag model based on update schema, return filetag schema
     - **status=-1**: filetag name invalid or existed
     - **status=-2**: filetag not existed in current_user
     """
@@ -109,8 +107,7 @@ def _patch(filetag_id: str = Path(..., description="id of filetag"),
 @router.get("/", response_model=RespFileTagList)
 def _get_list(current_user: User = Depends(get_current_user)):
     """
-    get filetag schema list
-    - **status=0**: get success
+    get filetag schema list and return
     """
     filetag_schema_list = []
     for filetag_model in current_user.filetags:
@@ -125,8 +122,7 @@ def _get_list(current_user: User = Depends(get_current_user)):
 def _get_one(filetag_id: str = Path(..., description="id of filetag"),
              current_user: User = Depends(get_current_user)):
     """
-    get filetag schema by filetag id
-    - **status=0**: get success
+    get filetag schema by filetag id and return
     - **status=-2**: filetag not existed in current_user
     """
     # check if filetag existed in current_user
@@ -146,8 +142,7 @@ def _delete(filetag_id: str = Path(..., description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    delete filetag model by filetag id
-    - **status=0**: delete success
+    delete filetag model by filetag id and return
     - **status=-2**: filetag not existed in current_user
     """
     # check if filetag existed in current_user
