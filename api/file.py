@@ -32,8 +32,7 @@ class RespFile(Resp):
 def _upload(file: UploadFile = UploadFileClass(..., description="file"),
             current_user: User = Depends(get_current_user)):
     """
-    upload file, return file schema
-    - **status=0**: upload success
+    upload file object, return file schema
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
@@ -64,8 +63,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  current_user: User = Depends(get_current_user)):
     """
-    upload file by flow.js, return file schema
-    - **status=0**: upload success
+    upload file object by flow.js, return file schema
     - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
@@ -106,8 +104,7 @@ def _patch(file_id: str = Path(..., description="file id"),
            file: FileUpdate = Body(..., description="update schema"),
            current_user: User = Depends(get_current_user)):
     """
-    update file of file_id, return file schema
-    - **status=0**: update success
+    update file model based on update schema, return file schema
     - **status=-1**: update failed
     """
     filename = file.filename

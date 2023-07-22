@@ -122,7 +122,7 @@ def _get_list(current_user: User = Depends(get_current_user)):
 def _get_one(filetag_id: str = Path(..., description="id of filetag"),
              current_user: User = Depends(get_current_user)):
     """
-    get filetag schema by filetag id and return
+    get filetag schema by id and return
     - **status=-2**: filetag not existed in current_user
     """
     # check if filetag existed in current_user
@@ -142,7 +142,7 @@ def _delete(filetag_id: str = Path(..., description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    delete filetag model by filetag id and return
+    delete filetag model by id and return
     - **status=-2**: filetag not existed in current_user
     """
     # check if filetag existed in current_user
@@ -150,7 +150,7 @@ def _delete(filetag_id: str = Path(..., description="id of filetag"),
         if filetag_model.ttype != "custom":
             continue
         if filetag_id == filetag_model.id:
-            # delete filetag model by filetag id
+            # delete filetag model by id
             session.delete(filetag_model)
             session.commit()
 
