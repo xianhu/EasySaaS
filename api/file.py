@@ -29,7 +29,7 @@ class RespFile(Resp):
 
 
 @router.post("/upload", response_model=RespFile)
-def _upload(file: UploadFile = UploadFileClass(..., description="file"),
+def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             current_user: User = Depends(get_current_user)):
     """
     upload file object, return file schema
@@ -56,7 +56,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file"),
 
 
 @router.post("/upload-flow", response_model=RespFile)
-def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of file"),
+def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of file object"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
@@ -100,7 +100,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
 
 @router.patch("/{file_id}", response_model=RespFile)
-def _patch(file_id: str = Path(..., description="file id"),
+def _patch(file_id: str = Path(..., description="id of file"),
            file: FileUpdate = Body(..., description="update schema"),
            current_user: User = Depends(get_current_user)):
     """
@@ -114,7 +114,7 @@ def _patch(file_id: str = Path(..., description="file id"),
 
 
 @router.get("/{file_id}", response_class=FileResponse)
-def _download(file_id: str = Path(..., description="file id"),
+def _download(file_id: str = Path(..., description="id of file"),
               current_user: User = Depends(get_current_user)):
     """
     download file by file_id, return FileResponse
