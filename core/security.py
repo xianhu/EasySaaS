@@ -31,9 +31,8 @@ def create_jwt_token(subject: str,  # user_id, email, ...
     expiration_time = issued_at + timedelta(seconds=expire_duration)
 
     # define payload - sub, aud, exp, iat, nbf ...
-    payload = dict(sub=subject, exp=expiration_time, iat=issued_at, **kwargs)
-    if audience:
-        payload["aud"] = audience
+    payload = dict(sub=subject, aud=audience or "",
+                   exp=expiration_time, iat=issued_at, **kwargs)
     token = jwt.encode(payload, secret_key, algorithm=algorithm)
 
     # return
@@ -49,7 +48,7 @@ def get_jwt_payload(token: str,  # token value
     """
     try:
         # decode token and get payload, raise error if audience not match
-        payload = jwt.decode(token, secret_key, algorithms=algorithm, audience=audience)
+        payload = jwt.decode(token, secret_key, algorithms=algorithm, audience=audience or "")
     except jwt.JWTError as excep:
         logging.error("get jwt payload error: %s", excep)
         payload = {}
