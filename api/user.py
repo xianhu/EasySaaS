@@ -23,11 +23,10 @@ class RespUser(Resp):
     data: UserSchema = Field(None)
 
 
-@router.get("/get", response_model=RespUser)
-def _get(current_user: User = Depends(get_current_user)):
+@router.get("/me", response_model=RespUser)
+def _get_me(current_user: User = Depends(get_current_user)):
     """
     get schema of current_user, return user schema
-    - **status=0**: get success
     """
     # get user_model
     user_model = current_user
@@ -36,13 +35,12 @@ def _get(current_user: User = Depends(get_current_user)):
     return RespUser(data=UserSchema(**user_model.dict()))
 
 
-@router.post("/update", response_model=RespUser)
-def _update(user_schema: UserUpdate = Body(..., description="update schema"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+@router.patch("/me", response_model=RespUser)
+def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
+              current_user: User = Depends(get_current_user),
+              session: Session = Depends(get_session)):
     """
-    update current_user based on update schema, return user schema
-    - **status=0**: update success
+    update schema of current_user, return user schema
     """
     # get user_model
     user_model = current_user
@@ -57,14 +55,13 @@ def _update(user_schema: UserUpdate = Body(..., description="update schema"),
     return RespUser(data=UserSchema(**user_model.dict()))
 
 
-@router.post("/update/password", response_model=RespUser)
-def _update_password(password_old: str = Body(..., description="old password"),
-                     password_new: str = Body(..., min_length=6, max_length=20),
-                     current_user: User = Depends(get_current_user),
-                     session: Session = Depends(get_session)):
+@router.post("/password", response_model=RespUser)
+def _post_password(password_old: str = Body(..., description="old password"),
+                   password_new: str = Body(..., min_length=6, max_length=20),
+                   current_user: User = Depends(get_current_user),
+                   session: Session = Depends(get_session)):
     """
     update password of current_user, return user schema
-    - **status=0**: update success
     - **status=-1**: password_old incorrect
     """
     # get user_model

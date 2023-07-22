@@ -4,7 +4,6 @@
 auth api
 """
 
-import hashlib
 import random
 import time
 from enum import Enum
@@ -18,7 +17,8 @@ from sqlalchemy.orm import Session
 from core.security import check_password_hash, get_password_hash
 from core.security import create_jwt_token, get_jwt_payload
 from core.settings import settings
-from core.utemail import send_email
+from core.utemail import send_email_of_code
+from core.utility import get_id_string
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp
@@ -79,14 +79,13 @@ def _send_code(background_tasks: BackgroundTasks,
                session: Session = Depends(get_session)):
     """
     send a code to email, return token with code
-    - **status=0**: send email success
     - **status=-1**: send email too frequently
     - **status=-2**: email existed or not existed
     """
     redis = get_redis()
 
     # check if send email too frequently
-    if redis.get(f"{settings.APP_NAME}-{ttype}-{email}"):
+    if redis.get(f"{settings.APP_NAME}-send-{email}"):
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
@@ -102,18 +101,9 @@ def _send_code(background_tasks: BackgroundTasks,
     expire_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
     token = create_jwt_token(email, audience="send", expire_duration=expire_duration, **data)
 
-    # define email content and render
-    mail_subject = "Verify of {{ app_name }}"
-    mail_html = "Verify code: <b>{{ code }}</b>"
-    render = dict(app_name=settings.APP_NAME, code=code)
-
-    # define _from and kwargs
-    _from = (settings.APP_NAME, settings.MAIL_USERNAME)
-    kwargs = dict(subject=mail_subject, html_raw=mail_html, render=render)
-
-    # send email in background (check status_code == 250)
-    background_tasks.add_task(send_email, _from, email, **kwargs)
-    redis.set(f"{settings.APP_NAME}-{ttype}-{email}", token, ex=60)
+    # send email in background (status_code == 250)
+    background_tasks.add_task(send_email_of_code, code, email)
+    redis.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)
@@ -125,8 +115,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
                  password: str = Body(..., min_length=6, max_length=20),
                  session: Session = Depends(get_session)):
     """
-    verify code and token, then create user or update password
-    - **status=0**: verify success, create or update success
+    verify code and token, and create user or update password
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """
@@ -154,7 +143,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
         # create user based on email and password
-        user_id = hashlib.md5(f"{email}-{time.time()}".encode()).hexdigest()
+        user_id = get_id_string(f"{email}-{time.time()}")
         user_model = User(id=user_id, email=email, password=pwd_hash, email_verified=True)
         session.add(user_model)
         session.commit()

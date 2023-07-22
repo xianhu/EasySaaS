@@ -2,6 +2,15 @@
 
 """
 api module
+---------------------------------------------------------------------
+post(create schema) -> create object based on create schema
+put/{id}(create schema) -> replace object based on create schema
+patch/{id}(update schema) -> update object based on update schema
+post/{id}/field(value of body) -> update one field of object
+get(values of query) -> read object list based on query values
+get/{id} -> read object by id
+delete/{id} -> delete object by id
+---------------------------------------------------------------------
 """
 
 from typing import Union
