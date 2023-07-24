@@ -142,7 +142,8 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
         # create user based on email and password
-        user_model = init_current_user(email, pwd_hash, session)
+        if not init_current_user(email, pwd_hash, session):
+            return Resp(status=-1, msg="")
 
         # logging user and return result
         return Resp(msg=f"{ttype} success")

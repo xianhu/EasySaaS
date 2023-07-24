@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from core.security import get_jwt_payload
 from core.utility import get_id_string
 from data import get_session
-from data.models import FILETAG_DEFAULT_SET
+from data.models import FILETAG_SYSTEM_SET
 from data.models import FileTag, User
 
 # define OAuth2PasswordBearer
@@ -58,7 +58,7 @@ def init_current_user(email: str, pwd_hash: str, session: Session = Depends(get_
         user_model = User(id=user_id, email=email, password=pwd_hash, email_verified=True)
         session.add(user_model)
 
-        for filetag_name in FILETAG_DEFAULT_SET:
+        for filetag_name in FILETAG_SYSTEM_SET:
             filetag_id = get_id_string(f"{user_model.id}-{filetag_name}-{time.time()}")
             filetag_model = FileTag(id=filetag_id,
                                     user_id=user_model.id,

@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 
 from core.utility import get_id_string
 from data import get_session
+from data.models import FILETAG_SYSTEM_SET
 from data.models import FileTag, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
 from .utils import get_current_user
@@ -32,10 +33,6 @@ class RespFileTagList(Resp):
     data: List[FileTagSchema] = Field(None)
 
 
-# global variable of default filetag name set
-FILETAG_DEFAULT_SET = {"untagged", "favorite", "collect", "trash"}
-
-
 @router.post("/", response_model=RespFileTag)
 def _post(filetag_schema: FileTagCreate = Body(..., description="create schema"),
           current_user: User = Depends(get_current_user),
@@ -45,7 +42,7 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
     - **status=-1**: filetag name invalid or existed
     """
     # check if filetag name is valid
-    if filetag_schema.name in FILETAG_DEFAULT_SET:
+    if filetag_schema.name in FILETAG_SYSTEM_SET:
         return Resp(status=-1, msg="filetag name invalid")
     filetag_name = filetag_schema.name
 
@@ -77,7 +74,7 @@ def _patch(filetag_id: str = Path(..., description="id of filetag"),
     - **status=-2**: filetag not existed in current_user
     """
     # check if filetag name is valid
-    if filetag_schema.name in FILETAG_DEFAULT_SET:
+    if filetag_schema.name in FILETAG_SYSTEM_SET:
         return Resp(status=-1, msg="filetag name invalid")
     filetag_name = filetag_schema.name
 

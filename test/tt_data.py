@@ -55,8 +55,9 @@ with SessionMaker() as session:
     logging.warning(user_schema.model_dump(exclude_unset=True))
 
     #  create filetag -- model of FileTag -- system
-    for filetag_name in ["untagged", "favorite", "collect", "trash"]:
-        filetag_model = FileTag(id=get_id_string(f"{user_model.id}-{filetag_name}-{time.time()}"),
+    for filetag_name in FILETAG_SYSTEM_SET:
+        filetag_id = get_id_string(f"{user_model.id}-{filetag_name}-{time.time()}")
+        filetag_model = FileTag(id=filetag_id,
                                 user_id=user_model.id,
                                 name=filetag_name,
                                 ttype="system")
