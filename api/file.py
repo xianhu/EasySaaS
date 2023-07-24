@@ -33,7 +33,6 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             current_user: User = Depends(get_current_user)):
     """
     upload file object, return file schema
-    - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
     # check file size or raise exception
@@ -65,7 +64,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  current_user: User = Depends(get_current_user)):
     """
     upload file object by flow.js, return file schema
-    - **status=-1**: upload failed
     - **status_code=500**: file size too large
     """
     # check file size or raise exception
@@ -103,18 +101,20 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
 @router.patch("/{file_id}", response_model=RespFile)
 def _patch(file_id: str = Path(..., description="id of file"),
-           file: FileUpdate = Body(..., description="update schema"),
+           file_schema: FileUpdate = Body(..., description="update schema"),
            current_user: User = Depends(get_current_user)):
     """
     update file model based on update schema, return file schema
     - **status=-1**: file not existed
     """
+    fullname = file_id  # todo: define location
+
     # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{file_id}"  # todo: define location
+    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     if not os.path.exists(location):
         return Resp(status=-1, msg="file not existed")
     filename = "-".join(file_id.split("-")[2:])
-    assert filename != file.filename, "filename not changed"
+    assert filename != file_schema.filename, "filename not changed"
 
     # return file schema with permission
     return RespFile(data=FileSchema(filename=filename))
@@ -127,8 +127,10 @@ def _download(file_id: str = Path(..., description="id of file"),
     download file by file_id, return FileResponse
     - **status_code=500**: file not existed
     """
+    fullname = file_id  # todo: define location
+
     # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{file_id}"  # todo: define location
+    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -141,14 +143,16 @@ def _download(file_id: str = Path(..., description="id of file"),
 
 
 @router.get("/stream/{file_id}", response_class=StreamingResponse)
-def _download_stream(file_id: str = Path(..., description="file id"),
+def _download_stream(file_id: str = Path(..., description="id of file"),
                      current_user: User = Depends(get_current_user)):
     """
     download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
     """
+    fullname = file_id  # todo: define location
+
     # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{file_id}"  # todo: define location
+    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

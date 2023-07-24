@@ -26,7 +26,7 @@ def _send_email(mail_to: Union[str, tuple], subject: str, html_raw: str, render:
     """
     send email via smtp, return status code
     """
-    global mail_from
+    global mail_from, smtp_options
 
     # define Jinja template
     jj_subject = JinjaTemplate(subject)

@@ -7,7 +7,8 @@ filetag api
 import time
 from typing import List
 
-from fastapi import APIRouter, Body, Depends, Path
+from fastapi import APIRouter, Depends
+from fastapi import Body, Path, Query
 from pydantic import Field
 from sqlalchemy.orm import Session
 
@@ -105,13 +106,21 @@ def _patch(filetag_id: str = Path(..., description="id of filetag"),
 
 
 @router.get("/", response_model=RespFileTagList)
-def _get_list(current_user: User = Depends(get_current_user)):
+def _get_list(skip: int = Query(0, description="skip count"),
+              limit: int = Query(10, description="limit count"),
+              current_user: User = Depends(get_current_user),
+              session: Session = Depends(get_session)):
     """
     get filetag schema list and return
     """
+    # get filetag model list
+    filetag_model_list = session.query(FileTag).filter(
+        FileTag.user_id == current_user.id,
+    ).offset(skip).limit(limit).all()
+
     # get filetag schema list
     filetag_schema_list = []
-    for filetag_model in current_user.filetags:
+    for filetag_model in filetag_model_list:
         filetag_schema = FileTagSchema(**filetag_model.dict())
         filetag_schema_list.append(filetag_schema)
 
@@ -151,7 +160,11 @@ def _delete(filetag_id: str = Path(..., description="id of filetag"),
         if filetag_model.ttype != "custom":
             continue
         if filetag_id == filetag_model.id:
-            # delete filetag model by id
+            # delete filetagfile model by filetag_id
+            # for filetagfile_model in filetag_model.filetagfiles:
+            #     session.delete(filetagfile_model)
+
+            # delete filetag model by filetag_id
             session.delete(filetag_model)
             session.commit()
 

@@ -45,7 +45,7 @@ def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
     # get user_model
     user_model = current_user
 
-    # update user_model based on UserUpdate
+    # update user_model based on update schema
     for field in user_schema.model_dump(exclude_unset=True):
         setattr(user_model, field, getattr(user_schema, field))
     session.merge(user_model)
