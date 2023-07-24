@@ -12,10 +12,12 @@ from fastapi import Body, Depends, Form, Path, UploadFile
 from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
+from sqlalchemy.orm import Session
 
 from core.settings import settings
-from core.utils import iter_file
-from data.models import User
+from core.utils import get_id_string, iter_file
+from data import get_session
+from data.models import File, FileTagFile, User
 from data.schemas import FileSchema, FileUpdate, Resp
 from .utils import get_current_user
 
@@ -30,7 +32,9 @@ class RespFile(Resp):
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
-            current_user: User = Depends(get_current_user)):
+            filetag_id: str = Body("", embed=True, description="id of filetag"),
+            current_user: User = Depends(get_current_user),
+            session: Session = Depends(get_session)):
     """
     upload file object, return file schema
     - **status_code=500**: file size too large
@@ -50,9 +54,20 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
         file_in.write(file.file.read())
     filesize = file.size
 
+    # create file model and save to database
+    file_id = get_id_string(fullname)
+    file_model = File(id=file_id,
+                      filename=filename, filesize=filesize,
+                      fullname=fullname, location=location)
+    filetag_id = filetag_id or current_user.filetags[0].id
+    filetagfile = FileTagFile(filetag_id=filetag_id, file_id=file_id)
+
+    session.add(file_model)
+    session.add(filetagfile)
+    session.commit()
+
     # return file schema with permission
-    file_id = fullname  # todo: define file_id
-    return RespFile(data=FileSchema(id=file_id, filename=filename, filesize=filesize))
+    return RespFile(data=FileSchema(**file_model.dict()))
 
 
 @router.post("/upload-flow", response_model=RespFile)
