@@ -12,7 +12,7 @@ from fastapi import Body, Path, Query
 from pydantic import Field
 from sqlalchemy.orm import Session
 
-from core.utility import get_id_string
+from core.utils import get_id_string
 from data import get_session
 from data.models import FILETAG_SYSTEM_SET
 from data.models import FileTag, User

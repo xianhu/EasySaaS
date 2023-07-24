@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
 
 from core.settings import settings
-from core.utility import iter_file
+from core.utils import iter_file
 from data.models import User
 from data.schemas import FileSchema, FileUpdate, Resp
 from .utils import get_current_user

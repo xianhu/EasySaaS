@@ -9,7 +9,7 @@ import time
 from datetime import date
 
 from core.security import get_password_hash
-from core.utility import get_id_string
+from core.utils import get_id_string
 from data import SessionMaker
 from data.dmysql import init_db
 from data.models import *
