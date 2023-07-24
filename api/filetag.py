@@ -33,7 +33,7 @@ class RespFileTagList(Resp):
 
 
 # global variable of default filetag name set
-FILETAG_DEFAULT_SET = {"default", "all", "untagged", "favorite"}
+FILETAG_DEFAULT_SET = {"untagged", "favorite", "collect", "trash"}
 
 
 @router.post("/", response_model=RespFileTag)

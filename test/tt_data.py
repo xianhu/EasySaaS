@@ -53,3 +53,13 @@ with SessionMaker() as session:
     # logging user -- schema of User
     user_schema = UserSchema(**user_model.dict())
     logging.warning(user_schema.model_dump(exclude_unset=True))
+
+    #  create filetag -- model of FileTag -- system
+    for filetag_name in ["untagged", "favorite", "collect", "trash"]:
+        filetag_model = FileTag(id=get_id_string(f"{user_model.id}-{filetag_name}-{time.time()}"),
+                                user_id=user_model.id,
+                                name=filetag_name,
+                                ttype="system")
+        session.add(filetag_model)
+    session.commit()
+    logging.warning(user_model.filetags)
