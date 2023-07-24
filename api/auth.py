@@ -119,7 +119,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     - **status=-1**: token invalid
     - **status=-2**: code invalid
     """
-    # get payload from token
+    # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
 
     # check token: ttype
@@ -137,8 +137,8 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token: code
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid")
-    pwd_hash = get_password_hash(password)
     user_model = session.query(User).filter(User.email == email).first()
+    pwd_hash = get_password_hash(password)
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
