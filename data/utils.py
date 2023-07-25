@@ -50,7 +50,7 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
             filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
 
-            # create filetag model and add to database
+            # create filetag model and add to database, ttype="system"
             filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, ttype="system")
             session.add(filetag_model)
 
