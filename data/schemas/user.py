@@ -5,9 +5,11 @@ user schema
 """
 
 from datetime import date
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
+
+from .project import ProjectSchema
 
 
 # used for response_model
@@ -22,6 +24,8 @@ class UserSchema(BaseModel):
     email_verified: Optional[bool] = None
     # system_admin: Optional[bool] = None
     # system_role: Optional[dict] = None
+    # ---- link to project list ----
+    project_list: List[ProjectSchema] = []
 
 
 # used for request body

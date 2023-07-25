@@ -32,11 +32,11 @@ class RespFile(Resp):
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
-            filetag_id: str = Body(..., embed=True, description="id of filetag"),
+            filetag_id: str = Form(..., description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    upload file object, return file schema
+    upload file object and link to filetag, return file schema
     - **status_code=500**: file size too large
     """
     # check file size or raise exception
