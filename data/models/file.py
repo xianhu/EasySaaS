@@ -9,6 +9,7 @@ from sqlalchemy import ForeignKey, UniqueConstraint
 
 from .base import AbstractModel
 
+# filetags of system
 FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect", "trash"}
 
 

@@ -29,30 +29,34 @@ def init_db_table(model=None) -> None:
     return None
 
 
-def init_user_object(user_schema: UserCreate, session: Session) -> None:
+def init_user_object(user_schema: UserCreate, session: Session) -> User:
     """
-    initialize user object
+    initialize user object based on user schema
     """
     try:
-        # create user model
+        # create user variables
         user_id = get_id_string(f"{user_schema.email}-{time.time()}")
-        user_model = User(id=user_id, **user_schema.model_dump(exclude_unset=True), email_verified=True)
+        user_kwargs = user_schema.model_dump(exclude_unset=True)
+
+        # create user model and add to database
+        user_model = User(id=user_id, **user_kwargs, email_verified=True)
         session.add(user_model)
 
         # create filetag model
         user_id = user_model.id
         for filetag_name in FILETAG_SYSTEM_SET:
+            # create filetag variables
             filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
-            filetag_model = FileTag(id=filetag_id, user_id=user_id, ttype="system",
-                                    **filetag_schema.model_dump(exclude_unset=True))
+            filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
+
+            # create filetag model and add to database
+            filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, ttype="system")
             session.add(filetag_model)
 
         # commit session
         session.commit()
+        return user_model
     except Exception as excep:
         session.rollback()
         raise excep
-
-    # return
-    return None
