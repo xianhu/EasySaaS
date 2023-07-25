@@ -15,7 +15,8 @@ from sqlalchemy.orm import Session
 from core.utils import get_id_string
 from data import get_session
 from data.models import FILETAG_SYSTEM_SET, FileTag, User
-from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
+from data.schemas import FileSchema, Resp
+from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from .utils import get_current_user
 
 # define router
@@ -25,11 +26,13 @@ router = APIRouter()
 # response model
 class RespFileTag(Resp):
     data: FileTagSchema = Field(None)
+    data_file_list: List[FileSchema] = Field(None)
 
 
 # response model
 class RespFileTagList(Resp):
     data: List[FileTagSchema] = Field(None)
+    data_file_list: List[List[FileSchema]] = Field(None)
 
 
 @router.post("/", response_model=RespFileTag)
@@ -62,7 +65,8 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
     session.commit()
 
     # return filetag schema
-    return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
+    return RespFileTag(data=FileTagSchema(**filetag_model.dict()),
+                       data_file_list=[])
 
 
 @router.patch("/{filetag_id}", response_model=RespFileTag)
@@ -100,8 +104,15 @@ def _patch(filetag_id: str = Path(..., description="id of filetag"),
     session.merge(filetag_model)
     session.commit()
 
+    # get file_schema_list
+    file_schema_list = []
+    for filetagfile_model in filetag_model.filetagfiles:
+        file_schema = FileSchema(**filetagfile_model.file.dict())
+        file_schema_list.append(file_schema)
+
     # return filetag schema
-    return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
+    return RespFileTag(data=FileTagSchema(**filetag_model.dict()),
+                       data_file_list=file_schema_list)
 
 
 @router.get("/", response_model=RespFileTagList)
@@ -121,12 +132,20 @@ def _get_list(skip: int = Query(0, description="skip count"),
 
     # get filetag schema list
     filetag_schema_list = []
+    file_schema_list_list = []
     for filetag_model in filetag_model_list:
         filetag_schema = FileTagSchema(**filetag_model.dict())
         filetag_schema_list.append(filetag_schema)
 
+        file_schema_list = []
+        for filetagfile_model in filetag_model.filetagfiles:
+            file_schema = FileSchema(**filetagfile_model.file.dict())
+            file_schema_list.append(file_schema)
+        file_schema_list_list.append(file_schema_list)
+
     # return filetag schema list
-    return RespFileTagList(data=filetag_schema_list)
+    return RespFileTagList(data=filetag_schema_list,
+                           data_file_list=file_schema_list_list)
 
 
 @router.get("/{filetag_id}", response_model=RespFileTag)
@@ -146,8 +165,15 @@ def _get_one(filetag_id: str = Path(..., description="id of filetag"),
     if filetag_model.ttype != "custom":
         return RespFileTag(status=-2, msg="filetag not existed")
 
+    # get file_schema_list
+    file_schema_list = []
+    for filetagfile_model in filetag_model.filetagfiles:
+        file_schema = FileSchema(**filetagfile_model.file.dict())
+        file_schema_list.append(file_schema)
+
     # return filetag schema
-    return RespFileTag(data=FileTagSchema(**filetag_model.dict()))
+    return RespFileTag(data=FileTagSchema(**filetag_model.dict()),
+                       data_file_list=file_schema_list)
 
 
 @router.delete("/{filetag_id}", response_model=RespFileTag)

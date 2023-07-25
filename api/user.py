@@ -4,6 +4,8 @@
 user api
 """
 
+from typing import List
+
 from fastapi import APIRouter, Body, Depends
 from pydantic import Field
 from sqlalchemy.orm import Session
@@ -11,7 +13,9 @@ from sqlalchemy.orm import Session
 from core.security import check_password_hash, get_password_hash
 from data import get_session
 from data.models import User
-from data.schemas import Resp, UserSchema, UserUpdate
+from data.schemas import FileTagSchema
+from data.schemas import Resp
+from data.schemas import UserSchema, UserUpdate
 from .utils import get_current_user
 
 # define router
@@ -21,6 +25,7 @@ router = APIRouter()
 # response model
 class RespUser(Resp):
     data: UserSchema = Field(None)
+    data_filetag_list: List[FileTagSchema] = Field(None)
 
 
 @router.get("/me", response_model=RespUser)
@@ -31,8 +36,14 @@ def _get_me(current_user: User = Depends(get_current_user)):
     # get user_model
     user_model = current_user
 
-    # return user schema
-    return RespUser(data=UserSchema(**user_model.dict()))
+    # get filetag_schema_list
+    filetag_schema_list = []
+    for filetag_model in user_model.filetags:
+        filetag_schema = FileTagSchema(**filetag_model.dict())
+        filetag_schema_list.append(filetag_schema)
+
+    # return response of user
+    return RespUser(data=UserSchema(**user_model.dict()), data_filetag_list=filetag_schema_list)
 
 
 @router.patch("/me", response_model=RespUser)
