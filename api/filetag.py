@@ -14,8 +14,7 @@ from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
 from data import get_session
-from data.models import FILETAG_SYSTEM_SET
-from data.models import FileTag, User
+from data.models import FILETAG_SYSTEM_SET, FileTag, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
 from .utils import get_current_user
 
@@ -51,11 +50,15 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
         if filetag_name != filetag_model.name:
             continue
         return Resp(status=-1, msg="filetag name existed")
-    filetag_id = get_id_string(f"{filetag_name}-{time.time()}")
+    user_id = current_user.id
+
+    # create filetag variables
+    filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
+    filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
+    filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
 
     # create filetag model and save to database
-    filetag_params = filetag_schema.model_dump(exclude_unset=True)
-    filetag_model = FileTag(id=filetag_id, user_id=current_user.id, **filetag_params)
+    filetag_model = FileTag(id=filetag_id, user_id=current_user.id, **filetag_kwargs)
     session.add(filetag_model)
     session.commit()
 
@@ -151,17 +154,18 @@ def _delete(filetag_id: str = Path(..., description="id of filetag"),
     """
     delete filetag model by id and return
     - **status=-2**: filetag not existed in current_user
+    - **status=-3**: filetag not empty with file
     """
     # check if filetag existed in current_user
     for filetag_model in current_user.filetags:
         if filetag_model.ttype != "custom":
             continue
         if filetag_id == filetag_model.id:
-            # delete filetagfile model by filetag_id
-            # for filetagfile_model in filetag_model.filetagfiles:
-            #     session.delete(filetagfile_model)
+            # check if filetag not empty
+            if filetag_model.filetagfiles:
+                return RespFileTag(status=-3, msg="filetag not empty")
 
-            # delete filetag model by filetag_id
+            # delete filetag model
             session.delete(filetag_model)
             session.commit()
 
