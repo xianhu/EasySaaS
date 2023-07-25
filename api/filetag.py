@@ -56,7 +56,7 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
     filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
 
-    # create filetag model and save to database
+    # create filetag model and save to database, ttype="custom"
     filetag_model = FileTag(id=filetag_id, user_id=current_user.id, **filetag_kwargs)
     session.add(filetag_model)
     session.commit()
@@ -112,9 +112,11 @@ def _get_list(skip: int = Query(0, description="skip count"),
     """
     get filetag schema list and return
     """
+    user_id = current_user.id
+
     # get filetag model list
     filetag_model_list = session.query(FileTag).filter(
-        FileTag.user_id == current_user.id,
+        FileTag.user_id == user_id,
     ).offset(skip).limit(limit).all()
 
     # get filetag schema list
