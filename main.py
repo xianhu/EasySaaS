@@ -24,8 +24,9 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 description = """
 - return 0 when success
 - return -1, -2, ... when something wrong in server
-- return HttpException(401) only when access_token is invalid
-- return HttpException(500) only when file size too large or something wrong in client
+- return HttpException(401) when access_token is invalid
+- return HttpException(500) when something wrong in file uploading
+- return HttpException(500) Internal Server Error when something wrong in server
 """
 
 # create app

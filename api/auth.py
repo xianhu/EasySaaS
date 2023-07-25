@@ -20,7 +20,7 @@ from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp
-from .utils import init_current_user
+from data.utils import init_user
 
 # define router
 router = APIRouter()
@@ -142,7 +142,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
         # create user based on email and password
-        if not init_current_user(email, pwd_hash, session):
+        if not init_user(email, pwd_hash, session):
             return Resp(status=-1, msg="")
 
         # logging user and return result
