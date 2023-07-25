@@ -54,7 +54,6 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
 
     # create filetag variables
     filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
-    filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
     filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
 
     # create filetag model and save to database

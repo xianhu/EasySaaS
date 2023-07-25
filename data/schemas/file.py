@@ -15,7 +15,7 @@ class FileTagSchema(BaseModel):
     name: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
-    # ttype: Optional[str] = None
+    ttype: Optional[str] = None
     # user_id: Optional[str] = None
 
 
