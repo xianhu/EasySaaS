@@ -9,8 +9,7 @@ import time
 from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
-from .models import FILETAG_SYSTEM_SET
-from .models import FileTag, User
+from .models import FILETAG_SYSTEM_SET, FileTag, User
 from .schemas import FileTagCreate, UserCreate
 
 
@@ -45,12 +44,12 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
         # create filetag model
         user_id = user_model.id
         for filetag_name in FILETAG_SYSTEM_SET:
-            # create filetag variables
+            # create filetag schema
             filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
-            filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
 
             # create filetag model and add to database, ttype="system"
+            filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
             filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, ttype="system")
             session.add(filetag_model)
 

@@ -4,7 +4,7 @@
 file schema
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -16,7 +16,7 @@ class FileSchema(BaseModel):
     filesize: Optional[int] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
-    # -----------------------
+    # ----------------------------
     permission: Optional[int] = None
 
 
@@ -30,4 +30,3 @@ class FileCreate(BaseModel):
 class FileUpdate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
     # filesize: int = Field(..., ge=0, description="File Size")
-

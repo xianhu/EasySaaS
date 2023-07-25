@@ -16,7 +16,7 @@ init_db_table()
 
 # init user with session
 with SessionMaker() as session:
-    # create user variables
+    # create user schema
     email, pwd_plain = "admin@easysaas.com", "a123456"
     user_schema = UserCreate(email=email, password=get_password_hash(pwd_plain))
 
@@ -26,4 +26,4 @@ with SessionMaker() as session:
     # logging user and filetag model
     logging.warning(user_model.dict())
     for filetag_model in user_model.filetags:
-        logging.warning("\t%s", filetag_model.dict())
+        logging.warning("----%s", filetag_model.dict())
