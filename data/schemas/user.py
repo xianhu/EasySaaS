@@ -27,7 +27,7 @@ class UserSchema(BaseModel):
 # used for request body
 class UserCreate(BaseModel):
     email: EmailStr = Field(..., description="Email")
-    password: str = Field(..., min_length=6, max_length=20)
+    password: str = Field(..., description="Hash Password")
 
 
 # used for request body
