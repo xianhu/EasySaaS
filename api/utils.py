@@ -1,20 +1,16 @@
 # _*_ coding: utf-8 _*_
 
 """
-utility functions used for api
+utility functions
 """
-
-import time
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from core.security import get_jwt_payload
-from core.utils import get_id_string
 from data import get_session
-from data.models import FILETAG_SYSTEM_SET
-from data.models import FileTag, User
+from data.models import User
 
 # define OAuth2PasswordBearer
 oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
@@ -47,4 +43,3 @@ def get_current_user(access_token: str = Depends(oauth2),
 
     # return user
     return user_model
-

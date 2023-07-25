@@ -4,6 +4,7 @@
 auth api
 """
 
+import logging
 import random
 from enum import Enum
 
@@ -19,8 +20,8 @@ from core.settings import settings
 from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
-from data.schemas import AccessToken, Resp
-from data.utils import init_user
+from data.schemas import AccessToken, Resp, UserCreate
+from data.utils import init_user_object
 
 # define router
 router = APIRouter()
@@ -142,10 +143,11 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
         # create user based on email and password
-        if not init_user(email, pwd_hash, session):
-            return Resp(status=-1, msg="")
+        user_schema = UserCreate(email=email, password=pwd_hash)
+        user_model = init_user_object(user_schema, session)
 
         # logging user and return result
+        logging.warning(f"create user: {user_model.id} {user_model.email}")
         return Resp(msg=f"{ttype} success")
 
     # check token ttype: reset
@@ -156,6 +158,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.commit()
 
         # logging user and return result
+        logging.warning(f"update user: {user_model.id} {user_model.email}")
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid)
