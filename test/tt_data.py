@@ -14,6 +14,7 @@ from data.utils import init_db_table, init_user_object
 # init db
 init_db_table()
 
+# init user with session
 with SessionMaker() as session:
     # user info -- email and password
     email, pwd_plain = "admin@easysaas.com", "a123456"
@@ -25,4 +26,4 @@ with SessionMaker() as session:
     # logging user info
     logging.warning(user_model.dict())
     for filetag_model in user_model.filetags:
-        logging.warning(filetag_model.dict())
+        logging.warning("\t%s", filetag_model.dict())
