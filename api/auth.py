@@ -147,7 +147,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         user_model = init_user_object(user_schema, session)
 
         # logging user and return result
-        logging.warning(f"create user: {user_model.id} {user_model.email}")
+        logging.warning(f"create user: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # check token ttype: reset
@@ -158,7 +158,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         session.commit()
 
         # logging user and return result
-        logging.warning(f"update user: {user_model.id} {user_model.email}")
+        logging.warning(f"update user: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid)
