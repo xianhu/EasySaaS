@@ -32,7 +32,7 @@ class RespFile(Resp):
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
-            filetag_id: str = Body("", embed=True, description="id of filetag"),
+            filetag_id: str = Body(..., embed=True, description="id of filetag"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -53,17 +53,15 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     filesize = file.size
+    file_id = get_id_string(fullname)
+    filetagfile_id = get_id_string(f"{filetag_id}-{file_id}")
 
     # create file model and save to database
-    file_id = get_id_string(fullname)
     file_model = File(id=file_id,
                       filename=filename, filesize=filesize,
                       fullname=fullname, location=location)
-    filetag_id = filetag_id or current_user.filetags[0].id
-    filetagfile = FileTagFile(filetag_id=filetag_id, file_id=file_id)
-
-    session.add(file_model)
-    session.add(filetagfile)
+    filetagfile_model = FileTagFile(id=filetagfile_id, filetag_id=filetag_id, file_id=file_id)
+    session.add_all([file_model, filetagfile_model])
     session.commit()
 
     # return file schema with permission
@@ -76,7 +74,9 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
-                 current_user: User = Depends(get_current_user)):
+                 filetag_id: str = Form(..., description="id of filetag"),
+                 current_user: User = Depends(get_current_user),
+                 session: Session = Depends(get_session)):
     """
     upload file object by flow.js, return file schema
     - **status_code=500**: file size too large
@@ -108,44 +108,60 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
     filesize = flow_total_size
+    file_id = get_id_string(fullname)
+    filetagfile_id = get_id_string(f"{filetag_id}-{file_id}")
+
+    # create file model and save to database
+    file_model = File(id=file_id,
+                      filename=filename, filesize=filesize,
+                      fullname=fullname, location=location)
+    filetagfile_model = FileTagFile(id=filetagfile_id, filetag_id=filetag_id, file_id=file_id)
+    session.add_all([file_model, filetagfile_model])
+    session.commit()
 
     # return file schema with permission
-    file_id = fullname  # todo: define file_id
-    return RespFile(data=FileSchema(id=file_id, filename=filename, filesize=filesize))
+    return RespFile(data=FileSchema(**file_model.dict()))
 
 
 @router.patch("/{file_id}", response_model=RespFile)
 def _patch(file_id: str = Path(..., description="id of file"),
            file_schema: FileUpdate = Body(..., description="update schema"),
-           current_user: User = Depends(get_current_user)):
+           current_user: User = Depends(get_current_user),
+           session: Session = Depends(get_session)):
     """
     update file model based on update schema, return file schema
     - **status=-1**: file not existed
     """
-    fullname = file_id  # todo: define location
-
-    # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
-    if not os.path.exists(location):
+    # check if file existed
+    file_model = session.query(File).get(file_id)
+    if (not file_model) or (file_model.user_id != current_user.id):
         return Resp(status=-1, msg="file not existed")
-    filename = "-".join(file_id.split("-")[2:])
-    assert filename != file_schema.filename, "filename not changed"
+
+    # update file model
+    for field in file_schema.model_dump(exclude_unset=True):
+        setattr(file_model, field, getattr(file_schema, field))
+    session.merge(file_model)
+    session.commit()
 
     # return file schema with permission
-    return RespFile(data=FileSchema(filename=filename))
+    return RespFile(data=FileSchema(**file_model.dict()))
 
 
 @router.get("/{file_id}", response_class=FileResponse)
 def _download(file_id: str = Path(..., description="id of file"),
-              current_user: User = Depends(get_current_user)):
+              current_user: User = Depends(get_current_user),
+              session: Session = Depends(get_session)):
     """
     download file by file_id, return FileResponse
     - **status_code=500**: file not existed
     """
-    fullname = file_id  # todo: define location
+    # check if file existed
+    file_model = session.query(File).get(file_id)
+    if (not file_model) or (file_model.user_id != current_user.id):
+        return Resp(status=-1, msg="file not existed")
+    location = file_model.location
 
-    # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
+    # check if file existed
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -159,15 +175,19 @@ def _download(file_id: str = Path(..., description="id of file"),
 
 @router.get("/stream/{file_id}", response_class=StreamingResponse)
 def _download_stream(file_id: str = Path(..., description="id of file"),
-                     current_user: User = Depends(get_current_user)):
+                     current_user: User = Depends(get_current_user),
+                     session: Session = Depends(get_session)):
     """
     download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
     """
-    fullname = file_id  # todo: define location
+    # check if file existed
+    file_model = session.query(File).get(file_id)
+    if (not file_model) or (file_model.user_id != current_user.id):
+        return Resp(status=-1, msg="file not existed")
+    location = file_model.location
 
-    # define location and check if file existed
-    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
+    # check if file existed
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
