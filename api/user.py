@@ -69,7 +69,7 @@ def _post_password(password_old: str = Body(..., description="old password"),
 
     # check password of user_model
     if not check_password_hash(password_old, user_model.password):
-        return Resp(status=-1, msg="password_old incorrect")
+        return RespUser(status=-1, msg="password_old incorrect")
     pwd_hash = get_password_hash(password_new)
 
     # update password of user_model
