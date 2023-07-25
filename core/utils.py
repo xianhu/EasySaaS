@@ -7,10 +7,11 @@ utility functions
 import hashlib
 
 import logging
+from logging import Logger
 from logging.handlers import TimedRotatingFileHandler
 
 
-def get_logger(name, interval=1, backup=60, level=logging.WARNING):
+def get_logger(name, interval=1, backup=60, level=logging.WARNING) -> Logger:
     """
     get logger instance of TimedRotatingFileHandler
     """

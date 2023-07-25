@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-utility functions used for api
+utility functions
 """
 
 from fastapi import Depends, HTTPException, status
