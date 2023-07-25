@@ -4,11 +4,9 @@
 filetag schema
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field
-
-from .file import FileSchema
 
 
 # used for response_model
@@ -19,8 +17,6 @@ class FileTagSchema(BaseModel):
     color: Optional[str] = None
     ttype: Optional[str] = None
     # user_id: Optional[str] = None
-    # ---- link to file list ----
-    file_list: List[FileSchema] = []
 
 
 # used for request body
