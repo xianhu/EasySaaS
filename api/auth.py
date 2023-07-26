@@ -116,7 +116,7 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
                  session: Session = Depends(get_session)):
     """
     verify code and token, and create user or update password
-    - **status=-1**: token invalid
+    - **status=-1**: token invalid or expired
     - **status=-2**: code invalid
     """
     # get payload from token, audience="send"
@@ -124,14 +124,14 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
     # check token: ttype
     if not payload.get("ttype"):
-        return Resp(status=-1, msg="token invalid")
+        return Resp(status=-1, msg="token invalid or expired")
     if payload["ttype"] not in TypeName.__members__:
-        return Resp(status=-1, msg="token invalid")
+        return Resp(status=-1, msg="token invalid or expired")
     ttype = payload["ttype"]
 
     # check token: sub(email) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
-        return Resp(status=-1, msg="token invalid")
+        return Resp(status=-1, msg="token invalid or expired")
     email, code_in_token = payload["sub"], payload["code"]
 
     # check token: code
@@ -162,4 +162,4 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid)
-    return Resp(status=-1, msg="token invalid")
+    return Resp(status=-1, msg="token invalid or expired")
