@@ -48,7 +48,7 @@ def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
               current_user: User = Depends(get_current_user),
               session: Session = Depends(get_session)):
     """
-    update user model, return user schema
+    update current_user model, return user schema
     """
     # update user model based on update schema
     for field in user_schema.model_dump(exclude_unset=True):
