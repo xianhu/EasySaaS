@@ -28,9 +28,9 @@ class RespUser(Resp):
 
 
 @router.get("/me", response_model=RespUser)
-def _get_me(current_user: User = Depends(get_current_user)):
+def _get_user_schema(current_user: User = Depends(get_current_user)):
     """
-    get user schema and filetag schema list
+    get current_user schema and filetag schema list
     """
     # filetag schema list
     filetag_schema_list = []
@@ -44,9 +44,9 @@ def _get_me(current_user: User = Depends(get_current_user)):
 
 
 @router.patch("/me", response_model=RespUser)
-def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
-              current_user: User = Depends(get_current_user),
-              session: Session = Depends(get_session)):
+def _update_user_model(user_schema: UserUpdate = Body(..., description="update schema"),
+                       current_user: User = Depends(get_current_user),
+                       session: Session = Depends(get_session)):
     """
     update current_user model, return user schema
     """
@@ -62,10 +62,10 @@ def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
 
 
 @router.post("/password", response_model=RespUser)
-def _post_password(password_old: str = Body(..., description="old password"),
-                   password_new: str = Body(..., min_length=6, max_length=20),
-                   current_user: User = Depends(get_current_user),
-                   session: Session = Depends(get_session)):
+def _update_password(password_old: str = Body(..., description="old password"),
+                     password_new: str = Body(..., min_length=6, max_length=20),
+                     current_user: User = Depends(get_current_user),
+                     session: Session = Depends(get_session)):
     """
     update password of current_user, return user schema
     - **status=-1**: password_old incorrect

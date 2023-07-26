@@ -30,7 +30,7 @@ api_router.include_router(filetag.router, prefix="/filetag", tags=["filetag"])
 
 
 @api_router.get("/")
-async def _root():
+async def _get_root():
     """
     root router
     """
@@ -40,10 +40,10 @@ async def _root():
 
 
 @api_router.get("/test")
-async def _test(request: Request,  # parameter of request
-                response: Response,  # parameter of response
-                fake_cookie: Union[str, None] = Cookie(default=None),
-                user_agent: Union[str, None] = Header(default=None)):
+async def _get_test(request: Request,  # parameter of request
+                    response: Response,  # parameter of response
+                    fake_cookie: Union[str, None] = Cookie(default=None),
+                    user_agent: Union[str, None] = Header(default=None)):
     """
     test router
     """

@@ -28,8 +28,8 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
-                  session: Session = Depends(get_session)):
+def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
+                      session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
@@ -73,10 +73,10 @@ class RespSend(Resp):
 
 
 @router.post("/send-code", response_model=RespSend)
-def _send_code(background_tasks: BackgroundTasks,
-               email: EmailStr = Body(..., description="email"),
-               ttype: TypeName = Body(..., description="type of send"),
-               session: Session = Depends(get_session)):
+def _send_code_to_email(background_tasks: BackgroundTasks,
+                        email: EmailStr = Body(..., description="email"),
+                        ttype: TypeName = Body(..., description="type of send"),
+                        session: Session = Depends(get_session)):
     """
     send a code to email, return token with code
     - **status=-1**: send email too frequently
@@ -110,12 +110,12 @@ def _send_code(background_tasks: BackgroundTasks,
 
 
 @router.post("/verify-code", response_model=Resp)
-def _verify_code(code: int = Body(..., ge=100000, le=999999),
-                 token: str = Body(..., description="token value"),
-                 password: str = Body(..., min_length=6, max_length=20),
-                 session: Session = Depends(get_session)):
+def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
+                       token: str = Body(..., description="token value"),
+                       password: str = Body(..., min_length=6, max_length=20),
+                       session: Session = Depends(get_session)):
     """
-    verify code and token, and create user or update password
+    verify code & token, and create user or update password
     - **status=-1**: token invalid or expired
     - **status=-2**: code invalid
     """
