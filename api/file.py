@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-file api of upload and download
+file api
 """
 
 import os
@@ -185,22 +185,17 @@ def _download_stream(file_id: str = Path(..., description="id of file"),
 
 
 @router.patch("/{file_id}", response_model=RespFile)
-def _patch(file_id: str = Path(..., description="id of file"),
-           file_schema: FileUpdate = Body(..., description="update schema"),
-           current_user: User = Depends(get_current_user),
-           session: Session = Depends(get_session)):
+def _update_file_model(file_id: str = Path(..., description="id of file"),
+                       file_schema: FileUpdate = Body(..., description="update schema"),
+                       current_user: User = Depends(get_current_user),
+                       session: Session = Depends(get_session)):
     """
     update file model based on update schema, return file schema
     - **status=-1**: file not existed
     """
-    # check file_id and get file model
+    # get file model and check if file existed
     file_model = session.query(File).get(file_id)
     if not file_model:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file not existed",
-        )
-    if file_model.filetagfile.filetag.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file not existed",
@@ -217,9 +212,9 @@ def _patch(file_id: str = Path(..., description="id of file"),
 
 
 @router.delete("/{file_id}", response_model=RespFile)
-def _delete(file_id: str = Path(..., description="id of file"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+def _delete_file_model(file_id: str = Path(..., description="id of file"),
+                       current_user: User = Depends(get_current_user),
+                       session: Session = Depends(get_session)):
     """
     delete file by file_id, return file schema
     - **status=-1**: file not existed
@@ -245,22 +240,22 @@ def _delete(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=FileSchema(**file_model.dict()))
 
 
-@router.post("/tag/{file_id}", response_model=RespFile)
-def _post_tag(file_id: str = Path(..., description="id of file"),
-              filetag_id_list: str = Body(..., description="list of filetag_id"),
-              current_user: User = Depends(get_current_user),
-              session: Session = Depends(get_session)):
+@router.post("/link/{file_id}", response_model=RespFile)
+def _link_file_filetag_list(file_id: str = Path(..., description="id of file"),
+                            filetag_id_list: str = Body(..., description="list of filetag_id"),
+                            current_user: User = Depends(get_current_user),
+                            session: Session = Depends(get_session)):
     """
     link file to filetag list, return file schema
     """
     raise NotImplementedError
 
 
-@router.post("/untag/{file_id}", response_model=RespFile)
-def _post_untag(file_id: str = Path(..., description="id of file"),
-                filetag_id_list: str = Body(..., description="list of filetag_id"),
-                current_user: User = Depends(get_current_user),
-                session: Session = Depends(get_session)):
+@router.post("/unlink/{file_id}", response_model=RespFile)
+def _unlink_file_filetag_list(file_id: str = Path(..., description="id of file"),
+                              filetag_id_list: str = Body(..., description="list of filetag_id"),
+                              current_user: User = Depends(get_current_user),
+                              session: Session = Depends(get_session)):
     """
     unlink file from filetag list, return file schema
     """
@@ -268,10 +263,9 @@ def _post_untag(file_id: str = Path(..., description="id of file"),
 
 
 @router.get("/", response_model=RespFileList)
-def _get(filetag_id_list: str = Body(..., description="list of filetag_id"),
-         current_user: User = Depends(get_current_user),
-         session: Session = Depends(get_session)):
+def _get_file_schema_list(current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
     """
-    get file schema list based on filetag list, return file schema list
+    get file schema list of current_user, return file schema list
     """
     raise NotImplementedError
