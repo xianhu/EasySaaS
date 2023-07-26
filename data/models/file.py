@@ -28,9 +28,6 @@ class FileTagFile(AbstractModel):
         UniqueConstraint("filetag_id", "file_id", name="unique_filetag_file"),
     )
 
-    # information -- permission
-    permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
-
     # relationship -- foreign_key to filetag (filetagfile.filetag, filetag.filetagfiles)
     filetag_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("filetags.id"), index=True)
     filetag = sqlalchemy.orm.relationship("FileTag", back_populates="filetagfiles")
@@ -38,3 +35,6 @@ class FileTagFile(AbstractModel):
     # relationship -- foreign_key to file (filetagfile.file, file.filetagfiles)
     file_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("files.id"), index=True)
     file = sqlalchemy.orm.relationship("File", back_populates="filetagfiles")
+
+    # information -- user_id (just for convenience)
+    user_id = sqlalchemy.Column(sqlalchemy.String(128), nullable=False, doc="User ID")
