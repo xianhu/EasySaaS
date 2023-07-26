@@ -78,7 +78,7 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
                         ttype: TypeName = Body(..., description="type of send"),
                         session: Session = Depends(get_session)):
     """
-    send a code to email, return token with code
+    send a code to email for signup or reset, return token with code
     - **status=-1**: send email too frequently
     - **status=-2**: email existed or not existed
     """
