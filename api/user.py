@@ -62,10 +62,10 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
 
 
 @router.post("/password", response_model=RespUser)
-def _update_password(password_old: str = Body(..., description="old password"),
-                     password_new: str = Body(..., min_length=6, max_length=20),
-                     current_user: User = Depends(get_current_user),
-                     session: Session = Depends(get_session)):
+def _update_user_password(password_old: str = Body(..., description="old password"),
+                          password_new: str = Body(..., min_length=6, max_length=20),
+                          current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
     """
     update password of current_user, return user schema
     - **status=-1**: password_old incorrect

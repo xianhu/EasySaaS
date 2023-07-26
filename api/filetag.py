@@ -34,9 +34,9 @@ class RespFileTagList(Resp):
 
 
 @router.post("/", response_model=RespFileTag)
-def _post(filetag_schema: FileTagCreate = Body(..., description="create schema"),
-          current_user: User = Depends(get_current_user),
-          session: Session = Depends(get_session)):
+def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description="create schema"),
+                          current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
     """
     create filetag model based on create schema, return filetag schema
     - **status=-1**: filetag name invalid or existed
@@ -65,10 +65,10 @@ def _post(filetag_schema: FileTagCreate = Body(..., description="create schema")
 
 
 @router.patch("/{filetag_id}", response_model=RespFileTag)
-def _patch(filetag_id: str = Path(..., description="id of filetag"),
-           filetag_schema: FileTagUpdate = Body(..., description="update schema"),
-           current_user: User = Depends(get_current_user),
-           session: Session = Depends(get_session)):
+def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag"),
+                          filetag_schema: FileTagUpdate = Body(..., description="update schema"),
+                          current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
     """
     update filetag model based on update schema, return filetag schema
     - **status=-1**: filetag name invalid or existed
@@ -104,11 +104,11 @@ def _patch(filetag_id: str = Path(..., description="id of filetag"),
 
 
 @router.delete("/{filetag_id}", response_model=RespFileTag)
-def _delete(filetag_id: str = Path(..., description="id of filetag"),
-            current_user: User = Depends(get_current_user),
-            session: Session = Depends(get_session)):
+def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag"),
+                          current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
     """
-    delete filetag model by id and return
+    delete filetag model by id, return filetag schema
     - **status=-2**: filetag not existed in current_user
     - **status=-3**: filetag not empty with file
     """
@@ -134,10 +134,10 @@ def _delete(filetag_id: str = Path(..., description="id of filetag"),
 
 
 @router.get("/", response_model=RespFileTagList)
-def _get_list(skip: int = Query(0, description="skip count"),
-              limit: int = Query(10, description="limit count"),
-              current_user: User = Depends(get_current_user),
-              session: Session = Depends(get_session)):
+def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
+                             limit: int = Query(10, description="limit count"),
+                             current_user: User = Depends(get_current_user),
+                             session: Session = Depends(get_session)):
     """
     get filetag schema list and return
     """
@@ -145,9 +145,9 @@ def _get_list(skip: int = Query(0, description="skip count"),
 
 
 @router.get("/{filetag_id}", response_model=RespFileTag)
-def _get_one(filetag_id: str = Path(..., description="id of filetag"),
-             current_user: User = Depends(get_current_user),
-             session: Session = Depends(get_session)):
+def _get_filetag_schema(filetag_id: str = Path(..., description="id of filetag"),
+                        current_user: User = Depends(get_current_user),
+                        session: Session = Depends(get_session)):
     """
     get filetag schema by id and return
     """
