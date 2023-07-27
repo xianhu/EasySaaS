@@ -133,7 +133,7 @@ def _download(file_id: str = Path(..., description="id of file"),
     download file by file_id, return FileResponse
     - **status_code=500**: file not existed
     """
-    # check file_id and get location
+    # get file model and check if existed
     file_model = session.query(File).get(file_id)
     if not file_model:
         raise HTTPException(
@@ -162,7 +162,7 @@ def _download_stream(file_id: str = Path(..., description="id of file"),
     download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
     """
-    # check file_id and get location
+    # get file model and check if existed
     file_model = session.query(File).get(file_id)
     if not file_model:
         raise HTTPException(
