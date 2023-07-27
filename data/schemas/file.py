@@ -16,6 +16,7 @@ class FileSchema(BaseModel):
     filesize: Optional[int] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
+    # user_id: Optional[str] = None
 
 
 # used for request body

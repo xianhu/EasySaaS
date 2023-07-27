@@ -32,3 +32,6 @@ class User(AbstractModel):
 
     # relationship -- filetags (user.filetags, filetag.user)
     filetags = sqlalchemy.orm.relationship("FileTag", back_populates="user")
+
+    # relationship -- files (user.files, file.user)
+    files = sqlalchemy.orm.relationship("File", back_populates="user")

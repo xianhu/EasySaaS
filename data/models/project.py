@@ -32,5 +32,5 @@ class UserProject(AbstractModel):
     project_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("projects.id"), index=True)
     project = sqlalchemy.orm.relationship("Project", back_populates="userprojects")
 
-    # information -- permission
+    # information -- permission of user and project
     permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")

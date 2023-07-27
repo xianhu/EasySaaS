@@ -4,6 +4,7 @@
 models module
 User(N)  <-  UserProject  ->  Project(N)
 User(1)  <-  FileTag(N)   <-  FileTagFile  ->  File(N)
+User(1)  <-  File(N)
 """
 
 from .file import File, FileTagFile
