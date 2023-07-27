@@ -28,8 +28,8 @@ router = APIRouter()
 
 
 @router.post("/access-token", response_model=AccessToken)
-def _access_token(form_data: OAuth2PasswordRequestForm = Depends(),
-                  session: Session = Depends(get_session)):
+def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
+                      session: Session = Depends(get_session)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
@@ -73,12 +73,12 @@ class RespSend(Resp):
 
 
 @router.post("/send-code", response_model=RespSend)
-def _send_code(background_tasks: BackgroundTasks,
-               email: EmailStr = Body(..., description="email"),
-               ttype: TypeName = Body(..., description="type of send"),
-               session: Session = Depends(get_session)):
+def _send_code_to_email(background_tasks: BackgroundTasks,
+                        email: EmailStr = Body(..., description="email"),
+                        ttype: TypeName = Body(..., description="type of send"),
+                        session: Session = Depends(get_session)):
     """
-    send a code to email, return token with code
+    send a code to email for signup or reset, return token with code
     - **status=-1**: send email too frequently
     - **status=-2**: email existed or not existed
     """
@@ -110,13 +110,13 @@ def _send_code(background_tasks: BackgroundTasks,
 
 
 @router.post("/verify-code", response_model=Resp)
-def _verify_code(code: int = Body(..., ge=100000, le=999999),
-                 token: str = Body(..., description="token value"),
-                 password: str = Body(..., min_length=6, max_length=20),
-                 session: Session = Depends(get_session)):
+def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
+                       token: str = Body(..., description="token value"),
+                       password: str = Body(..., min_length=6, max_length=20),
+                       session: Session = Depends(get_session)):
     """
-    verify code and token, and create user or update password
-    - **status=-1**: token invalid
+    verify code & token, and create user or update password
+    - **status=-1**: token invalid or expired
     - **status=-2**: code invalid
     """
     # get payload from token, audience="send"
@@ -124,14 +124,14 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
 
     # check token: ttype
     if not payload.get("ttype"):
-        return Resp(status=-1, msg="token invalid")
+        return Resp(status=-1, msg="token invalid or expired")
     if payload["ttype"] not in TypeName.__members__:
-        return Resp(status=-1, msg="token invalid")
+        return Resp(status=-1, msg="token invalid or expired")
     ttype = payload["ttype"]
 
     # check token: sub(email) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
-        return Resp(status=-1, msg="token invalid")
+        return Resp(status=-1, msg="token invalid or expired")
     email, code_in_token = payload["sub"], payload["code"]
 
     # check token: code
@@ -162,4 +162,4 @@ def _verify_code(code: int = Body(..., ge=100000, le=999999),
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid)
-    return Resp(status=-1, msg="token invalid")
+    return Resp(status=-1, msg="token invalid or expired")

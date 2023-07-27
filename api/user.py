@@ -13,8 +13,7 @@ from sqlalchemy.orm import Session
 from core.security import check_password_hash, get_password_hash
 from data import get_session
 from data.models import User
-from data.schemas import FileTagSchema
-from data.schemas import Resp
+from data.schemas import FileTagSchema, Resp
 from data.schemas import UserSchema, UserUpdate
 from .utils import get_current_user
 
@@ -24,69 +23,63 @@ router = APIRouter()
 
 # response model
 class RespUser(Resp):
-    data: UserSchema = Field(None)
+    data_user: UserSchema = Field(None)
     data_filetag_list: List[FileTagSchema] = Field(None)
 
 
 @router.get("/me", response_model=RespUser)
-def _get_me(current_user: User = Depends(get_current_user)):
+def _get_user_schema(current_user: User = Depends(get_current_user)):
     """
-    get schema of current_user, return user schema
+    get current_user schema and filetag schema list
     """
-    # get user_model
-    user_model = current_user
-
-    # get filetag_schema_list
+    # filetag schema list
     filetag_schema_list = []
-    for filetag_model in user_model.filetags:
+    for filetag_model in current_user.filetags:
         filetag_schema = FileTagSchema(**filetag_model.dict())
         filetag_schema_list.append(filetag_schema)
 
-    # return response of user
-    return RespUser(data=UserSchema(**user_model.dict()), data_filetag_list=filetag_schema_list)
+    # return user schema and filetag schema list
+    user_schema = UserSchema(**current_user.dict())
+    return RespUser(data_user=user_schema, data_filetag_list=filetag_schema_list)
 
 
 @router.patch("/me", response_model=RespUser)
-def _patch_me(user_schema: UserUpdate = Body(..., description="update schema"),
-              current_user: User = Depends(get_current_user),
-              session: Session = Depends(get_session)):
+def _update_user_model(user_schema: UserUpdate = Body(..., description="update schema"),
+                       current_user: User = Depends(get_current_user),
+                       session: Session = Depends(get_session)):
     """
-    update schema of current_user, return user schema
+    update current_user model, return user schema
     """
-    # get user_model
-    user_model = current_user
-
-    # update user_model based on update schema
+    # update user model based on update schema
     for field in user_schema.model_dump(exclude_unset=True):
-        setattr(user_model, field, getattr(user_schema, field))
-    session.merge(user_model)
+        setattr(current_user, field, getattr(user_schema, field))
+    session.merge(current_user)
     session.commit()
 
     # return user schema
-    return RespUser(data=UserSchema(**user_model.dict()))
+    user_schema = UserSchema(**current_user.dict())
+    return RespUser(data_user=user_schema, data_filetag_list=[])
 
 
 @router.post("/password", response_model=RespUser)
-def _post_password(password_old: str = Body(..., description="old password"),
-                   password_new: str = Body(..., min_length=6, max_length=20),
-                   current_user: User = Depends(get_current_user),
-                   session: Session = Depends(get_session)):
+def _update_user_password(password_old: str = Body(..., description="old password"),
+                          password_new: str = Body(..., min_length=6, max_length=20),
+                          current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
     """
     update password of current_user, return user schema
     - **status=-1**: password_old incorrect
     """
-    # get user_model
-    user_model = current_user
-
     # check password of user_model
-    if not check_password_hash(password_old, user_model.password):
+    if not check_password_hash(password_old, current_user.password):
         return RespUser(status=-1, msg="password_old incorrect")
     pwd_hash = get_password_hash(password_new)
 
-    # update password of user_model
-    user_model.password = pwd_hash
-    session.merge(user_model)
+    # update password of current_user
+    current_user.password = pwd_hash
+    session.merge(current_user)
     session.commit()
 
     # return user schema
-    return RespUser(data=UserSchema(**user_model.dict()))
+    user_schema = UserSchema(**current_user.dict())
+    return RespUser(data_user=user_schema, data_filetag_list=[])

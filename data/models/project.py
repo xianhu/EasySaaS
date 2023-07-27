@@ -24,9 +24,6 @@ class UserProject(AbstractModel):
         UniqueConstraint("user_id", "project_id", name="unique_user_project"),
     )
 
-    # information -- permission
-    permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
-
     # relationship -- foreign_key to user (userproject.user, user.userprojects)
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
     user = sqlalchemy.orm.relationship("User", back_populates="userprojects")
@@ -34,3 +31,6 @@ class UserProject(AbstractModel):
     # relationship -- foreign_key to project (userproject.project, project.userprojects)
     project_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("projects.id"), index=True)
     project = sqlalchemy.orm.relationship("Project", back_populates="userprojects")
+
+    # information -- permission
+    permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
