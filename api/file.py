@@ -145,10 +145,8 @@ def _download(file_id: str = Path(..., description="id of file"),
     download file by file_id, return FileResponse
     - **status_code=500**: file not existed
     """
-    user_id = current_user.id
-
     # check file_id and get file model
-    file_model = check_file_permission(file_id, user_id, session)
+    file_model = check_file_permission(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
 
     # return file response
@@ -163,10 +161,8 @@ def _download_stream(file_id: str = Path(..., description="id of file"),
     download file by file_id, return StreamingResponse
     - **status_code=500**: file not existed
     """
-    user_id = current_user.id
-
     # check file_id and get file model
-    file_model = check_file_permission(file_id, user_id, session)
+    file_model = check_file_permission(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
 
     # return streaming response
@@ -181,12 +177,10 @@ def _update_file_model(file_id: str = Path(..., description="id of file"),
                        session: Session = Depends(get_session)):
     """
     update file model based on update schema, return file schema
-    - **status=-1**: file not existed
+    - **status_code=500**: file not existed
     """
-    user_id = current_user.id
-
     # check file_id and get file model
-    file_model = check_file_permission(file_id, user_id, session)
+    file_model = check_file_permission(file_id, current_user.id, session)
 
     # update file model
     for field in file_schema.model_dump(exclude_unset=True):
@@ -204,12 +198,10 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
                        session: Session = Depends(get_session)):
     """
     delete file by file_id, return file schema
-    - **status=-1**: file not existed
+    - **status_code=500**: file not existed
     """
-    user_id = current_user.id
-
     # check file_id and get file model
-    file_model = check_file_permission(file_id, user_id, session)
+    file_model = check_file_permission(file_id, current_user.id, session)
 
     # delete file model
     session.delete(file_model)
@@ -217,6 +209,22 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
 
     # return file schema
     return RespFile(data_file=FileSchema(**file_model.dict()))
+
+
+@router.get("/", response_model=RespFileList)
+def _get_file_schema_list(current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
+    """
+    get file schema list of current_user, return file schema list
+    """
+    # file schema list
+    file_schema_list = []
+    for file_model in current_user.files:
+        file_schema = FileSchema(**file_model.dict())
+        file_schema_list.append(file_schema)
+
+    # return file schema list
+    return RespFileList(data_file_list=file_schema_list)
 
 
 @router.post("/link/{file_id}", response_model=RespFile)
@@ -239,16 +247,3 @@ def _unlink_file_filetag_list(file_id: str = Path(..., description="id of file")
     unlink file from filetag list, return file schema
     """
     raise NotImplementedError
-
-
-@router.get("/", response_model=RespFileList)
-def _get_file_schema_list(current_user: User = Depends(get_current_user),
-                          session: Session = Depends(get_session)):
-    """
-    get file schema list of current_user, return file schema list
-    """
-    file_schema_list = []
-    for file_model in current_user.files:
-        file_schema = FileSchema(**file_model.dict())
-        file_schema_list.append(file_schema)
-    return RespFileList(data_file_list=file_schema_list)
