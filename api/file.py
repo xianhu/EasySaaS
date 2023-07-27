@@ -135,14 +135,14 @@ def _download(file_id: str = Path(..., description="id of file"),
     """
     # get file model and check if existed
     file_model = session.query(File).get(file_id)
-    if not file_model:
+    if not file_model:  # todo: check permission
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file not existed",
         )
     location = file_model.location
 
-    # check if file existed
+    # check if file object existed
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -164,14 +164,14 @@ def _download_stream(file_id: str = Path(..., description="id of file"),
     """
     # get file model and check if existed
     file_model = session.query(File).get(file_id)
-    if not file_model:
+    if not file_model:  # todo: check permission
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file not existed",
         )
     location = file_model.location
 
-    # check if file existed
+    # check if file object existed
     if not os.path.exists(location):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
