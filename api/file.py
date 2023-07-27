@@ -182,7 +182,7 @@ def _update_file_model(file_id: str = Path(..., description="id of file"),
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
 
-    # update file model
+    # update file model based on update schema
     for field in file_schema.model_dump(exclude_unset=True):
         setattr(file_model, field, getattr(file_schema, field))
     session.merge(file_model)
