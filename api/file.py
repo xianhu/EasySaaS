@@ -4,6 +4,8 @@
 file api
 """
 
+import logging
+import os
 import time
 from typing import List
 
@@ -17,7 +19,7 @@ from sqlalchemy.orm import Session
 from core.settings import settings
 from core.utils import get_id_string, iter_file
 from data import get_session
-from data.models import File, User
+from data.models import File, FileTag, FileTagFile, User
 from data.schemas import FileSchema, FileUpdate, Resp
 from .utils import get_current_user
 
@@ -28,11 +30,13 @@ router = APIRouter()
 # response model
 class RespFile(Resp):
     data_file: FileSchema = Field(None)
+    data_filetag_id_list: List[str] = Field(None)
 
 
 # response model
 class RespFileList(Resp):
     data_file_list: List[FileSchema] = Field(None)
+    data_filetag_id_list_list: List[List[str]] = Field(None)
 
 
 def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
@@ -46,6 +50,19 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
             detail="file not existed",
         )
     return file_model
+
+
+def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
+    """
+    check if filetag_id is valid and user_id has permission to access filetag
+    """
+    filetag_model = session.query(FileTag).get(filetag_id)
+    if (not filetag_model) or (filetag_model.user_id != user_id):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="filetag not existed",
+        )
+    return filetag_model
 
 
 @router.post("/upload", response_model=RespFile)
@@ -203,7 +220,15 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
 
-    # delete file model
+    # delete file from disk
+    location = file_model.location
+    try:
+        os.remove(location)
+    except Exception as excep:
+        logging.error("delete file error: %s", excep)
+
+    # delete filetagfile list and file model, commit it
+    session.query(FileTagFile).filter(FileTagFile.file_id == file_id).delete()
     session.delete(file_model)
     session.commit()
 
@@ -219,31 +244,66 @@ def _get_file_schema_list(current_user: User = Depends(get_current_user),
     """
     # file schema list
     file_schema_list = []
+    filetag_id_list_list = []
     for file_model in current_user.files:
         file_schema = FileSchema(**file_model.dict())
         file_schema_list.append(file_schema)
 
-    # return file schema list
-    return RespFileList(data_file_list=file_schema_list)
+        filetag_id_list = [filetagfile_model.filetag_id for filetagfile_model in file_model.filetagfiles]
+        filetag_id_list_list.append(filetag_id_list)
+
+    # return file schema list and filetag_id list list
+    return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
 @router.post("/link/{file_id}", response_model=RespFile)
-def _link_file_filetag_list(file_id: str = Path(..., description="id of file"),
-                            filetag_id_list: str = Body(..., description="list of filetag_id"),
-                            current_user: User = Depends(get_current_user),
-                            session: Session = Depends(get_session)):
+def _link_file_filetag(file_id: str = Path(..., description="id of file"),
+                       filetag_id: str = Body(..., description="id of filetag"),
+                       current_user: User = Depends(get_current_user),
+                       session: Session = Depends(get_session)):
     """
-    link file to filetag list, return file schema
+    link file to a filetag, return file schema and filetag_id list
+    - **status_code=500**: file or filetag not existed
     """
-    raise NotImplementedError
+    # check file_id and get file model, filetag_id and get filetag model
+    file_model = check_file_permission(file_id, current_user.id, session)
+    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+
+    # check if filetagfile existed
+    filetagfile_model = session.query(FileTagFile).filter(
+        FileTagFile.file_id == file_id,
+        FileTagFile.filetag_id == filetag_id,
+    ).first()
+    if not filetagfile_model:
+        filetagfile_id = get_id_string(f"{filetag_id}-{file_id}")
+        filetagfile_model = FileTagFile(id=filetagfile_id, file_id=file_id, filetag_id=filetag_id)
+        session.add(filetagfile_model)
+        session.commit()
+
+    # return file schema and filetag_id list
+    filetag_id_list = [filetagfile_model.filetag_id for filetagfile_model in file_model.filetagfiles]
+    return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
 
 
 @router.post("/unlink/{file_id}", response_model=RespFile)
-def _unlink_file_filetag_list(file_id: str = Path(..., description="id of file"),
-                              filetag_id_list: str = Body(..., description="list of filetag_id"),
-                              current_user: User = Depends(get_current_user),
-                              session: Session = Depends(get_session)):
+def _unlink_file_filetag(file_id: str = Path(..., description="id of file"),
+                         filetag_id: str = Body(..., description="id of filetag"),
+                         current_user: User = Depends(get_current_user),
+                         session: Session = Depends(get_session)):
     """
-    unlink file from filetag list, return file schema
+    unlink file from a filetag, return file schema and filetag_id list
     """
-    raise NotImplementedError
+    # check file_id and get file model, filetag_id and get filetag model
+    file_model = check_file_permission(file_id, current_user.id, session)
+    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+
+    # check if filetagfile existed, and delete it
+    session.query(FileTagFile).filter(
+        FileTagFile.file_id == file_id,
+        FileTagFile.filetag_id == filetag_id,
+    ).delete()
+    session.commit()
+
+    # return file schema and filetag_id list
+    filetag_id_list = [filetagfile_model.filetag_id for filetagfile_model in file_model.filetagfiles]
+    return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
