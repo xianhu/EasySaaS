@@ -15,8 +15,7 @@ from sqlalchemy.orm import Session
 from core.utils import get_id_string
 from data import get_session
 from data.models import FILETAG_SYSTEM_SET, FileTag, User
-from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
-from data.schemas import Resp
+from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
 from .utils import get_current_user
 
 # define router
@@ -41,6 +40,8 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     create filetag model based on create schema, return filetag schema
     - **status=-1**: filetag name invalid or existed
     """
+    user_id = current_user.id
+
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
         return RespFileTag(status=-1, msg="filetag name invalid")
@@ -51,10 +52,9 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
         if filetag_name != filetag_model.name:
             continue
         return RespFileTag(status=-1, msg="filetag name existed")
-    user_id = current_user.id
+    filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
 
     # create filetag model and save to database, ttype="custom"
-    filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
     filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
     filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs)
     session.add(filetag_model)
@@ -74,6 +74,8 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
     - **status=-1**: filetag name invalid or existed
     - **status=-2**: filetag not existed in current_user
     """
+    user_id = current_user.id
+
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
         return RespFileTag(status=-1, msg="filetag name invalid")
@@ -84,10 +86,9 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
         if filetag_name != filetag_model.name:
             continue
         return RespFileTag(status=-1, msg="filetag name existed")
-    user_id = current_user.id
+    filetag_model = session.query(FileTag).get(filetag_id)
 
     # check if filetag existed in current_user
-    filetag_model = session.query(FileTag).get(filetag_id)
     if (not filetag_model) or (filetag_model.user_id != user_id):
         return RespFileTag(status=-2, msg="filetag not existed")
     if filetag_model.ttype != "custom":
@@ -110,12 +111,12 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
     """
     delete filetag model by id, return filetag schema
     - **status=-2**: filetag not existed in current_user
-    - **status=-3**: filetag not empty with file
+    - **status=-3**: filetag not empty with files
     """
     user_id = current_user.id
+    filetag_model = session.query(FileTag).get(filetag_id)
 
     # check if filetag existed in current_user
-    filetag_model = session.query(FileTag).get(filetag_id)
     if (not filetag_model) or (filetag_model.user_id != user_id):
         return RespFileTag(status=-2, msg="filetag not existed")
     if filetag_model.ttype != "custom":
@@ -123,7 +124,7 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
 
     # check if filetag not empty
     if filetag_model.filetagfiles:
-        return RespFileTag(status=-3, msg="filetag not empty with file")
+        return RespFileTag(status=-3, msg="filetag not empty with files")
 
     # delete filetag model
     session.delete(filetag_model)

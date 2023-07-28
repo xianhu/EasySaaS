@@ -42,7 +42,7 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
         # create filetag model
         user_id = user_model.id
         for filetag_name in FILETAG_SYSTEM_SET:
-            # create filetag schema
+            # create filetag_id and filetag schema
             filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
 

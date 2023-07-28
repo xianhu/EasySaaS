@@ -3,13 +3,13 @@ dash~=2.11.1
 feffery-antd-components~=0.2.9
 feffery-utils-components~=0.1.29
 Flask-Compress~=1.13.0
-uWSGI~=2.0.21
+uWSGI==2.0.22
 
 # FastAPI
-fastapi~=0.100.0
+fastapi~=0.100.1
 uvicorn~=0.23.1
 gunicorn~=21.2.0
-pydantic[email]~=2.0.3
+pydantic[email]~=2.1.1
 pydantic-settings~=2.0.2
 
 # Database

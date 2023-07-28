@@ -43,8 +43,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://127.0.0.1",
-        "http://127.0.0.1:8000",
+        # "http://127.0.0.1",
+        # "http://127.0.0.1:8000",
+        "*",  # allow all origins
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -56,8 +57,9 @@ app.add_middleware(
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=[
-        "127.0.0.1",
-        "127.0.0.1:8000",
+        # "127.0.0.1",
+        # "127.0.0.1:8000",
+        "*",  # allow all hosts
     ],
 )
 

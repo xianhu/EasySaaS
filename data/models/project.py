@@ -33,4 +33,4 @@ class UserProject(AbstractModel):
     project = sqlalchemy.orm.relationship("Project", back_populates="userprojects")
 
     # information -- permission of user and project
-    permission = sqlalchemy.Column(sqlalchemy.Integer, default=1, doc="0(read), 1(write)")
+    permission = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="0(owner), 1(member)")
