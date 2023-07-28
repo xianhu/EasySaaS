@@ -256,8 +256,8 @@ def _get_file_schema_list(current_user: User = Depends(get_current_user),
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
-@router.post("/link/{file_id}", response_model=RespFile)
-def _link_file_filetag(file_id: str = Path(..., description="id of file"),
+@router.post("/link/", response_model=RespFile)
+def _link_file_filetag(file_id: str = Body(..., description="id of file"),
                        filetag_id: str = Body(..., description="id of filetag"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
@@ -285,8 +285,8 @@ def _link_file_filetag(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
 
 
-@router.post("/unlink/{file_id}", response_model=RespFile)
-def _unlink_file_filetag(file_id: str = Path(..., description="id of file"),
+@router.post("/unlink/", response_model=RespFile)
+def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
                          filetag_id: str = Body(..., description="id of filetag"),
                          current_user: User = Depends(get_current_user),
                          session: Session = Depends(get_session)):
