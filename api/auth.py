@@ -98,8 +98,8 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
 
     # define token based on email
     data = dict(code=code, ttype=ttype)
-    expire_duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
-    token = create_jwt_token(email, audience="send", expire_duration=expire_duration, **data)
+    duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
+    token = create_jwt_token(email, audience="send", expire_duration=duration, **data)
 
     # send email in background (status_code == 250)
     background_tasks.add_task(send_email_of_code, code, email)

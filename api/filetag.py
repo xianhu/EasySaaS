@@ -15,8 +15,7 @@ from sqlalchemy.orm import Session
 from core.utils import get_id_string
 from data import get_session
 from data.models import FILETAG_SYSTEM_SET, FileTag, User
-from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
-from data.schemas import Resp
+from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
 from .utils import get_current_user
 
 # define router
