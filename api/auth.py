@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi import BackgroundTasks, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr, Field
+from redis import Redis
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
@@ -22,14 +23,34 @@ from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp, UserCreate
 from data.utils import init_user_object
+from .utils import get_current_user
 
 # define router
 router = APIRouter()
 
 
+# define enum of ttype
+class TypeName(str, Enum):
+    signup = "signup"
+    reset = "reset"
+
+
+# define enum of client_id
+class ClientID(str, Enum):
+    web = "web"
+    ios = "ios"
+    android = "android"
+
+
+# response model
+class RespSend(Resp):
+    token: str = Field(None)
+
+
 @router.post("/access-token", response_model=AccessToken)
 def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
-                      session: Session = Depends(get_session)):
+                      session: Session = Depends(get_session),
+                      redis_conn: Redis = Depends(get_redis)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
@@ -56,36 +77,40 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
         )
     user_id = user_model.id
 
+    client_id = form_data.client_id or "web"
+    access_token = create_jwt_token(user_id, client_id=client_id)
+    redis_conn.set(f"{settings.APP_NAME}-{user_id}-{client_id}", access_token)
+
     # create access_token and return
-    access_token = create_jwt_token(user_id)
     return AccessToken(access_token=access_token)
 
 
-# define enum of ttype
-class TypeName(str, Enum):
-    signup = "signup"
-    reset = "reset"
-
-
-# response model
-class RespSend(Resp):
-    token: str = Field(None)
+@router.post("/access-token-logout", response_model=Resp)
+def _logout_access_token(client_id: ClientID = Body(..., description="client id"),
+                         current_user: User = Depends(get_current_user),
+                         redis_conn: Redis = Depends(get_redis)):
+    """
+    logout access_token by token, return status
+    - **status_code=401**: token invalid or expired
+    """
+    # get user_id and client_id from current_user
+    user_id = current_user.id
+    redis_conn.set(f"{settings.APP_NAME}-{user_id}-{client_id}", "")
 
 
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_email(background_tasks: BackgroundTasks,
                         email: EmailStr = Body(..., description="email"),
                         ttype: TypeName = Body(..., description="type of send"),
-                        session: Session = Depends(get_session)):
+                        session: Session = Depends(get_session),
+                        redis_conn: Redis = Depends(get_redis)):
     """
     send a code to email for signup or reset, return token with code
     - **status=-1**: send email too frequently
     - **status=-2**: email existed or not existed
     """
-    redis = get_redis()
-
     # check if send email too frequently
-    if redis.get(f"{settings.APP_NAME}-send-{email}"):
+    if redis_conn.get(f"{settings.APP_NAME}-send-{email}"):
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
@@ -103,7 +128,7 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
 
     # send email in background (status_code == 250)
     background_tasks.add_task(send_email_of_code, code, email)
-    redis.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
+    redis_conn.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)
