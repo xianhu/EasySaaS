@@ -286,6 +286,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
                          session: Session = Depends(get_session)):
     """
     unlink file from a filetag, return file schema and filetag_id list
+    - **status_code=500**: file or filetag not existed
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
