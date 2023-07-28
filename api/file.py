@@ -4,8 +4,6 @@
 file api
 """
 
-import logging
-import os
 import time
 from typing import List
 
@@ -97,8 +95,9 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     session.add(file_model)
     session.commit()
 
-    # return file schema
-    return RespFile(data_file=FileSchema(**file_model.dict()))
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
 @router.post("/upload-flow", response_model=RespFile)
@@ -150,8 +149,9 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     session.add(file_model)
     session.commit()
 
-    # return file schema
-    return RespFile(data_file=FileSchema(**file_model.dict()))
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
@@ -205,8 +205,9 @@ def _update_file_model(file_id: str = Path(..., description="id of file"),
     session.merge(file_model)
     session.commit()
 
-    # return file schema
-    return RespFile(data_file=FileSchema(**file_model.dict()))
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
 @router.delete("/{file_id}", response_model=RespFile)
@@ -219,40 +220,31 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
+    # delete file from disk and delete filetagfile model if necessary
 
-    # delete file from disk
-    location = file_model.location
-    try:
-        os.remove(location)
-    except Exception as excep:
-        logging.error("delete file error: %s", excep)
-
-    # delete filetagfile list and file model, commit it
-    session.query(FileTagFile).filter(FileTagFile.file_id == file_id).delete()
+    # delete file model
     session.delete(file_model)
     session.commit()
 
-    # return file schema
-    return RespFile(data_file=FileSchema(**file_model.dict()))
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
 @router.get("/", response_model=RespFileList)
-def _get_file_schema_list(current_user: User = Depends(get_current_user),
-                          session: Session = Depends(get_session)):
+def _get_file_schema_list(current_user: User = Depends(get_current_user)):
     """
-    get file schema list of current_user, return file schema list
+    get file schema list of current_user, return file schema list and filetag_id list
     """
-    # file schema list
-    file_schema_list = []
-    filetag_id_list_list = []
+    # file schema list and filetag_id list
+    file_schema_list, filetag_id_list_list = [], []
     for file_model in current_user.files:
         file_schema = FileSchema(**file_model.dict())
         file_schema_list.append(file_schema)
-
-        filetag_id_list = [filetagfile_model.filetag_id for filetagfile_model in file_model.filetagfiles]
+        filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
         filetag_id_list_list.append(filetag_id_list)
 
-    # return file schema list and filetag_id list list
+    # return file schema list and filetag_id list
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
@@ -281,7 +273,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
         session.commit()
 
     # return file schema and filetag_id list
-    filetag_id_list = [filetagfile_model.filetag_id for filetagfile_model in file_model.filetagfiles]
+    filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
     return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
 
 
@@ -305,5 +297,5 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
     session.commit()
 
     # return file schema and filetag_id list
-    filetag_id_list = [filetagfile_model.filetag_id for filetagfile_model in file_model.filetagfiles]
+    filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
     return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
