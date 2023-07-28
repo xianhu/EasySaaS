@@ -28,6 +28,7 @@ class UserSchema(BaseModel):
 class UserCreate(BaseModel):
     email: EmailStr = Field(..., description="Email")
     password: str = Field(..., description="Password")
+    # email_verified: bool = Field(False, description="Verified?")
 
 
 # used for request body
