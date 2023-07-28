@@ -261,20 +261,22 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
     file_model = check_file_permission(file_id, current_user.id, session)
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
-    # check if filetagfile existed
+    # check if filetagfile model existed
     filetagfile_model = session.query(FileTagFile).filter(
         FileTagFile.file_id == file_id,
         FileTagFile.filetag_id == filetag_id,
     ).first()
     if not filetagfile_model:
+        # create filetagfile model and save to database
         filetagfile_id = get_id_string(f"{filetag_id}-{file_id}")
         filetagfile_model = FileTagFile(id=filetagfile_id, file_id=file_id, filetag_id=filetag_id)
         session.add(filetagfile_model)
         session.commit()
 
     # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
     filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
-    return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
+    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
 @router.post("/unlink/", response_model=RespFile)
@@ -289,7 +291,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
     file_model = check_file_permission(file_id, current_user.id, session)
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
-    # check if filetagfile existed, and delete it
+    # delete filetagfile model
     session.query(FileTagFile).filter(
         FileTagFile.file_id == file_id,
         FileTagFile.filetag_id == filetag_id,
@@ -297,5 +299,6 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
     session.commit()
 
     # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
     filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
-    return RespFile(data_file=FileSchema(**file_model.dict()), data_filetag_id_list=filetag_id_list)
+    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
