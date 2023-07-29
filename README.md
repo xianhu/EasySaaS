@@ -70,11 +70,10 @@ server {
     listen 80;
     listen [::]:80;
     server_name example.com;
-
-    root     /var/www/html/example;
-    index    index.html;
-
     client_max_body_size 100M;
+
+    root   /var/www/html/example;
+    index  index.html;
     
     access_log /var/log/nginx/example.access.log combined;
     error_log  /var/log/nginx/example.error.log error;
@@ -97,6 +96,14 @@ server {
     
     location / {
         proxy_pass http://localhost:8000/;
+    }
+    
+    location /static {
+        alias /var/www/html/example/static;
+    }
+    
+    location /page1 {
+        try_files $uri.html $uri $uri/ =404;
     }
 }
 ```
