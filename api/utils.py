@@ -6,6 +6,7 @@ utility functions
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from redis import Redis
 from sqlalchemy.orm import Session
 
 from core.security import get_jwt_payload
@@ -19,7 +20,7 @@ oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
 
 def get_current_user(access_token: str = Depends(oauth2),
                      session: Session = Depends(get_session),
-                     redis_conn=Depends(get_redis)) -> User:
+                     rd_conn: Redis = Depends(get_redis)) -> User:
     """
     check access_token, return user model
     - **status_code=401**: token invalid or expired
@@ -34,10 +35,11 @@ def get_current_user(access_token: str = Depends(oauth2),
             detail="token invalid or expired",
         )
     user_id = payload["sub"]
-    client_id = payload.get("client_id", "web")
 
     # check if token valid in redis
-    if not redis_conn.get(f"{settings.APP_NAME}-{user_id}-{client_id}"):
+    client_id = payload.get("client_id", "web")
+    token = rd_conn.get(f"{settings.APP_NAME}-{user_id}-token-{client_id}")
+    if (not token) or (access_token != token):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="token invalid or expired",

@@ -13,7 +13,7 @@ from passlib.context import CryptContext
 
 from .settings import settings
 
-# global variables
+# global variables for password context
 pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 
