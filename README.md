@@ -70,31 +70,40 @@ server {
     listen 80;
     listen [::]:80;
     server_name example.com;
+    client_max_body_size 100M;
 
-    root        /data/www/example;
-    index       index.html;
+    root   /var/www/html/example;
+    index  index.html;
     
-    access_log /data/log/nginx/example.access.log udcombined;
-    error_log  /data/log/nginx/example.error.log error;
+    access_log /var/log/nginx/example.access.log combined;
+    error_log  /var/log/nginx/example.error.log error;
 
     proxy_set_header Host $http_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
     
-    ssl_certificate cert/example.com.pem;
+    ssl_certificate     cert/example.com.pem;
     ssl_certificate_key cert/example.com.key;
 
-    ssl_session_cache shared:SSL:1m;
+    ssl_session_cache   shared:SSL:1m;
     ssl_session_timeout 5m;
 
-    # ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
-    ssl_protocols TLSv1.2 TLSv1.3;
+    # ssl_ciphers   HIGH:!aNULL:!MD5;
+    ssl_ciphers     ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_protocols   TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     
     location / {
         proxy_pass http://localhost:8000/;
+    }
+    
+    location /static {
+        alias /var/www/html/example/static;
+    }
+    
+    location /page1 {
+        try_files $uri.html $uri $uri/ =404;
     }
 }
 ```

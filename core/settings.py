@@ -43,8 +43,9 @@ class Settings(BaseSettings):
 
     # settings -- session or token duration
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
-    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
     NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
+    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
+    REFRESH_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 30
 
     # settings -- regular of data field
     RE_PHONE: Pattern = re.compile(r"^(13\d|14[5|7]|15\d|18\d)\d{8}$")
@@ -61,4 +62,5 @@ settings = Settings()
 if __name__ == "__main__":
     import pprint
 
+    # print settings
     pprint.pprint(settings.model_dump())
