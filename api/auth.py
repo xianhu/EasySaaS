@@ -55,6 +55,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
     - **password**: value of password, plain text
+    - **client_id**: value of client_id, default "web"
     - **status_code=401**: user not found or password incorrect
     """
     # get username、password from form_data
@@ -77,11 +78,15 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
         )
     user_id = user_model.id
 
+    # get client_id from form_data
     client_id = form_data.client_id or "web"
+    assert client_id in ClientID.__members__, "client_id invalid"
+
+    # create access_token and save in redis
     access_token = create_jwt_token(user_id, client_id=client_id)
     redis_conn.set(f"{settings.APP_NAME}-{user_id}-{client_id}", access_token)
 
-    # create access_token and return
+    # return access_token
     return AccessToken(access_token=access_token)
 
 
@@ -90,12 +95,15 @@ def _logout_access_token(client_id: ClientID = Body(..., description="client id"
                          current_user: User = Depends(get_current_user),
                          redis_conn: Redis = Depends(get_redis)):
     """
-    logout access_token by token, return status
+    logout access_token based on client_id
     - **status_code=401**: token invalid or expired
     """
     # get user_id and client_id from current_user
     user_id = current_user.id
     redis_conn.set(f"{settings.APP_NAME}-{user_id}-{client_id}", "")
+
+    # return result
+    return Resp(msg="logout success")
 
 
 @router.post("/send-code", response_model=RespSend)
@@ -142,7 +150,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     """
     verify code & token, and create user or update password
     - **status=-1**: token invalid or expired
-    - **status=-2**: code invalid
+    - **status=-2**: code invalid or not match
     """
     # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
@@ -161,7 +169,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
 
     # check token: code
     if code != code_in_token:
-        return Resp(status=-2, msg="code invalid")
+        return Resp(status=-2, msg="code invalid or not match")
     user_model = session.query(User).filter(User.email == email).first()
     pwd_hash = get_password_hash(password)
 

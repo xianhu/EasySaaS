@@ -44,8 +44,8 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
     file_model = session.query(File).get(file_id)
     if (not file_model) or (file_model.user_id != user_id):
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file not existed",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="no permission to access file",
         )
     return file_model
 
@@ -57,8 +57,8 @@ def check_filetag_permission(filetag_id: str, user_id: str, session: Session) ->
     filetag_model = session.query(FileTag).get(filetag_id)
     if (not filetag_model) or (filetag_model.user_id != user_id):
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="filetag not existed",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="no permission to access filetag",
         )
     return filetag_model
 

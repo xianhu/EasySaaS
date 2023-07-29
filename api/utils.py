@@ -22,7 +22,7 @@ def get_current_user(access_token: str = Depends(oauth2),
                      redis_conn=Depends(get_redis)) -> User:
     """
     check access_token, return user model
-    - **status_code=401**: token invalid
+    - **status_code=401**: token invalid or expired
     """
     # get payload from access_token
     payload = get_jwt_payload(access_token)
@@ -31,7 +31,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     if not payload.get("sub"):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="token invalid",
+            detail="token invalid or expired",
         )
     user_id = payload["sub"]
     client_id = payload.get("client_id", "web")
@@ -40,7 +40,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     if not redis_conn.get(f"{settings.APP_NAME}-{user_id}-{client_id}"):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="token invalid",
+            detail="token invalid or expired",
         )
 
     # check if user existed or raise exception
@@ -48,7 +48,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="token invalid",
+            detail="token invalid or expired",
         )
 
     # return user
