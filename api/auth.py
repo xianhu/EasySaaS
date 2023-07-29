@@ -29,10 +29,9 @@ from .utils import get_current_user
 router = APIRouter()
 
 
-# define enum of ttype
-class TypeName(str, Enum):
-    signup = "signup"
-    reset = "reset"
+# response model
+class RespSend(Resp):
+    token: str = Field(None)
 
 
 # define enum of client_id
@@ -42,28 +41,29 @@ class ClientID(str, Enum):
     android = "android"
 
 
-# response model
-class RespSend(Resp):
-    token: str = Field(None)
+# define enum of ttype
+class TypeName(str, Enum):
+    signup = "signup"
+    reset = "reset"
 
 
 @router.post("/access-token", response_model=AccessToken)
 def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                       session: Session = Depends(get_session),
-                      redis_conn: Redis = Depends(get_redis)):
+                      rd_conn: Redis = Depends(get_redis)):
     """
     get access_token by OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
     - **password**: value of password, plain text
     - **client_id**: value of client_id, default "web"
-    - **status_code=401**: user not found or password incorrect
+    - **status_code=401**: user not found, password incorrect, client_id invalid
     """
     # get username、password from form_data
     email, pwd_plain = form_data.username, form_data.password
     user_model = session.query(User).filter(User.email == email).first()
 
     # check if user existed or raise exception
-    if not user_model:
+    if (not user_model) or (user_model.status != 1):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="user not found",
@@ -80,27 +80,31 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
 
     # get client_id from form_data
     client_id = form_data.client_id or "web"
-    assert client_id in ClientID.__members__, "client_id invalid"
+    if client_id not in ClientID.__members__:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="client_id invalid"
+        )
 
-    # create access_token and save in redis
+    # create access_token and save to redis
     access_token = create_jwt_token(user_id, client_id=client_id)
-    redis_conn.set(f"{settings.APP_NAME}-{user_id}-{client_id}", access_token)
+    rd_conn.set(f"{settings.APP_NAME}-token-{client_id}-{user_id}", access_token)
 
     # return access_token
     return AccessToken(access_token=access_token)
 
 
 @router.post("/access-token-logout", response_model=Resp)
-def _logout_access_token(client_id: ClientID = Body(..., description="client id"),
+def _logout_access_token(client_id: ClientID = Body(..., embed=True, description="client id"),
                          current_user: User = Depends(get_current_user),
-                         redis_conn: Redis = Depends(get_redis)):
+                         rd_conn: Redis = Depends(get_redis)):
     """
     logout access_token based on client_id
-    - **status_code=401**: token invalid or expired
     """
-    # get user_id and client_id from current_user
     user_id = current_user.id
-    redis_conn.set(f"{settings.APP_NAME}-{user_id}-{client_id}", "")
+
+    # delete access_token from redis
+    rd_conn.delete(f"{settings.APP_NAME}-token-{client_id}-{user_id}")
 
     # return result
     return Resp(msg="logout success")
