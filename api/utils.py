@@ -36,7 +36,7 @@ def get_current_user(access_token: str = Depends(oauth2),
         )
     user_id = payload["sub"]
 
-    # get token from redis
+    # get token from redis by user_id
     client_id = payload.get("client_id", "web")
     token = rd_conn.get(f"{settings.APP_NAME}-token-{client_id}-{user_id}")
 

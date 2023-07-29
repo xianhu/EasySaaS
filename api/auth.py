@@ -52,7 +52,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                       session: Session = Depends(get_session),
                       rd_conn: Redis = Depends(get_redis)):
     """
-    get access_token by OAuth2PasswordRequestForm, return access_token
+    get access_token based on OAuth2PasswordRequestForm, return access_token
     - **username**: value of email, or phone number, etc.
     - **password**: value of password, plain text
     - **client_id**: value of client_id, default "web"
@@ -115,14 +115,14 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
                         email: EmailStr = Body(..., description="email"),
                         ttype: TypeName = Body(..., description="type of send"),
                         session: Session = Depends(get_session),
-                        redis_conn: Redis = Depends(get_redis)):
+                        rd_conn: Redis = Depends(get_redis)):
     """
     send a code to email for signup or reset, return token with code
     - **status=-1**: send email too frequently
     - **status=-2**: email existed or not existed
     """
     # check if send email too frequently
-    if redis_conn.get(f"{settings.APP_NAME}-send-{email}"):
+    if rd_conn.get(f"{settings.APP_NAME}-send-{email}"):
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
@@ -140,7 +140,7 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
 
     # send email in background (status_code == 250)
     background_tasks.add_task(send_email_of_code, code, email)
-    redis_conn.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
+    rd_conn.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)
@@ -152,7 +152,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
                        password: str = Body(..., min_length=6, max_length=20),
                        session: Session = Depends(get_session)):
     """
-    verify code & token, and create user or update password
+    verify code & token from send-code, and create user or update password
     - **status=-1**: token invalid or expired
     - **status=-2**: code invalid or not match
     """
