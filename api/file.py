@@ -160,7 +160,7 @@ def _download(file_id: str = Path(..., description="id of file"),
               session: Session = Depends(get_session)):
     """
     download file by file_id, return FileResponse
-    - **status_code=500**: file not existed
+    - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -176,7 +176,7 @@ def _download_stream(file_id: str = Path(..., description="id of file"),
                      session: Session = Depends(get_session)):
     """
     download file by file_id, return StreamingResponse
-    - **status_code=500**: file not existed
+    - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -194,7 +194,7 @@ def _update_file_model(file_id: str = Path(..., description="id of file"),
                        session: Session = Depends(get_session)):
     """
     update file model based on update schema, return file schema
-    - **status_code=500**: file not existed
+    - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -216,7 +216,7 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
                        session: Session = Depends(get_session)):
     """
     delete file by file_id, return file schema
-    - **status_code=500**: file not existed
+    - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -234,17 +234,19 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
 @router.get("/", response_model=RespFileList)
 def _get_file_schema_list(current_user: User = Depends(get_current_user)):
     """
-    get file schema list of current_user, return file schema list and filetag_id list
+    get file schema list and filetag_id list list of current_user
     """
-    # file schema list and filetag_id list
+    # file schema list and filetag_id list list
     file_schema_list, filetag_id_list_list = [], []
     for file_model in current_user.files:
+        # define file schema and append to list
         file_schema = FileSchema(**file_model.dict())
         file_schema_list.append(file_schema)
+        # define filetag_id list and append to list
         filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
         filetag_id_list_list.append(filetag_id_list)
 
-    # return file schema list and filetag_id list
+    # return file schema list and filetag_id list list
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
@@ -255,7 +257,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
                        session: Session = Depends(get_session)):
     """
     link file to a filetag, return file schema and filetag_id list
-    - **status_code=500**: file or filetag not existed
+    - **status_code=403**: no permission to access file or filetag
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -286,7 +288,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
                          session: Session = Depends(get_session)):
     """
     unlink file from a filetag, return file schema and filetag_id list
-    - **status_code=500**: file or filetag not existed
+    - **status_code=403**: no permission to access file or filetag
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
