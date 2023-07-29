@@ -28,11 +28,11 @@ def create_jwt_token(subject: str,  # user_id, email, ...
     """
     # define expiration time
     issued_at = datetime.utcnow()
-    expiration_time = issued_at + timedelta(seconds=expire_duration)
+    expiration_at = issued_at + timedelta(seconds=expire_duration)
 
     # define payload - sub, aud, exp, iat, nbf ...
     payload = dict(sub=subject, aud=audience or "",
-                   exp=expiration_time, iat=issued_at, **kwargs)
+                   exp=expiration_at, iat=issued_at, **kwargs)
     token = jwt.encode(payload, secret_key, algorithm=algorithm)
 
     # return
