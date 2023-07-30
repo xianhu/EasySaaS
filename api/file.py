@@ -17,8 +17,9 @@ from sqlalchemy.orm import Session
 from core.settings import settings
 from core.utils import get_id_string, iter_file
 from data import get_session
-from data.models import File, FileTag, FileTagFile, User
+from data.models import File, FileTagFile, User
 from data.schemas import FileSchema, FileUpdate, Resp
+from .filetag import check_filetag_permission
 from .utils import get_current_user
 
 # define router
@@ -48,19 +49,6 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
             detail="no permission to access file",
         )
     return file_model
-
-
-def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
-    """
-    check if filetag_id is valid and user_id has permission to access filetag
-    """
-    filetag_model = session.query(FileTag).get(filetag_id)
-    if (not filetag_model) or (filetag_model.user_id != user_id):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="no permission to access filetag",
-        )
-    return filetag_model
 
 
 @router.post("/upload", response_model=RespFile)
@@ -263,7 +251,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
     file_model = check_file_permission(file_id, current_user.id, session)
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
-    # check if filetagfile model existed
+    # check if filetagfile existed in database
     filetagfile_model = session.query(FileTagFile).filter(
         FileTagFile.file_id == file_id,
         FileTagFile.filetag_id == filetag_id,
