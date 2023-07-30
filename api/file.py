@@ -263,7 +263,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
     file_model = check_file_permission(file_id, current_user.id, session)
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
-    # check if filetagfile model existed
+    # check if filetagfile existed in database
     filetagfile_model = session.query(FileTagFile).filter(
         FileTagFile.file_id == file_id,
         FileTagFile.filetag_id == filetag_id,

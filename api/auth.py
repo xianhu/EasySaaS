@@ -119,7 +119,7 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
     """
     send a code to email for signup or reset, return token with code
     - **status=-1**: send email too frequently
-    - **status=-2**: email existed or not existed
+    - **status=-2**: email existed or not exist
     """
     # check if send email too frequently
     if rd_conn.get(f"{settings.APP_NAME}-send-{email}"):
@@ -128,9 +128,9 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
 
     # check if user exist or not by ttype
     if ttype == TypeName.signup and user_model:
-        return RespSend(status=-2, msg="user existed")
+        return RespSend(status=-2, msg="email existed")
     if ttype == TypeName.reset and (not user_model):
-        return RespSend(status=-2, msg="user not existed")
+        return RespSend(status=-2, msg="email not exist")
     code = random.randint(100000, 999999)
 
     # define token based on email
