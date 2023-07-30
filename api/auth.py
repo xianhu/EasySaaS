@@ -62,7 +62,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     email, pwd_plain = form_data.username, form_data.password
     user_model = session.query(User).filter(User.email == email).first()
 
-    # check if user existed or raise exception
+    # check if user exist or raise exception
     if (not user_model) or (user_model.status != 1):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -126,7 +126,7 @@ def _send_code_to_email(background_tasks: BackgroundTasks,
         return RespSend(status=-1, msg="send email too frequently")
     user_model = session.query(User).filter(User.email == email).first()
 
-    # check if user existed or not by ttype
+    # check if user exist or not by ttype
     if ttype == TypeName.signup and user_model:
         return RespSend(status=-2, msg="user existed")
     if ttype == TypeName.reset and (not user_model):
@@ -152,7 +152,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
                        password: str = Body(..., min_length=6, max_length=20),
                        session: Session = Depends(get_session)):
     """
-    verify code & token from send-code, and create user or update password
+    verify code & token from send-code, and create user or reset password
     - **status=-1**: token invalid or expired
     - **status=-2**: code invalid or not match
     """
@@ -179,24 +179,24 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user based on email and password
+        # create user based on email and pwd_hash
         user_schema = UserCreate(email=email, password=pwd_hash)
         user_model = init_user_object(user_schema, session)
 
         # logging user and return result
-        logging.warning(f"create user: %s", user_model.dict())
+        logging.warning(f"signup: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # check token ttype: reset
     if ttype == TypeName.reset and user_model:
-        # update user based on password
+        # reset user password based on pwd_hash
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()
 
         # logging user and return result
-        logging.warning(f"update user: %s", user_model.dict())
+        logging.warning(f"reset: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
-    # return -1 (token invalid)
+    # return -1 (token invalid or expired)
     return Resp(status=-1, msg="token invalid or expired")
