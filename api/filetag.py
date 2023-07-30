@@ -7,8 +7,8 @@ filetag api
 import time
 from typing import List
 
-from fastapi import APIRouter, Depends
-from fastapi import Body, Path, Query
+from fastapi import APIRouter, HTTPException, status
+from fastapi import Body, Depends, Path, Query
 from pydantic import Field
 from sqlalchemy.orm import Session
 
@@ -30,6 +30,19 @@ class RespFileTag(Resp):
 # response model
 class RespFileTagList(Resp):
     data_filetag_list: List[FileTagSchema] = Field(None)
+
+
+def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
+    """
+    check if filetag_id is valid and user_id has permission to access filetag
+    """
+    filetag_model = session.query(FileTag).get(filetag_id)
+    if (not filetag_model) or (filetag_model.user_id != user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="no permission to access filetag",
+        )
+    return filetag_model
 
 
 @router.post("/", response_model=RespFileTag)
@@ -72,7 +85,7 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
     """
     update filetag model based on update schema, return filetag schema
     - **status=-1**: filetag name invalid or existed
-    - **status=-2**: filetag not exist in user
+    - **status_code=403**: no permission to access filetag
     """
     user_id = current_user.id
 
@@ -86,13 +99,7 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
         if filetag_name != filetag_model.name:
             continue
         return RespFileTag(status=-1, msg="filetag name existed")
-    filetag_model = session.query(FileTag).get(filetag_id)
-
-    # check if filetag not exist in user
-    if (not filetag_model) or (filetag_model.user_id != user_id):
-        return RespFileTag(status=-2, msg="filetag not exist in user")
-    if filetag_model.ttype != "custom":
-        return RespFileTag(status=-2, msg="filetag not exist in user")
+    filetag_model = check_filetag_permission(filetag_id, user_id, session)
 
     # update filetag model based on update schema
     for field in filetag_schema.model_dump(exclude_unset=True):
@@ -110,21 +117,15 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
                           session: Session = Depends(get_session)):
     """
     delete filetag model by id, return filetag schema
-    - **status=-2**: filetag not exist in user
-    - **status=-3**: filetag not empty with files
+    - **status=-2**: filetag not empty with files
+    - **status_code=403**: no permission to access filetag
     """
     user_id = current_user.id
-    filetag_model = session.query(FileTag).get(filetag_id)
-
-    # check if filetag not exist in user
-    if (not filetag_model) or (filetag_model.user_id != user_id):
-        return RespFileTag(status=-2, msg="filetag not exist in user")
-    if filetag_model.ttype != "custom":
-        return RespFileTag(status=-2, msg="filetag not exist in user")
+    filetag_model = check_filetag_permission(filetag_id, user_id, session)
 
     # check if filetag not empty
     if filetag_model.filetagfiles:
-        return RespFileTag(status=-3, msg="filetag not empty with files")
+        return RespFileTag(status=-2, msg="filetag not empty with files")
 
     # delete filetag model
     session.delete(filetag_model)
