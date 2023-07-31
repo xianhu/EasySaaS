@@ -10,7 +10,6 @@ from sqlalchemy import ForeignKey
 from .base import AbstractModel
 
 
-
 class FileTag(AbstractModel):
     # information -- basic
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)

@@ -19,8 +19,8 @@ from core.settings import settings
 from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
-from data.schemas import PhoneStr, Resp, UserCreateEmail, UserCreatePhone
-from data.utils import init_user_object
+from data.schemas import Resp, UserCreateEmail, UserCreatePhone
+from data.utils import PhoneStr, init_user_object
 
 # define router
 router = APIRouter()

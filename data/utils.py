@@ -13,7 +13,7 @@ from core.utils import get_id_string
 from .models import FileTag, User
 from .schemas import FileTagCreate, UserCreate
 
-# filetags of system
+# define filetags of system
 FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect", "trash"}
 
 # define type of PhoneStr

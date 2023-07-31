@@ -14,8 +14,9 @@ from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
 from data import get_session
-from data.models import FILETAG_SYSTEM_SET, FileTag, User
+from data.models import FileTag, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
+from data.utils import FILETAG_SYSTEM_SET
 from .utils import get_current_user
 
 # define router
@@ -47,7 +48,7 @@ def check_filetag_permission(filetag_id: str, user_id: str, session: Session) ->
 
 @router.get("/", response_model=RespFileTagList)
 def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
-                             limit: int = Query(10, description="limit count"),
+                             limit: int = Query(100, description="limit count"),
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
     """
