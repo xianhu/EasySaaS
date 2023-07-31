@@ -7,10 +7,9 @@ user schema
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, constr
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
-# define type of PhoneStr
-PhoneStr = constr(pattern=r"^\+\d{1,3}-\d{7,15}$")
+from ..utils import PhoneStr
 
 
 # used for response_model
