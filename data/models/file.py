@@ -33,6 +33,7 @@ class FileTagFile(AbstractModel):
     __table_args__ = (
         UniqueConstraint("filetag_id", "file_id", name="unique_filetag_file"),
     )
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
     # relationship -- foreign_key to filetag (filetagfile.filetag, filetag.filetagfiles)
     filetag_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("filetags.id"), index=True)

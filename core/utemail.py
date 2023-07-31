@@ -49,5 +49,5 @@ def send_email_of_code(code: int, mail_to: Union[str, tuple]) -> int:
     mail_html = "Verify code: <b>{{ code }}</b>"
     render = dict(app_name=settings.APP_NAME, code=code)
 
-    # send email and return
+    # send email and return status code (250)
     return _send_email(mail_to, subject=mail_subject, html_raw=mail_html, render=render)
