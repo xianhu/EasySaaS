@@ -4,8 +4,6 @@
 user api
 """
 
-from typing import List
-
 from fastapi import APIRouter, Body, Depends
 from pydantic import Field
 from sqlalchemy.orm import Session
@@ -13,8 +11,7 @@ from sqlalchemy.orm import Session
 from core.security import check_password_hash, get_password_hash
 from data import get_session
 from data.models import User
-from data.schemas import FileTagSchema, Resp
-from data.schemas import UserSchema, UserUpdate
+from data.schemas import Resp, UserSchema, UserUpdate
 from .utils import get_current_user
 
 # define router
@@ -24,7 +21,6 @@ router = APIRouter()
 # response model
 class RespUser(Resp):
     data_user: UserSchema = Field(None)
-    data_filetag_list: List[FileTagSchema] = Field(None)
 
 
 @router.get("/me", response_model=RespUser)
@@ -32,15 +28,8 @@ def _get_user_schema(current_user: User = Depends(get_current_user)):
     """
     get current_user schema and filetag schema list
     """
-    # filetag schema list
-    filetag_schema_list = []
-    for filetag_model in current_user.filetags:
-        filetag_schema = FileTagSchema(**filetag_model.dict())
-        filetag_schema_list.append(filetag_schema)
-
-    # return user schema and filetag schema list
-    user_schema = UserSchema(**current_user.dict())
-    return RespUser(data_user=user_schema, data_filetag_list=filetag_schema_list)
+    # return user schema
+    return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
 @router.patch("/me", response_model=RespUser)
@@ -57,8 +46,7 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
     session.commit()
 
     # return user schema
-    user_schema = UserSchema(**current_user.dict())
-    return RespUser(data_user=user_schema, data_filetag_list=[])
+    return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
 @router.post("/password", response_model=RespUser)
@@ -81,5 +69,4 @@ def _update_user_password(password_old: str = Body(..., description="old passwor
     session.commit()
 
     # return user schema
-    user_schema = UserSchema(**current_user.dict())
-    return RespUser(data_user=user_schema, data_filetag_list=[])
+    return RespUser(data_user=UserSchema(**current_user.dict()))
