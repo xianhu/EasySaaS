@@ -5,9 +5,7 @@ settings file
 """
 
 import os
-import re
 import secrets
-from re import Pattern
 
 from pydantic_settings import BaseSettings
 
@@ -46,11 +44,6 @@ class Settings(BaseSettings):
     NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
     ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
     REFRESH_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 30
-
-    # settings -- regular of data field
-    RE_PHONE: Pattern = re.compile(r"^(13\d|14[5|7]|15\d|18\d)\d{8}$")
-    RE_EMAIL: Pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
-    RE_PASSWORD: Pattern = re.compile(r"^(?!\d+$)(?![a-zA-Z]+$)[\d\D]{6,20}$")
 
     # Config
     class Config:
