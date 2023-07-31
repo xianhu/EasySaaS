@@ -9,7 +9,7 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, constr
 
-# define PhoneStr type
+# define type of PhoneStr
 PhoneStr = constr(pattern=r"^\+\d{1,3}-\d{7,15}$")
 
 
@@ -32,7 +32,7 @@ class UserSchema(BaseModel):
 # used for request body
 class UserCreate(BaseModel):
     __abstract__ = True
-    password: str = Field(..., description="Password")
+    password: str = Field(...)
 
 
 class UserCreateEmail(UserCreate):

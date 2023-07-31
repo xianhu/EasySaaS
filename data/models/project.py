@@ -23,6 +23,7 @@ class UserProject(AbstractModel):
     __table_args__ = (
         UniqueConstraint("user_id", "project_id", name="unique_user_project"),
     )
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
     # relationship -- foreign_key to user (userproject.user, user.userprojects)
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)

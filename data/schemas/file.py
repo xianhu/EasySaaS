@@ -15,7 +15,7 @@ class FileSchema(BaseModel):
     filename: Optional[str] = None
     created_time: Optional[int] = None
     updated_time: Optional[int] = None
-    # filesize: Optional[int] = None
+    filesize: Optional[int] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
     # user_id: Optional[str] = None

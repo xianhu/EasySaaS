@@ -8,6 +8,7 @@ import logging
 
 from core.security import get_password_hash
 from data import SessionMaker
+from data.models import User
 from data.schemas import UserCreateEmail, UserCreatePhone
 from data.utils import init_db_table, init_user_object
 
@@ -16,43 +17,24 @@ init_db_table()
 
 # init user with session
 with SessionMaker() as session:
-    # create user schema
+    pwd_hash = get_password_hash("a123456")
+
+    # create user schema --------------------------------------------------------------------------
     email = "admin@easysaas.com"
-    password = get_password_hash("a123456")
-    user_schema = UserCreateEmail(email=email, password=password)
+    user_schema = UserCreateEmail(email=email, email_verified=True, password=pwd_hash)
 
-    # initialize user object based on user schema
-    user_model = init_user_object(user_schema, session)
+    # initialize user object based on create schema
+    _user_model1 = init_user_object(user_schema, session)
 
-    # logging user and filetag models
-    logging.warning(user_model.dict())
-    for filetag_model in user_model.filetags:
-        logging.warning("----%s", filetag_model.dict())
+    # create user schema --------------------------------------------------------------------------
+    phone = "+86-18675768543"
+    user_schema = UserCreatePhone(phone=phone, phone_verified=True, password=pwd_hash)
 
+    # initialize user object based on create schema
+    _user_model2 = init_user_object(user_schema, session)
 
-    # create user schema
-    phone = "18675768543"
-    password = get_password_hash("a123456")
-    user_schema = UserCreatePhone(phone=phone, password=password)
-
-    # initialize user object based on user schema
-    user_model = init_user_object(user_schema, session)
-
-    # logging user and filetag models
-    logging.warning(user_model.dict())
-    for filetag_model in user_model.filetags:
-        logging.warning("----%s", filetag_model.dict())
-
-    # create user schema
-    phone = "18675768542"
-    password = get_password_hash("a123456")
-    user_schema = UserCreatePhone(phone=phone, password=password)
-
-    # initialize user object based on user schema
-    user_model = init_user_object(user_schema, session)
-
-    # logging user and filetag models
-    logging.warning(user_model.dict())
-    for filetag_model in user_model.filetags:
-        logging.warning("----%s", filetag_model.dict())
-
+    # logging user and filetag models -------------------------------------------------------------
+    for user_model in session.query(User).all():
+        logging.warning(user_model.dict())
+        for filetag_model in user_model.filetags:
+            logging.warning("----%s", filetag_model.dict())
