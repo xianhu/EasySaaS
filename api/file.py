@@ -260,8 +260,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
     ).first()
     if not filetagfile_model:
         # create filetagfile model and save to database
-        filetagfile_id = get_id_string(f"{filetag_id}-{file_id}")
-        filetagfile_model = FileTagFile(id=filetagfile_id, file_id=file_id, filetag_id=filetag_id)
+        filetagfile_model = FileTagFile(file_id=file_id, filetag_id=filetag_id)
         session.add(filetagfile_model)
         session.commit()
 
