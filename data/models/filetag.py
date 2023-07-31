@@ -9,9 +9,6 @@ from sqlalchemy import ForeignKey
 
 from .base import AbstractModel
 
-# filetags of system
-FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect", "trash"}
-
 
 class FileTag(AbstractModel):
     # information -- basic
