@@ -13,7 +13,9 @@ from pydantic import BaseModel, Field
 class FileSchema(BaseModel):
     id: Optional[str] = None
     filename: Optional[str] = None
-    filesize: Optional[int] = None
+    created_time: Optional[int] = None
+    updated_time: Optional[int] = None
+    # filesize: Optional[int] = None
     # fullname: Optional[str] = None
     # location: Optional[str] = None
     # user_id: Optional[str] = None
@@ -22,10 +24,12 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    filesize: int = Field(..., ge=0, description="File Size")
+    created_time: int = Field(0, ge=0, description="Created Timestamp")
+    updated_time: int = Field(0, ge=0, description="Updated Timestamp")
 
 
 # used for request body
 class FileUpdate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    # filesize: int = Field(..., ge=0, description="File Size")
+    created_time: int = Field(0, ge=0, description="Created Timestamp")
+    updated_time: int = Field(0, ge=0, description="Updated Timestamp")

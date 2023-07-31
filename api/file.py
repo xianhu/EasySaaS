@@ -18,7 +18,7 @@ from core.settings import settings
 from core.utils import get_id_string, iter_file
 from data import get_session
 from data.models import File, FileTagFile, User
-from data.schemas import FileSchema, FileUpdate, Resp
+from data.schemas import FileCreate, FileSchema, FileUpdate, Resp
 from .filetag import check_filetag_permission
 from .utils import get_current_user
 
@@ -53,10 +53,11 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
+            file_schema: FileCreate = Body(..., description="create schema"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    upload file object, return file schema
+    upload file object based on create schema, return file schema
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
@@ -78,7 +79,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     file_kwargs.update(dict(fullname=fullname, location=location))
     file_id = get_id_string(fullname)
 
-    # create file model and save to database
+    # create file model based on create schema
+    file_kwargs.update(file_schema.model_dump(exclude_unset=True))
     file_model = File(id=file_id, user_id=user_id, **file_kwargs)
     session.add(file_model)
     session.commit()

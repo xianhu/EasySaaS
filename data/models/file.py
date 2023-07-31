@@ -11,12 +11,14 @@ from .base import AbstractModel
 
 
 class File(AbstractModel):
-    # information -- basic
+    # information -- basic (can be changed)
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    filesize = sqlalchemy.Column(sqlalchemy.BigInteger, default=0, doc="File Size")
+    created_time = sqlalchemy.Column(sqlalchemy.BigInteger, default=0, doc="Created Timestamp")
+    updated_time = sqlalchemy.Column(sqlalchemy.BigInteger, default=0, doc="Updated Timestamp")
 
-    # information -- fullname and location
-    fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-time-filename")
+    # information -- filesize, fullname and location (can not be changed)
+    filesize = sqlalchemy.Column(sqlalchemy.BigInteger, default=0, doc="File Size")
+    fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
     location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 
     # relationship -- foreign_key to user (file.user, user.files)
