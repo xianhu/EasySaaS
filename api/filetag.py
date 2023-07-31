@@ -32,6 +32,26 @@ class RespFileTagList(Resp):
     data_filetag_list: List[FileTagSchema] = Field(None)
 
 
+@router.get("/", response_model=RespFileTagList)
+def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
+                             limit: int = Query(10, description="limit count"),
+                             current_user: User = Depends(get_current_user),
+                             session: Session = Depends(get_session)):
+    """
+    get filetag schema list and return
+    """
+    user_id = current_user.id
+
+    # filetag schema list
+    filetag_model_list = session.query(FileTag).filter(
+        FileTag.user_id == user_id,
+    ).offset(skip).limit(limit).all()
+    filetag_schema_list = [FileTagSchema(**fm.dict()) for fm in filetag_model_list]
+
+    # return filetag schema list
+    return RespFileTagList(data_filetag_list=filetag_schema_list)
+
+
 def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
     """
     check if filetag_id is valid and user_id has permission to access filetag
@@ -133,24 +153,3 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
 
     # return filetag schema
     return RespFileTag(data_filetag=FileTagSchema(**filetag_model.dict()))
-
-
-@router.get("/", response_model=RespFileTagList)
-def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
-                             limit: int = Query(10, description="limit count"),
-                             current_user: User = Depends(get_current_user),
-                             session: Session = Depends(get_session)):
-    """
-    get filetag schema list and return
-    """
-    raise NotImplementedError
-
-
-@router.get("/{filetag_id}", response_model=RespFileTag)
-def _get_filetag_schema(filetag_id: str = Path(..., description="id of filetag"),
-                        current_user: User = Depends(get_current_user),
-                        session: Session = Depends(get_session)):
-    """
-    get filetag schema by id and return
-    """
-    raise NotImplementedError

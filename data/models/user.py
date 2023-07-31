@@ -18,10 +18,12 @@ class User(AbstractModel):
     birthday = sqlalchemy.Column(sqlalchemy.Date, doc="Date of Birthday")
     gender = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="1-Male, 2-Female")
 
-    # information -- email and password
+    # information -- email / phone and password
     email = sqlalchemy.Column(sqlalchemy.String(255), unique=True, index=True)
-    password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
     email_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
+    phone = sqlalchemy.Column(sqlalchemy.String(255), unique=True, index=True)
+    phone_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
+    password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
 
     # information -- permissions of system
     system_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is System Admin")

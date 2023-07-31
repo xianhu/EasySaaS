@@ -34,7 +34,7 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
     """
     try:
         # create user model and add to database
-        user_id = get_id_string(f"{user_schema.email}-{time.time()}")
+        user_id = get_id_string(f"{user_schema.password}-{time.time()}")
         user_kwargs = user_schema.model_dump(exclude_unset=True)
         user_model = User(id=user_id, **user_kwargs, email_verified=True)
         session.add(user_model)
