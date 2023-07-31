@@ -18,17 +18,28 @@ class UserSchema(BaseModel):
     birthday: Optional[date] = None
     gender: Optional[int] = None
     email: Optional[EmailStr] = None
-    # password: Optional[str] = None
     email_verified: Optional[bool] = None
+    phone: Optional[str] = None
+    phone_verified: Optional[bool] = None
+    # password: Optional[str] = None
     # system_admin: Optional[bool] = None
     # system_role: Optional[dict] = None
 
 
 # used for request body
 class UserCreate(BaseModel):
-    email: EmailStr = Field(..., description="Email")
+    __abstract__ = True
     password: str = Field(..., description="Password")
-    # email_verified: bool = Field(False, description="Verified?")
+
+
+class UserCreateEmail(UserCreate):
+    email: EmailStr = Field(..., description="Email")
+    email_verified: bool = Field(False, description="Verified?")
+
+
+class UserCreatePhone(UserCreate):
+    phone: str = Field(..., pattern=r"^\+\d{1,3}-\d{7,15}$")
+    phone_verified: bool = Field(False, description="Verified?")
 
 
 # used for request body

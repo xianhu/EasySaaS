@@ -20,8 +20,10 @@ class User(AbstractModel):
 
     # information -- email and password
     email = sqlalchemy.Column(sqlalchemy.String(255), unique=True, index=True)
-    password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
     email_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
+    phone = sqlalchemy.Column(sqlalchemy.String(255), unique=True, index=True)
+    phone_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
+    password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
 
     # information -- permissions of system
     system_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is System Admin")
