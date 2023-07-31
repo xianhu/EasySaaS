@@ -9,8 +9,8 @@ from pydantic import BaseModel
 from .file import FileCreate, FileSchema, FileUpdate
 from .filetag import FileTagCreate, FileTagSchema, FileTagUpdate
 from .project import ProjectCreate, ProjectSchema, ProjectUpdate
-from .user import PhoneStr, UserSchema, UserUpdate
-from .user import UserCreate, UserCreateEmail, UserCreatePhone
+from .user import PhoneStr, UserCreateEmail, UserCreatePhone
+from .user import UserCreate, UserSchema, UserUpdate
 
 
 class AccessToken(BaseModel):
