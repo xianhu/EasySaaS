@@ -7,7 +7,10 @@ user schema
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, constr
+
+# define PhoneStr type
+PhoneStr = constr(pattern=r"^\+\d{1,3}-\d{7,15}$")
 
 
 # used for response_model
@@ -19,7 +22,7 @@ class UserSchema(BaseModel):
     gender: Optional[int] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
-    phone: Optional[str] = None
+    phone: Optional[PhoneStr] = None
     phone_verified: Optional[bool] = None
     # password: Optional[str] = None
     # system_admin: Optional[bool] = None
@@ -38,7 +41,7 @@ class UserCreateEmail(UserCreate):
 
 
 class UserCreatePhone(UserCreate):
-    phone: str = Field(..., pattern=r"^\+\d{1,3}-\d{7,15}$")
+    phone: PhoneStr = Field(..., description="Phone")
     phone_verified: bool = Field(False, description="Verified?")
 
 

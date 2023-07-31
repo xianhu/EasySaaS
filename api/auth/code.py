@@ -19,7 +19,7 @@ from core.settings import settings
 from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
-from data.schemas import Resp, UserCreate
+from data.schemas import PhoneStr, Resp, UserCreateEmail, UserCreatePhone
 from data.utils import init_user_object
 
 # define router
@@ -38,36 +38,44 @@ class TypeName(str, Enum):
 
 
 @router.post("/send-code", response_model=RespSend)
-def _send_code_to_email(background_tasks: BackgroundTasks,
-                        email: EmailStr = Body(..., description="email"),
-                        ttype: TypeName = Body(..., description="type of send"),
-                        session: Session = Depends(get_session),
-                        rd_conn: Redis = Depends(get_redis)):
+def _send_code_to_xxxx(background_tasks: BackgroundTasks,
+                       username: EmailStr | PhoneStr = Body(..., description="email or phone"),
+                       ttype: TypeName = Body(..., description="type of send"),
+                       session: Session = Depends(get_session),
+                       rd_conn: Redis = Depends(get_redis)):
     """
-    send a code to email for signup or reset, return token with code
-    - **status=-1**: send email too frequently
-    - **status=-2**: email existed or not exist
+    send a code to email or phone for signup or reset, return token with code
+    - **status=-1**: send code too frequently
+    - **status=-2**: user existed or not exist
     """
-    # check if send email too frequently
-    if rd_conn.get(f"{settings.APP_NAME}-send-{email}"):
-        return RespSend(status=-1, msg="send email too frequently")
-    user_model = session.query(User).filter(User.email == email).first()
+    # check if send code too frequently
+    if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
+        return RespSend(status=-1, msg="send code too frequently")
+
+    # get user_model
+    if username.find("@") > 0:
+        user_model = session.query(User).filter(User.email == username).first()
+    else:
+        user_model = session.query(User).filter(User.phone == username).first()
 
     # check if user exist or not by ttype
     if ttype == TypeName.signup and user_model:
-        return RespSend(status=-2, msg="email existed")
+        return RespSend(status=-2, msg="user existed")
     if ttype == TypeName.reset and (not user_model):
-        return RespSend(status=-2, msg="email not exist")
+        return RespSend(status=-2, msg="user not exist")
     code = random.randint(100000, 999999)
 
     # define token based on email
     data = dict(code=code, ttype=ttype)
     duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
-    token = create_jwt_token(email, audience="send", expire_duration=duration, **data)
+    token = create_jwt_token(username, audience="send", expire_duration=duration, **data)
 
-    # send email in background (status_code == 250)
-    background_tasks.add_task(send_email_of_code, code, email)
-    rd_conn.set(f"{settings.APP_NAME}-send-{email}", token, ex=60)
+    # send code in background
+    if username.find("@") > 0:
+        background_tasks.add_task(send_email_of_code, code, username)
+    else:
+        raise NotImplemented
+    rd_conn.set(f"{settings.APP_NAME}-send-{username}", token, ex=60)
 
     # return token with code
     return RespSend(token=token)
@@ -93,21 +101,29 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg="token invalid or expired")
     ttype = payload["ttype"]
 
-    # check token: sub(email) and code(int)
+    # check token: sub(email/phone) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
         return Resp(status=-1, msg="token invalid or expired")
-    email, code_in_token = payload["sub"], payload["code"]
+    username, code_in_token = payload["sub"], payload["code"]
 
     # check token: code
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid or not match")
-    user_model = session.query(User).filter(User.email == email).first()
+
+    # get user_model
+    if username.find("@") > 0:
+        user_model = session.query(User).filter(User.email == username).first()
+    else:
+        user_model = session.query(User).filter(User.phone == username).first()
     pwd_hash = get_password_hash(password)
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user based on email and pwd_hash
-        user_schema = UserCreate(email=email, password=pwd_hash)
+        # create user based on email/phone and pwd_hash
+        if username.find("@") > 0:
+            user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
+        else:
+            user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
         user_model = init_user_object(user_schema, session)
 
         # logging user and return result
