@@ -14,7 +14,7 @@ from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp
-from data.vars import PhoneStr
+from data.utils import PhoneStr
 from ..utils import get_current_user
 
 # define router
