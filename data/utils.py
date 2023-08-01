@@ -36,7 +36,8 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
     try:
         # create user model based on create schema
         user_id = get_id_string(f"{user_schema.password}-{time.time()}")
-        user_model = User(id=user_id, **user_schema.model_dump(exclude_unset=True))
+        user_kwargs = user_schema.model_dump(exclude_unset=True)
+        user_model = User(id=user_id, **user_kwargs)
         session.add(user_model)
 
         # create filetag model
