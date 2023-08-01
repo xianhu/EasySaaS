@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-user api
+basic of user api
 """
 
 from fastapi import APIRouter, HTTPException, status
@@ -14,7 +14,7 @@ from core.settings import settings
 from data import get_session
 from data.models import User
 from data.schemas import Resp, UserSchema, UserUpdate
-from .utils import get_current_user
+from ..utils import get_current_user
 
 # define router
 router = APIRouter()

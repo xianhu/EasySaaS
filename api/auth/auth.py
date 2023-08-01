@@ -37,7 +37,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                       rd_conn: Redis = Depends(get_redis)):
     """
     get access_token based on OAuth2PasswordRequestForm, return access_token
-    - **username**: value of email, phone, etc.
+    - **username**: value of email or phone, etc.
     - **password**: value of password, plain text
     - **client_id**: value of client_id, default "web"
     - **status_code=401**: user not found, password incorrect, client_id invalid
