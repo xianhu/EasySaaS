@@ -4,7 +4,7 @@
 email functions
 """
 
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 import emails
 from emails.template import JinjaTemplate
@@ -22,7 +22,7 @@ smtp_options = {
 mail_from = (settings.APP_NAME, settings.MAIL_USERNAME)
 
 
-def _send_email(mail_to: Union[str, tuple], subject: str, html_raw: str, render: Dict[str, Any]) -> int:
+def _send_email(mail_to: str | tuple, subject: str, html_raw: str, render: Dict[str, Any]) -> int:
     """
     send email via smtp, return status code
     """
@@ -40,7 +40,7 @@ def _send_email(mail_to: Union[str, tuple], subject: str, html_raw: str, render:
     return response.status_code
 
 
-def send_email_of_code(code: int, mail_to: Union[str, tuple]) -> int:
+def send_email_of_code(code: int, mail_to: str | tuple) -> int:
     """
     send email of code, return status code
     """
