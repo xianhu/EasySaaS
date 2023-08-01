@@ -10,7 +10,5 @@ from . import auth, code
 
 # define router
 router = APIRouter()
-
-# include router
 router.include_router(auth.router)
 router.include_router(code.router)

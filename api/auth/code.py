@@ -66,7 +66,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
         return RespSend(status=-2, msg="user not exist")
     code = random.randint(100000, 999999)
 
-    # define token based on email
+    # define token based on username
     data = dict(code=code, ttype=ttype)
     duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
     token = create_jwt_token(username, audience="send", expire_duration=duration, **data)
