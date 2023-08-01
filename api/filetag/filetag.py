@@ -15,8 +15,7 @@ from data import get_session
 from data.models import FileTag, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.utils import FILETAG_SYSTEM_SET
-from .utils import RespFileTag, RespFileTagList
-from .utils import check_filetag_permission
+from .utils import RespFileTag, RespFileTagList, check_filetag_permission
 from ..utils import get_current_user
 
 # define router

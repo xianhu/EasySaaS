@@ -4,7 +4,7 @@
 file api
 """
 
-from typing import List
+from typing import List, Optional
 
 from fastapi import HTTPException, status
 from pydantic import Field
@@ -16,14 +16,14 @@ from data.schemas import FileSchema, Resp
 
 # response model
 class RespFile(Resp):
-    data_file: FileSchema = Field(None)
-    data_filetag_id_list: List[str] = Field(None)
+    data_file: Optional[FileSchema] = Field(None)
+    data_filetag_id_list: List[str] = Field([])
 
 
 # response model
 class RespFileList(Resp):
-    data_file_list: List[FileSchema] = Field(None)
-    data_filetag_id_list_list: List[List[str]] = Field(None)
+    data_file_list: List[FileSchema] = Field([])
+    data_filetag_id_list_list: List[List[str]] = Field([])
 
 
 def check_file_permission(file_id: str, user_id: str, session: Session) -> File:

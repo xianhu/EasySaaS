@@ -4,7 +4,7 @@
 filetag api
 """
 
-from typing import List
+from typing import List, Optional
 
 from fastapi import HTTPException, status
 from pydantic import Field
@@ -16,12 +16,12 @@ from data.schemas import FileTagSchema, Resp
 
 # response model
 class RespFileTag(Resp):
-    data_filetag: FileTagSchema = Field(None)
+    data_filetag: Optional[FileTagSchema] = Field(None)
 
 
 # response model
 class RespFileTagList(Resp):
-    data_filetag_list: List[FileTagSchema] = Field(None)
+    data_filetag_list: List[FileTagSchema] = Field([])
 
 
 def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
