@@ -30,14 +30,24 @@ router = APIRouter()
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., description="email or phone"),
                        current_user: User = Depends(get_current_user),
+                       session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
     """
     send a code to email or phone for bind, return token with code
     - **status=-1**: send code too frequently
+    - **status=-2**: email or phone existed
     """
     # check if send code too frequently
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
         return RespSend(status=-1, msg="send code too frequently")
+
+    # check if email or phone existed in database
+    if username.find("@") > 0:
+        user_model = session.query(User).filter(User.email == username).first()
+    else:
+        user_model = session.query(User).filter(User.phone == username).first()
+    if user_model:
+        return RespSend(status=-2, msg="email or phone existed")
     code = random.randint(100000, 999999)
 
     # define token based on username
@@ -93,5 +103,5 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     session.merge(current_user)
     session.commit()
 
-    # return
+    # return result
     return Resp(msg="bind success")
