@@ -31,7 +31,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     get access_token based on OAuth2PasswordRequestForm, return access_token
     - **username**: value of email or phone, etc.
     - **password**: value of password, plain text
-    - **client_id**: value of client_id, default "web"
+    - **client_id**: value of client_id, web | ios | android
     - **status_code=401**: user not found, password incorrect, client_id invalid
     """
     # get username、password from form_data, and get user_model

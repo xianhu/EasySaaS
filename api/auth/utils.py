@@ -5,6 +5,7 @@ auth api
 """
 
 from enum import Enum
+from typing import Optional
 
 from pydantic import Field
 
@@ -13,7 +14,7 @@ from data.schemas import Resp
 
 # response model
 class RespSend(Resp):
-    token: str = Field(None)
+    token: Optional[str] = Field(None)
 
 
 # enum of ttype
