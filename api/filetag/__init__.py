@@ -6,9 +6,8 @@ filetag api
 
 from fastapi import APIRouter
 
-from . import code, user
+from . import filetag
 
 # define router
 router = APIRouter()
-router.include_router(user.router)
-router.include_router(code.router)
+router.include_router(filetag.router)

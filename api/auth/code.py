@@ -1,9 +1,5 @@
 # _*_ coding: utf-8 _*_
 
-"""
-code of auth api
-"""
-
 import logging
 import random
 from enum import Enum

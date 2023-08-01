@@ -1,9 +1,5 @@
 # _*_ coding: utf-8 _*_
 
-"""
-code of user api
-"""
-
 import random
 
 from fastapi import APIRouter, BackgroundTasks

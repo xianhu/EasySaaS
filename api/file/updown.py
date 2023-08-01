@@ -1,9 +1,5 @@
 # _*_ coding: utf-8 _*_
 
-"""
-updown of file api
-"""
-
 import time
 
 from fastapi import APIRouter, HTTPException, status

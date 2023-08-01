@@ -1,9 +1,5 @@
 # _*_ coding: utf-8 _*_
 
-"""
-utility functions and variables
-"""
-
 from typing import List
 
 from fastapi import HTTPException, status

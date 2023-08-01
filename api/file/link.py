@@ -1,9 +1,5 @@
 # _*_ coding: utf-8 _*_
 
-"""
-link of file api
-"""
-
 from fastapi import APIRouter
 from fastapi import Body, Depends
 from sqlalchemy.orm import Session
