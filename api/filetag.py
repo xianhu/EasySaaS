@@ -56,7 +56,7 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     """
     user_id = current_user.id
 
-    # filetag schema list
+    # filetag model list and schema list
     filetag_model_list = session.query(FileTag).filter(
         FileTag.user_id == user_id,
     ).offset(skip).limit(limit).all()

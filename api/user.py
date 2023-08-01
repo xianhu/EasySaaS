@@ -28,7 +28,7 @@ class RespUser(Resp):
 @router.get("/me", response_model=RespUser)
 def _get_user_schema(current_user: User = Depends(get_current_user)):
     """
-    get current_user schema and filetag schema list
+    get current_user schema
     """
     # return user schema
     return RespUser(data_user=UserSchema(**current_user.dict()))
@@ -51,7 +51,7 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.post("/password", response_model=RespUser)
+@router.post("/me/password", response_model=RespUser)
 def _update_user_password(password_old: str = Body(..., description="old password"),
                           password_new: str = Body(..., min_length=6, max_length=20),
                           current_user: User = Depends(get_current_user),
