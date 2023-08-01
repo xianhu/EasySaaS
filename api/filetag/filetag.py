@@ -5,45 +5,22 @@ filetag api
 """
 
 import time
-from typing import List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 from fastapi import Body, Depends, Path, Query
-from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
 from data import get_session
 from data.models import FileTag, User
-from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate, Resp
+from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.utils import FILETAG_SYSTEM_SET
-from .utils import get_current_user
+from .utils import RespFileTag, RespFileTagList
+from .utils import check_filetag_permission
+from ..utils import get_current_user
 
 # define router
 router = APIRouter()
-
-
-# response model
-class RespFileTag(Resp):
-    data_filetag: FileTagSchema = Field(None)
-
-
-# response model
-class RespFileTagList(Resp):
-    data_filetag_list: List[FileTagSchema] = Field(None)
-
-
-def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
-    """
-    check if filetag_id is valid and user_id has permission to access filetag
-    """
-    filetag_model = session.query(FileTag).get(filetag_id)
-    if (not filetag_model) or (filetag_model.user_id != user_id):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="no permission to access filetag",
-        )
-    return filetag_model
 
 
 @router.get("/", response_model=RespFileTagList)
