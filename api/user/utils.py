@@ -8,8 +8,7 @@ from typing import Optional
 
 from pydantic import Field
 
-from data.schemas import Resp
-from data.schemas import UserSchema
+from data.schemas import Resp, UserSchema
 
 
 # response model

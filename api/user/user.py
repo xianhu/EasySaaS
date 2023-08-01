@@ -74,6 +74,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
     delete current_user model, return user schema (only in DEBUG mode)
+    - **status_code=403**: can not delete user model
     """
     if not settings.DEBUG:
         raise HTTPException(
