@@ -4,6 +4,8 @@
 user api
 """
 
+from typing import Optional
+
 from pydantic import Field
 
 from data.schemas import Resp
@@ -12,9 +14,9 @@ from data.schemas import UserSchema
 
 # response model
 class RespUser(Resp):
-    data_user: UserSchema = Field(None)
+    data_user: Optional[UserSchema] = Field(None)
 
 
 # response model
 class RespSend(Resp):
-    token: str = Field(None)
+    token: Optional[str] = Field(None)

@@ -13,9 +13,7 @@ from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
 from data.models import FileTag, User
-from data.schemas import FileTagCreate
-from data.schemas import Resp
-from data.schemas import UserCreate
+from data.schemas import FileTagCreate, Resp, UserCreate
 from data.utils import FILETAG_SYSTEM_SET
 
 
@@ -39,7 +37,7 @@ class ClientID(str, Enum):
 
 def init_user_object(user_schema: UserCreate, session: Session) -> User:
     """
-    initialize user object based on create schema
+    initialize user object based on create schema, return user model
     """
     try:
         # create user model based on create schema
