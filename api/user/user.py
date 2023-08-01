@@ -1,5 +1,9 @@
 # _*_ coding: utf-8 _*_
 
+"""
+user api
+"""
+
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Body, Depends
 from pydantic import Field

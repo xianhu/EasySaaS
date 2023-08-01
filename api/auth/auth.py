@@ -1,5 +1,9 @@
 # _*_ coding: utf-8 _*_
 
+"""
+auth api
+"""
+
 from enum import Enum
 
 from fastapi import APIRouter, HTTPException, status

@@ -1,5 +1,9 @@
 # _*_ coding: utf-8 _*_
 
+"""
+auth api
+"""
+
 import logging
 import random
 from enum import Enum

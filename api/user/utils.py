@@ -1,5 +1,9 @@
 # _*_ coding: utf-8 _*_
 
+"""
+user api
+"""
+
 import time
 
 from sqlalchemy.orm import Session
