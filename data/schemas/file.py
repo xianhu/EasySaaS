@@ -24,12 +24,12 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    created_time: int = Field(0, ge=0, description="Created Timestamp")
-    updated_time: int = Field(0, ge=0, description="Updated Timestamp")
+    created_time: Optional[int] = Field(None, description="Created Timestamp")
+    updated_time: Optional[int] = Field(None, description="Updated Timestamp")
 
 
 # used for request body
 class FileUpdate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    created_time: int = Field(0, ge=0, description="Created Timestamp")
-    updated_time: int = Field(0, ge=0, description="Updated Timestamp")
+    created_time: Optional[int] = Field(None, description="Created Timestamp")
+    updated_time: Optional[int] = Field(None, description="Updated Timestamp")

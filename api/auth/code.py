@@ -1,9 +1,5 @@
 # _*_ coding: utf-8 _*_
 
-"""
-code of auth api
-"""
-
 import logging
 import random
 from enum import Enum
@@ -121,7 +117,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user based on email/phone and pwd_hash
+        # create user based on email or phone and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
