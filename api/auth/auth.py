@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 
-from enum import Enum
+"""
+auth api
+"""
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Body, Depends
@@ -14,17 +16,11 @@ from core.settings import settings
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp
+from .utils import ClientID
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
-
-
-# define enum of client_id
-class ClientID(str, Enum):
-    web = "web"
-    ios = "ios"
-    android = "android"
 
 
 @router.post("/access-token", response_model=AccessToken)
@@ -35,7 +31,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     get access_token based on OAuth2PasswordRequestForm, return access_token
     - **username**: value of email or phone, etc.
     - **password**: value of password, plain text
-    - **client_id**: value of client_id, default "web"
+    - **client_id**: value of client_id, web | ios | android
     - **status_code=401**: user not found, password incorrect, client_id invalid
     """
     # get username、password from form_data, and get user_model

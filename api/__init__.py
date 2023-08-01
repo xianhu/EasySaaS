@@ -13,7 +13,7 @@ delete/{id} -> delete object by id
 -------------------------------------------------------------------------------
 """
 
-from typing import Union
+from typing import Optional
 
 from fastapi import APIRouter, Cookie, Header
 from fastapi import Request, Response
@@ -42,8 +42,8 @@ async def _get_root():
 @api_router.get("/test")
 async def _get_test(request: Request,  # parameter of request
                     response: Response,  # parameter of response
-                    fake_cookie: Union[str, None] = Cookie(default=None),
-                    user_agent: Union[str, None] = Header(default=None)):
+                    fake_cookie: Optional[str] = Cookie(default=None),
+                    user_agent: Optional[str] = Header(default=None)):
     """
     test router
     """

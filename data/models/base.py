@@ -26,7 +26,7 @@ class AbstractModel(Model):
     def get(self, field: str) -> Any:
         return getattr(self, field)
 
-    def dict(self, exclude=exclude_fields) -> Dict[str, Any]:
+    def dict(self, exclude: tuple = exclude_fields) -> Dict[str, Any]:
         columns = [c for c in self.__table__.columns if c.name not in exclude]
         return {c.name: getattr(self, c.name) for c in columns}
 

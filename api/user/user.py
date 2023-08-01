@@ -1,24 +1,23 @@
 # _*_ coding: utf-8 _*_
 
+"""
+user api
+"""
+
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Body, Depends
-from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
 from core.settings import settings
 from data import get_session
 from data.models import User
-from data.schemas import Resp, UserSchema, UserUpdate
+from data.schemas import UserSchema, UserUpdate
+from .utils import RespUser
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
-
-
-# response model
-class RespUser(Resp):
-    data_user: UserSchema = Field(None)
 
 
 @router.get("/me", response_model=RespUser)
@@ -75,6 +74,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
     delete current_user model, return user schema (only in DEBUG mode)
+    - **status_code=403**: can not delete user model
     """
     if not settings.DEBUG:
         raise HTTPException(

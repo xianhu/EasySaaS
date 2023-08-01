@@ -6,7 +6,7 @@ test data
 
 import logging
 
-from api.user.utils import init_user_object
+from api.auth.utils import init_user_object
 from core.security import get_password_hash
 from data import SessionMaker
 from data.models import User

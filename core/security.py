@@ -5,7 +5,7 @@ security functions
 """
 
 from datetime import datetime, timedelta
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from jose import jwt
 from passlib.context import CryptContext
@@ -16,8 +16,8 @@ from .settings import settings
 pwd_context = CryptContext(schemes=["bcrypt", ], deprecated="auto")
 
 
-def create_jwt_token(subject: str,  # user_id, email, ...
-                     audience: str = None,  # client name or id, default None
+def create_jwt_token(subject: str,  # user_id, email, phone, ...
+                     audience: Optional[str] = None,  # client name or id
                      expire_duration: int = settings.ACCESS_TOKEN_EXPIRE_DURATION,
                      secret_key: str = settings.SECRET_KEY,  # secret key
                      algorithm: str = "HS256",  # algorithm of jwt
@@ -39,7 +39,7 @@ def create_jwt_token(subject: str,  # user_id, email, ...
 
 
 def get_jwt_payload(token: str,  # token value
-                    audience: str = None,  # client name or id, default None
+                    audience: Optional[str] = None,  # client name or id
                     secret_key: str = settings.SECRET_KEY,  # secret key
                     algorithm: str = "HS256") -> Dict[str, Any]:  # algorithm of jwt
     """

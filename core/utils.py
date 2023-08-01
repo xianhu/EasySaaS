@@ -9,7 +9,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 
-def get_logger(name, interval=1, backup=60, level=logging.WARNING) -> logging.Logger:
+def get_logger(name: str, interval: int = 1, backup: int = 60, level=logging.WARNING) -> logging.Logger:
     """
     get logger instance of TimedRotatingFileHandler
     """

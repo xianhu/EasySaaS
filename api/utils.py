@@ -36,12 +36,10 @@ def get_current_user(access_token: str = Depends(oauth2),
     if (not payload) or (not payload.get("sub")):
         raise exception
     user_id = payload["sub"]
-
-    # get token by user_id and client_id
     client_id = payload.get("client_id", "web")
-    rd_token = rd_conn.get(f"{settings.APP_NAME}-access-{client_id}-{user_id}")
 
-    # check if access_token match token in redis
+    # get token by user_id and client_id, and check if token match
+    rd_token = rd_conn.get(f"{settings.APP_NAME}-access-{client_id}-{user_id}")
     if (not rd_token) or (access_token != rd_token):
         raise exception
     user_model = session.query(User).get(user_id)

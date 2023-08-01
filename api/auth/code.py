@@ -1,12 +1,15 @@
 # _*_ coding: utf-8 _*_
 
+"""
+auth api
+"""
+
 import logging
 import random
-from enum import Enum
 
 from fastapi import APIRouter, BackgroundTasks
 from fastapi import Body, Depends
-from pydantic import EmailStr, Field
+from pydantic import EmailStr
 from redis import Redis
 from sqlalchemy.orm import Session
 
@@ -18,21 +21,10 @@ from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp, UserCreateEmail, UserCreatePhone
 from data.utils import PhoneStr
-from ..user.utils import init_user_object
+from .utils import RespSend, TypeName, init_user_object
 
 # define router
 router = APIRouter()
-
-
-# response model
-class RespSend(Resp):
-    token: str = Field(None)
-
-
-# define enum of ttype
-class TypeName(str, Enum):
-    signup = "signup"
-    reset = "reset"
 
 
 @router.post("/send-code", response_model=RespSend)
