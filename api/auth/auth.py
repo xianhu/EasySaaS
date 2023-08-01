@@ -42,7 +42,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     - **client_id**: value of client_id, default "web"
     - **status_code=401**: user not found, password incorrect, client_id invalid
     """
-    # get username、password from form_data, and get user model
+    # get username、password from form_data, and get user_model
     username, pwd_plain = form_data.username, form_data.password
     if username.find("@") > 0:
         user_model = session.query(User).filter(User.email == username).first()

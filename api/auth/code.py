@@ -8,7 +8,8 @@ import logging
 import random
 from enum import Enum
 
-from fastapi import APIRouter, BackgroundTasks, Body, Depends
+from fastapi import APIRouter, BackgroundTasks
+from fastapi import Body, Depends
 from pydantic import EmailStr, Field
 from redis import Redis
 from sqlalchemy.orm import Session
@@ -96,7 +97,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     payload = get_jwt_payload(token, audience="send")
 
     # check token: ttype
-    if not payload.get("ttype"):
+    if (not payload) or (not payload.get("ttype")):
         return Resp(status=-1, msg="token invalid or expired")
     if payload["ttype"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid or expired")
@@ -110,13 +111,13 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     # check token: code
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid or not match")
+    pwd_hash = get_password_hash(password)
 
     # get user_model
     if username.find("@") > 0:
         user_model = session.query(User).filter(User.email == username).first()
     else:
         user_model = session.query(User).filter(User.phone == username).first()
-    pwd_hash = get_password_hash(password)
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
