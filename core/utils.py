@@ -1,17 +1,15 @@
 # _*_ coding: utf-8 _*_
 
 """
-utility functions and variables
+utility functions
 """
 
 import hashlib
-
 import logging
-from logging import Logger
 from logging.handlers import TimedRotatingFileHandler
 
 
-def get_logger(name, interval=1, backup=60, level=logging.WARNING) -> Logger:
+def get_logger(name, interval=1, backup=60, level=logging.WARNING) -> logging.Logger:
     """
     get logger instance of TimedRotatingFileHandler
     """

@@ -4,7 +4,6 @@
 security functions
 """
 
-import logging
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
@@ -49,8 +48,7 @@ def get_jwt_payload(token: str,  # token value
     try:
         # decode token and get payload, raise error if audience not match
         payload = jwt.decode(token, secret_key, algorithms=algorithm, audience=audience or "")
-    except jwt.JWTError as excep:
-        logging.error("get jwt payload error: %s", excep)
+    except jwt.JWTError as _excep:
         payload = {}
 
     # return

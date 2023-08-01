@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-utility functions
+utility functions and constants
 """
 
 from pydantic import constr
