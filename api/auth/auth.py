@@ -4,8 +4,6 @@
 auth api
 """
 
-from enum import Enum
-
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -18,17 +16,11 @@ from core.settings import settings
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import AccessToken, Resp
+from .utils import ClientID
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
-
-
-# define enum of client_id
-class ClientID(str, Enum):
-    web = "web"
-    ios = "ios"
-    android = "android"
 
 
 @router.post("/access-token", response_model=AccessToken)
