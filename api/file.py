@@ -8,7 +8,7 @@ import time
 from typing import List
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import Body, Depends, Form, Path, UploadFile
+from fastapi import Body, Depends, Form, Path, Query, UploadFile
 from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import Field
@@ -18,7 +18,7 @@ from core.settings import settings
 from core.utils import get_id_string, iter_file
 from data import get_session
 from data.models import File, FileTagFile, User
-from data.schemas import FileCreate, FileSchema, FileUpdate, Resp
+from data.schemas import FileSchema, FileUpdate, Resp
 from .filetag import check_filetag_permission
 from .utils import get_current_user
 
@@ -51,13 +51,41 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
     return file_model
 
 
+@router.get("/", response_model=RespFileList)
+def _get_file_schema_list(skip: int = Query(0, description="skip count"),
+                          limit: int = Query(100, description="limit count"),
+                          current_user: User = Depends(get_current_user),
+                          session: Session = Depends(get_session)):
+    """
+    get file schema list and filetag_id list list of current_user
+    """
+    user_id = current_user.id
+
+    # get file model list
+    file_model_list = session.query(File).filter(
+        File.user_id == user_id,
+    ).offset(skip).limit(limit).all()
+
+    # file schema list and filetag_id list list
+    file_schema_list, filetag_id_list_list = [], []
+    for file_model in file_model_list:
+        # define file schema and append to list
+        file_schema = FileSchema(**file_model.dict())
+        file_schema_list.append(file_schema)
+        # define filetag_id list and append to list
+        filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
+        filetag_id_list_list.append(filetag_id_list)
+
+    # return file schema list and filetag_id list list
+    return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
+
+
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
-            file_schema: FileCreate = Body(..., description="create schema"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
-    upload file object based on create schema, return file schema
+    upload file object and create file model, return file schema
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
@@ -79,8 +107,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     file_kwargs.update(dict(fullname=fullname, location=location))
     file_id = get_id_string(fullname)
 
-    # create file model based on create schema
-    file_kwargs.update(file_schema.model_dump(exclude_unset=True))
+    # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_kwargs)
     session.add(file_model)
     session.commit()
@@ -134,7 +161,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     file_kwargs.update(dict(fullname=fullname, location=location))
     file_id = get_id_string(fullname)
 
-    # create file model and save to database
+    # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_kwargs)
     session.add(file_model)
     session.commit()
@@ -149,7 +176,7 @@ def _download(file_id: str = Path(..., description="id of file"),
               current_user: User = Depends(get_current_user),
               session: Session = Depends(get_session)):
     """
-    download file by file_id, return FileResponse
+    download file object by file_id, return FileResponse
     - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
@@ -165,7 +192,7 @@ def _download_stream(file_id: str = Path(..., description="id of file"),
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
     """
-    download file by file_id, return StreamingResponse
+    download file object by file_id, return StreamingResponse
     - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
@@ -205,7 +232,7 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
-    delete file by file_id, return file schema
+    delete file model by id, return file schema
     - **status_code=403**: no permission to access file
     """
     # check file_id and get file model
@@ -221,37 +248,18 @@ def _delete_file_model(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
-@router.get("/", response_model=RespFileList)
-def _get_file_schema_list(current_user: User = Depends(get_current_user)):
-    """
-    get file schema list and filetag_id list list of current_user
-    """
-    # file schema list and filetag_id list list
-    file_schema_list, filetag_id_list_list = [], []
-    for file_model in current_user.files:
-        # define file schema and append to list
-        file_schema = FileSchema(**file_model.dict())
-        file_schema_list.append(file_schema)
-        # define filetag_id list and append to list
-        filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
-        filetag_id_list_list.append(filetag_id_list)
-
-    # return file schema list and filetag_id list list
-    return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
-
-
 @router.post("/link/", response_model=RespFile)
 def _link_file_filetag(file_id: str = Body(..., description="id of file"),
                        filetag_id: str = Body(..., description="id of filetag"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
-    link file to a filetag, return file schema and filetag_id list
+    link file model to a filetag model, return file schema and filetag_id list
     - **status_code=403**: no permission to access file or filetag
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
-    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+    _ = check_filetag_permission(filetag_id, current_user.id, session)
 
     # check if filetagfile existed in database
     filetagfile_model = session.query(FileTagFile).filter(
@@ -276,14 +284,14 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
                          current_user: User = Depends(get_current_user),
                          session: Session = Depends(get_session)):
     """
-    unlink file from a filetag, return file schema and filetag_id list
+    unlink file model to a filetag model, return file schema and filetag_id list
     - **status_code=403**: no permission to access file or filetag
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
-    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+    _ = check_filetag_permission(filetag_id, current_user.id, session)
 
-    # delete filetagfile model
+    # delete filetagfile model by ids
     session.query(FileTagFile).filter(
         FileTagFile.file_id == file_id,
         FileTagFile.filetag_id == filetag_id,

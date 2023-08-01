@@ -7,9 +7,10 @@ user schema
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl
+from pydantic import BaseModel, Field
+from pydantic import EmailStr, HttpUrl
 
-from ..utils import PhoneStr
+from ..vars import PhoneStr
 
 
 # used for response_model

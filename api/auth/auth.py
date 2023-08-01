@@ -42,9 +42,12 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     - **client_id**: value of client_id, default "web"
     - **status_code=401**: user not found, password incorrect, client_id invalid
     """
-    # get username、password from form_data
-    email, pwd_plain = form_data.username, form_data.password
-    user_model = session.query(User).filter(User.email == email).first()
+    # get username、password from form_data, and get user_model
+    username, pwd_plain = form_data.username, form_data.password
+    if username.find("@") > 0:
+        user_model = session.query(User).filter(User.email == username).first()
+    else:
+        user_model = session.query(User).filter(User.phone == username).first()
 
     # check if user exist or raise exception
     if (not user_model) or (user_model.status != 1):
@@ -72,7 +75,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
 
     # create access_token and save to redis
     access_token = create_jwt_token(user_id, client_id=client_id)
-    rd_conn.set(f"{settings.APP_NAME}-token-{client_id}-{user_id}", access_token)
+    rd_conn.set(f"{settings.APP_NAME}-access-{client_id}-{user_id}", access_token)
 
     # return access_token
     return AccessToken(access_token=access_token)
@@ -88,7 +91,7 @@ def _logout_access_token(client_id: ClientID = Body(..., embed=True, description
     user_id = current_user.id
 
     # delete access_token from redis
-    rd_conn.delete(f"{settings.APP_NAME}-token-{client_id}-{user_id}")
+    rd_conn.delete(f"{settings.APP_NAME}-access-{client_id}-{user_id}")
 
     # return result
     return Resp(msg="logout success")
