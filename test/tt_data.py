@@ -6,11 +6,12 @@ test data
 
 import logging
 
+from api.user.utils import init_user_object
 from core.security import get_password_hash
 from data import SessionMaker
 from data.models import User
 from data.schemas import UserCreateEmail, UserCreatePhone
-from data.utils import init_db_table, init_user_object
+from data.utils import init_db_table
 
 # init db
 init_db_table()

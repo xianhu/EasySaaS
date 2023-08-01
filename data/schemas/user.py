@@ -10,7 +10,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from pydantic import EmailStr, HttpUrl
 
-from ..vars import PhoneStr
+from ..utils import PhoneStr
 
 
 # used for response_model

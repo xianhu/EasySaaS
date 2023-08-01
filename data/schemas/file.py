@@ -30,6 +30,6 @@ class FileCreate(BaseModel):
 
 # used for request body
 class FileUpdate(BaseModel):
-    filename: str = Field(..., min_length=4, max_length=100)
+    filename: Optional[str] = Field(None, min_length=4, max_length=100)
     created_time: Optional[int] = Field(None, description="Created Timestamp")
     updated_time: Optional[int] = Field(None, description="Updated Timestamp")
