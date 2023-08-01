@@ -6,23 +6,18 @@ user api
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Body, Depends
-from pydantic import Field
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
 from core.settings import settings
 from data import get_session
 from data.models import User
-from data.schemas import Resp, UserSchema, UserUpdate
+from data.schemas import UserSchema, UserUpdate
+from .utils import RespUser
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
-
-
-# response model
-class RespUser(Resp):
-    data_user: UserSchema = Field(None)
 
 
 @router.get("/me", response_model=RespUser)
