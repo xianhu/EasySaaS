@@ -18,6 +18,7 @@ exclude_fields = ("created_at", "updated_at")
 class AbstractModel(Model):
     __abstract__ = True
 
+    @classmethod
     @declarative.declared_attr
     def __tablename__(cls) -> str:
         return f"{cls.__name__.lower()}s"

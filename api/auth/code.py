@@ -20,7 +20,8 @@ from core.utemail import send_email_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp, UserCreateEmail, UserCreatePhone
-from data.utils import PhoneStr, init_user_object
+from data.utils import init_user_object
+from data.vars import PhoneStr
 
 # define router
 router = APIRouter()

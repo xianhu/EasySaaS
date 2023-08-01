@@ -6,18 +6,12 @@ utility functions
 
 import time
 
-from pydantic import constr
 from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
 from .models import FileTag, User
 from .schemas import FileTagCreate, UserCreate
-
-# define filetags of system
-FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect", "trash"}
-
-# define type of PhoneStr
-PhoneStr = constr(pattern=r"^\+\d{1,3}-\d{7,15}$")
+from .vars import FILETAG_SYSTEM_SET
 
 
 def init_db_table(model=None) -> None:
