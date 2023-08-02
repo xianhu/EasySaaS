@@ -15,8 +15,7 @@ from data import get_session
 from data.models import FileTag, FileTagFile, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.utils import FILETAG_SYSTEM_SET
-from .utils import RespFileTag, RespFileTagList
-from .utils import check_filetag_permission
+from .utils import RespFileTag, RespFileTagList, check_filetag_permission
 from ..utils import get_current_user
 
 # define router
@@ -32,11 +31,10 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     get filetag schema list
     """
     user_id = current_user.id
+    _filter = FileTag.user_id == user_id
 
     # get filetag model list and schema list
-    filetag_model_list = session.query(FileTag).filter(
-        FileTag.user_id == user_id,
-    ).offset(skip).limit(limit).all()
+    filetag_model_list = session.query(FileTag).filter(_filter).offset(skip).limit(limit).all()
     filetag_schema_list = [FileTagSchema(**fm.dict()) for fm in filetag_model_list]
 
     # return filetag schema list
@@ -52,17 +50,16 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     - **status=-1**: filetag name invalid, filetag name existed
     """
     user_id = current_user.id
+    _filter = FileTag.user_id == user_id
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
         return RespFileTag(status=-1, msg="filetag name invalid")
     filetag_name = filetag_schema.name
+    _filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
-    if session.query(FileTag).filter(
-            FileTag.user_id == user_id,
-            FileTag.name == filetag_name,
-    ).first():
+    if session.query(FileTag).filter(_filter, _filter1).first():
         return RespFileTag(status=-1, msg="filetag name existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
 
@@ -87,18 +84,16 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
     - **status_code=403**: no permission to access filetag
     """
     user_id = current_user.id
+    _filter = FileTag.user_id == user_id
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
         return RespFileTag(status=-1, msg="filetag name invalid")
     filetag_name = filetag_schema.name
+    _filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
-    # check if filetag name existed
-    if session.query(FileTag).filter(
-            FileTag.user_id == user_id,
-            FileTag.name == filetag_name,
-    ).first():
+    if session.query(FileTag).filter(_filter, _filter1).first():
         return RespFileTag(status=-1, msg="filetag name existed")
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
 
@@ -122,13 +117,12 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
     - **status_code=403**: no permission to access filetag
     """
     user_id = current_user.id
+    _filter = FileTagFile.filetag_id == filetag_id
 
-    # get filetag model and check if filetag not empty
-    filetag_model = check_filetag_permission(filetag_id, user_id, session)
-    if session.query(FileTagFile).filter(
-            FileTagFile.filetag_id == filetag_model.id,
-    ).count() > 0:
+    # check if filetag not empty with files
+    if session.query(FileTagFile).filter(_filter).count() > 0:
         return RespFileTag(status=-2, msg="filetag not empty with files")
+    filetag_model = check_filetag_permission(filetag_id, user_id, session)
 
     # delete filetag model
     session.delete(filetag_model)
