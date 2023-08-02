@@ -35,7 +35,7 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
 
     # get filetag model list and schema list
     filetag_model_list = session.query(FileTag).filter(_filter).offset(skip).limit(limit).all()
-    filetag_schema_list = [FileTagSchema(**fm.dict()) for fm in filetag_model_list]
+    filetag_schema_list = [FileTagSchema(**ftm.dict()) for ftm in filetag_model_list]
 
     # return filetag schema list
     return RespFileTagList(data_filetag_list=filetag_schema_list)

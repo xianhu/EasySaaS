@@ -28,20 +28,15 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     get file schema list and filetag_id list list of current_user
     """
     user_id = current_user.id
+    _filter = File.user_id == user_id
 
-    # get file model list
-    file_model_list = session.query(File).filter(
-        File.user_id == user_id,
-    ).offset(skip).limit(limit).all()
+    # get file model list and schema list
+    file_model_list = session.query(File).filter(_filter).offset(skip).limit(limit).all()
+    file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
 
-    # file schema list and filetag_id list list
-    file_schema_list, filetag_id_list_list = [], []
+    # get filetag_id list list
+    filetag_id_list_list = []
     for file_model in file_model_list:
-        # define file schema and append to list
-        file_schema = FileSchema(**file_model.dict())
-        file_schema_list.append(file_schema)
-
-        # define filetag_id list and append to list
         filetag_id_list = get_filetag_id_list(file_model.id, session)
         filetag_id_list_list.append(filetag_id_list)
 
