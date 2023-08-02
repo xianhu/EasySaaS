@@ -94,7 +94,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid or not match")
 
-    # update user_model with email or phone
+    # update user model based on email or phone
     if username.find("@") > 0:
         current_user.email = username
         current_user.email_verified = True

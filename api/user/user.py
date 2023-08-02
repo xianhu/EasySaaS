@@ -60,12 +60,12 @@ def _update_user_password(password_old: str = Body(..., description="old passwor
     update password of current_user, return user schema
     - **status=-1**: password_old incorrect
     """
-    # check password of user_model
+    # check password of user model
     if not check_password_hash(password_old, current_user.password):
         return RespUser(status=-1, msg="password_old incorrect")
     pwd_hash = get_password_hash(password_new)
 
-    # update password of current_user
+    # update password of user model based on pwd_hash
     current_user.password = pwd_hash
     session.merge(current_user)
     session.commit()
@@ -87,7 +87,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
             detail="can not delete user model",
         )
 
-    # delete user model
+    # delete user model based on current_user
     session.delete(current_user)
     session.commit()
 
