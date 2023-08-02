@@ -58,8 +58,8 @@ def logging_user(request: Request, user_id: str, path: str, session: Session) ->
     """
     # get request information
     host = request.client.host
-    headers = request.headers
-    ua = headers.get("user-agent")
+    ua = request.headers.get("user-agent")
+    headers = {key: request.headers.get(key) for key in request.headers.keys()}
 
     # create userlog model and save to database
     userlog_kwargs = dict(host=host, ua=ua, headers=headers, path=path)

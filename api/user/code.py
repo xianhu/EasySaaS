@@ -29,7 +29,7 @@ router = APIRouter()
 
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
-                       username: EmailStr | PhoneStr = Body(..., description="email or phone"),
+                       username: EmailStr | PhoneStr = Body(..., embed=True, description="email or phone"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
