@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from core.security import create_jwt_token, get_jwt_payload
 from core.security import get_password_hash
 from core.settings import settings
-from core.utemail import send_email_of_code
+from core.utemail import send_email_of_code, send_phone_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp, UserCreateEmail, UserCreatePhone
@@ -64,7 +64,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     if username.find("@") > 0:
         background_tasks.add_task(send_email_of_code, code, username)
     else:
-        raise NotImplemented
+        background_tasks.add_task(send_phone_of_code, code, username)
     rd_conn.set(f"{settings.APP_NAME}-send-{username}", token, ex=60)
 
     # return token with code
@@ -109,15 +109,15 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user based on email or phone and pwd_hash
+        # create user model based on username and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
         user_model = init_user_object(user_schema, session)
 
-        # logging user and return result
-        logging.warning(f"signup: %s", user_model.dict())
+        # logging user model and return result
+        logging.warning("signup: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # check token ttype: reset
@@ -127,8 +127,8 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         session.merge(user_model)
         session.commit()
 
-        # logging user and return result
-        logging.warning(f"reset: %s", user_model.dict())
+        # logging user model and return result
+        logging.warning("reset: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid or expired)

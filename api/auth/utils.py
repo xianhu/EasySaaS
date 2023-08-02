@@ -42,12 +42,11 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
     try:
         # create user model based on create schema
         user_id = get_id_string(f"{user_schema.password}-{time.time()}")
-        user_kwargs = user_schema.model_dump(exclude_unset=True)
-        user_model = User(id=user_id, **user_kwargs)
+        user_model = User(id=user_id, **user_schema.model_dump(exclude_unset=True))
         session.add(user_model)
+        session.flush()  # not commit
 
         # create filetag model
-        user_id = user_model.id
         for filetag_name in FILETAG_SYSTEM_SET:
             # create filetag_id and filetag schema
             filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")

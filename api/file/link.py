@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from data import get_session
 from data.models import FileTagFile, User
 from data.schemas import FileSchema
-from .utils import RespFile, check_file_permission
+from .utils import RespFile, check_file_permission, get_filetag_id_list
 from ..filetag.utils import check_filetag_permission
 from ..utils import get_current_user
 
@@ -45,9 +45,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = session.query(FileTagFile.filetag_id).filter(
-        FileTagFile.file_id == file_model.id,
-    ).all()
+    filetag_id_list = get_filetag_id_list(file_id, session)
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
@@ -73,7 +71,5 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = session.query(FileTagFile.filetag_id).filter(
-        FileTagFile.file_id == file_model.id,
-    ).all()
+    filetag_id_list = get_filetag_id_list(file_id, session)
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)

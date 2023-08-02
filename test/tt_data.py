@@ -9,7 +9,7 @@ import logging
 from api.auth.utils import init_user_object
 from core.security import get_password_hash
 from data import SessionMaker
-from data.models import User
+from data.models import FileTag, User
 from data.schemas import UserCreateEmail, UserCreatePhone
 from data.utils import init_db_tables
 
@@ -37,5 +37,9 @@ with SessionMaker() as session:
     # logging user and filetag models -------------------------------------------------------------
     for user_model in session.query(User).all():
         logging.warning(user_model.dict())
-        for filetag_model in user_model.filetags:
+
+        # logging filetag models
+        for filetag_model in session.query(FileTag).filter(
+                FileTag.user_id == user_model.id,
+        ).all():
             logging.warning("----%s", filetag_model.dict())

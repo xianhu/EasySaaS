@@ -4,6 +4,7 @@
 user api
 """
 
+import logging
 import random
 
 from fastapi import APIRouter, BackgroundTasks
@@ -14,7 +15,7 @@ from sqlalchemy.orm import Session
 
 from core.security import create_jwt_token, get_jwt_payload
 from core.settings import settings
-from core.utemail import send_email_of_code
+from core.utemail import send_email_of_code, send_phone_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp
@@ -28,7 +29,7 @@ router = APIRouter()
 
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
-                       username: EmailStr | PhoneStr = Body(..., description="email or phone"),
+                       username: EmailStr | PhoneStr = Body(..., embed=True, description="email or phone"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
@@ -41,7 +42,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
         return RespSend(status=-1, msg="send code too frequently")
 
-    # check if email or phone existed in database
+    # check if email or phone existed
     if username.find("@") > 0:
         user_model = session.query(User).filter(User.email == username).first()
     else:
@@ -59,7 +60,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     if username.find("@") > 0:
         background_tasks.add_task(send_email_of_code, code, username)
     else:
-        raise NotImplemented
+        background_tasks.add_task(send_phone_of_code, code, username)
     rd_conn.set(f"{settings.APP_NAME}-send-{username}", token, ex=60)
 
     # return token with code
@@ -93,7 +94,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid or not match")
 
-    # update user_model
+    # update user_model with email or phone
     if username.find("@") > 0:
         current_user.email = username
         current_user.email_verified = True
@@ -102,6 +103,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         current_user.phone_verified = True
     session.merge(current_user)
     session.commit()
+    logging.warning("bind: %s", current_user.dict())
 
     # return result
     return Resp(msg="bind success")

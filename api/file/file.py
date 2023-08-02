@@ -9,9 +9,10 @@ from fastapi import Body, Depends, Path, Query
 from sqlalchemy.orm import Session
 
 from data import get_session
-from data.models import File, FileTagFile, User
+from data.models import File, User
 from data.schemas import FileSchema, FileUpdate
-from .utils import RespFile, RespFileList, check_file_permission
+from .utils import RespFile, RespFileList
+from .utils import check_file_permission, get_filetag_id_list
 from ..utils import get_current_user
 
 # define router
@@ -41,9 +42,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         file_schema_list.append(file_schema)
 
         # define filetag_id list and append to list
-        filetag_id_list = session.query(FileTagFile.filetag_id).filter(
-            FileTagFile.file_id == file_model.id,
-        ).all()
+        filetag_id_list = get_filetag_id_list(file_model.id, session)
         filetag_id_list_list.append(filetag_id_list)
 
     # return file schema list and filetag_id list list

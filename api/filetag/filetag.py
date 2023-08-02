@@ -6,8 +6,8 @@ filetag api
 
 import time
 
-from fastapi import APIRouter
-from fastapi import Body, Depends, Path, Query
+from fastapi import APIRouter, Depends
+from fastapi import Body, Path, Query
 from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
@@ -15,7 +15,8 @@ from data import get_session
 from data.models import FileTag, FileTagFile, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.utils import FILETAG_SYSTEM_SET
-from .utils import RespFileTag, RespFileTagList, check_filetag_permission
+from .utils import RespFileTag, RespFileTagList
+from .utils import check_filetag_permission
 from ..utils import get_current_user
 
 # define router
@@ -58,9 +59,10 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     filetag_name = filetag_schema.name
 
     # check if filetag name existed
-    for filetag_model in current_user.filetags:
-        if filetag_name != filetag_model.name:
-            continue
+    if session.query(FileTag).filter(
+            FileTag.user_id == user_id,
+            FileTag.name == filetag_name,
+    ).first():
         return RespFileTag(status=-1, msg="filetag name existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
 
@@ -92,9 +94,11 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
     filetag_name = filetag_schema.name
 
     # check if filetag name existed
-    for filetag_model in current_user.filetags:
-        if filetag_name != filetag_model.name:
-            continue
+    # check if filetag name existed
+    if session.query(FileTag).filter(
+            FileTag.user_id == user_id,
+            FileTag.name == filetag_name,
+    ).first():
         return RespFileTag(status=-1, msg="filetag name existed")
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
 

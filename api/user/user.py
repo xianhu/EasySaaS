@@ -25,9 +25,9 @@ def _get_user_schema(request: Request,  # parameter of request
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
     """
-    get current_user schema
+    get current_user schema (logging request information)
     """
-    # logging user information
+    # logging request information
     logging_user(request, current_user.id, "/user/me", session)
 
     # return user schema

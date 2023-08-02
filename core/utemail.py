@@ -21,6 +21,9 @@ smtp_options = {
 }
 mail_from = (settings.APP_NAME, settings.MAIL_USERNAME)
 
+# phone config
+phone_options = {}
+
 
 def _send_email(mail_to: str | tuple, subject: str, html_raw: str, render: Dict[str, Any]) -> int:
     """
@@ -40,7 +43,7 @@ def _send_email(mail_to: str | tuple, subject: str, html_raw: str, render: Dict[
     return response.status_code
 
 
-def send_email_of_code(code: int, mail_to: str | tuple) -> int:
+def send_email_of_code(code: int, mail_to: str) -> int:
     """
     send email of code, return status code
     """
@@ -51,3 +54,11 @@ def send_email_of_code(code: int, mail_to: str | tuple) -> int:
 
     # send email and return status code (250)
     return _send_email(mail_to, subject=mail_subject, html_raw=mail_html, render=render)
+
+
+def send_phone_of_code(code: int, phone_to: str) -> int:
+    """
+    send phone of code, return status code
+    """
+    # just for testing
+    return send_email_of_code(code, "qixianhu@qq.com")
