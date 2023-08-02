@@ -13,8 +13,7 @@ from pydantic import EmailStr
 from redis import Redis
 from sqlalchemy.orm import Session
 
-from core.security import create_jwt_token, get_jwt_payload
-from core.security import get_password_hash
+from core.security import create_jwt_token, get_jwt_payload, get_password_hash
 from core.settings import settings
 from core.utemail import send_email_of_code, send_phone_of_code
 from data import get_redis, get_session
@@ -122,7 +121,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
 
     # check token ttype: reset
     if ttype == TypeName.reset and user_model:
-        # reset user password based on pwd_hash
+        # reset password of user model based on pwd_hash
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()

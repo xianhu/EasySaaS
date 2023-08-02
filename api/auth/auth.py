@@ -10,8 +10,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from redis import Redis
 from sqlalchemy.orm import Session
 
-from core.security import check_password_hash
-from core.security import create_jwt_token
+from core.security import check_password_hash, create_jwt_token
 from core.settings import settings
 from data import get_redis, get_session
 from data.models import User
@@ -34,8 +33,10 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     - **client_id**: value of client_id, web | ios | android
     - **status_code=401**: user not found, password incorrect, client_id invalid
     """
-    # get username、password from form_data, and get user_model
+    # get username、password from form_data
     username, pwd_plain = form_data.username, form_data.password
+
+    # get user_model
     if username.find("@") > 0:
         user_model = session.query(User).filter(User.email == username).first()
     else:
