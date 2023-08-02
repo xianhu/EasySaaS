@@ -59,9 +59,10 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     filetag_name = filetag_schema.name
 
     # check if filetag name existed
-    for filetag_model in current_user.filetags:
-        if filetag_name != filetag_model.name:
-            continue
+    if session.query(FileTag).filter(
+            FileTag.user_id == user_id,
+            FileTag.name == filetag_name,
+    ).first():
         return RespFileTag(status=-1, msg="filetag name existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
 
@@ -93,9 +94,11 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
     filetag_name = filetag_schema.name
 
     # check if filetag name existed
-    for filetag_model in current_user.filetags:
-        if filetag_name != filetag_model.name:
-            continue
+    # check if filetag name existed
+    if session.query(FileTag).filter(
+            FileTag.user_id == user_id,
+            FileTag.name == filetag_name,
+    ).first():
         return RespFileTag(status=-1, msg="filetag name existed")
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
 

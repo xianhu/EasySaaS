@@ -10,7 +10,7 @@ from fastapi import HTTPException, status
 from pydantic import Field
 from sqlalchemy.orm import Session
 
-from data.models import File
+from data.models import File, FileTagFile
 from data.schemas import FileSchema, Resp
 
 
@@ -37,3 +37,12 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
             detail="no permission to access file",
         )
     return file_model
+
+
+def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
+    """
+    get filetag_id list of file from filetagfiles table
+    """
+    return [item[0] for item in session.query(FileTagFile.filetag_id, ).filter(
+        FileTagFile.file_id == file_id,
+    ).all()]
