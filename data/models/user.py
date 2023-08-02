@@ -36,11 +36,11 @@ class User(AbstractModel):
 
 
 class UserLog(AbstractModel):
-    # information -- basic
+    # information -- id and user_id
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
 
-    # information -- request fields
+    # information -- basic
     host = sqlalchemy.Column(sqlalchemy.String(255), doc="Host")
     ua = sqlalchemy.Column(sqlalchemy.String(255), doc="User Agent")
     headers = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="Headers")
