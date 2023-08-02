@@ -25,8 +25,8 @@ from . import auth, file, filetag, user
 api_router = APIRouter(prefix="")
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(user.router, prefix="/user", tags=["user"])
-api_router.include_router(filetag.router, prefix="/filetag", tags=["filetag"])
 api_router.include_router(file.router, prefix="/file", tags=["file"])
+api_router.include_router(filetag.router, prefix="/filetag", tags=["filetag"])
 
 
 @api_router.get("/")
