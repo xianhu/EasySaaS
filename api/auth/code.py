@@ -109,14 +109,14 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user based on email or phone and pwd_hash
+        # create user model based on username and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
         user_model = init_user_object(user_schema, session)
 
-        # logging user and return result
+        # logging user model and return result
         logging.warning(f"signup: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
@@ -127,7 +127,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         session.merge(user_model)
         session.commit()
 
-        # logging user and return result
+        # logging user model and return result
         logging.warning(f"reset: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 

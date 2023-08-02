@@ -36,8 +36,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     # check if user_id exist in payload
     if (not payload) or (not payload.get("sub")):
         raise exception
-    user_id = payload["sub"]
-    client_id = payload.get("client_id", "web")
+    user_id, client_id = payload["sub"], payload.get("client_id", "web")
 
     # get token by user_id and client_id, and check if token match
     rd_token = rd_conn.get(f"{settings.APP_NAME}-access-{client_id}-{user_id}")
@@ -62,7 +61,7 @@ def logging_user(request: Request, user_id: str, path: str, session: Session) ->
     headers = request.headers
     ua = headers.get("user-agent")
 
-    # create userlog model
+    # create userlog model and save to database
     userlog_kwargs = dict(host=host, ua=ua, headers=headers, path=path)
     userlog_model = UserLog(user_id=user_id, **userlog_kwargs)
     session.add(userlog_model)
