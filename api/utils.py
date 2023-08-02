@@ -52,7 +52,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     return user_model
 
 
-def logging_user(request: Request, user_id: str, path: str, session: Session) -> None:
+def logging_request(request: Request, user_id: str, path: str, session: Session) -> None:
     """
     logging request information to UserLog table
     """

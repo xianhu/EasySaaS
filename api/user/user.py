@@ -14,7 +14,7 @@ from data import get_session
 from data.models import User
 from data.schemas import UserSchema, UserUpdate
 from .utils import RespUser
-from ..utils import get_current_user, logging_user
+from ..utils import get_current_user, logging_request
 
 # define router
 router = APIRouter()
@@ -28,7 +28,7 @@ def _get_user_schema(request: Request,  # parameter of request
     get current_user schema (logging request information)
     """
     # logging request information
-    logging_user(request, current_user.id, "/user/me", session)
+    logging_request(request, current_user.id, "/user/me", session)
 
     # return user schema
     return RespUser(data_user=UserSchema(**current_user.dict()))
