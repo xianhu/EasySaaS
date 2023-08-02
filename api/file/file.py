@@ -9,7 +9,7 @@ from fastapi import Body, Depends, Path, Query
 from sqlalchemy.orm import Session
 
 from data import get_session
-from data.models import File, User
+from data.models import File, FileTagFile, User
 from data.schemas import FileSchema, FileUpdate
 from .utils import RespFile, RespFileList, check_file_permission
 from ..utils import get_current_user
@@ -39,8 +39,11 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         # define file schema and append to list
         file_schema = FileSchema(**file_model.dict())
         file_schema_list.append(file_schema)
+
         # define filetag_id list and append to list
-        filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
+        filetag_id_list = session.query(FileTagFile.filetag_id).filter(
+            FileTagFile.file_id == file_model.id,
+        ).all()
         filetag_id_list_list.append(filetag_id_list)
 
     # return file schema list and filetag_id list list

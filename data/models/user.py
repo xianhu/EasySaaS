@@ -32,12 +32,3 @@ class User(AbstractModel):
     # information -- permissions of system
     system_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is System Admin")
     system_role = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="System Role Json")
-
-    # relationship -- userprojects (user.userprojects, userproject.user)
-    userprojects = sqlalchemy.orm.relationship("UserProject", back_populates="user")
-
-    # relationship -- filetags (user.filetags, filetag.user)
-    filetags = sqlalchemy.orm.relationship("FileTag", back_populates="user")
-
-    # relationship -- files (user.files, file.user)
-    files = sqlalchemy.orm.relationship("File", back_populates="user")
