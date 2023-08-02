@@ -20,6 +20,8 @@ class UserSchema(BaseModel):
     nickname: Optional[str] = None
     birthday: Optional[date] = None
     gender: Optional[int] = None
+    country: Optional[str] = None
+    address: Optional[str] = None
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
     phone: Optional[PhoneStr] = None
@@ -32,7 +34,7 @@ class UserSchema(BaseModel):
 # used for request body
 class UserCreate(BaseModel):
     __abstract__ = True
-    password: str = Field(...)
+    password: str = Field(..., description="Password")
 
 
 class UserCreateEmail(UserCreate):
@@ -51,3 +53,5 @@ class UserUpdate(BaseModel):
     nickname: Optional[str] = Field(None, min_length=2, max_length=20)
     birthday: Optional[date] = Field(None, description="Date of Birthday")
     gender: Optional[int] = Field(None, description="1-Male, 2-Female")
+    country: Optional[str] = Field(None, description="Country")
+    address: Optional[str] = Field(None, description="Address")

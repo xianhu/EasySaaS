@@ -11,9 +11,11 @@ User(1)  <-  FileTag(N)
                 |
 User(1)  <-  File(N)
 -------------------------------------------------
+User(1)  <-  UserLog(N)
+-------------------------------------------------
 """
 
 from .file import File, FileTagFile
 from .filetag import FileTag
 from .project import Project, UserProject
-from .user import User
+from .user import User, UserLog

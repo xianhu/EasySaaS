@@ -5,7 +5,7 @@ user api
 """
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import Body, Depends
+from fastapi import Body, Depends, Request
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
@@ -14,17 +14,22 @@ from data import get_session
 from data.models import User
 from data.schemas import UserSchema, UserUpdate
 from .utils import RespUser
-from ..utils import get_current_user
+from ..utils import get_current_user, logging_user
 
 # define router
 router = APIRouter()
 
 
 @router.get("/me", response_model=RespUser)
-def _get_user_schema(current_user: User = Depends(get_current_user)):
+def _get_user_schema(request: Request,  # parameter of request
+                     current_user: User = Depends(get_current_user),
+                     session: Session = Depends(get_session)):
     """
     get current_user schema
     """
+    # logging user information
+    logging_user(request, current_user.id, "/user/me", session)
+
     # return user schema
     return RespUser(data_user=UserSchema(**current_user.dict()))
 

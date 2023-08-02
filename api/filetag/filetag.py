@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from core.utils import get_id_string
 from data import get_session
-from data.models import FileTag, User
+from data.models import FileTag, FileTagFile, User
 from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.utils import FILETAG_SYSTEM_SET
 from .utils import RespFileTag, RespFileTagList, check_filetag_permission
@@ -121,7 +121,9 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
 
     # get filetag model and check if filetag not empty
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
-    if filetag_model.filetagfiles:
+    if session.query(FileTagFile).filter(
+            FileTagFile.filetag_id == filetag_model.id,
+    ).count() > 0:
         return RespFileTag(status=-2, msg="filetag not empty with files")
 
     # delete filetag model

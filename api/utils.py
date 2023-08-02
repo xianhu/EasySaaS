@@ -4,7 +4,8 @@
 utility functions and variables
 """
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, Request
+from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from redis import Redis
 from sqlalchemy.orm import Session
@@ -12,7 +13,7 @@ from sqlalchemy.orm import Session
 from core.security import get_jwt_payload
 from core.settings import settings
 from data import get_redis, get_session
-from data.models import User
+from data.models import User, UserLog
 
 # define OAuth2PasswordBearer
 oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
@@ -50,3 +51,20 @@ def get_current_user(access_token: str = Depends(oauth2),
 
     # return user
     return user_model
+
+
+def logging_user(request: Request, user_id: str, path: str, session: Session) -> None:
+    """
+    logging request information to UserLog table
+    """
+    # get request information
+    host = request.client.host
+    headers = request.headers
+    ua = headers.get("user-agent")
+
+    # create userlog model
+    userlog_kwargs = dict(host=host, ua=ua, headers=headers, path=path)
+    userlog_model = UserLog(user_id=user_id, **userlog_kwargs)
+    session.add(userlog_model)
+    session.commit()
+    return None

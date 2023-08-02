@@ -4,6 +4,8 @@
 utility functions and constants
 """
 
+from typing import Optional
+
 from pydantic import constr
 
 # define type of PhoneStr
@@ -13,16 +15,17 @@ PhoneStr = constr(pattern=r"^\+\d{1,3}-\d{7,15}$")
 FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect", "trash"}
 
 
-def init_db_table(model=None) -> None:
+def init_db_tables(model_list: Optional[list] = None) -> None:
     """
-    initialize database or table
+    initialize database or tables
     """
     from .dmysql import engine
     from .models.base import Model
-    if not model:
+    if not model_list:
         Model.metadata.drop_all(engine, checkfirst=True)
         Model.metadata.create_all(engine, checkfirst=True)
-    else:
+        return None
+    for model in model_list:
         model.__table__.drop(engine, checkfirst=True)
         model.__table__.create(engine, checkfirst=True)
     return None

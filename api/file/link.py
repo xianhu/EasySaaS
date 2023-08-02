@@ -45,7 +45,9 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
+    filetag_id_list = session.query(FileTagFile.filetag_id).filter(
+        FileTagFile.file_id == file_model.id,
+    ).all()
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
@@ -71,5 +73,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = [ftfm.filetag_id for ftfm in file_model.filetagfiles]
+    filetag_id_list = session.query(FileTagFile.filetag_id).filter(
+        FileTagFile.file_id == file_model.id,
+    ).all()
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)

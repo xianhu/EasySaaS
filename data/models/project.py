@@ -15,9 +15,6 @@ class Project(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     desc = sqlalchemy.Column(sqlalchemy.String(512), doc="Description")
 
-    # relationship -- userprojects (project.userprojects, userproject.project)
-    userprojects = sqlalchemy.orm.relationship("UserProject", back_populates="project")
-
 
 class UserProject(AbstractModel):
     __table_args__ = (
@@ -25,13 +22,9 @@ class UserProject(AbstractModel):
     )
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
 
-    # relationship -- foreign_key to user (userproject.user, user.userprojects)
+    # relationship -- foreign_key to user and project
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
-    user = sqlalchemy.orm.relationship("User", back_populates="userprojects")
-
-    # relationship -- foreign_key to project (userproject.project, project.userprojects)
     project_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("projects.id"), index=True)
-    project = sqlalchemy.orm.relationship("Project", back_populates="userprojects")
 
     # information -- permission of user and project
     permission = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="0(owner), 1(member)")

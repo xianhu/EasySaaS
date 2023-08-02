@@ -19,9 +19,5 @@ class FileTag(AbstractModel):
     # information -- type, system or custom
     ttype = sqlalchemy.Column(sqlalchemy.String(255), default="custom", doc="system, custom")
 
-    # relationship -- foreign_key to user (filetag.user, user.filetags)
+    # relationship -- foreign_key to user
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
-    user = sqlalchemy.orm.relationship("User", back_populates="filetags")
-
-    # relationship -- filetagfiles (filetag.filetagfiles, filetagfile.filetag)
-    filetagfiles = sqlalchemy.orm.relationship("FileTagFile", back_populates="filetag")
