@@ -4,6 +4,7 @@
 user api
 """
 
+import logging
 import random
 
 from fastapi import APIRouter, BackgroundTasks
@@ -41,7 +42,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
         return RespSend(status=-1, msg="send code too frequently")
 
-    # check if email or phone existed in database
+    # check if email or phone existed
     if username.find("@") > 0:
         user_model = session.query(User).filter(User.email == username).first()
     else:
@@ -93,7 +94,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
     if code != code_in_token:
         return Resp(status=-2, msg="code invalid or not match")
 
-    # update user_model
+    # update user_model with email or phone
     if username.find("@") > 0:
         current_user.email = username
         current_user.email_verified = True
@@ -102,6 +103,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         current_user.phone_verified = True
     session.merge(current_user)
     session.commit()
+    logging.warning("bind: %s", current_user.dict())
 
     # return result
     return Resp(msg="bind success")

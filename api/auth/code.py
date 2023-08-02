@@ -117,7 +117,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         user_model = init_user_object(user_schema, session)
 
         # logging user model and return result
-        logging.warning(f"signup: %s", user_model.dict())
+        logging.warning("signup: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # check token ttype: reset
@@ -128,7 +128,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         session.commit()
 
         # logging user model and return result
-        logging.warning(f"reset: %s", user_model.dict())
+        logging.warning("reset: %s", user_model.dict())
         return Resp(msg=f"{ttype} success")
 
     # return -1 (token invalid or expired)
