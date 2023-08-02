@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 from core.security import create_jwt_token, get_jwt_payload
 from core.settings import settings
-from core.utemail import send_email_of_code
+from core.utemail import send_email_of_code, send_phone_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp
@@ -59,7 +59,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     if username.find("@") > 0:
         background_tasks.add_task(send_email_of_code, code, username)
     else:
-        raise NotImplemented
+        background_tasks.add_task(send_phone_of_code, code, username)
     rd_conn.set(f"{settings.APP_NAME}-send-{username}", token, ex=60)
 
     # return token with code
