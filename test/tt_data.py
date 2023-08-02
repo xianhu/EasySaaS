@@ -11,10 +11,10 @@ from core.security import get_password_hash
 from data import SessionMaker
 from data.models import User
 from data.schemas import UserCreateEmail, UserCreatePhone
-from data.utils import init_db_table
+from data.utils import init_db_tables
 
 # init db
-init_db_table()
+init_db_tables()
 
 # init user with session
 with SessionMaker() as session:

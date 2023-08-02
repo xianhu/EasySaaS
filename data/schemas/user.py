@@ -34,7 +34,7 @@ class UserSchema(BaseModel):
 # used for request body
 class UserCreate(BaseModel):
     __abstract__ = True
-    password: str = Field(...)
+    password: str = Field(..., description="Password")
 
 
 class UserCreateEmail(UserCreate):

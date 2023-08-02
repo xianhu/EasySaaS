@@ -17,7 +17,7 @@ class File(AbstractModel):
     updated_time = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Updated Timestamp")
 
     # information -- filesize, fullname and location (can not be changed)
-    filesize = sqlalchemy.Column(sqlalchemy.BigInteger, default=0, doc="File Size")
+    filesize = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="File Size")
     fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
     location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 
