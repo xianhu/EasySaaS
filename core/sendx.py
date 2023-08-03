@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-email functions
+send functions
 """
 
 from typing import Any, Dict
