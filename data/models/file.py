@@ -13,8 +13,8 @@ from .base import AbstractModel
 class File(AbstractModel):
     # information -- basic (can be changed)
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    created_time = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Created Timestamp")
-    updated_time = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Updated Timestamp")
+    created_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Created Time")
+    updated_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Updated Time")
 
     # information -- filesize, fullname and location (can not be changed)
     filesize = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="File Size")

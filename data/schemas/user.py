@@ -4,7 +4,7 @@
 user schema
 """
 
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -27,6 +27,13 @@ class UserSchema(BaseModel):
     phone: Optional[PhoneStr] = None
     phone_verified: Optional[bool] = None
     # password: Optional[str] = None
+    expire_time: Optional[datetime] = None
+    points_left: Optional[int] = None
+    points_total: Optional[int] = None
+    points_history: Optional[list] = None
+    space_used: Optional[int] = None
+    space_total: Optional[int] = None
+    space_history: Optional[list] = None
     # system_admin: Optional[bool] = None
     # system_role: Optional[dict] = None
 
