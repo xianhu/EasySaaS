@@ -35,9 +35,13 @@ class Settings(BaseSettings):
     REDIS_URI: str = os.getenv(f"{ENV_PRE}_REDIS_URI")
     DATABASE_URI: str = os.getenv(f"{ENV_PRE}_DATABASE_URI")
 
-    # settings -- others
+    # settings -- file upload
     FOLDER_UPLOAD: str = "/tmp"
     MAX_FILE_SIZE: int = 1024 * 1024 * 25
+
+    # settings -- avatar upload
+    FOLDER_UPLOAD_AVATAR: str = "/static/avatar"
+    MAX_FILE_SIZE_AVATAR: int = 1024 * 1024 * 1
 
     # settings -- session or token duration
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
