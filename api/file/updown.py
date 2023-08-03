@@ -5,6 +5,7 @@ file api
 """
 
 import time
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi import Depends, Form, Path, UploadFile
@@ -26,6 +27,8 @@ router = APIRouter()
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
+            created_time: Optional[int] = Form(None, ge=946656000),
+            updated_time: Optional[int] = Form(None, ge=946656000),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -33,6 +36,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
+    file_kwargs = dict(created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
     if file.size > settings.MAX_FILE_SIZE:
@@ -40,8 +44,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    filename, filesize = file.filename, file.size
-    file_kwargs = dict(filename=filename, filesize=filesize)
+    filename, filesize, filetype = file.filename, file.size, file.content_type
+    file_kwargs.update(dict(filename=filename, filesize=filesize, filetype=filetype))
 
     # define fullname, location and save file
     fullname = f"{user_id}-{int(time.time())}-{filename}"
@@ -67,6 +71,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
+                 created_time: Optional[int] = Form(None, ge=946656000),
+                 updated_time: Optional[int] = Form(None, ge=946656000),
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
     """
@@ -74,6 +80,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
+    file_kwargs = dict(created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
     if flow_total_size > settings.MAX_FILE_SIZE:
@@ -93,8 +100,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    filename, filesize = file.filename, file.size
-    file_kwargs = dict(filename=filename, filesize=filesize)
+    filename, filesize, filetype = file.filename, file.size, file.content_type
+    file_kwargs.update(dict(filename=filename, filesize=filesize, filetype=filetype))
 
     # define fullname, location and save file
     fullname = f"{user_id}-{int(time.time())}-{filename}"

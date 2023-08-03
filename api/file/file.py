@@ -34,7 +34,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     file_model_list = session.query(File).filter(_filter).offset(skip).limit(limit).all()
     file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
 
-    # get filetag_id list list
+    # filetag_id list list
     filetag_id_list_list = []
     for file_model in file_model_list:
         filetag_id_list = get_filetag_id_list(file_model.id, session)

@@ -18,6 +18,7 @@ class File(AbstractModel):
 
     # information -- filesize, fullname and location (can not be changed)
     filesize = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="File Size")
+    filetype = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="File Type")
     fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
     location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 

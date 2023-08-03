@@ -72,7 +72,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
 
 @router.post("/verify-code", response_model=Resp)
 def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
-                       token: str = Body(..., description="token value"),
+                       token: str = Body(..., description="token from send"),
                        password: str = Body(..., min_length=6, max_length=20),
                        session: Session = Depends(get_session)):
     """
@@ -90,7 +90,7 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         return Resp(status=-1, msg="token invalid or expired")
     ttype = payload["ttype"]
 
-    # check token: sub(email/phone) and code(int)
+    # check token: sub(email or phone) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
         return Resp(status=-1, msg="token invalid or expired")
     username, code_in_token = payload["sub"], payload["code"]

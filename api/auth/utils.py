@@ -46,7 +46,7 @@ def init_user_object(user_schema: UserCreate, session: Session) -> User:
         session.add(user_model)
         session.flush()  # not commit
 
-        # create filetag model
+        # create filetag models
         for filetag_name in FILETAG_SYSTEM_SET:
             # create filetag_id and filetag schema
             filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")

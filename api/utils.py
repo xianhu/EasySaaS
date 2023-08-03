@@ -27,7 +27,7 @@ def get_current_user(access_token: str = Depends(oauth2),
     - **status_code=401**: token invalid or expired
     """
     # get payload from access_token
-    exception = HTTPException(
+    exception_unauthorized = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="token invalid or expired",
     )
@@ -35,18 +35,18 @@ def get_current_user(access_token: str = Depends(oauth2),
 
     # check if user_id exist in payload
     if (not payload) or (not payload.get("sub")):
-        raise exception
+        raise exception_unauthorized
     user_id, client_id = payload["sub"], payload.get("client_id", "web")
 
     # get token by user_id and client_id, and check if token match
     rd_token = rd_conn.get(f"{settings.APP_NAME}-access-{client_id}-{user_id}")
     if (not rd_token) or (access_token != rd_token):
-        raise exception
+        raise exception_unauthorized
     user_model = session.query(User).get(user_id)
 
     # check if user exist or raise exception
     if (not user_model) or (user_model.status != 1):
-        raise exception
+        raise exception_unauthorized
 
     # return user
     return user_model
