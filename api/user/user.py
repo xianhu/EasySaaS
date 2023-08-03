@@ -5,7 +5,8 @@ user api
 """
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi import Body, Depends, Request
+from fastapi import Body, Depends, Request, UploadFile
+from fastapi import File as UploadFileClass  # rename File
 from sqlalchemy.orm import Session
 
 from core.security import check_password_hash, get_password_hash
@@ -67,6 +68,36 @@ def _update_user_password(password_old: str = Body(..., description="old passwor
 
     # update password of user model based on pwd_hash
     current_user.password = pwd_hash
+    session.merge(current_user)
+    session.commit()
+
+    # return user schema
+    return RespUser(data_user=UserSchema(**current_user.dict()))
+
+
+@router.post("/me/avatar", response_model=RespUser)
+def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="file object"),
+                        current_user: User = Depends(get_current_user),
+                        session: Session = Depends(get_session)):
+    """
+    update avatar of current_user model, return user schema
+    - **status_code=500**: file size too large
+    """
+    # check file size or raise exception
+    if file.size > settings.MAX_SIZE_AVATAR:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file size too large"
+        )
+    filename = file.filename
+
+    # save file to static folder
+    with open(f"{settings.FOLDER_AVATAR}/{filename}", "wb") as file_in:
+        file_in.write(file.file.read())
+    avatar_url = f"{settings.APP_DOMAIN}/{settings.FOLDER_AVATAR}/{filename}"
+
+    # update avatar of user model based on avatar_url
+    current_user.avatar = avatar_url
     session.merge(current_user)
     session.commit()
 
