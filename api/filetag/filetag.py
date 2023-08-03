@@ -117,9 +117,9 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag
     - **status_code=403**: no permission to access filetag
     """
     user_id = current_user.id
-    _filter = FileTagFile.filetag_id == filetag_id
 
     # check if filetag not empty with files
+    _filter = FileTagFile.filetag_id == filetag_id
     if session.query(FileTagFile).filter(_filter).count() > 0:
         return RespFileTag(status=-2, msg="filetag not empty with files")
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
