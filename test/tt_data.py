@@ -28,6 +28,8 @@ with SessionMaker() as session:
     _user_model = init_user_object(user_schema, session)
     logging.warning(_user_model.dict())
 
+    print(_user_model.created_at)
+
     # logging filetag models
     _filter = FileTag.user_id == _user_model.id
     for filetag_model in session.query(FileTag).filter(_filter).all():

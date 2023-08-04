@@ -39,7 +39,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     file_kwargs = dict(created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
-    if file.size > settings.MAX_FILE_SIZE:
+    if file.size > settings.MAX_SIZE_FILE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
@@ -49,7 +49,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
 
     # define fullname, location and save file
     fullname = f"{user_id}-{int(time.time())}-{filename}"
-    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
+    location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     file_kwargs.update(dict(fullname=fullname, location=location))
@@ -83,7 +83,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     file_kwargs = dict(created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
-    if flow_total_size > settings.MAX_FILE_SIZE:
+    if flow_total_size > settings.MAX_SIZE_FILE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large",
@@ -92,7 +92,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
     # save flow_chunk_number part of file
     fullname_temp = f"{flow_identifier}-{filename_temp}"
-    location_temp = f"{settings.FOLDER_UPLOAD}/{fullname_temp}"
+    location_temp = f"{settings.FOLDER_FILE}/{fullname_temp}"
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
     with open(location_temp, file_mode) as file_in:
         file_in.write(file.file.read())
@@ -105,7 +105,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
     # define fullname, location and save file
     fullname = f"{user_id}-{int(time.time())}-{filename}"
-    location = f"{settings.FOLDER_UPLOAD}/{fullname}"
+    location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())

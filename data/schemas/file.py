@@ -4,6 +4,7 @@
 file schema
 """
 
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -13,8 +14,8 @@ from pydantic import BaseModel, Field
 class FileSchema(BaseModel):
     id: Optional[str] = None
     filename: Optional[str] = None
-    created_time: Optional[int] = None
-    updated_time: Optional[int] = None
+    created_time: Optional[datetime] = None
+    updated_time: Optional[datetime] = None
     filesize: Optional[int] = None
     filetype: Optional[str] = None
     # fullname: Optional[str] = None
@@ -25,12 +26,12 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    created_time: Optional[int] = Field(None, description="Created Timestamp")
-    updated_time: Optional[int] = Field(None, description="Updated Timestamp")
+    created_time: Optional[datetime] = Field(None, description="Created DateTime")
+    updated_time: Optional[datetime] = Field(None, description="Updated DateTime")
 
 
 # used for request body
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
-    created_time: Optional[int] = Field(None, description="Created Timestamp")
-    updated_time: Optional[int] = Field(None, description="Updated Timestamp")
+    created_time: Optional[datetime] = Field(None, description="Created DateTime")
+    updated_time: Optional[datetime] = Field(None, description="Updated DateTime")

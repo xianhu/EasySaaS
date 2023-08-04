@@ -14,8 +14,8 @@ from redis import Redis
 from sqlalchemy.orm import Session
 
 from core.security import create_jwt_token, get_jwt_payload, get_password_hash
+from core.sendx import send_email_of_code, send_phone_of_code
 from core.settings import settings
-from core.utemail import send_email_of_code, send_phone_of_code
 from data import get_redis, get_session
 from data.models import User
 from data.schemas import Resp, UserCreateEmail, UserCreatePhone
