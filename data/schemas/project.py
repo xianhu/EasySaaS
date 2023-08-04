@@ -4,6 +4,7 @@
 project schema
 """
 
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -14,6 +15,7 @@ class ProjectSchema(BaseModel):
     id: Optional[str] = None
     name: Optional[str] = None
     desc: Optional[str] = None
+    expire_time: Optional[datetime] = None
 
 
 # used for request body

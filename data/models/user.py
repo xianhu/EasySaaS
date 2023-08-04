@@ -30,8 +30,8 @@ class User(AbstractModel):
     phone_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
     password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
 
-    # information -- expire time
-    expire_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Expire Time")
+    # information -- expire datetime
+    expire_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Expire DateTime")
 
     # information -- points
     points_left = sqlalchemy.Column(sqlalchemy.Integer, doc="Left Points")
