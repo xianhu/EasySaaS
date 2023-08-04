@@ -5,6 +5,7 @@ file api
 """
 
 import time
+from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, status
@@ -27,8 +28,8 @@ router = APIRouter()
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
-            created_time: Optional[int] = Form(None, ge=946656000),
-            updated_time: Optional[int] = Form(None, ge=946656000),
+            created_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
+            updated_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -71,8 +72,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
-                 created_time: Optional[int] = Form(None, ge=946656000),
-                 updated_time: Optional[int] = Form(None, ge=946656000),
+                 created_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
+                 updated_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
     """

@@ -5,6 +5,7 @@ test data
 """
 
 import logging
+from pprint import pformat
 
 from api.auth.utils import init_user_object
 from core.security import get_password_hash
@@ -26,9 +27,7 @@ with SessionMaker() as session:
 
     # initialize user object based on create schema
     _user_model = init_user_object(user_schema, session)
-    logging.warning(_user_model.dict())
-
-    print(_user_model.created_at)
+    logging.warning(pformat(_user_model.dict(), indent=2))
 
     # logging filetag models
     _filter = FileTag.user_id == _user_model.id
@@ -41,7 +40,7 @@ with SessionMaker() as session:
 
     # initialize user object based on create schema
     _user_model = init_user_object(user_schema, session)
-    logging.warning(_user_model.dict())
+    logging.warning(pformat(_user_model.dict(), indent=2))
 
     # logging filetag models
     _filter = FileTag.user_id == _user_model.id
