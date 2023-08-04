@@ -16,11 +16,8 @@ class FileSchema(BaseModel):
     filename: Optional[str] = None
     created_time: Optional[datetime] = None
     updated_time: Optional[datetime] = None
-    filesize: Optional[int] = None
-    filetype: Optional[str] = None
-    # fullname: Optional[str] = None
-    # location: Optional[str] = None
-    # user_id: Optional[str] = None
+    filesize: Optional[int] = None  # can't be changed
+    filetype: Optional[str] = None  # can't be changed
 
 
 # used for request body
