@@ -81,7 +81,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
                         session: Session = Depends(get_session)):
     """
     update avatar of current_user model, return user schema
-    - **status_code=500**: file size too large
+    - **status_code=500**: file size too large, file type not support
     """
     # check file size or raise exception
     if file.size > settings.MAX_SIZE_AVATAR:
@@ -89,12 +89,20 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    filename = file.filename
+    filename, filetype = file.filename, file.content_type
 
-    # save file to static folder
-    with open(f"{settings.FOLDER_AVATAR}/{filename}", "wb") as file_in:
+    # check file type or raise exception
+    if filetype not in ("image/jpeg", "image/png"):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file type not support"
+        )
+
+    # define fullname and save file
+    fullname = f"{current_user.id}-{filename}"
+    with open(f"{settings.FOLDER_AVATAR}/{fullname}", "wb") as file_in:
         file_in.write(file.file.read())
-    avatar_url = f"{settings.APP_DOMAIN}/{settings.FOLDER_AVATAR}/{filename}"
+    avatar_url = f"{settings.APP_DOMAIN}/{settings.FOLDER_AVATAR}/{fullname}"
 
     # update avatar of user model based on avatar_url
     current_user.avatar = avatar_url
