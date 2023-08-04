@@ -39,8 +39,8 @@ class User(AbstractModel):
     points_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Points History")
 
     # information -- space
-    space_used = sqlalchemy.Column(sqlalchemy.Integer, doc="Used Space")
-    space_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Space")
+    space_used = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Used Space")
+    space_total = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Total Space")
     space_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Space History")
 
     # information -- permissions of system

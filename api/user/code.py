@@ -4,7 +4,6 @@
 user api
 """
 
-import logging
 import random
 
 from fastapi import APIRouter, BackgroundTasks
@@ -103,7 +102,6 @@ def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
         current_user.phone_verified = True
     session.merge(current_user)
     session.commit()
-    logging.warning("bind: %s", current_user.dict())
 
     # return result
     return Resp(msg="bind success")

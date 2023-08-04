@@ -34,8 +34,6 @@ class UserSchema(BaseModel):
     space_used: Optional[int] = None
     space_total: Optional[int] = None
     space_history: Optional[list] = None
-    # system_admin: Optional[bool] = None
-    # system_role: Optional[dict] = None
 
 
 # used for request body
