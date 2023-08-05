@@ -13,5 +13,5 @@ class RespUser(Resp):
 
 
 # response model
-class RespSend(Resp):
-    token: Optional[str] = Field(None)
+class RespUserList(Resp):
+    data_user_list: List[UserSchema] = Field([])

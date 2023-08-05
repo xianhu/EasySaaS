@@ -81,7 +81,7 @@ def _trash_file_model(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
-@router.post("untrash/{file_id}", response_model=RespFile)
+@router.post("/untrash/{file_id}", response_model=RespFile)
 def _untrash_file_model(file_id: str = Path(..., description="id of file"),
                         current_user: User = Depends(get_current_user),
                         session: Session = Depends(get_session)):

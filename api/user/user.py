@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-user api
+user api (me)
 """
 
 from .utils import RespUser
