@@ -4,18 +4,8 @@
 filetag api
 """
 
-import time
-
-from fastapi import APIRouter, Depends
-from fastapi import Body, Path, Query
-from sqlalchemy.orm import Session
-
-from core.utils import get_id_string
-from data import get_session
-from data.models import FileTag, FileTagFile, User
-from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
-from data.utils import FILETAG_SYSTEM_SET
 from .utils import RespFileTag, RespFileTagList, check_filetag_permission
+from ..base import *
 from ..utils import get_current_user
 
 # define router

@@ -4,14 +4,7 @@
 filetag api
 """
 
-from typing import List, Optional
-
-from fastapi import HTTPException, status
-from pydantic import Field
-from sqlalchemy.orm import Session
-
-from data.models import FileTag
-from data.schemas import FileTagSchema, Resp
+from ..base import *
 
 
 # response model

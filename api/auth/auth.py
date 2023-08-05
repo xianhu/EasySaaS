@@ -4,18 +4,8 @@
 auth api
 """
 
-from fastapi import APIRouter, HTTPException, status
-from fastapi import Body, Depends
-from fastapi.security import OAuth2PasswordRequestForm
-from redis import Redis
-from sqlalchemy.orm import Session
-
-from core.security import check_password_hash, create_jwt_token
-from core.settings import settings
-from data import get_redis, get_session
-from data.models import User
-from data.schemas import AccessToken, Resp
 from .utils import ClientID
+from ..base import *
 from ..utils import get_current_user
 
 # define router

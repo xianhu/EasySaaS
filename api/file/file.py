@@ -4,13 +4,8 @@
 file api
 """
 
-from fastapi import APIRouter, Body, Depends, Path, Query
-from sqlalchemy.orm import Session
-
-from data import get_session
-from data.models import File, User
-from data.schemas import FileSchema, FileUpdate
 from .utils import RespFile, RespFileList, check_file_permission, get_filetag_id_list
+from ..base import *
 from ..utils import get_current_user
 
 # define router

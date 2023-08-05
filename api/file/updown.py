@@ -4,22 +4,8 @@
 file api
 """
 
-import time
-from datetime import datetime
-from typing import Optional
-
-from fastapi import APIRouter, HTTPException, status
-from fastapi import Depends, Form, Path, UploadFile
-from fastapi import File as UploadFileClass  # rename File
-from fastapi.responses import FileResponse, StreamingResponse
-from sqlalchemy.orm import Session
-
-from core.settings import settings
-from core.utils import get_id_string, iter_file
-from data import get_session
-from data.models import File, User
-from data.schemas import FileSchema
 from .utils import RespFile, check_file_permission
+from ..base import *
 from ..utils import get_current_user
 
 # define router

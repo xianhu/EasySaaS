@@ -4,17 +4,7 @@
 auth api
 """
 
-import time
-from enum import Enum
-from typing import Optional
-
-from pydantic import Field
-from sqlalchemy.orm import Session
-
-from core.utils import get_id_string
-from data.models import FileTag, User
-from data.schemas import FileTagCreate, Resp, UserCreate
-from data.utils import FILETAG_SYSTEM_SET
+from ..base import *
 
 
 # response model
