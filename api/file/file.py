@@ -60,16 +60,65 @@ def _update_file_model(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
+@router.post("/trash/{file_id}", response_model=RespFile)
+def _trash_file_model(file_id: str = Path(..., description="id of file"),
+                      current_user: User = Depends(get_current_user),
+                      session: Session = Depends(get_session)):
+    """
+    trash file model by id, return file schema
+    """
+    # check file_id and get file model
+    file_model = check_file_permission(file_id, current_user.id, session)
+
+    # update file model
+    file_model.is_trash = True
+    file_model.trash_time = datetime.utcnow()
+    session.merge(file_model)
+    session.commit()
+
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    return RespFile(data_file=file_schema, data_filetag_id_list=[])
+
+
+@router.post("untrash/{file_id}", response_model=RespFile)
+def _untrash_file_model(file_id: str = Path(..., description="id of file"),
+                        current_user: User = Depends(get_current_user),
+                        session: Session = Depends(get_session)):
+    """
+    untrash file model by id, return file schema
+    """
+    # check file_id and get file model
+    file_model = check_file_permission(file_id, current_user.id, session)
+
+    # update file model
+    file_model.is_trash = False
+    file_model.trash_time = None
+    session.merge(file_model)
+    session.commit()
+
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    return RespFile(data_file=file_schema, data_filetag_id_list=[])
+
+
 @router.delete("/{file_id}", response_model=RespFile)
 def _delete_file_model(file_id: str = Path(..., description="id of file"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
     delete file model by id, return file schema
-    - **status_code=403**: no permission to access file
+    - **status_code=403**: no permission to access/delete file
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
+
+    # check if file is in trash
+    if not file_model.is_trash:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="no permission to delete file",
+        )
     # delete file from disk and delete filetagfile model if necessary
 
     # delete file model
