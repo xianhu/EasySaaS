@@ -102,29 +102,17 @@ def _untrash_file_model(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
-@router.delete("/{file_id}", response_model=RespFile)
-def _delete_file_model(file_id: str = Path(..., description="id of file"),
-                       current_user: User = Depends(get_current_user),
-                       session: Session = Depends(get_session)):
+@router.delete("/", response_model=Resp)
+def _delete_file_model_list(file_id_list: List[str] = Body(..., description="list of file id"),
+                            current_user: User = Depends(get_current_user),
+                            session: Session = Depends(get_session)):
     """
-    delete file model by id, return file schema
-    - **status_code=403**: no permission to access/delete file
+    delete file model list by id list
     """
-    # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
-
-    # check if file is in trash
-    if not file_model.is_trash:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="no permission to delete file",
-        )
-    # delete file from disk and delete filetagfile model if necessary
-
-    # delete file model
-    session.delete(file_model)
+    session.query(File).filter(
+        File.id.in_(file_id_list),
+        File.user_id == current_user.id,
+        File.is_trash == True,
+    ).delete()
     session.commit()
-
-    # return file schema and filetag_id list
-    file_schema = FileSchema(**file_model.dict())
-    return RespFile(data_file=file_schema, data_filetag_id_list=[])
+    return Resp(msg="delete success")
