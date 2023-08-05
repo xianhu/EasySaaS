@@ -9,7 +9,7 @@ from typing import Optional
 
 from celery import Celery
 
-from core.settings import settings
+from core import settings
 
 # define broker and backend
 broker = f"{settings.REDIS_URI}/{10 if not settings.DEBUG else 12}"
