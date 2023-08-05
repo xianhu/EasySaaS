@@ -4,14 +4,19 @@
 auth api
 """
 
-from .utils import RespSend, TypeName, init_user_object
+from .utils import TypeName, init_user_object
 from ..base import *
 
 # define router
 router = APIRouter()
 
 
-@router.post("/send-code", response_model=RespSend)
+# response model
+class RespSend(Resp):
+    token: Optional[str] = Field(None)
+
+
+@router.post("/send-code", response_model=RespSend, response_model_exclude_unset=True)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., description="email or phone"),
                        ttype: TypeName = Body(..., description="type of send"),

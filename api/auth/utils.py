@@ -7,11 +7,6 @@ auth api
 from ..base import *
 
 
-# response model
-class RespSend(Resp):
-    token: Optional[str] = Field(None)
-
-
 # enum of ttype
 class TypeName(str, Enum):
     signup = "signup"
