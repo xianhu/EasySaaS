@@ -18,6 +18,8 @@ class FileSchema(BaseModel):
     updated_time: Optional[datetime] = None
     filesize: Optional[int] = None  # can't be changed
     filetype: Optional[str] = None  # can't be changed
+    is_trash: Optional[bool] = None
+    trash_time: Optional[datetime] = None
 
 
 # used for request body

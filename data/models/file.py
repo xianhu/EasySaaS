@@ -22,6 +22,10 @@ class File(AbstractModel):
     fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
     location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 
+    # information -- trash and trash time
+    is_trash = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Trash")
+    trash_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Trash DateTime")
+
     # relationship -- foreign_key to user
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
 

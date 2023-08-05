@@ -12,7 +12,7 @@ from pydantic import constr
 PhoneStr = constr(pattern=r"^\+\d{1,3}-\d{7,15}$")
 
 # define filetags of system
-FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect", "trash"}
+FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect"}
 
 
 def init_db_tables(model_list: Optional[list] = None) -> None:
