@@ -30,19 +30,19 @@ class User(AbstractModel):
     # information -- expire datetime
     expire_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Expire DateTime")
 
-    # information -- points
+    # information -- points and history
     points_left = sqlalchemy.Column(sqlalchemy.Integer, doc="Left Points")
     points_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Points")
     points_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Points History")
 
-    # information -- space
+    # information -- space and history (bytes with biginteger)
     space_used = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Used Space")
     space_total = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Total Space")
     space_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Space History")
 
     # information -- permissions of system
-    system_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is System Admin")
-    system_role = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="System Role Json")
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Admin")
+    role_json = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="Role Json")
 
 
 class UserLog(AbstractModel):

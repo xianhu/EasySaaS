@@ -8,14 +8,14 @@ import logging
 from pprint import pformat
 
 from api.auth.utils import init_user_object
-from core.security import get_password_hash
+from core import get_password_hash
 from data import SessionMaker
 from data.models import FileTag
 from data.schemas import UserCreateEmail, UserCreatePhone
-from data.utils import init_db_tables
+from data.utils import init_db_tables  # noqa: F401
 
-# init db
-init_db_tables()
+# init db with all tables
+init_db_tables(model_list=None)
 
 # init user with session
 with SessionMaker() as session:

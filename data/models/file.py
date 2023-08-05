@@ -13,13 +13,13 @@ class File(AbstractModel):
     created_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Created DateTime")
     updated_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Updated DateTime")
 
-    # information -- filesize, fullname and location (can not be changed)
+    # information -- size type, fullname and location (can not be changed)
     filesize = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="File Size")
     filetype = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="File Type")
     fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
     location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 
-    # information -- trash and trash time
+    # information -- trash and trash datetime
     is_trash = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Is Trash")
     trash_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Trash DateTime")
 

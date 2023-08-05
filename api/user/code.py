@@ -4,12 +4,16 @@
 user api
 """
 
-from .utils import RespSend
 from ..base import *
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
+
+
+# response model
+class RespSend(Resp):
+    token: Optional[str] = Field(None)
 
 
 @router.post("/send-code", response_model=RespSend)

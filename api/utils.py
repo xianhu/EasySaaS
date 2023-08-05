@@ -43,6 +43,19 @@ def get_current_user(access_token: str = Depends(oauth2),
     return user_model
 
 
+def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User:
+    """
+    check if user model is admin, return user model
+    - **status_code=403**: permission denied
+    """
+    if user_model.is_admin:
+        return user_model
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="permission denied",
+    )
+
+
 def logging_request(request: Request, user_id: str, path: str, session: Session) -> None:
     """
     logging request information to UserLog table

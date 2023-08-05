@@ -14,7 +14,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from api import api_router
-from core.settings import settings
+from core import settings
 
 # logging config
 log_format = "%(asctime)s %(levelname)s %(filename)s: %(message)s"
