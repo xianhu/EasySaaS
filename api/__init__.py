@@ -13,13 +13,8 @@ delete/{id} -> delete object by id
 -------------------------------------------------------------------------------
 """
 
-from typing import Optional
-
-from fastapi import APIRouter, Cookie, Header
-from fastapi import Request, Response
-
-from core.settings import settings
 from . import auth, file, filetag, user
+from .base import *
 
 # define api_router
 api_router = APIRouter(prefix="")
