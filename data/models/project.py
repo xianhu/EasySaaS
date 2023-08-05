@@ -12,9 +12,6 @@ class Project(AbstractModel):
     name = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     desc = sqlalchemy.Column(sqlalchemy.String(512), doc="Description")
 
-    # information -- expire datetime
-    expire_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Expire DateTime")
-
 
 class UserProject(AbstractModel):
     __table_args__ = (

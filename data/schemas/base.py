@@ -12,6 +12,6 @@ from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from .. import PhoneStr
 
 __all__ = [
-    "BaseModel", "Field", "EmailStr", "HttpUrl", "PhoneStr",
     "date", "datetime", "Any", "Dict", "Optional",
+    "BaseModel", "Field", "EmailStr", "HttpUrl", "PhoneStr",
 ]
