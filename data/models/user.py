@@ -4,10 +4,7 @@
 user model
 """
 
-import sqlalchemy.orm
-from sqlalchemy import ForeignKey
-
-from .base import AbstractModel
+from .base import *
 
 
 class User(AbstractModel):

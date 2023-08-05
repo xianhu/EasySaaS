@@ -4,13 +4,7 @@
 user schema
 """
 
-from datetime import date, datetime
-from typing import Optional
-
-from pydantic import BaseModel, Field
-from pydantic import EmailStr, HttpUrl
-
-from ..utils import PhoneStr
+from .base import *
 
 
 # used for response_model

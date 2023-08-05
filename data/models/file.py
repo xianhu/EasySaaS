@@ -4,10 +4,7 @@
 file model
 """
 
-import sqlalchemy.orm
-from sqlalchemy import ForeignKey, UniqueConstraint
-
-from .base import AbstractModel
+from .base import *
 
 
 class File(AbstractModel):

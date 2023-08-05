@@ -4,9 +4,7 @@
 filetag schema
 """
 
-from typing import Optional
-
-from pydantic import BaseModel, Field
+from .base import *
 
 
 # used for response_model
