@@ -4,16 +4,7 @@
 utility functions and variables
 """
 
-from fastapi import Depends, Request
-from fastapi import HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from redis import Redis
-from sqlalchemy.orm import Session
-
-from core.security import get_jwt_payload
-from core.settings import settings
-from data import get_redis, get_session
-from data.models import User, UserLog
+from .base import *
 
 # define OAuth2PasswordBearer
 oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/access-token")

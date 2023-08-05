@@ -4,10 +4,7 @@
 file schema
 """
 
-from datetime import datetime
-from typing import Optional
-
-from pydantic import BaseModel, Field
+from .base import *
 
 
 # used for response_model
@@ -18,6 +15,8 @@ class FileSchema(BaseModel):
     updated_time: Optional[datetime] = None
     filesize: Optional[int] = None  # can't be changed
     filetype: Optional[str] = None  # can't be changed
+    is_trash: Optional[bool] = None
+    trash_time: Optional[datetime] = None
 
 
 # used for request body

@@ -4,11 +4,7 @@
 user api
 """
 
-from typing import Optional
-
-from pydantic import Field
-
-from data.schemas import Resp, UserSchema
+from ..base import *
 
 
 # response model

@@ -4,22 +4,8 @@
 auth api
 """
 
-import random
-
-from fastapi import APIRouter, BackgroundTasks
-from fastapi import Body, Depends
-from pydantic import EmailStr
-from redis import Redis
-from sqlalchemy.orm import Session
-
-from core.security import create_jwt_token, get_jwt_payload, get_password_hash
-from core.sendx import send_email_of_code, send_phone_of_code
-from core.settings import settings
-from data import get_redis, get_session
-from data.models import User
-from data.schemas import Resp, UserCreateEmail, UserCreatePhone
-from data.utils import PhoneStr
 from .utils import RespSend, TypeName, init_user_object
+from ..base import *
 
 # define router
 router = APIRouter()

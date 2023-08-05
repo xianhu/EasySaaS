@@ -7,8 +7,8 @@ test file
 import logging
 import time
 
-from core.security import create_jwt_token, get_jwt_payload
-from core.sendx import send_email_of_code, send_phone_of_code
+from core import create_jwt_token, get_jwt_payload
+from core import send_email_of_code, send_phone_of_code
 
 # test jwt and payload -- expire_duration
 token = create_jwt_token("111", expire_duration=10)
