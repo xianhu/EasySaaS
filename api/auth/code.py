@@ -61,7 +61,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
 
 
 @router.post("/verify-code", response_model=Resp)
-def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
+def _verify_code_token(code: int = Body(..., ge=100000, le=999999, description="code from email or phone"),
                        token: str = Body(..., description="token from send"),
                        password: str = Body(..., min_length=6, max_length=20),
                        session: Session = Depends(get_session)):

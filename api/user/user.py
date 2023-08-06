@@ -104,11 +104,11 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.delete("/me", response_model=RespUser)
+@router.delete("/me", response_model=Resp)
 def _delete_user_model(current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
-    delete current_user model, return user schema (only in DEBUG mode)
+    delete current_user model (only in DEBUG mode)
     - **status_code=403**: can not delete user model
     """
     if not settings.DEBUG:
@@ -117,9 +117,9 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
             detail="can not delete user model",
         )
 
-    # delete user model based on current_user
+    # delete user model
     session.delete(current_user)
     session.commit()
 
-    # return user schema
-    return RespUser(data_user=UserSchema(**current_user.dict()))
+    # return result
+    return Resp(msg="delete success")
