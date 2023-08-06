@@ -64,7 +64,7 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
 
 
 @router.patch("/{filetag_id}", response_model=RespFileTag)
-def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag"),
+def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           filetag_schema: FileTagUpdate = Body(..., description="update schema"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
@@ -97,26 +97,26 @@ def _update_filetag_model(filetag_id: str = Path(..., description="id of filetag
     return RespFileTag(data_filetag=FileTagSchema(**filetag_model.dict()))
 
 
-@router.delete("/{filetag_id}", response_model=RespFileTag)
-def _delete_filetag_model(filetag_id: str = Path(..., description="id of filetag"),
+@router.delete("/{filetag_id}", response_model=Resp)
+def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
     """
-    delete filetag model by id, return filetag schema
+    delete filetag model by id
     - **status=-2**: filetag not empty with files
     - **status_code=403**: no permission to access filetag
     """
     user_id = current_user.id
 
     # check if filetag not empty with files
-    _filter = FileTagFile.filetag_id == filetag_id
-    if session.query(FileTagFile).filter(_filter).count() > 0:
+    _filter1 = FileTagFile.filetag_id == filetag_id
+    if session.query(FileTagFile).filter(_filter1).count() > 0:
         return RespFileTag(status=-2, msg="filetag not empty with files")
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
 
-    # delete filetag model
+    # delete filetag model by id
     session.delete(filetag_model)
     session.commit()
 
-    # return filetag schema
-    return RespFileTag(data_filetag=FileTagSchema(**filetag_model.dict()))
+    # return result
+    return Resp(msg="delete success")
