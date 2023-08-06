@@ -25,7 +25,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(_filter).offset(skip).limit(limit).all()
-    file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
+    file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]
 
     # filetag_id list list
     filetag_id_list_list = []
@@ -38,7 +38,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
 
 
 @router.patch("/{file_id}", response_model=RespFile)
-def _update_file_model(file_id: str = Path(..., description="id of file"),
+def _update_file_model(file_id: str = Path(..., description="file id"),
                        file_schema: FileUpdate = Body(..., description="update schema"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
@@ -60,39 +60,41 @@ def _update_file_model(file_id: str = Path(..., description="id of file"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
-@router.post("/trash/", response_model=RespFile)
-def _trash_file_model(file_id_list: List[str] = Body(..., description="list of file id"),
-                      current_user: User = Depends(get_current_user),
-                      session: Session = Depends(get_session)):
+@router.post("/trash/", response_model=Resp)
+def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list of file id"),
+                           current_user: User = Depends(get_current_user),
+                           session: Session = Depends(get_session)):
     """
     trash file model list by id list
     """
-    session.query(File).filter(
-        File.id.in_(file_id_list),
-        File.user_id == current_user.id,
-    ).update({
-        File.is_trash: True,
-        File.trash_time: datetime.utcnow(),
-    }, synchronize_session=False)
+    _filter = File.user_id == current_user.id
+    _update = {File.is_trash: True, File.trash_time: datetime.utcnow()}
+
+    # trash file model list
+    _filter1 = File.id.in_(file_id_list)
+    session.query(File).filter(_filter, _filter1).update(_update, synchronize_session=False)
     session.commit()
+
+    # return result
     return Resp(msg="trash success")
 
 
-@router.post("/untrash/{file_id}", response_model=RespFile)
-def _untrash_file_model(file_id_list: List[str] = Body(..., description="list of file id"),
-                        current_user: User = Depends(get_current_user),
-                        session: Session = Depends(get_session)):
+@router.post("/untrash/", response_model=Resp)
+def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="list of file id"),
+                             current_user: User = Depends(get_current_user),
+                             session: Session = Depends(get_session)):
     """
-    untrash file model by id, return file schema
+    untrash file model by id list
     """
-    session.query(File).filter(
-        File.id.in_(file_id_list),
-        File.user_id == current_user.id,
-    ).update({
-        File.is_trash: False,
-        File.trash_time: None,
-    }, synchronize_session=False)
+    _filter = File.user_id == current_user.id
+    _update = {File.is_trash: False, File.trash_time: None}
+
+    # untrash file model list
+    _filter1 = File.id.in_(file_id_list)
+    session.query(File).filter(_filter, _filter1).update(_update, synchronize_session=False)
     session.commit()
+
+    # return result
     return Resp(msg="untrash success")
 
 
@@ -103,10 +105,13 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     """
     delete file model list by id list
     """
-    session.query(File).filter(
-        File.id.in_(file_id_list),
-        File.user_id == current_user.id,
-        File.is_trash == True,
-    ).delete()
+    _filter = File.user_id == current_user.id
+
+    # delete file model list
+    _filter1 = File.id.in_(file_id_list)
+    _filter2 = File.is_trash == True
+    session.query(File).filter(_filter, _filter1, _filter2).delete()
     session.commit()
+
+    # return result
     return Resp(msg="delete success")

@@ -23,7 +23,6 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
-    file_kwargs = dict(created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
     if file.size > settings.MAX_SIZE_FILE:
@@ -32,18 +31,18 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             detail="file size too large"
         )
     filename, filesize, filetype = file.filename, file.size, file.content_type
-    file_kwargs.update(dict(filename=filename, filesize=filesize, filetype=filetype))
 
     # define fullname, location and save file
     fullname = f"{user_id}-{int(time.time())}-{filename}"
     location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
-    file_kwargs.update(dict(fullname=fullname, location=location))
     file_id = get_id_string(fullname)
 
     # create file model based on file_kwargs
-    file_model = File(id=file_id, user_id=user_id, **file_kwargs)
+    file_model = File(id=file_id, user_id=user_id,
+                      filename=filename, created_time=created_time, updated_time=updated_time,
+                      filesize=filesize, filetype=filetype, fullname=fullname, location=location)
     session.add(file_model)
     session.commit()
 
@@ -67,7 +66,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
-    file_kwargs = dict(created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
     if flow_total_size > settings.MAX_SIZE_FILE:
@@ -88,7 +86,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
     filename, filesize, filetype = file.filename, file.size, file.content_type
-    file_kwargs.update(dict(filename=filename, filesize=filesize, filetype=filetype))
 
     # define fullname, location and save file
     fullname = f"{user_id}-{int(time.time())}-{filename}"
@@ -96,11 +93,12 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
             file_in.write(file_temp.read())
-    file_kwargs.update(dict(fullname=fullname, location=location))
     file_id = get_id_string(fullname)
 
     # create file model based on file_kwargs
-    file_model = File(id=file_id, user_id=user_id, **file_kwargs)
+    file_model = File(id=file_id, user_id=user_id,
+                      filename=filename, created_time=created_time, updated_time=updated_time,
+                      filesize=filesize, filetype=filetype, fullname=fullname, location=location)
     session.add(file_model)
     session.commit()
 
@@ -110,7 +108,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
 
 @router.get("/download/{file_id}", response_class=FileResponse)
-def _download(file_id: str = Path(..., description="id of file"),
+def _download(file_id: str = Path(..., description="file id"),
               current_user: User = Depends(get_current_user),
               session: Session = Depends(get_session)):
     """
@@ -126,7 +124,7 @@ def _download(file_id: str = Path(..., description="id of file"),
 
 
 @router.get("/download-stream/{file_id}", response_class=StreamingResponse)
-def _download_stream(file_id: str = Path(..., description="id of file"),
+def _download_stream(file_id: str = Path(..., description="file id"),
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
     """

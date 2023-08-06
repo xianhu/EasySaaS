@@ -14,8 +14,8 @@ router = APIRouter()
 
 
 @router.post("/link/", response_model=RespFile)
-def _link_file_filetag(file_id: str = Body(..., description="id of file"),
-                       filetag_id: str = Body(..., description="id of filetag"),
+def _link_file_filetag(file_id: str = Body(..., description="file id"),
+                       filetag_id: str = Body(..., description="filetag id"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
@@ -24,7 +24,7 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
-    _filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
     # check if filetagfile existed in database
     _filter0 = FileTagFile.file_id == file_id
@@ -42,8 +42,8 @@ def _link_file_filetag(file_id: str = Body(..., description="id of file"),
 
 
 @router.post("/unlink/", response_model=RespFile)
-def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
-                         filetag_id: str = Body(..., description="id of filetag"),
+def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
+                         filetag_id: str = Body(..., description="filetag id"),
                          current_user: User = Depends(get_current_user),
                          session: Session = Depends(get_session)):
     """
@@ -52,7 +52,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="id of file"),
     """
     # check file_id and get file model, filetag_id and get filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
-    _filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
     # delete filetagfile model by ids
     _filter0 = FileTagFile.file_id == file_id

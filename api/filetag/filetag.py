@@ -18,7 +18,7 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
     """
-    get filetag schema list
+    get filetag schema list of current_user
     """
     user_id = current_user.id
     _filter = FileTag.user_id == user_id
