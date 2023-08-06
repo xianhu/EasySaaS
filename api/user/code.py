@@ -16,7 +16,7 @@ class RespSend(Resp):
     token: Optional[str] = Field(None)
 
 
-@router.post("/send-code", response_model=RespSend)
+@router.post("/send-code", response_model=RespSend, response_model_exclude_unset=True)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., embed=True, description="email or phone"),
                        current_user: User = Depends(get_current_user),
@@ -57,8 +57,8 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
 
 
 @router.post("/verify-code", response_model=Resp)
-def _verify_code_token(code: int = Body(..., ge=100000, le=999999),
-                       token: str = Body(..., description="token value"),
+def _verify_code_token(code: int = Body(..., ge=100000, le=999999, description="code from email or phone"),
+                       token: str = Body(..., description="token from send-code"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """

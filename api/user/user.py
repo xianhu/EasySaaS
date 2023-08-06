@@ -117,7 +117,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
             detail="can not delete user model",
         )
 
-    # delete user model based on current_user
+    # delete user model
     session.delete(current_user)
     session.commit()
 
