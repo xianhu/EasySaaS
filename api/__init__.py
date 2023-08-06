@@ -13,7 +13,7 @@ delete/{id} -> delete object by id
 -------------------------------------------------------------------------------
 """
 
-from . import auth, file, filetag, user, admin
+from . import admin, auth, file, filetag, user
 from .base import *
 
 # define api_router

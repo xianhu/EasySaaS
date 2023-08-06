@@ -23,5 +23,8 @@ token = create_jwt_token("111", audience="web")
 logging.warning("get payload: %s", get_jwt_payload(token, audience="web"))
 
 # test send email and phone
-logging.warning(send_email_of_code(123456, "qixianhu@qq.com"))
-logging.warning(send_phone_of_code(123456, "+86-18675768543"))
+status_code = send_email_of_code(123456, "qixianhu@qq.com")
+logging.warning("send email to qixianhu@qq.com: %s", status_code)
+
+status_code = send_phone_of_code(123456, "+86-18000000000")
+logging.warning("send phone to +86-18000000000: %s", status_code)
