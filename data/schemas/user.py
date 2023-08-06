@@ -34,6 +34,8 @@ class UserSchema(BaseModel):
 class UserCreate(BaseModel):
     __abstract__ = True
     password: str = Field(..., description="Password")
+    is_admin: bool = Field(False, description="Is Admin")
+    role_json: dict = Field({}, description="Role Json")
 
 
 class UserCreateEmail(UserCreate):

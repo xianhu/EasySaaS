@@ -23,7 +23,8 @@ with SessionMaker() as session:
 
     # create user schema --------------------------------------------------------------------------
     email = "admin@easysaas.com"
-    user_schema = UserCreateEmail(email=email, email_verified=True, password=pwd_hash)
+    user_schema = UserCreateEmail(email=email, email_verified=True, password=pwd_hash,
+                                  is_admin=True, role_json={"role": "admin"})
 
     # initialize user object based on create schema
     _user_model = init_user_object(user_schema, session)
@@ -35,7 +36,7 @@ with SessionMaker() as session:
         logging.warning("----%s", filetag_model.dict())
 
     # create user schema --------------------------------------------------------------------------
-    phone = "+86-18675768543"
+    phone = "+86-18000000000"
     user_schema = UserCreatePhone(phone=phone, phone_verified=True, password=pwd_hash)
 
     # initialize user object based on create schema
