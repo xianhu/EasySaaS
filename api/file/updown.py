@@ -30,10 +30,9 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    filesize, filetype = file.size, file.content_type
+    filename, filesize, filetype = file.filename, file.size, file.content_type
 
-    # create file schema
-    filename = file.filename
+    # create file schema based on filename, duration and start_time
     file_schema = FileCreate(filename=filename, duration=duration, start_time=start_time)
 
     # define fullname, location and save file
@@ -88,10 +87,9 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    filesize, filetype = file.size, file.content_type
+    filename, filesize, filetype = file.filename, file.size, file.content_type
 
-    # create file schema
-    filename = file.filename
+    # create file schema based on filename, duration and start_time
     file_schema = FileCreate(filename=filename, duration=duration, start_time=start_time)
 
     # define fullname, location and save file
