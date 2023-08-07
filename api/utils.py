@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-utility functions and variables
+utility functions
 """
 
 from .base import *

@@ -22,12 +22,12 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    duration: Optional[int] = Field(None, description="Duration")
+    duration: Optional[int] = Field(None, ge=0, description="Duration")
     start_time: Optional[datetime] = Field(None, description="Start DateTime")
 
 
 # used for request body
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
-    duration: Optional[int] = Field(None, description="Duration")
+    duration: Optional[int] = Field(None, ge=0, description="Duration")
     start_time: Optional[datetime] = Field(None, description="Start DateTime")

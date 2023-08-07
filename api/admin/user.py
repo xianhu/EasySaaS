@@ -32,7 +32,7 @@ def _get_user_schema_list(skip: int = Query(0, description="skip count"),
     _filter = User.id != current_user.id
 
     # get user model list and schema list
-    user_model_list = session.query(User).filter(_filter).offset(skip).limit(limit).all()
+    user_model_list = session.query(User).offset(skip).limit(limit).all()
     user_schema_list = [UserSchema(**um.dict()) for um in user_model_list]
 
     # return user schema list
