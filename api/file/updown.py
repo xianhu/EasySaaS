@@ -37,7 +37,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     file_schema = FileCreate(filename=filename, duration=duration, start_time=start_time)
 
     # define fullname, location and save file
-    fullname = f"{user_id}-{int(time.time())}-{file.filename}"
+    fullname = f"{user_id}-{int(time.time())}-{filename}"
     location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
@@ -95,7 +95,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     file_schema = FileCreate(filename=filename, duration=duration, start_time=start_time)
 
     # define fullname, location and save file
-    fullname = f"{user_id}-{int(time.time())}-{file.filename}"
+    fullname = f"{user_id}-{int(time.time())}-{filename}"
     location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
