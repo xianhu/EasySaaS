@@ -8,12 +8,12 @@ from .base import *
 
 
 class File(AbstractModel):
-    # information -- basic (can be changed)
+    # information -- basic
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
-    created_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Created DateTime")
-    updated_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Updated DateTime")
+    duration = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="Duration")
+    start_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Start DateTime")
 
-    # information -- size type, fullname and location (can not be changed)
+    # information -- size, type, fullname and location
     filesize = sqlalchemy.Column(sqlalchemy.Integer, default=0, doc="File Size")
     filetype = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="File Type")
     fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
