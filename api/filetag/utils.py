@@ -7,9 +7,6 @@ filetag api
 from ..base import *
 
 
-
-
-
 def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
     """
     check if filetag_id is valid and user_id has permission to access filetag

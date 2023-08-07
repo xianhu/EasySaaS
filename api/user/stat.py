@@ -11,6 +11,7 @@ from ..utils import get_current_user
 router = APIRouter()
 
 
+# response model
 class RespStat(Resp):
     data_stat: Dict[str, Any] = Field({})
 
@@ -29,15 +30,17 @@ def _get_user_stat(start_day: date = Query(..., description="start day of stat")
     # filter of date
     filter1 = File.start_time >= start_day
     filter2 = File.start_time <= end_day
+    filter3 = File.is_trash == False
+    filter_list = [filter0, filter1, filter2, filter3]
 
-    # total files and duration
-    total_files = session.query(File).filter(filter0, filter1, filter2).count()
-    total_duration = session.query(func.sum(File.duration)).filter(filter0, filter1, filter2).scalar() or 0
+    # total files and duration of all days
+    total_files = session.query(File).filter(filter0, filter3).count()
+    total_duration = session.query(func.sum(File.duration)).filter(filter0, filter3).scalar() or 0
 
     # files and duration of each day
-    _group = func.date(File.start_time)
-    _columns = [_group, func.count(File.id), func.sum(File.duration)]
-    group_result = session.query(*_columns).filter(filter0, filter1, filter2).group_by(_group).all()
+    field_group = func.date(File.start_time)
+    field_list = [field_group, func.count(File.id), func.sum(File.duration)]
+    group_result = session.query(*field_list).filter(*filter_list).group_by(field_group).all()
 
     # return stat
     return RespStat(data_stat={

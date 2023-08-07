@@ -37,8 +37,8 @@ def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
     get filetag_id list of file from filetagfiles table
     """
     # get filetagfile model list
-    _filter = FileTagFile.file_id == file_id
-    ftf_model_list = session.query(FileTagFile).filter(_filter).all()
+    filter1 = FileTagFile.file_id == file_id
+    ftf_model_list = session.query(FileTagFile).filter(filter1).all()
 
     # return filetag_id list
     return [ftf_model.filetag_id for ftf_model in ftf_model_list]
