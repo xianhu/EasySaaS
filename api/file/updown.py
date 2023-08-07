@@ -14,7 +14,8 @@ router = APIRouter()
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
-            duration: Optional[int] = Form(0, description="duration of file, unit: second"),
+            filename: Optional[str] = Form(None, description="file name"),
+            duration: Optional[int] = Form(0, description="duration of file"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
@@ -30,10 +31,10 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
+    filename = filename or file.filename
     filesize, filetype = file.size, file.content_type
 
-    # create file schema
-    filename = file.filename
+    # create file schema based on filename, duration and start_time
     file_schema = FileCreate(filename=filename, duration=duration, start_time=start_time)
 
     # define fullname, location and save file
@@ -60,7 +61,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
-                 duration: Optional[int] = Form(0, description="duration of file, unit: second"),
+                 filename: Optional[str] = Form(None, description="file name"),
+                 duration: Optional[int] = Form(0, description="duration of file"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
@@ -88,10 +90,10 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
+    filename = filename or file.filename
     filesize, filetype = file.size, file.content_type
 
-    # create file schema
-    filename = file.filename
+    # create file schema based on filename, duration and start_time
     file_schema = FileCreate(filename=filename, duration=duration, start_time=start_time)
 
     # define fullname, location and save file

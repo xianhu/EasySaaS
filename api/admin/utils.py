@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-user api
+admin api
 """
 
-# utils for user api
+# utils for admin api

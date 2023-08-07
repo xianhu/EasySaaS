@@ -27,9 +27,9 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
     # check if filetagfile existed in database
-    _filter0 = FileTagFile.file_id == file_id
-    _filter1 = FileTagFile.filetag_id == filetag_id
-    if not session.query(FileTagFile).filter(_filter0, _filter1).first():
+    filter1 = FileTagFile.file_id == file_id
+    filter2 = FileTagFile.filetag_id == filetag_id
+    if not session.query(FileTagFile).filter(filter1, filter2).first():
         # create filetagfile model and save to database
         filetagfile_model = FileTagFile(file_id=file_id, filetag_id=filetag_id)
         session.add(filetagfile_model)
@@ -55,9 +55,9 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
     # delete filetagfile model by file_id and filetag_id
-    _filter0 = FileTagFile.file_id == file_id
-    _filter1 = FileTagFile.filetag_id == filetag_id
-    session.query(FileTagFile).filter(_filter0, _filter1).delete()
+    filter1 = FileTagFile.file_id == file_id
+    filter2 = FileTagFile.filetag_id == filetag_id
+    session.query(FileTagFile).filter(filter1, filter2).delete()
     session.commit()
 
     # return file schema and filetag_id list

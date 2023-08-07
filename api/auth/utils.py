@@ -7,19 +7,6 @@ auth api
 from ..base import *
 
 
-# enum of ttype
-class TypeName(str, Enum):
-    signup = "signup"
-    reset = "reset"
-
-
-# enum of client_id
-class ClientID(str, Enum):
-    web = "web"
-    ios = "ios"
-    android = "android"
-
-
 def init_user_object(user_schema: UserCreate, session: Session) -> User:
     """
     initialize user object based on create schema, return user model

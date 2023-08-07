@@ -4,12 +4,18 @@
 auth api
 """
 
-from .utils import ClientID
 from ..base import *
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
+
+
+# enum of client_id
+class ClientID(str, Enum):
+    web = "web"
+    ios = "ios"
+    android = "android"
 
 
 @router.post("/access-token", response_model=AccessToken)
