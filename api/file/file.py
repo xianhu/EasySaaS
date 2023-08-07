@@ -62,12 +62,13 @@ def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list
     """
     trash file model list by file_id list
     """
-    _filter = File.user_id == current_user.id
+    user_id = current_user.id
+    _filter = File.user_id == user_id
 
     # trash file model list by file_id list
     _filter1 = File.id.in_(file_id_list)
     _update = {File.is_trash: True, File.trash_time: datetime.utcnow()}
-    session.query(File).filter(_filter, _filter1).update(_update, synchronize_session=False)
+    session.query(File).filter(_filter, _filter1).update(_update)
     session.commit()
 
     # return result
@@ -81,12 +82,13 @@ def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="li
     """
     untrash file model by file_id list
     """
-    _filter = File.user_id == current_user.id
+    user_id = current_user.id
+    _filter = File.user_id == user_id
 
     # untrash file model list by file_id list
     _filter1 = File.id.in_(file_id_list)
     _update = {File.is_trash: False, File.trash_time: None}
-    session.query(File).filter(_filter, _filter1).update(_update, synchronize_session=False)
+    session.query(File).filter(_filter, _filter1).update(_update)
     session.commit()
 
     # return result
@@ -100,7 +102,8 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     """
     delete file model list by file_id list
     """
-    _filter = File.user_id == current_user.id
+    user_id = current_user.id
+    _filter = File.user_id == user_id
 
     # delete file model list by file_id list
     _filter1 = File.id.in_(file_id_list)
