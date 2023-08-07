@@ -4,7 +4,7 @@
 auth api
 """
 
-from .utils import TypeName, init_user_object
+from .utils import init_user_object
 from ..base import *
 
 # define router
@@ -14,6 +14,12 @@ router = APIRouter()
 # response model
 class RespSend(Resp):
     token: Optional[str] = Field(None)
+
+
+# enum of ttype
+class TypeName(str, Enum):
+    signup = "signup"
+    reset = "reset"
 
 
 @router.post("/send-code", response_model=RespSend, response_model_exclude_unset=True)
