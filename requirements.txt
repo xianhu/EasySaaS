@@ -6,7 +6,7 @@ Flask-Compress~=1.13.0
 uWSGI==2.0.22
 
 # FastAPI
-fastapi~=0.100.1
+fastapi~=0.101.0
 uvicorn~=0.23.2
 gunicorn~=21.2.0
 pydantic[email]~=2.1.1

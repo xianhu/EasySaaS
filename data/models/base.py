@@ -11,7 +11,10 @@ import sqlalchemy
 from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.ext import declarative
 
-__all__ = ["sqlalchemy", "ForeignKey", "UniqueConstraint", "AbstractModel"]
+__all__ = [
+    "sqlalchemy", "ForeignKey", "UniqueConstraint",
+    "Model", "AbstractModel",
+]
 
 # define base model
 Model = declarative.declarative_base()

@@ -27,13 +27,8 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     file_model_list = session.query(File).filter(_filter).offset(skip).limit(limit).all()
     file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]
 
-    # filetag_id list list
-    filetag_id_list_list = []
-    for file_model in file_model_list:
-        filetag_id_list = get_filetag_id_list(file_model.id, session)
-        filetag_id_list_list.append(filetag_id_list)
-
     # return file schema list and filetag_id list list
+    filetag_id_list_list = [get_filetag_id_list(fm.id, session) for fm in file_model_list]
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
@@ -65,14 +60,15 @@ def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list
                            current_user: User = Depends(get_current_user),
                            session: Session = Depends(get_session)):
     """
-    trash file model list by id list
+    trash file model list by file_id list
     """
-    _filter = File.user_id == current_user.id
-    _update = {File.is_trash: True, File.trash_time: datetime.utcnow()}
+    user_id = current_user.id
+    _filter = File.user_id == user_id
 
-    # trash file model list
+    # trash file model list by file_id list
     _filter1 = File.id.in_(file_id_list)
-    session.query(File).filter(_filter, _filter1).update(_update, synchronize_session=False)
+    _update = {File.is_trash: True, File.trash_time: datetime.utcnow()}
+    session.query(File).filter(_filter, _filter1).update(_update)
     session.commit()
 
     # return result
@@ -84,14 +80,15 @@ def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="li
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
     """
-    untrash file model by id list
+    untrash file model by file_id list
     """
-    _filter = File.user_id == current_user.id
-    _update = {File.is_trash: False, File.trash_time: None}
+    user_id = current_user.id
+    _filter = File.user_id == user_id
 
-    # untrash file model list
+    # untrash file model list by file_id list
     _filter1 = File.id.in_(file_id_list)
-    session.query(File).filter(_filter, _filter1).update(_update, synchronize_session=False)
+    _update = {File.is_trash: False, File.trash_time: None}
+    session.query(File).filter(_filter, _filter1).update(_update)
     session.commit()
 
     # return result
@@ -103,11 +100,12 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
                             current_user: User = Depends(get_current_user),
                             session: Session = Depends(get_session)):
     """
-    delete file model list by id list
+    delete file model list by file_id list
     """
-    _filter = File.user_id == current_user.id
+    user_id = current_user.id
+    _filter = File.user_id == user_id
 
-    # delete file model list
+    # delete file model list by file_id list
     _filter1 = File.id.in_(file_id_list)
     _filter2 = File.is_trash == True
     session.query(File).filter(_filter, _filter1, _filter2).delete()

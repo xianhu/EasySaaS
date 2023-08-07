@@ -54,7 +54,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
     file_model = check_file_permission(file_id, current_user.id, session)
     filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
 
-    # delete filetagfile model by ids
+    # delete filetagfile model by file_id and filetag_id
     _filter0 = FileTagFile.file_id == file_id
     _filter1 = FileTagFile.filetag_id == filetag_id
     session.query(FileTagFile).filter(_filter0, _filter1).delete()

@@ -11,8 +11,8 @@ from .base import *
 class FileSchema(BaseModel):
     id: Optional[str] = None
     filename: Optional[str] = None
-    created_time: Optional[datetime] = None
-    updated_time: Optional[datetime] = None
+    duration: Optional[int] = None
+    start_time: Optional[datetime] = None
     filesize: Optional[int] = None  # can't be changed
     filetype: Optional[str] = None  # can't be changed
     is_trash: Optional[bool] = None  # use trash api
@@ -22,12 +22,12 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    created_time: Optional[datetime] = Field(None, description="Created DateTime")
-    updated_time: Optional[datetime] = Field(None, description="Updated DateTime")
+    duration: Optional[int] = Field(None, ge=0, description="Duration")
+    start_time: Optional[datetime] = Field(None, description="Start DateTime")
 
 
 # used for request body
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
-    created_time: Optional[datetime] = Field(None, description="Created DateTime")
-    updated_time: Optional[datetime] = Field(None, description="Updated DateTime")
+    duration: Optional[int] = Field(None, ge=0, description="Duration")
+    start_time: Optional[datetime] = Field(None, description="Start DateTime")
