@@ -4,12 +4,16 @@
 user api
 """
 
-from .utils import RespUser
 from ..base import *
 from ..utils import get_current_user, logging_request
 
 # define router
 router = APIRouter()
+
+
+# response model
+class RespUser(Resp):
+    data_user: Optional[UserSchema] = Field(None)
 
 
 @router.get("/me", response_model=RespUser)
