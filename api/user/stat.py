@@ -16,13 +16,13 @@ class RespStat(Resp):
     data_stat: Dict[str, Any] = Field({})
 
 
-@router.get("/stat", response_model=RespStat)
-def _get_user_stat(start_day: date = Query(..., description="start day of stat"),
+@router.get("/stat/file", response_model=RespStat)
+def _get_file_stat(start_day: date = Query(..., description="start day of stat"),
                    end_day: date = Query(..., description="end day of stat"),
                    current_user: User = Depends(get_current_user),
                    session: Session = Depends(get_session)):
     """
-    get stat of current_user
+    get file stat of current_user
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
