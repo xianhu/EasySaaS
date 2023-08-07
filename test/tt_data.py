@@ -27,12 +27,12 @@ with SessionMaker() as session:
                                   is_admin=True, role_json={"role": "admin"})
 
     # initialize user object based on create schema
-    _user_model = init_user_object(user_schema, session)
-    logging.warning(pformat(_user_model.dict(), indent=2))
+    user_model = init_user_object(user_schema, session)
+    logging.warning(pformat(user_model.dict(), indent=2))
 
     # logging filetag models
-    _filter = FileTag.user_id == _user_model.id
-    for filetag_model in session.query(FileTag).filter(_filter).all():
+    filter0 = FileTag.user_id == user_model.id
+    for filetag_model in session.query(FileTag).filter(filter0).all():
         logging.warning("----%s", filetag_model.dict())
 
     # create user schema --------------------------------------------------------------------------
@@ -40,10 +40,10 @@ with SessionMaker() as session:
     user_schema = UserCreatePhone(phone=phone, phone_verified=True, password=pwd_hash)
 
     # initialize user object based on create schema
-    _user_model = init_user_object(user_schema, session)
-    logging.warning(pformat(_user_model.dict(), indent=2))
+    user_model = init_user_object(user_schema, session)
+    logging.warning(pformat(user_model.dict(), indent=2))
 
     # logging filetag models
-    _filter = FileTag.user_id == _user_model.id
-    for filetag_model in session.query(FileTag).filter(_filter).all():
+    filter0 = FileTag.user_id == user_model.id
+    for filetag_model in session.query(FileTag).filter(filter0).all():
         logging.warning("----%s", filetag_model.dict())

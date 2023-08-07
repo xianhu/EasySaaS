@@ -12,11 +12,6 @@ router = APIRouter()
 
 
 # response model
-class RespUser(Resp):
-    data_user: Optional[UserSchema] = Field(None)
-
-
-# response model
 class RespUserList(Resp):
     data_user_list: List[UserSchema] = Field([])
 
@@ -29,8 +24,6 @@ def _get_user_schema_list(skip: int = Query(0, description="skip count"),
     """
     get user schema list
     """
-    _filter = User.id != current_user.id
-
     # get user model list and schema list
     user_model_list = session.query(User).offset(skip).limit(limit).all()
     user_schema_list = [UserSchema(**um.dict()) for um in user_model_list]
