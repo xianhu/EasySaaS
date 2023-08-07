@@ -14,6 +14,7 @@ router = APIRouter()
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
+            filename: Optional[str] = Form(None, description="filename"),
             created_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             updated_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             current_user: User = Depends(get_current_user),
@@ -23,6 +24,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
+    file_schema = FileCreate(filename=filename, created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
     if file.size > settings.MAX_SIZE_FILE:
@@ -30,18 +32,17 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    filename, filesize, filetype = file.filename, file.size, file.content_type
+    filesize, filetype = file.size, file.content_type
 
     # define fullname, location and save file
-    fullname = f"{user_id}-{int(time.time())}-{filename}"
+    fullname = f"{user_id}-{int(time.time())}-{file.filename}"
     location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     file_id = get_id_string(fullname)
 
     # create file model based on file_kwargs
-    file_model = File(id=file_id, user_id=user_id,
-                      filename=filename, created_time=created_time, updated_time=updated_time,
+    file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
                       filesize=filesize, filetype=filetype, fullname=fullname, location=location)
     session.add(file_model)
     session.commit()
@@ -57,6 +58,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
+                 filename: Optional[str] = Form(None, description="filename"),
                  created_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  updated_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  current_user: User = Depends(get_current_user),
@@ -66,6 +68,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     - **status_code=500**: file size too large
     """
     user_id = current_user.id
+    file_schema = FileCreate(filename=filename, created_time=created_time, updated_time=updated_time)
 
     # check file size or raise exception
     if flow_total_size > settings.MAX_SIZE_FILE:
@@ -85,10 +88,10 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    filename, filesize, filetype = file.filename, file.size, file.content_type
+    filesize, filetype = file.size, file.content_type
 
     # define fullname, location and save file
-    fullname = f"{user_id}-{int(time.time())}-{filename}"
+    fullname = f"{user_id}-{int(time.time())}-{file.filename}"
     location = f"{settings.FOLDER_FILE}/{fullname}"
     with open(location, "wb") as file_in:
         with open(location_temp, "rb") as file_temp:
@@ -96,8 +99,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     file_id = get_id_string(fullname)
 
     # create file model based on file_kwargs
-    file_model = File(id=file_id, user_id=user_id,
-                      filename=filename, created_time=created_time, updated_time=updated_time,
+    file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
                       filesize=filesize, filetype=filetype, fullname=fullname, location=location)
     session.add(file_model)
     session.commit()
