@@ -56,9 +56,9 @@ def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User
     )
 
 
-def init_user_object(user_schema: UserCreate, session: Session) -> Optional[User]:
+def create_user_object(user_schema: UserCreate, session: Session) -> Optional[User]:
     """
-    initialize user object based on create schema, return user model or None
+    create user object based on create schema, return user model or None
     """
     try:
         # create user model based on create schema
