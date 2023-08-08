@@ -4,8 +4,8 @@
 auth api
 """
 
-from .utils import init_user_object
 from ..base import *
+from ..utils import init_user_object
 
 # define router
 router = APIRouter()

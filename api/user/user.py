@@ -5,7 +5,7 @@ user api
 """
 
 from ..base import *
-from ..utils import get_current_user, logging_request
+from ..utils import delete_user_object, get_current_user, logging_request
 
 # define router
 router = APIRouter()
@@ -121,9 +121,9 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
             detail="can not delete user model",
         )
 
-    # delete user model
-    session.delete(current_user)
-    session.commit()
+    # delete user model and other models
+    if not delete_user_object(current_user, session):
+        return Resp(status=-1, msg="delete failed")
 
     # return result
     return Resp(msg="delete success")

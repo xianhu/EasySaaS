@@ -4,6 +4,7 @@
 base model
 """
 
+import logging
 import random
 import time
 from datetime import date, datetime
@@ -32,7 +33,7 @@ from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.schemas import UserCreate, UserCreateEmail, UserCreatePhone, UserSchema, UserUpdate
 
 __all__ = [
-    "random", "time", "date", "datetime", "Enum", "Any", "Dict", "List", "Optional",
+    "logging", "random", "time", "date", "datetime", "Enum", "Any", "Dict", "List", "Optional",
 
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
