@@ -104,6 +104,7 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
+    # delete other models related to file model
 
     # delete file model list by file_id list
     filter1 = File.id.in_(file_id_list)

@@ -7,7 +7,7 @@ test data
 import logging
 from pprint import pformat
 
-from api.auth.utils import init_user_object
+from api.utils import init_user_object
 from core import get_password_hash
 from data import SessionMaker
 from data.models import FileTag

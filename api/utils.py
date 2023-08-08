@@ -64,6 +64,7 @@ def init_user_object(user_schema: UserCreate, session: Session) -> Optional[User
         # create user model based on create schema
         user_id = get_id_string(f"{user_schema.password}-{time.time()}")
         user_model = User(id=user_id, **user_schema.model_dump(exclude_unset=True))
+        user_model.nickname = user_model.email.split("@")[0] if user_model.email else "Guest"
         session.add(user_model)
         session.flush()  # not commit
 
