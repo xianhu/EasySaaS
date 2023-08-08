@@ -4,8 +4,8 @@
 auth api
 """
 
-from .utils import init_user_object
 from ..base import *
+from ..utils import create_user_object
 
 # define router
 router = APIRouter()
@@ -75,6 +75,7 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     verify code & token from send-code, and create user or reset password
     - **status=-1**: token invalid or expired
     - **status=-2**: code invalid or not match
+    - **status=-3**: create user model failed
     """
     # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
@@ -104,12 +105,16 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user model based on username and pwd_hash
+        # create user schema based on username and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
-        _user_model = init_user_object(user_schema, session)
+
+        # create user model based on create schema
+        user_model = create_user_object(user_schema, session)
+        if not user_model:
+            return Resp(status=-3, msg="create user model failed")
 
         # return result
         return Resp(msg=f"{ttype} success")

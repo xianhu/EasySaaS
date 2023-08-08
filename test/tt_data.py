@@ -7,7 +7,7 @@ test data
 import logging
 from pprint import pformat
 
-from api.auth.utils import init_user_object
+from api.utils import create_user_object  # noqa: F401
 from core import get_password_hash
 from data import SessionMaker
 from data.models import FileTag
@@ -26,8 +26,8 @@ with SessionMaker() as session:
     user_schema = UserCreateEmail(email=email, email_verified=True, password=pwd_hash,
                                   is_admin=True, role_json={"role": "admin"})
 
-    # initialize user object based on create schema
-    user_model = init_user_object(user_schema, session)
+    # create user object based on create schema
+    user_model = create_user_object(user_schema, session)
     logging.warning(pformat(user_model.dict(), indent=2))
 
     # logging filetag models
@@ -39,8 +39,8 @@ with SessionMaker() as session:
     phone = "+86-18000000000"
     user_schema = UserCreatePhone(phone=phone, phone_verified=True, password=pwd_hash)
 
-    # initialize user object based on create schema
-    user_model = init_user_object(user_schema, session)
+    # create user object based on create schema
+    user_model = create_user_object(user_schema, session)
     logging.warning(pformat(user_model.dict(), indent=2))
 
     # logging filetag models
