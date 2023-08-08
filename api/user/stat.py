@@ -33,7 +33,7 @@ def _get_file_stat(start_day: date = Query(..., description="start day of stat")
     filter3 = File.is_trash == False
     filter_list = [filter0, filter1, filter2, filter3]
 
-    # total files and duration of all days
+    # files and duration of all days
     total_files = session.query(File).filter(filter0, filter3).count()
     total_duration = session.query(func.sum(File.duration)).filter(filter0, filter3).scalar() or 0
 
