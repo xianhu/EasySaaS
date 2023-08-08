@@ -105,11 +105,13 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
 
     # check token ttype: signup
     if ttype == TypeName.signup and (not user_model):
-        # create user model based on username and pwd_hash
+        # create user schema based on username and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
+
+        # create user model based on create schema
         user_model = create_user_object(user_schema, session)
         if not user_model:
             return Resp(status=-3, msg="create user model failed")

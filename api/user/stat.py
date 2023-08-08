@@ -27,7 +27,7 @@ def _get_file_stat(start_day: date = Query(..., description="start day of stat")
     user_id = current_user.id
     filter0 = File.user_id == user_id
 
-    # filter of date
+    # filter of date and is_trash
     filter1 = File.start_time >= start_day
     filter2 = File.start_time <= end_day
     filter3 = File.is_trash == False
