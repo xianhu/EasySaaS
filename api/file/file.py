@@ -25,7 +25,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
-    file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]
+    file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
 
     # return file schema list and filetag_id list list
     filetag_id_list_list = [get_filetag_id_list(fm.id, session) for fm in file_model_list]
@@ -80,7 +80,7 @@ def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="li
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
     """
-    untrash file model by file_id list
+    untrash file model list by file_id list
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
@@ -104,12 +104,11 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
+    filter1 = File.id.in_(file_id_list)
     # delete other models related to file model
 
     # delete file model list by file_id list
-    filter1 = File.id.in_(file_id_list)
-    filter2 = File.is_trash == True
-    session.query(File).filter(filter0, filter1, filter2).delete()
+    session.query(File).filter(filter0, filter1, File.is_trash == True).delete()
     session.commit()
 
     # return result
