@@ -46,6 +46,7 @@ def get_current_user(access_token: str = Depends(_oauth2_bearer),
 def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User:
     """
     check if user model is admin, return user model
+    - **status_code=401**: token invalid or expired
     - **status_code=403**: permission denied
     """
     if user_model.is_admin:
@@ -70,7 +71,7 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
 
         # create filetag models
         for filetag_name in FILETAG_SYSTEM_SET:
-            # create filetag_id and filetag schema
+            # create filetag_id and create schema
             filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
 
@@ -83,7 +84,7 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
         session.commit()
         return user_model
     except Exception as excep:
-        logging.error("init user object error: %s", excep)
+        logging.error("create user object error: %s", excep)
         session.rollback()
         return None
 
@@ -94,13 +95,11 @@ def delete_user_object(user_model: User, session: Session) -> bool:
     """
     user_id = user_model.id
     try:
-        # delete filetag models
-        filter1 = FileTag.user_id == user_id
-        session.query(FileTag).filter(filter1).delete()
+        # delete filetag models related to user
+        session.query(FileTag).filter(FileTag.user_id == user_id).delete()
 
-        # delete file models
-        filter2 = File.user_id == user_id
-        session.query(File).filter(filter2).delete()
+        # delete file models related to user
+        session.query(File).filter(File.user_id == user_id).delete()
 
         # delete user model
         session.delete(user_model)
