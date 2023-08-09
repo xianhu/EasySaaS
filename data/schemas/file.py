@@ -12,7 +12,7 @@ class FileSchema(BaseModel):
     id: Optional[str] = None
 
     filename: Optional[str] = None
-    keywords: List[str] = []
+    keywords: Optional[List[str]] = None
 
     duration: Optional[int] = None
     start_time: Optional[datetime] = None
@@ -29,6 +29,7 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
+    # keywords: Optional[List[str]] = Field(None, description="Keyword List")
     duration: Optional[int] = Field(None, description="Duration")
     start_time: Optional[datetime] = Field(None, description="Start DateTime")
     end_time: Optional[datetime] = Field(None, description="End DateTime")
@@ -38,4 +39,4 @@ class FileCreate(BaseModel):
 # used for request body
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
-    keywords: List[str] = Field([], description="Keyword List")
+    keywords: Optional[List[str]] = Field(None, description="Keyword List")
