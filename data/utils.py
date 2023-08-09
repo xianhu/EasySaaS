@@ -18,6 +18,7 @@ FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect"}
 def init_db_tables(model_list: Optional[list] = None) -> None:
     """
     initialize database or tables
+    :param model_list: model list, order by dependency
     """
     from .dmysql import engine
     from .models.base import Model
@@ -25,7 +26,10 @@ def init_db_tables(model_list: Optional[list] = None) -> None:
         Model.metadata.drop_all(engine, checkfirst=True)
         Model.metadata.create_all(engine, checkfirst=True)
         return None
-    for model in model_list:
+
+    # drop models, create models
+    for model in model_list[::-1]:
         model.__table__.drop(engine, checkfirst=True)
+    for model in model_list:
         model.__table__.create(engine, checkfirst=True)
     return None
