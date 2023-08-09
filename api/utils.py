@@ -89,11 +89,10 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
         return None
 
 
-def delete_user_object(user_model: User, session: Session) -> bool:
+def delete_user_object(user_id: str, session: Session) -> bool:
     """
-    delete user object based on user model, return True or False
+    delete user object by user_id, return True or False
     """
-    user_id = user_model.id
     try:
         # delete userproject models and project models(not need) related to user
         session.query(UserProject).filter(UserProject.user_id == user_id).delete()
@@ -111,8 +110,10 @@ def delete_user_object(user_model: User, session: Session) -> bool:
         # delete userlog models related to user
         session.query(UserLog).filter(UserLog.user_id == user_id).delete()
 
-        # delete user model
-        session.delete(user_model)
+        # delete user model by user_id
+        session.query(User).filter(User.id == user_id).delete()
+
+        # commit session
         session.commit()
         return True
     except Exception as excep:

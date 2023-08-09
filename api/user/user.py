@@ -123,7 +123,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
         )
 
     # delete user model and other models
-    if not delete_user_object(current_user, session):
+    if not delete_user_object(current_user.id, session):
         return Resp(status=-1, msg="delete current_user model failed")
 
     # return result
