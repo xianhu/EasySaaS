@@ -16,6 +16,8 @@ from data.utils import init_db_tables  # noqa: F401
 
 # init db with all tables
 init_db_tables(model_list=None)
+
+# init tables by model list
 init_db_tables(model_list=[FileTag, File, FileTagFile])
 
 # init user with session

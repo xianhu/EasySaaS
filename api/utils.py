@@ -95,7 +95,7 @@ def delete_user_object(user_model: User, session: Session) -> bool:
     """
     user_id = user_model.id
     try:
-        # delete userproject models related to user
+        # delete userproject models and project models(not need) related to user
         session.query(UserProject).filter(UserProject.user_id == user_id).delete()
 
         # delete filetag models and filetagfile models related to user
