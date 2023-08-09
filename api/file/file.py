@@ -32,7 +32,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
-@router.patch("/{file_id}", response_model=RespFile)
+@router.patch("/{file_id}", response_model=RespFile, response_model_exclude_unset=True)
 def _update_file_model(file_id: str = Path(..., description="file id"),
                        file_schema: FileUpdate = Body(..., description="update schema"),
                        current_user: User = Depends(get_current_user),
@@ -64,9 +64,9 @@ def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
-    filter1 = File.id.in_(file_id_list)
 
     # trash file model list by file_id list
+    filter1 = File.id.in_(file_id_list)
     update_dict = {File.is_trash: True, File.trash_time: datetime.utcnow()}
     session.query(File).filter(filter0, filter1).update(update_dict)
     session.commit()
@@ -84,9 +84,9 @@ def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="li
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
-    filter1 = File.id.in_(file_id_list)
 
     # untrash file model list by file_id list
+    filter1 = File.id.in_(file_id_list)
     update_dict = {File.is_trash: False, File.trash_time: None}
     session.query(File).filter(filter0, filter1).update(update_dict)
     session.commit()
@@ -104,11 +104,16 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     """
     user_id = current_user.id
     filter0 = File.user_id == user_id
-    filter1 = File.id.in_(file_id_list)
-    # delete other models related to file model
 
-    # delete file model list by file_id list
-    session.query(File).filter(filter0, filter1, File.is_trash == True).delete()
+    # get file models and check
+    filter1 = File.id.in_(file_id_list)
+    filter2 = File.is_trash == True
+    for file_model in session.query(File).filter(filter0, filter1, filter2).all():
+        # delete filetagfile models related to file model
+        filter_1 = FileTagFile.file_id == file_model.id
+        session.query(FileTagFile).filter(filter_1).delete()
+        # delete file model
+        session.delete(file_model)
     session.commit()
 
     # return result

@@ -41,7 +41,7 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     return RespFileTagList(data_filetag_list=filetag_schema_list)
 
 
-@router.post("/", response_model=RespFileTag)
+@router.post("/", response_model=RespFileTag, response_model_exclude_unset=True)
 def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description="create schema"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
@@ -73,7 +73,7 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     return RespFileTag(data_filetag=FileTagSchema(**filetag_model.dict()))
 
 
-@router.patch("/{filetag_id}", response_model=RespFileTag)
+@router.patch("/{filetag_id}", response_model=RespFileTag, response_model_exclude_unset=True)
 def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           filetag_schema: FileTagUpdate = Body(..., description="update schema"),
                           current_user: User = Depends(get_current_user),

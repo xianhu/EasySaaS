@@ -12,7 +12,7 @@ from ..utils import get_current_user
 router = APIRouter()
 
 
-@router.post("/upload", response_model=RespFile)
+@router.post("/upload", response_model=RespFile, response_model_exclude_unset=True)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
             duration: Optional[int] = Form(None, description="duration of file"),
@@ -58,7 +58,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
-@router.post("/upload-flow", response_model=RespFile)
+@router.post("/upload-flow", response_model=RespFile, response_model_exclude_unset=True)
 def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of file object"),
                  flow_chunk_number: int = Form(..., alias="flowChunkNumber"),
                  flow_chunk_total: int = Form(..., alias="flowChunkTotal"),

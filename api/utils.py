@@ -95,14 +95,18 @@ def delete_user_object(user_model: User, session: Session) -> bool:
     """
     user_id = user_model.id
     try:
-        # delete userproject models related to user
+        # delete userproject models and project models(not need) related to user
         session.query(UserProject).filter(UserProject.user_id == user_id).delete()
 
-        # delete filetag models related to user
-        session.query(FileTag).filter(FileTag.user_id == user_id).delete()
+        # delete filetag models and filetagfile models related to user
+        for filetag_model in session.query(FileTag).filter(FileTag.user_id == user_id).all():
+            session.query(FileTagFile).filter(FileTagFile.filetag_id == filetag_model.id).delete()
+            session.delete(filetag_model)
 
-        # delete file models related to user
-        session.query(File).filter(File.user_id == user_id).delete()
+        # delete file models and filetagfile models related to user
+        for file_model in session.query(File).filter(File.user_id == user_id).all():
+            session.query(FileTagFile).filter(FileTagFile.file_id == file_model.id).delete()
+            session.delete(file_model)
 
         # delete userlog models related to user
         session.query(UserLog).filter(UserLog.user_id == user_id).delete()

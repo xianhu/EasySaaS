@@ -10,12 +10,15 @@ from pprint import pformat
 from api.utils import create_user_object  # noqa: F401
 from core import get_password_hash
 from data import SessionMaker
-from data.models import FileTag
+from data.models import File, FileTag, FileTagFile
 from data.schemas import UserCreateEmail, UserCreatePhone
 from data.utils import init_db_tables  # noqa: F401
 
 # init db with all tables
 init_db_tables(model_list=None)
+
+# init tables by model list
+init_db_tables(model_list=[FileTag, File, FileTagFile])
 
 # init user with session
 with SessionMaker() as session:

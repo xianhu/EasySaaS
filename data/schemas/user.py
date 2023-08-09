@@ -10,17 +10,20 @@ from .base import *
 # used for response_model
 class UserSchema(BaseModel):
     id: Optional[str] = None
+
     avatar: Optional[HttpUrl] = None
     nickname: Optional[str] = None
     birthday: Optional[date] = None
     gender: Optional[int] = None
     country: Optional[str] = None
     address: Optional[str] = None
+
     email: Optional[EmailStr] = None
     email_verified: Optional[bool] = None
     phone: Optional[PhoneStr] = None
     phone_verified: Optional[bool] = None
     # password: Optional[str] = None
+
     expire_time: Optional[datetime] = None
     points_left: Optional[int] = None
     points_total: Optional[int] = None

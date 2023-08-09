@@ -10,7 +10,7 @@ from ..base import *
 # response model
 class RespFile(Resp):
     data_file: Optional[FileSchema] = Field(None)
-    data_filetag_id_list: List[str] = Field([])
+    data_filetag_id_list: Optional[List[str]] = Field(None)
 
 
 # response model
