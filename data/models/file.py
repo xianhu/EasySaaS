@@ -10,6 +10,9 @@ from .base import *
 class File(AbstractModel):
     # information -- basic
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
+    keywords = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Keywords")
+
+    # information -- about datetime
     duration = sqlalchemy.Column(sqlalchemy.Integer, doc="Duration")
     start_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Start DateTime")
     end_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="End DateTime")
