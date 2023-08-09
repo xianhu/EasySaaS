@@ -16,7 +16,7 @@ class RespUser(Resp):
     data_user: Optional[UserSchema] = Field(None)
 
 
-@router.get("/me", response_model=RespUser)
+@router.get("/me", response_model=RespUser, response_model_exclude_unset=True)
 def _get_user_schema(request: Request,  # parameter of request
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
@@ -30,7 +30,7 @@ def _get_user_schema(request: Request,  # parameter of request
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.patch("/me", response_model=RespUser)
+@router.patch("/me", response_model=RespUser, response_model_exclude_unset=True)
 def _update_user_model(user_schema: UserUpdate = Body(..., description="update schema"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
@@ -47,7 +47,7 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.post("/me/password", response_model=RespUser)
+@router.post("/me/password", response_model=RespUser, response_model_exclude_unset=True)
 def _update_user_password(password_old: str = Body(..., description="old password"),
                           password_new: str = Body(..., min_length=6, max_length=20),
                           current_user: User = Depends(get_current_user),
@@ -70,7 +70,7 @@ def _update_user_password(password_old: str = Body(..., description="old passwor
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.post("/me/avatar", response_model=RespUser)
+@router.post("/me/avatar", response_model=RespUser, response_model_exclude_unset=True)
 def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="file object"),
                         current_user: User = Depends(get_current_user),
                         session: Session = Depends(get_session)):
