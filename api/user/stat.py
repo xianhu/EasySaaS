@@ -42,7 +42,7 @@ def _get_file_stat(start_day: date = Query(..., description="start day of stat")
     field_list = [field_group, func.count(File.id), func.sum(File.duration)]
     group_result = session.query(*field_list).filter(*filter_list).group_by(field_group).all()
 
-    # return stat
+    # return file stat
     return RespStat(data_stat={
         "total_files": total_files,
         "total_duration": total_duration,

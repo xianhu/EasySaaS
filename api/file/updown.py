@@ -15,7 +15,6 @@ router = APIRouter()
 @router.post("/upload", response_model=RespFile, response_model_exclude_unset=True)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
-            # keywords: Optional[List[str]] = Form(None, description="keyword list"),
             duration: Optional[int] = Form(None, description="duration of file"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
@@ -66,7 +65,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  filename: Optional[str] = Form(None, description="file name"),
-                 # keywords: Optional[List[str]] = Form(None, description="keyword list"),
                  duration: Optional[int] = Form(None, description="duration of file"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),

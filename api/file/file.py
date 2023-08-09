@@ -55,7 +55,7 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
     return RespFile(data_file=file_schema, data_filetag_id_list=[])
 
 
-@router.post("/trash/", response_model=Resp, response_model_exclude_unset=True)
+@router.post("/trash/", response_model=Resp)
 def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list of file id"),
                            current_user: User = Depends(get_current_user),
                            session: Session = Depends(get_session)):
@@ -75,7 +75,7 @@ def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list
     return Resp(msg="trash success")
 
 
-@router.post("/untrash/", response_model=Resp, response_model_exclude_unset=True)
+@router.post("/untrash/", response_model=Resp)
 def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="list of file id"),
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
