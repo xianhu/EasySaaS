@@ -83,7 +83,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large",
         )
-    filename_temp = file.filename
+    filename_temp = filename or file.filename
 
     # save flow_chunk_number part of file
     fullname_temp = f"{flow_identifier}-{filename_temp}"
