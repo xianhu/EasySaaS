@@ -4,9 +4,12 @@
 base model
 """
 
+import json
 import logging
+import os
 import random
 import time
+import uuid
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -33,7 +36,8 @@ from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.schemas import UserCreate, UserCreateEmail, UserCreatePhone, UserSchema, UserUpdate
 
 __all__ = [
-    "logging", "random", "time", "date", "datetime", "Enum", "Any", "Dict", "List", "Optional",
+    "json", "logging", "os", "random", "uuid", "time", "date", "datetime",
+    "Enum", "Any", "Dict", "List", "Optional",
 
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
