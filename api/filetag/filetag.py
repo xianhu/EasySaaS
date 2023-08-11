@@ -85,7 +85,7 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     """
     update filetag model based on update schema, return filetag schema
     - **status=-1**: filetag name invalid, filetag name existed
-    - **status_code=403**: no permission to access filetag
+    - **status_code=404**: filetag not found
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
@@ -118,7 +118,7 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     """
     delete filetag model by filetag_id
     - **status=-2**: filetag not empty with files
-    - **status_code=403**: no permission to access filetag
+    - **status_code=404**: filetag not found
     """
     user_id = current_user.id
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
