@@ -32,7 +32,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
-@router.get("/{file_id}", response_model=RespFile, response_model_exclude_unset=True)
+@router.get("/{file_id}", response_model=RespFile)
 def _get_file_schema(file_id: str = Path(..., description="file id"),
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
@@ -48,7 +48,7 @@ def _get_file_schema(file_id: str = Path(..., description="file id"),
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
-@router.patch("/{file_id}", response_model=RespFile, response_model_exclude_unset=True)
+@router.patch("/{file_id}", response_model=RespFile)
 def _update_file_model(file_id: str = Path(..., description="file id"),
                        file_schema: FileUpdate = Body(..., description="update schema"),
                        current_user: User = Depends(get_current_user),

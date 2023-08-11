@@ -13,7 +13,7 @@ from ..utils import get_current_user
 router = APIRouter()
 
 
-@router.post("/link/", response_model=RespFile, response_model_exclude_unset=True)
+@router.post("/link/", response_model=RespFile)
 def _link_file_filetag(file_id: str = Body(..., description="file id"),
                        filetag_id: str = Body(..., description="filetag id"),
                        current_user: User = Depends(get_current_user),
@@ -41,7 +41,7 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
-@router.post("/unlink/", response_model=RespFile, response_model_exclude_unset=True)
+@router.post("/unlink/", response_model=RespFile)
 def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
                          filetag_id: str = Body(..., description="filetag id"),
                          current_user: User = Depends(get_current_user),

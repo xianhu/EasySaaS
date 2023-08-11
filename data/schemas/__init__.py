@@ -20,3 +20,7 @@ class AccessToken(BaseModel):
 class Resp(BaseModel):
     status: int = 0
     msg: str = "success"
+
+
+class RespSend(Resp):
+    token: str = "no token"
