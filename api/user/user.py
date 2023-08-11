@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-user api
+user api: 'me' as {user_id}
 """
 
 from .utils import *

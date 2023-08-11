@@ -57,7 +57,6 @@ def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User
     )
 
 
-
 def logging_request(request: Request, user_id: str, path: str, session: Session) -> None:
     """
     logging request information to UserLog table
