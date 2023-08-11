@@ -80,7 +80,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     - **status_code=500**: file size too large, file type not support
     """
     # check file type or raise exception
-    if file.content_type not in ("image/jpeg", "image/png"):
+    if file.content_type not in FILE_TYPE_LIST:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file type not support"
