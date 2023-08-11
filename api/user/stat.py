@@ -25,25 +25,28 @@ def _get_file_stat(start_day: date = Query(..., description="start day of stat")
     get file stat of current_user
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == False)
 
-    # filter of date and is_trash
+    # field of date
+    field_date = func.date(File.start_time)
+
+    # files, duration and days of all days
+    total_files = session.query(File).filter(filter0).count()
+    total_duration = session.query(func.sum(File.duration)).filter(filter0).scalar() or 0
+    total_days = session.query(func.count(distinct(field_date))).filter(filter0).scalar() or 0
+
+    # filter of date range
     filter1 = File.start_time >= start_day
     filter2 = File.start_time <= end_day
-    filter3 = File.is_trash == False
-    filter_list = [filter0, filter1, filter2, filter3]
-
-    # files and duration of all days
-    total_files = session.query(File).filter(filter0, filter3).count()
-    total_duration = session.query(func.sum(File.duration)).filter(filter0, filter3).scalar() or 0
+    filter_list = [filter0, filter1, filter2]
 
     # files and duration of each day
-    field_group = func.date(File.start_time)
-    field_list = [field_group, func.count(File.id), func.sum(File.duration)]
-    group_result = session.query(*field_list).filter(*filter_list).group_by(field_group).all()
+    field_list = [field_date, func.count(File.id), func.sum(File.duration)]
+    group_result = session.query(*field_list).filter(*filter_list).group_by(field_date).all()
 
     # return file stat
     return RespStat(data_stat={
+        "total_days": total_days,
         "total_files": total_files,
         "total_duration": total_duration,
         "group_result": group_result,
