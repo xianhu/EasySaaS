@@ -11,6 +11,11 @@ from ..utils import get_current_user
 # define router
 router = APIRouter()
 
+# file settings
+FILE_FOLDER = "/tmp"
+FILE_MAX_SIZE = 1024 * 1024 * 25
+FILE_TYPE_LIST = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/x-m4a"]
+
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
@@ -27,25 +32,32 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     """
     user_id = current_user.id
 
+    # check file type or raise exception
+    if file.content_type not in FILE_TYPE_LIST:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file type not supported"
+        )
+    filetype = file.content_type
+
     # check file size or raise exception
-    if file.size > settings.MAX_SIZE_FILE:
+    if file.size > FILE_MAX_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    filename = filename or file.filename
-    filesize, filetype = file.size, file.content_type
+    filename, filesize = filename or file.filename, file.size
+
+    # define fullname, location and save file
+    fullname = f"{user_id}-{int(time.time())}-{filename}"
+    location = f"{FILE_FOLDER}/{fullname}"
+    with open(location, "wb") as file_in:
+        file_in.write(file.file.read())
+    file_id = get_id_string(fullname)
 
     # create file schema based on filename, duration, ...
     file_schema = FileCreate(filename=filename, duration=duration,
                              start_time=start_time, end_time=end_time, timezone=timezone)
-
-    # define fullname, location and save file
-    fullname = f"{user_id}-{int(time.time())}-{filename}"
-    location = f"{settings.FOLDER_FILE}/{fullname}"
-    with open(location, "wb") as file_in:
-        file_in.write(file.file.read())
-    file_id = get_id_string(fullname)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
@@ -77,38 +89,37 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     """
     user_id = current_user.id
 
+    # check file type or raise exception
+    if file.content_type not in FILE_TYPE_LIST:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file type not supported",
+        )
+    filetype = file.content_type
+
     # check file size or raise exception
-    if flow_total_size > settings.MAX_SIZE_FILE:
+    if flow_total_size > FILE_MAX_SIZE:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large",
         )
-    filename_temp = filename or file.filename
+    filename, filesize = filename or file.filename, flow_total_size
 
     # save flow_chunk_number part of file
-    fullname_temp = f"{flow_identifier}-{filename_temp}"
-    location_temp = f"{settings.FOLDER_FILE}/{fullname_temp}"
+    fullname = f"{user_id}-{flow_identifier}-{filename}"
+    location = f"{FILE_FOLDER}/{fullname}"
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
-    with open(location_temp, file_mode) as file_in:
+    with open(location, file_mode) as file_in:
         file_in.write(file.file.read())
+    file_id = get_id_string(fullname)
 
     # check if all parts are uploaded
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
-    filename = filename or file.filename
-    filesize, filetype = file.size, file.content_type
 
     # create file schema based on filename, duration, ...
     file_schema = FileCreate(filename=filename, duration=duration,
                              start_time=start_time, end_time=end_time, timezone=timezone)
-
-    # define fullname, location and save file
-    fullname = f"{user_id}-{int(time.time())}-{filename}"
-    location = f"{settings.FOLDER_FILE}/{fullname}"
-    with open(location, "wb") as file_in:
-        with open(location_temp, "rb") as file_temp:
-            file_in.write(file_temp.read())
-    file_id = get_id_string(fullname)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
