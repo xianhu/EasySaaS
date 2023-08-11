@@ -5,7 +5,7 @@ auth api
 """
 
 from ..base import *
-from ..utils import create_user_object
+from ..user.utils import create_user_object
 
 # define router
 router = APIRouter()

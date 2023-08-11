@@ -4,22 +4,12 @@
 filetag api
 """
 
-from .utils import check_filetag_permission
+from .utils import *
 from ..base import *
 from ..utils import get_current_user
 
 # define router
 router = APIRouter()
-
-
-# response model
-class RespFileTag(Resp):
-    data_filetag: Optional[FileTagSchema] = Field(None)
-
-
-# response model
-class RespFileTagList(Resp):
-    data_filetag_list: List[FileTagSchema] = Field([])
 
 
 @router.get("/", response_model=RespFileTagList)
@@ -39,6 +29,20 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
 
     # return filetag schema list
     return RespFileTagList(data_filetag_list=filetag_schema_list)
+
+
+@router.get("/{filetag_id}", response_model=RespFileTag, response_model_exclude_unset=True)
+def _get_filetag_schema(filetag_id: str = Path(..., description="filetag id"),
+                        current_user: User = Depends(get_current_user),
+                        session: Session = Depends(get_session)):
+    """
+    get filetag schema by filetag_id
+    """
+    # check filetag_id and get filetag model
+    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+
+    # return filetag schema
+    return RespFileTag(data_filetag=FileTagSchema(**filetag_model.dict()))
 
 
 @router.post("/", response_model=RespFileTag, response_model_exclude_unset=True)

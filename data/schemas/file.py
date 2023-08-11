@@ -24,14 +24,14 @@ class FileSchema(BaseModel):
     # fullname: Optional[str] = None
     # location: Optional[str] = None
 
-    is_trash: Optional[bool] = None  # use trash api
-    trash_time: Optional[datetime] = None  # use trash api
+    is_trash: Optional[bool] = None
+    trash_time: Optional[datetime] = None
 
 
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    # keywords: Optional[List[str]] = Field(None, description="Keyword List")
+    # keywords: Optional[List[str]] = Field(None, description="Keywords")
 
     duration: Optional[int] = Field(None, description="Duration")
     start_time: Optional[datetime] = Field(None, description="Start DateTime")
@@ -42,4 +42,4 @@ class FileCreate(BaseModel):
 # used for request body
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
-    keywords: Optional[List[str]] = Field(None, description="Keyword List")
+    keywords: Optional[List[str]] = Field(None, description="Keywords")

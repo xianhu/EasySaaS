@@ -1,19 +1,15 @@
 # _*_ coding: utf-8 _*_
 
 """
-user api
+user api: 'me' as {user_id}
 """
 
+from .utils import *
 from ..base import *
-from ..utils import delete_user_object, get_current_user, logging_request
+from ..utils import get_current_user, logging_request
 
 # define router
 router = APIRouter()
-
-
-# response model
-class RespUser(Resp):
-    data_user: Optional[UserSchema] = Field(None)
 
 
 @router.get("/me", response_model=RespUser, response_model_exclude_unset=True)
@@ -123,7 +119,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
         )
 
     # delete user model and other models
-    if not delete_user_object(current_user, session):
+    if not delete_user_object(current_user.id, session):
         return Resp(status=-1, msg="delete current_user model failed")
 
     # return result

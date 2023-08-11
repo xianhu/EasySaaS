@@ -4,7 +4,7 @@
 file api
 """
 
-from .utils import RespFile, RespFileList, check_file_permission, get_filetag_id_list
+from .utils import *
 from ..base import *
 from ..utils import get_current_user
 
@@ -30,6 +30,22 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     # return file schema list and filetag_id list list
     filetag_id_list_list = [get_filetag_id_list(fm.id, session) for fm in file_model_list]
     return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
+
+
+@router.get("/{file_id}", response_model=RespFile, response_model_exclude_unset=True)
+def _get_file_schema(file_id: str = Path(..., description="file id"),
+                     current_user: User = Depends(get_current_user),
+                     session: Session = Depends(get_session)):
+    """
+    get file schema and filetag_id list by file_id
+    """
+    # check file_id and get file model
+    file_model = check_file_permission(file_id, current_user.id, session)
+
+    # return file schema and filetag_id list
+    file_schema = FileSchema(**file_model.dict())
+    filetag_id_list = get_filetag_id_list(file_id, session)
+    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
 @router.patch("/{file_id}", response_model=RespFile, response_model_exclude_unset=True)

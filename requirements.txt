@@ -18,6 +18,7 @@ pymysql~=1.1.0
 SQLAlchemy~=2.0.19
 
 # Tasks
+kombu~=5.3.1
 celery~=5.3.1
 flower~=2.0.0
 
