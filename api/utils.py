@@ -66,7 +66,7 @@ def logging_request(request: Request, user_id: str, path: str, session: Session)
     ua = request.headers.get("user-agent")
     headers = {key: request.headers.get(key) for key in request.headers.keys()}
 
-    # create userlog model and save to database
+    # create userlog model based on request information
     userlog_kwargs = dict(host=host, ua=ua, headers=headers, path=path)
     userlog_model = UserLog(user_id=user_id, **userlog_kwargs)
     session.add(userlog_model)
