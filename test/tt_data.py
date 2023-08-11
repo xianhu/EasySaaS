@@ -7,7 +7,7 @@ test data
 import logging
 from pprint import pformat
 
-from api.utils import create_user_object  # noqa: F401
+from api.user.utils import create_user_object  # noqa: F401
 from core import get_password_hash
 from data import SessionMaker
 from data.models import File, FileTag, FileTagFile

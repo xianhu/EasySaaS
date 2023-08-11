@@ -11,18 +11,13 @@ from ..user.utils import create_user_object
 router = APIRouter()
 
 
-# response model
-class RespSend(Resp):
-    token: Optional[str] = Field(None)
-
-
 # enum of ttype
 class TypeName(str, Enum):
     signup = "signup"
     reset = "reset"
 
 
-@router.post("/send-code", response_model=RespSend, response_model_exclude_unset=True)
+@router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., description="email or phone"),
                        ttype: TypeName = Body(..., description="type of send"),

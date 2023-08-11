@@ -26,8 +26,8 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
     file_model = session.query(File).get(file_id)
     if (not file_model) or (file_model.user_id != user_id):
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="no permission to access file",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="404 not found",
         )
     return file_model
 

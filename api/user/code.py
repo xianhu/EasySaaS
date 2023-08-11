@@ -11,12 +11,7 @@ from ..utils import get_current_user
 router = APIRouter()
 
 
-# response model
-class RespSend(Resp):
-    token: Optional[str] = Field(None)
-
-
-@router.post("/send-code", response_model=RespSend, response_model_exclude_unset=True)
+@router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., embed=True, description="email or phone"),
                        current_user: User = Depends(get_current_user),

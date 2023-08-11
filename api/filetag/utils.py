@@ -24,7 +24,7 @@ def check_filetag_permission(filetag_id: str, user_id: str, session: Session) ->
     filetag_model = session.query(FileTag).get(filetag_id)
     if (not filetag_model) or (filetag_model.user_id != user_id):
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="no permission to access filetag",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="404 not found",
         )
     return filetag_model

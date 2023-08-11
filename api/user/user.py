@@ -11,8 +11,13 @@ from ..utils import get_current_user, logging_request
 # define router
 router = APIRouter()
 
+# file settings
+FILE_FOLDER = "static/avatar"
+FILE_MAX_SIZE = 1024 * 1024 * 1
+FILE_TYPE_LIST = ["image/jpeg", "image/png"]
 
-@router.get("/me", response_model=RespUser, response_model_exclude_unset=True)
+
+@router.get("/me", response_model=RespUser)
 def _get_user_schema(request: Request,  # parameter of request
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
@@ -26,7 +31,7 @@ def _get_user_schema(request: Request,  # parameter of request
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.patch("/me", response_model=RespUser, response_model_exclude_unset=True)
+@router.patch("/me", response_model=RespUser)
 def _update_user_model(user_schema: UserUpdate = Body(..., description="update schema"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
@@ -43,7 +48,7 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.post("/me/password", response_model=RespUser, response_model_exclude_unset=True)
+@router.post("/me/password", response_model=RespUser)
 def _update_user_password(password_old: str = Body(..., description="old password"),
                           password_new: str = Body(..., min_length=6, max_length=20),
                           current_user: User = Depends(get_current_user),
@@ -66,7 +71,7 @@ def _update_user_password(password_old: str = Body(..., description="old passwor
     return RespUser(data_user=UserSchema(**current_user.dict()))
 
 
-@router.post("/me/avatar", response_model=RespUser, response_model_exclude_unset=True)
+@router.post("/me/avatar", response_model=RespUser)
 def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="file object"),
                         current_user: User = Depends(get_current_user),
                         session: Session = Depends(get_session)):
@@ -74,26 +79,26 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     update avatar of current_user model, return user schema
     - **status_code=500**: file size too large, file type not support
     """
-    # check file size or raise exception
-    if file.size > settings.MAX_SIZE_AVATAR:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large"
-        )
-    filename, filetype = file.filename, file.content_type
-
     # check file type or raise exception
-    if filetype not in ("image/jpeg", "image/png"):
+    if file.content_type not in ("image/jpeg", "image/png"):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file type not support"
         )
 
+    # check file size or raise exception
+    if file.size > FILE_MAX_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file size too large"
+        )
+    filename = file.filename
+
     # define fullname and save file
     fullname = f"{current_user.id}-{filename}"
-    with open(f"{settings.FOLDER_AVATAR}/{fullname}", "wb") as file_in:
+    with open(f"{FILE_FOLDER}/{fullname}", "wb") as file_in:
         file_in.write(file.file.read())
-    avatar_url = f"{settings.APP_DOMAIN}/{settings.FOLDER_AVATAR}/{fullname}"
+    avatar_url = f"{settings.APP_DOMAIN}/{FILE_FOLDER}/{fullname}"
 
     # update avatar of user model based on avatar_url
     current_user.avatar = avatar_url
