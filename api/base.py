@@ -19,7 +19,7 @@ from fastapi import Body, Cookie, Depends, Form, Header, Path, Query, Request, R
 from fastapi import File as UploadFileClass  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import EmailStr, Field
+from pydantic import EmailStr, Field, HttpUrl
 from redis import Redis
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -36,14 +36,13 @@ from data.schemas import FileTagCreate, FileTagSchema, FileTagUpdate
 from data.schemas import UserCreate, UserCreateEmail, UserCreatePhone, UserSchema, UserUpdate
 
 __all__ = [
-    "json", "logging", "os", "random", "uuid", "time", "date", "datetime",
-    "Enum", "Any", "Dict", "List", "Optional",
+    "json", "logging", "os", "random", "uuid", "time", "date", "datetime", "Enum", "Any", "Dict", "List", "Optional",
 
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
     "UploadFileClass", "FileResponse", "StreamingResponse",
     "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
-    "EmailStr", "Field", "Redis", "func", "Session",
+    "EmailStr", "Field", "HttpUrl", "Redis", "func", "Session",
 
     "check_password_hash", "get_password_hash", "create_jwt_token", "get_jwt_payload",
     "get_id_string", "iter_file", "settings", "send_email_of_code", "send_phone_of_code",

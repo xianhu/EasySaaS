@@ -49,12 +49,12 @@ def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User
     - **status_code=401**: token invalid or expired
     - **status_code=403**: permission denied
     """
-    if user_model.is_admin:
-        return user_model
-    raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="permission denied",
-    )
+    if not user_model.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="permission denied",
+        )
+    return user_model
 
 
 def logging_request(request: Request, user_id: str, path: str, session: Session) -> None:
