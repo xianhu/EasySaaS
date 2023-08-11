@@ -25,9 +25,16 @@ class UserSchema(BaseModel):
     # password: Optional[str] = None
 
     expire_time: Optional[datetime] = None
+    reset_time: Optional[datetime] = None
+
     points_left: Optional[int] = None
     points_total: Optional[int] = None
     points_history: Optional[list] = None
+
+    minutes_left: Optional[int] = None
+    minutes_total: Optional[int] = None
+    minutes_history: Optional[list] = None
+
     space_used: Optional[int] = None
     space_total: Optional[int] = None
     space_history: Optional[list] = None

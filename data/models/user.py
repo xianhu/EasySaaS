@@ -27,13 +27,19 @@ class User(AbstractModel):
     phone_verified = sqlalchemy.Column(sqlalchemy.Boolean, default=False, doc="Verified?")
     password = sqlalchemy.Column(sqlalchemy.String(512), doc="Hash Value of Password")
 
-    # information -- expire datetime
+    # information -- expire datetime and reset datetime
     expire_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Expire DateTime")
+    reset_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Reset DateTime")
 
     # information -- points and history
     points_left = sqlalchemy.Column(sqlalchemy.Integer, doc="Left Points")
     points_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Points")
     points_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Points History")
+
+    # information -- minutes and history
+    minutes_left = sqlalchemy.Column(sqlalchemy.Integer, doc="Left Minutes")
+    minutes_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Minutes")
+    minutes_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Minutes History")
 
     # information -- space and history (bytes with biginteger)
     space_used = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Used Space")
