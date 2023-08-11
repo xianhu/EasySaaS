@@ -4,7 +4,7 @@
 file api
 """
 
-from .utils import RespFile, check_file_permission, get_filetag_id_list
+from .utils import *
 from ..base import *
 from ..filetag.utils import check_filetag_permission
 from ..utils import get_current_user

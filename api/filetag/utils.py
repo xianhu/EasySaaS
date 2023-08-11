@@ -7,6 +7,16 @@ filetag api
 from ..base import *
 
 
+# response model
+class RespFileTag(Resp):
+    data_filetag: Optional[FileTagSchema] = Field(None)
+
+
+# response model
+class RespFileTagList(Resp):
+    data_filetag_list: List[FileTagSchema] = Field([])
+
+
 def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
     """
     check if filetag_id is valid and user_id has permission to access filetag

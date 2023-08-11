@@ -4,7 +4,7 @@
 file api
 """
 
-from .utils import RespFile, check_file_permission
+from .utils import *
 from ..base import *
 from ..utils import get_current_user
 
