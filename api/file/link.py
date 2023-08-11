@@ -20,7 +20,7 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
                        session: Session = Depends(get_session)):
     """
     link file model to a filetag model, return file schema and filetag_id list
-    - **status_code=403**: no permission to access file or filetag
+    - **status_code=404**: file not found or filetag not found
     """
     # check file_id/filetag_id and get file/filetag model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -48,7 +48,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
                          session: Session = Depends(get_session)):
     """
     unlink file model to a filetag model, return file schema and filetag_id list
-    - **status_code=403**: no permission to access file or filetag
+    - **status_code=404**: file not found or filetag not found
     """
     # check file_id/filetag_id and get file/filetag model
     file_model = check_file_permission(file_id, current_user.id, session)

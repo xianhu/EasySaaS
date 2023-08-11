@@ -5,6 +5,7 @@ tasks module
 """
 
 import logging
+import random
 from typing import Optional
 
 from celery import Celery
@@ -30,24 +31,35 @@ app_celery.conf.task_queues = (
 )
 
 
-@app_celery.task(name="low_priority.add", bind=True, rate_limit="50/m", max_retries=3)
+@app_celery.task(name="add_1", bind=True, rate_limit="50/m",
+                 max_retries=3, autoretry_for=(Exception,), countdown=5)
 def test_add_1(self, x: int, y: int, z: Optional[int] = None):
     # task information
     request = self.request
-    logging.warning("%s: %s, %s", request.id)
-    logging.warning("%s: %s, %s", request.id, request.retries, request.delivery_info)
-    logging.warning("%s: %s, %s", request.id, request.args, request.kwargs)
+    logging.warning("(1)%s: %s, %s", request.id, request.args, request.kwargs)
+    logging.warning("(1)%s: %s, %s", request.id, request.retries, request.delivery_info)
+    # task operation: self.update_state(), self.retry(), etc
+
+    # simulate task failure
+    if not random.randint(0, 10):
+        raise Exception("simulate task failure")
 
     # task process
     return x + y + (z or 0)
 
 
-@app_celery.task(name="high_priority.add", bind=True, rate_limit="50/m", max_retries=3)
+@app_celery.task(name="add_2", bind=True, rate_limit="50/m",
+                 max_retries=3, autoretry_for=(Exception,), countdown=5)
 def test_add_2(self, x: int, y: int, z: Optional[int] = None):
     # task information
     request = self.request
-    logging.warning("%s: %s, %s", request.id, request.retries, request.delivery_info)
-    logging.warning("%s: %s, %s", request.id, request.args, request.kwargs)
+    logging.warning("(2)%s: %s, %s", request.id, request.args, request.kwargs)
+    logging.warning("(2)%s: %s, %s", request.id, request.retries, request.delivery_info)
+    # task operation: self.update_state(), self.retry(), etc
+
+    # simulate task failure
+    if not random.randint(0, 10):
+        raise Exception("simulate task failure")
 
     # task process
     return x + y + (z or 0)
