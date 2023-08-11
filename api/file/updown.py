@@ -17,6 +17,23 @@ FILE_MAX_SIZE = 1024 * 1024 * 25
 FILE_TYPE_LIST = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/x-m4a"]
 
 
+def check_file_type_size(filetype: str, filesize: int) -> None:
+    """
+    check file type and size, raise exception or return None
+    """
+    if filetype not in FILE_TYPE_LIST:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file type not supported"
+        )
+    if filesize > FILE_MAX_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file size too large"
+        )
+    return None
+
+
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
@@ -28,27 +45,16 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             session: Session = Depends(get_session)):
     """
     upload file object and create file model, return file schema
-    - **status_code=500**: file size too large
+    - **status_code=500**: file type not supported, file size too large
     """
     user_id = current_user.id
 
-    # check file type or raise exception
-    if file.content_type not in FILE_TYPE_LIST:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file type not supported"
-        )
-    filetype = file.content_type
+    # check file type and size
+    filesize, filetype = file.size, file.content_type
+    check_file_type_size(filetype, filesize)
 
-    # check file size or raise exception
-    if file.size > FILE_MAX_SIZE:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large"
-        )
-    filename, filesize = filename or file.filename, file.size
-
-    # define fullname, location and save file
+    # define filename, fullname, location
+    filename = filename or file.filename
     fullname = f"{user_id}-{int(time.time())}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
     with open(location, "wb") as file_in:
@@ -85,27 +91,16 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  session: Session = Depends(get_session)):
     """
     upload file object by flow.js, return file schema
-    - **status_code=500**: file size too large
+    - **status_code=500**: file type not supported, file size too large
     """
     user_id = current_user.id
 
-    # check file type or raise exception
-    if file.content_type not in FILE_TYPE_LIST:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file type not supported",
-        )
-    filetype = file.content_type
+    # check file type and size
+    filesize, filetype = flow_total_size, file.content_type
+    check_file_type_size(filetype, filesize)
 
-    # check file size or raise exception
-    if flow_total_size > FILE_MAX_SIZE:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large",
-        )
-    filename, filesize = filename or file.filename, flow_total_size
-
-    # save flow_chunk_number part of file
+    # define filename, fullname, location
+    filename = filename or file.filename
     fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
@@ -138,7 +133,7 @@ def _download(file_id: str = Path(..., description="file id"),
               session: Session = Depends(get_session)):
     """
     download file object by file_id, return FileResponse
-    - **status_code=403**: no permission to access file
+    - **status_code=404**: file not found
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
@@ -154,7 +149,7 @@ def _download_stream(file_id: str = Path(..., description="file id"),
                      session: Session = Depends(get_session)):
     """
     download file object by file_id, return StreamingResponse
-    - **status_code=403**: no permission to access file
+    - **status_code=404**: file not found
     """
     # check file_id and get file model
     file_model = check_file_permission(file_id, current_user.id, session)
