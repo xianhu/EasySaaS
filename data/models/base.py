@@ -19,8 +19,8 @@ __all__ = [
 # define base model
 Model = declarative.declarative_base()
 
-# define exclude fields
-g_exclude_fields = ("status", "created_at", "updated_at")
+# define exclude fields of default
+exclude_fields_default = ("status", "created_at", "updated_at")
 
 
 class AbstractModel(Model):
@@ -34,7 +34,7 @@ class AbstractModel(Model):
     def get(self, field: str) -> Any:
         return getattr(self, field)
 
-    def dict(self, exclude_fields: tuple | list = g_exclude_fields) -> Dict[str, Any]:
+    def dict(self, exclude_fields: tuple | list = exclude_fields_default) -> Dict[str, Any]:
         columns = [c for c in self.__table__.columns if c.name not in exclude_fields]
         return {c.name: getattr(self, c.name) for c in columns}
 
