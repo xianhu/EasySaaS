@@ -9,11 +9,11 @@ from typing import Generator
 import sqlalchemy.orm
 from sqlalchemy.orm import Session
 
-from core.settings import settings
+from core import settings
 
 # create engine and SessionMaker
 engine = sqlalchemy.create_engine(settings.DATABASE_URI, pool_pre_ping=True)
-SessionMaker = sqlalchemy.orm.sessionmaker(bind=engine, autocommit=False, autoflush=True)
+SessionMaker = sqlalchemy.orm.sessionmaker(bind=engine, autocommit=False)
 
 
 def get_session() -> Generator[Session, None, None]:

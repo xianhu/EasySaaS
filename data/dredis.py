@@ -7,7 +7,7 @@ database of redis
 import redis
 from redis import ConnectionPool
 
-from core.settings import settings
+from core import settings
 
 # create connection pool
 url = f"{settings.REDIS_URI}/{0 if not settings.DEBUG else 1}"

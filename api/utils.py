@@ -7,10 +7,10 @@ utility functions
 from .base import *
 
 # define OAuth2PasswordBearer
-_oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/access-token")
 
 
-def get_current_user(access_token: str = Depends(_oauth2_bearer),
+def get_current_user(access_token: str = Depends(oauth2_bearer),
                      session: Session = Depends(get_session),
                      rd_conn: Redis = Depends(get_redis)) -> User:
     """

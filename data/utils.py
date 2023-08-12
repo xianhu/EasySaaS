@@ -17,7 +17,7 @@ FILETAG_SYSTEM_SET = {"untagged", "favorite", "collect"}
 
 def init_db_tables(model_list: Optional[list] = None) -> None:
     """
-    initialize database or tables
+    initialize database or tables, only used for test
     :param model_list: model list, order by dependency
     """
     from .dmysql import engine

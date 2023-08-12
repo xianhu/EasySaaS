@@ -9,18 +9,16 @@ import time
 
 from celery.result import AsyncResult
 
-from tasks import test_add_1, test_add_2
+from tasks import test_add_func
 
 # define tasks
 task_list = []
 task_id_list = []
 for i in range(100):
-    if i % 3 == 0:
-        task = test_add_1.apply_async(args=(i, i), kwargs={"z": i}, queue="default")
-    elif i % 3 == 1:
-        task = test_add_1.apply_async(args=(i, i), kwargs={"z": i}, queue="low_priority")
-    else:
-        task = test_add_2.apply_async(args=(i, i), kwargs={"z": i}, queue="high_priority")
+    queue = "default" if i % 3 == 0 else "low_priority" if i % 3 == 1 else "high_priority"
+    task = test_add_func.apply_async(args=(i, i), kwargs={"z": i}, queue=queue)
+
+    # append task
     task_list.append(task)
     task_id_list.append(task.id)
 
