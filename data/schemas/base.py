@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl
 
-from .. import PhoneStr
+from ..utils import PhoneStr
 
 __all__ = [
     "date", "datetime", "Any", "Dict", "List", "Optional",
