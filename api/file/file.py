@@ -40,8 +40,10 @@ def _get_file_schema(file_id: str = Path(..., description="file id"),
     get file schema and filetag_id list by file_id
     - **status_code=404**: file not found
     """
+    user_id = current_user.id
+
     # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
+    file_model = check_file_permission(file_id, user_id, session)
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
@@ -58,8 +60,10 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
     update file model based on update schema, return file schema
     - **status_code=404**: file not found
     """
+    user_id = current_user.id
+
     # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
+    file_model = check_file_permission(file_id, user_id, session)
 
     # update file model based on update schema
     for field in file_schema.model_dump(exclude_unset=True):

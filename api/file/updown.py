@@ -51,7 +51,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     user_id = current_user.id
 
     # check file type and size
-    filesize, filetype = file.size, file.content_type
+    filetype, filesize = file.content_type, file.size
     check_file_type_size(filetype, filesize)
 
     # define filename, fullname, location
@@ -99,7 +99,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     user_id = current_user.id
 
     # check file type and size
-    filesize, filetype = flow_total_size, file.content_type
+    filetype, filesize = file.content_type, flow_total_size
     check_file_type_size(filetype, filesize)
 
     # define filename, fullname, location
