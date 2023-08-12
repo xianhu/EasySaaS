@@ -78,7 +78,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
                         session: Session = Depends(get_session)):
     """
     update avatar of current_user model, return user schema
-    - **status_code=500**: file size too large, file type not support
+    - **status_code=500**: file type not support, file size too large
     """
     # check file type or raise exception
     if file.content_type not in FILE_TYPE_LIST:
@@ -114,19 +114,12 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
 def _delete_user_model(current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
-    delete current_user model (only in DEBUG mode)
-    - **status=-1**: delete current_user model failed
-    - **status_code=403**: can not delete user model
+    delete current_user model (dangerous operation)
+    - **status=-1**: delete current_user failed
     """
-    if not settings.DEBUG:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="can not delete user model",
-        )
-
     # delete user model and other models
     if not delete_user_object(current_user.id, session):
-        return Resp(status=-1, msg="delete current_user model failed")
+        return Resp(status=-1, msg="delete current_user failed")
 
     # return result
     return Resp(msg="delete success")

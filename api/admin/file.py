@@ -28,7 +28,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     return RespFileList(data_file_list=file_schema_list)
 
 
-@router.get("/{user_id}", response_model=RespFileList)
+@router.get("/user/{user_id}", response_model=RespFileList)
 def _get_file_schema_list(user_id: str = Path(..., description="user id"),
                           skip: int = Query(0, description="skip count"),
                           limit: int = Query(100, description="limit count"),
