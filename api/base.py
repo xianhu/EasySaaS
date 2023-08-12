@@ -43,20 +43,21 @@ __all__ = [
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
     "UploadFileClass", "FileResponse", "StreamingResponse", "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
-    "EmailStr", "Field", "HttpUrl", "Redis", "func", "distinct", "or_", "and_", "not_", "Session",
+    "EmailStr", "Field", "HttpUrl", "Redis", "and_", "distinct", "func", "not_", "or_", "Session",
 
     # from core module
     "check_password_hash", "get_password_hash", "create_jwt_token", "get_jwt_payload",
     "get_id_string", "iter_file", "settings", "send_email_of_code", "send_phone_of_code",
 
-    # from data module -- utils and others
+    # from data module -- utils
     "FILETAG_SYSTEM_SET", "PhoneStr", "get_redis", "get_session",
 
     # from data module -- models
     "File", "FileTag", "FileTagFile", "Project", "User", "UserLog", "UserProject",
 
     # from data module -- schemas
-    "AccessToken", "Resp", "RespSend", "FileCreate", "FileSchema", "FileUpdate",
+    "AccessToken", "Resp", "RespSend",
+    "FileCreate", "FileSchema", "FileUpdate",
     "FileTagCreate", "FileTagSchema", "FileTagUpdate",
     "UserCreate", "UserCreateEmail", "UserCreatePhone", "UserSchema", "UserUpdate",
 
