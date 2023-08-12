@@ -26,7 +26,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     """
     send a code to email or phone for signup or reset, return token with code
     - **status=-1**: send code too frequently
-    - **status=-2**: user existed or not exist
+    - **status=-2**: user existed, user not exist
     """
     # check if send code too frequently
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
