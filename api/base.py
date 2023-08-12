@@ -60,6 +60,4 @@ __all__ = [
     "FileCreate", "FileSchema", "FileUpdate",
     "FileTagCreate", "FileTagSchema", "FileTagUpdate",
     "UserCreate", "UserCreateEmail", "UserCreatePhone", "UserSchema", "UserUpdate",
-
-    # from other module
 ]

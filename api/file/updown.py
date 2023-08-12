@@ -93,7 +93,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
     """
-    upload file object by flow.js, return file schema
+    upload file object by flow.js and create file model, return file schema
     - **status_code=500**: file type not supported, file size too large
     """
     user_id = current_user.id

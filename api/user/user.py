@@ -58,7 +58,7 @@ def _update_user_password(password_old: str = Body(..., description="old passwor
     update password of current_user model, return user schema
     - **status=-1**: password_old incorrect
     """
-    # check password of user model
+    # check password of user model based on password_old
     if not check_password_hash(password_old, current_user.password):
         return RespUser(status=-1, msg="password_old incorrect")
     pwd_hash = get_password_hash(password_new)

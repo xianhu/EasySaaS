@@ -37,7 +37,7 @@ def _get_file_schema(file_id: str = Path(..., description="file id"),
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
     """
-    get file schema and filetag_id list by file_id
+    get file schema and filetag_id list by file_id of current_user
     - **status_code=404**: file not found
     """
     user_id = current_user.id
