@@ -36,7 +36,7 @@ def _get_filetag_schema(filetag_id: str = Path(..., description="filetag id"),
                         current_user: User = Depends(get_current_user),
                         session: Session = Depends(get_session)):
     """
-    get filetag schema by filetag_id of current_user
+    get filetag schema of current_user by filetag_id
     - **status_code=404**: filetag not found
     """
     user_id = current_user.id
@@ -119,7 +119,7 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
     """
-    delete filetag model by filetag_id
+    delete filetag model of current_user by filetag_id
     - **status=-1**: cannot delete system filetag
     - **status=-2**: filetag not empty with files
     - **status_code=404**: filetag not found
