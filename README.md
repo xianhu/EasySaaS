@@ -67,9 +67,12 @@ server {
 }
 
 server {
-    listen 80;
-    listen [::]:80;
-    server_name example.com;
+    listen      80 default_server;
+    listen      [::]:80 default_server;
+    # listen    443 ssl default_server;
+    # listen    [::]:443 ssl default_server;    
+
+    server_name example.com www.example.com;
     client_max_body_size 100M;
 
     root   /var/www/html/example;

@@ -7,12 +7,12 @@ test data
 import logging
 from pprint import pformat
 
-from api.user.utils import create_user_object  # noqa: F401
+from api.user.utils import create_user_object  # only used for test
 from core import get_password_hash
 from data import SessionMaker
 from data.models import File, FileTag, FileTagFile
 from data.schemas import UserCreateEmail, UserCreatePhone
-from data.utils import init_db_tables  # noqa: F401
+from data.utils import init_db_tables  # only used for test
 
 # init db with all tables
 init_db_tables(model_list=None)
