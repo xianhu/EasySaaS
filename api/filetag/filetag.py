@@ -18,7 +18,7 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
     """
-    get filetag schema list of current_user
+    get filetag schema list
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
@@ -36,7 +36,7 @@ def _get_filetag_schema(filetag_id: str = Path(..., description="filetag id"),
                         current_user: User = Depends(get_current_user),
                         session: Session = Depends(get_session)):
     """
-    get filetag schema by filetag_id of current_user
+    get filetag schema by filetag_id
     - **status_code=404**: filetag not found
     """
     user_id = current_user.id

@@ -35,7 +35,7 @@ def _get_file_schema_list(user_id: str = Path(..., description="user id"),
                           _: User = Depends(get_current_user_admin),
                           session: Session = Depends(get_session)):
     """
-    get file schema list by user id
+    get file schema list by user_id
     """
     filter0 = File.user_id == user_id
 
