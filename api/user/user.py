@@ -11,7 +11,7 @@ from ..utils import get_current_user, logging_request
 # define router
 router = APIRouter()
 
-# file settings
+# file settings of avatar
 FILE_FOLDER = "static/avatar"
 FILE_MAX_SIZE = 1024 * 1024 * 1
 FILE_TYPE_LIST = ["image/jpeg", "image/png"]
@@ -26,6 +26,7 @@ def _get_user_schema(request: Request,  # parameter of request
     """
     # logging request information
     logging_request(request, current_user.id, "/user/me", session)
+    # reset reset_time / points / minutes / space if necessary
 
     # return user schema
     return RespUser(data_user=UserSchema(**current_user.dict()))
