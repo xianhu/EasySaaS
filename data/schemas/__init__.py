@@ -17,10 +17,10 @@ class Resp(BaseModel):
     msg: str = "success"
 
 
+class RespAccessToken(Resp):
+    access_token: str = "no token"
+    token_type: str = "bearer"
+
+
 class RespSend(Resp):
     token: str = "no token"
-
-
-class AccessToken(Resp):
-    access_token: str  # required
-    token_type: str = "bearer"

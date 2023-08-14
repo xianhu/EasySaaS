@@ -38,8 +38,8 @@ class Settings(BaseSettings):
     # settings -- session or token duration
     PERMANENT_SESSION_LIFETIME: int = 60 * 60 * 24 * 7
     NORMAL_TOKEN_EXPIRE_DURATION: int = 60 * 10  # 10 minutes
-    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
-    REFRESH_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 30
+    ACCESS_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 300
+    REFRESH_TOKEN_EXPIRE_DURATION: int = 60 * 60 * 24 * 7
 
     # Config
     class Config:

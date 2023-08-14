@@ -39,6 +39,10 @@ def get_current_user(access_token: str = Depends(oauth2_bearer),
     if (not user_model) or (user_model.status != 1):
         raise exception_unauthorized
 
+    # refresh token expire time
+    rd_id = f"{settings.APP_NAME}-access-{client_id}-{user_id}"
+    rd_conn.set(rd_id, access_token, ex=settings.REFRESH_TOKEN_EXPIRE_DURATION)
+
     # return user
     return user_model
 
