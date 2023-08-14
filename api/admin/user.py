@@ -23,4 +23,5 @@ def _get_user_schema_list(skip: int = Query(0, description="skip count"),
     user_schema_list = [UserSchema(**um.dict()) for um in user_model_list]
 
     # return user schema list
-    return RespUserList(data_user_list=user_schema_list)
+    user_total = session.query(User).count()
+    return RespUserList(data_user_total=user_total, data_user_list=user_schema_list)

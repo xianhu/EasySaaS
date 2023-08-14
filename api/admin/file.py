@@ -23,7 +23,8 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]
 
     # return file schema list
-    return RespFileList(data_file_list=file_schema_list)
+    file_total = session.query(File).count()
+    return RespFileList(data_file_total=file_total, data_file_list=file_schema_list)
 
 
 @router.get("/user/{user_id}", response_model=RespFileList)
@@ -41,4 +42,5 @@ def _get_file_schema_list(user_id: str = Path(..., description="user id"),
     file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
 
     # return file schema list
-    return RespFileList(data_file_list=file_schema_list)
+    file_total = session.query(File).filter(filter0).count()
+    return RespFileList(data_file_total=file_total, data_file_list=file_schema_list)

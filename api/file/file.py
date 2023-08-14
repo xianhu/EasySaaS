@@ -28,8 +28,9 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
 
     # return file schema list and filetag_id list list
+    file_total = session.query(File).filter(filter0).count()
     filetag_id_list_list = [get_filetag_id_list(fm.id, session) for fm in file_model_list]
-    return RespFileList(data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
+    return RespFileList(data_file_total=file_total, data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
 
 
 @router.get("/{file_id}", response_model=RespFile)
