@@ -30,8 +30,8 @@ def get_current_user(access_token: str = Depends(oauth2_bearer),
     user_id, client_id = payload["sub"], payload.get("client_id", "web")
 
     # get token by user_id and client_id, and check if token match
-    rd_token = rd_conn.get(f"{settings.APP_NAME}-access-{client_id}-{user_id}")
-    if (not rd_token) or (access_token != rd_token):
+    rd_id = f"{settings.APP_NAME}-access-{client_id}-{user_id}"
+    if (not rd_conn.get(rd_id)) or (access_token != rd_conn.get(rd_id)):
         raise exception_unauthorized
     user_model = session.query(User).get(user_id)
 
@@ -40,8 +40,7 @@ def get_current_user(access_token: str = Depends(oauth2_bearer),
         raise exception_unauthorized
 
     # refresh token expire time
-    rd_id = f"{settings.APP_NAME}-access-{client_id}-{user_id}"
-    rd_conn.set(rd_id, access_token, ex=settings.REFRESH_TOKEN_EXPIRE_DURATION)
+    rd_conn.expire(rd_id, settings.REFRESH_TOKEN_EXPIRE_DURATION)
 
     # return user
     return user_model

@@ -16,12 +16,12 @@ def _get_user_schema_list(skip: int = Query(0, description="skip count"),
                           limit: int = Query(100, description="limit count"),
                           session: Session = Depends(get_session)):
     """
-    get user schema list
+    get user schema list, support pagination
     """
     # get user model list and schema list
     user_model_list = session.query(User).offset(skip).limit(limit).all()
     user_schema_list = [UserSchema(**um.dict()) for um in user_model_list]
 
-    # return user schema list
+    # return total count and user schema list
     user_total = session.query(User).count()
     return RespUserList(data_user_total=user_total, data_user_list=user_schema_list)
