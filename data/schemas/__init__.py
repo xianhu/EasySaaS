@@ -12,11 +12,6 @@ from .project import ProjectCreate, ProjectSchema, ProjectUpdate
 from .user import UserCreate, UserCreateEmail, UserCreatePhone, UserSchema, UserUpdate
 
 
-class AccessToken(BaseModel):
-    access_token: str  # required
-    token_type: str = "bearer"
-
-
 class Resp(BaseModel):
     status: int = 0
     msg: str = "success"
@@ -24,3 +19,8 @@ class Resp(BaseModel):
 
 class RespSend(Resp):
     token: str = "no token"
+
+
+class AccessToken(Resp):
+    access_token: str  # required
+    token_type: str = "bearer"
