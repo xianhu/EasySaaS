@@ -35,7 +35,7 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
 
 def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
     """
-    get filetag_id list of file from filetagfiles table
+    get filetag_id list based on file_id from filetagfiles table
     """
     # get filetagfile model list
     filter1 = FileTagFile.file_id == file_id
@@ -43,3 +43,18 @@ def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
 
     # return filetag_id list
     return [ftf_model.filetag_id for ftf_model in ftf_model_list]
+
+
+def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
+    """
+    delete file models and filetagfile models based on file_id_list
+    """
+    try:
+        session.query(File).filter(File.id.in_(file_id_list)).delete()
+        session.query(FileTagFile).filter(FileTagFile.file_id.in_(file_id_list)).delete()
+        session.commit()
+        return True
+    except Exception as excep:
+        logging.error("delete file filetagfile error: %s", excep)
+        session.rollback()
+        return False

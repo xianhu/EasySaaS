@@ -14,7 +14,8 @@ router = APIRouter()
 # file settings
 FILE_FOLDER = "/tmp"
 FILE_MAX_SIZE = 1024 * 1024 * 25
-FILE_TYPE_LIST = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/x-m4a"]
+FILE_TYPE_LIST = ["audio/mpeg", "audio/wav", "audio/x-wav",
+                  "audio/mp4", "audio/webm", "audio/x-m4a"]
 
 
 def check_file_type_size(filetype: str, filesize: int) -> None:
@@ -41,7 +42,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             duration: Optional[int] = Form(None, description="duration of file"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-            timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
+            ttimezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -55,7 +56,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     check_file_type_size(filetype, filesize)
 
     # define filename, fullname, location
-    filename = filename or file.filename
+    filename = filename or file.filename or "noname"
     fullname = f"{user_id}-{int(time.time())}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
     with open(location, "wb") as file_in:
@@ -65,7 +66,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     # create file schema based on filename, keywords, duration, ...
     keywords = [i.strip() for i in (keywords.split(",") if keywords else [])]
     file_schema = FileCreate(filename=filename, keywords=keywords, duration=duration,
-                             start_time=start_time, end_time=end_time, timezone=timezone)
+                             start_time=start_time, end_time=end_time, timezone=ttimezone)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
@@ -89,7 +90,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  duration: Optional[int] = Form(None, description="duration of file"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-                 timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
+                 ttimezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
     """
@@ -103,7 +104,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     check_file_type_size(filetype, filesize)
 
     # define filename, fullname, location
-    filename = filename or file.filename
+    filename = filename or file.filename or "noname"
     fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
@@ -118,7 +119,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     # create file schema based on filename, keywords, duration, ...
     keywords = [i.strip() for i in (keywords.split(",") if keywords else [])]
     file_schema = FileCreate(filename=filename, keywords=keywords, duration=duration,
-                             start_time=start_time, end_time=end_time, timezone=timezone)
+                             start_time=start_time, end_time=end_time, timezone=ttimezone)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
