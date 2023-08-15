@@ -69,7 +69,6 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     verify code & token from send-code, and create user or reset password
     - **status=-1**: token invalid or expired
     - **status=-2**: code invalid or not match
-    - **status=-3**: create user model failed
     """
     # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
@@ -104,10 +103,7 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
-
-        # create user model based on create schema
-        if not create_user_object(user_schema, session):
-            return Resp(status=-3, msg="create user model failed")
+        create_user_object(user_schema, session)
 
         # return result
         return Resp(msg=f"{type} success")

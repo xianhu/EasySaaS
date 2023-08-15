@@ -20,7 +20,7 @@ class RespUserList(Resp):
 
 def create_user_object(user_schema: UserCreate, session: Session) -> bool:
     """
-    create user object based on create schema, return True or False
+    create user object based on create schema, return True or raise HTTPException
     """
     try:
         # create user_id based on create schema
@@ -56,12 +56,15 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
     except Exception as excep:
         logging.error("create user object error: %s", excep)
         session.rollback()
-        return False
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="create user object error",
+        )
 
 
 def delete_user_object(user_id: str, session: Session) -> bool:
     """
-    delete user object by user_id, return True or False
+    delete user object by user_id, return True or raise HTTPException
     """
     try:
         # delete userproject models and project models(not need) related to user
@@ -89,4 +92,7 @@ def delete_user_object(user_id: str, session: Session) -> bool:
     except Exception as excep:
         logging.error("delete user object error: %s", excep)
         session.rollback()
-        return False
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="delete user object error",
+        )

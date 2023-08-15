@@ -30,12 +30,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         # delete file model if (now - trash_time) > 30 days
         filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
         file_model_list = session.query(File).filter(filter0, filter1).all()
-        file_id_list = [file_model.id for file_model in file_model_list]
-        if not delete_file_filetagfile(file_id_list, session):
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="delete file filetagfile error",
-            )
+        delete_file_filetagfile([file_model.id for file_model in file_model_list], session)
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
@@ -146,12 +141,7 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     # get file models and check
     filter1 = File.id.in_(file_id_list)
     file_model_list = session.query(File).filter(filter0, filter1).all()
-    file_id_list = [file_model.id for file_model in file_model_list]
-    if not delete_file_filetagfile(file_id_list, session):
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="delete file filetagfile error",
-        )
+    delete_file_filetagfile([file_model.id for file_model in file_model_list], session)
 
     # return result
     return Resp(msg="delete success")
