@@ -13,7 +13,7 @@ class FileTagSchema(BaseModel):
     name: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
-    ttype: Optional[str] = None
+    type: Optional[str] = None
 
 
 # used for request body

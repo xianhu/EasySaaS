@@ -10,7 +10,7 @@ from pprint import pformat
 from api.user.utils import create_user_object  # only used for test
 from core import get_password_hash
 from data import SessionMaker
-from data.models import File, FileTag, FileTagFile
+from data.models import File, FileTag, FileTagFile, User
 from data.schemas import UserCreateEmail, UserCreatePhone
 from data.utils import init_db_tables  # only used for test
 
@@ -30,10 +30,14 @@ with SessionMaker() as session:
                                   is_admin=True, role_json={"role": "admin"})
 
     # create user object based on create schema
-    user_model = create_user_object(user_schema, session)
+    if not create_user_object(user_schema, session):
+        logging.error("create user object error")
+
+    # get user model and logging
+    user_model = session.query(User).filter(User.email == email).first()
     logging.warning(pformat(user_model.dict(), indent=2))
 
-    # logging filetag models
+    # get filetag models and logging
     filter0 = FileTag.user_id == user_model.id
     for filetag_model in session.query(FileTag).filter(filter0).all():
         logging.warning("----%s", filetag_model.dict())
@@ -43,10 +47,14 @@ with SessionMaker() as session:
     user_schema = UserCreatePhone(phone=phone, phone_verified=True, password=pwd_hash)
 
     # create user object based on create schema
-    user_model = create_user_object(user_schema, session)
+    if not create_user_object(user_schema, session):
+        logging.error("create user object error")
+
+    # get user model and logging
+    user_model = session.query(User).filter(User.email == email).first()
     logging.warning(pformat(user_model.dict(), indent=2))
 
-    # logging filetag models
+    # get filetag models and logging
     filter0 = FileTag.user_id == user_model.id
     for filetag_model in session.query(FileTag).filter(filter0).all():
         logging.warning("----%s", filetag_model.dict())

@@ -47,14 +47,17 @@ def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
 
 def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
     """
-    delete file models and filetagfile models by file_id list, return True or False
+    delete file models and filetagfile models by file_id list, return True or raise HTTPException
     """
     try:
-        session.query(File).filter(File.id.in_(file_id_list)).delete()
         session.query(FileTagFile).filter(FileTagFile.file_id.in_(file_id_list)).delete()
+        session.query(File).filter(File.id.in_(file_id_list)).delete()
         session.commit()
         return True
     except Exception as excep:
         logging.error("delete file filetagfile error: %s", excep)
         session.rollback()
-        return False
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="delete file filetagfile error",
+        )

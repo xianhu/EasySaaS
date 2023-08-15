@@ -11,7 +11,7 @@ from ..user.utils import create_user_object
 router = APIRouter()
 
 
-# enum of ttype
+# enum of type
 class TypeName(str, Enum):
     signup = "signup"
     reset = "reset"
@@ -20,7 +20,7 @@ class TypeName(str, Enum):
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., description="email or phone"),
-                       ttype: TypeName = Body(..., description="type of send"),
+                       type: TypeName = Body(..., description="type of send"),
                        session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
     """
@@ -38,17 +38,16 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     else:
         user_model = session.query(User).filter(User.phone == username).first()
 
-    # check if user exist or not by ttype
-    if ttype == TypeName.signup and user_model:
+    # check if user exist or not by type
+    if type == TypeName.signup and user_model:
         return RespSend(status=-2, msg="user existed")
-    if ttype == TypeName.reset and (not user_model):
+    if type == TypeName.reset and (not user_model):
         return RespSend(status=-2, msg="user not exist")
     code = random.randint(100000, 999999)
 
     # define token based on username
-    data = dict(code=code, ttype=ttype)
-    duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
-    token = create_jwt_token(username, audience="send", expire_duration=duration, **data)
+    data = dict(code=code, type=type)
+    token = create_jwt_token(username, audience="send", **data)
 
     # send code in background
     if username.find("@") > 0:
@@ -70,17 +69,16 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     verify code & token from send-code, and create user or reset password
     - **status=-1**: token invalid or expired
     - **status=-2**: code invalid or not match
-    - **status=-3**: create user model failed
     """
     # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
 
-    # check token: ttype
-    if (not payload) or (not payload.get("ttype")):
+    # check token: type
+    if (not payload) or (not payload.get("type")):
         return Resp(status=-1, msg="token invalid or expired")
-    if payload["ttype"] not in TypeName.__members__:
+    if payload["type"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid or expired")
-    ttype = payload["ttype"]
+    type = TypeName(payload["type"])
 
     # check token: sub(email or phone) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
@@ -98,31 +96,27 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     else:
         user_model = session.query(User).filter(User.phone == username).first()
 
-    # check token ttype: signup
-    if ttype == TypeName.signup and (not user_model):
+    # check token type: signup
+    if type == TypeName.signup and (not user_model):
         # create user schema based on username and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
         else:
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
-
-        # create user model based on create schema
-        user_model = create_user_object(user_schema, session)
-        if not user_model:
-            return Resp(status=-3, msg="create user model failed")
+        create_user_object(user_schema, session)
 
         # return result
-        return Resp(msg=f"{ttype} success")
+        return Resp(msg=f"{type} success")
 
-    # check token ttype: reset
-    if ttype == TypeName.reset and user_model:
+    # check token type: reset
+    if type == TypeName.reset and user_model:
         # reset password of user model based on pwd_hash
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()
 
         # return result
-        return Resp(msg=f"{ttype} success")
+        return Resp(msg=f"{type} success")
 
     # return -1 (token invalid or expired)
     return Resp(status=-1, msg="token invalid or expired")

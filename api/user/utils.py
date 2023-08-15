@@ -18,17 +18,17 @@ class RespUserList(Resp):
     data_user_list: List[UserSchema] = Field([])
 
 
-def create_user_object(user_schema: UserCreate, session: Session) -> Optional[User]:
+def create_user_object(user_schema: UserCreate, session: Session) -> bool:
     """
-    create user object based on create schema, return user model or None
+    create user object based on create schema, return True or raise HTTPException
     """
     try:
         # create user_id based on create schema
         if isinstance(user_schema, UserCreateEmail):
-            user_id = get_id_string(user_schema.email)
+            user_id = get_id_string(f"{user_schema.email}-{user_schema.password}")
             nickname = user_schema.email.split("@")[0]
         elif isinstance(user_schema, UserCreatePhone):
-            user_id = get_id_string(user_schema.phone)
+            user_id = get_id_string(f"{user_schema.phone}-{user_schema.password}")
             nickname = user_schema.phone[-4:]
         else:
             raise Exception("user schema error")
@@ -45,23 +45,26 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
             filetag_id = get_id_string(f"{user_id}-{filetag_name}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
 
-            # create filetag model based on create schema, ttype="system"
+            # create filetag model based on create schema, type="system"
             filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
-            filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, ttype="system")
+            filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, type="system")
             session.add(filetag_model)
 
         # commit session
         session.commit()
-        return user_model
+        return True
     except Exception as excep:
         logging.error("create user object error: %s", excep)
         session.rollback()
-        return None
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="create user object error",
+        )
 
 
 def delete_user_object(user_id: str, session: Session) -> bool:
     """
-    delete user object by user_id, return True or False
+    delete user object by user_id, return True or raise HTTPException
     """
     try:
         # delete userproject models and project models(not need) related to user
@@ -89,4 +92,7 @@ def delete_user_object(user_id: str, session: Session) -> bool:
     except Exception as excep:
         logging.error("delete user object error: %s", excep)
         session.rollback()
-        return False
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="delete user object error",
+        )
