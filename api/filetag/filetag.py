@@ -55,20 +55,20 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
                           session: Session = Depends(get_session)):
     """
     create filetag model based on create schema, return filetag schema
-    - **status=-1**: filetag name invalid, filetag name existed
+    - **status=-1**: filetag name invalid or existed
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
-        return RespFileTag(status=-1, msg="filetag name invalid")
+        return RespFileTag(status=-1, msg="filetag name invalid or existed")
     filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
-        return RespFileTag(status=-1, msg="filetag name existed")
+        return RespFileTag(status=-1, msg="filetag name invalid or existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
 
     # create filetag model based on create schema, ttype="custom"
@@ -88,7 +88,7 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           session: Session = Depends(get_session)):
     """
     update filetag model based on update schema, return filetag schema
-    - **status=-1**: filetag name invalid, filetag name existed
+    - **status=-1**: filetag name invalid or existed
     - **status_code=404**: filetag not found
     """
     user_id = current_user.id
@@ -96,13 +96,13 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
-        return RespFileTag(status=-1, msg="filetag name invalid")
+        return RespFileTag(status=-1, msg="filetag name invalid or existed")
     filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
-        return RespFileTag(status=-1, msg="filetag name existed")
+        return RespFileTag(status=-1, msg="filetag name invalid or existed")
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
 
     # update filetag model based on update schema
