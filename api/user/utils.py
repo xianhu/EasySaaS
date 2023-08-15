@@ -45,9 +45,9 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
             filetag_id = get_id_string(f"{user_id}-{filetag_name}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
 
-            # create filetag model based on create schema, ttype="system"
+            # create filetag model based on create schema, type="system"
             filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
-            filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, ttype="system")
+            filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs, type="system")
             session.add(filetag_model)
 
         # commit session

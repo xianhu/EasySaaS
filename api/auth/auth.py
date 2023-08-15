@@ -11,17 +11,17 @@ from ..utils import get_current_user
 router = APIRouter()
 
 
-# response model
-class RespAccessToken(Resp):
-    access_token: str = "no token"
-    token_type: str = "bearer"
-
-
 # enum of client_id
 class ClientID(str, Enum):
     web = "web"
     ios = "ios"
     android = "android"
+
+
+# response model
+class RespAccessToken(Resp):
+    access_token: str = "no token"
+    token_type: str = "bearer"
 
 
 @router.post("/access-token", response_model=RespAccessToken)

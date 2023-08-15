@@ -71,7 +71,7 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
         return RespFileTag(status=-1, msg="filetag name invalid or existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}")
 
-    # create filetag model based on create schema, ttype="custom"
+    # create filetag model based on create schema, type="custom"
     filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
     filetag_model = FileTag(id=filetag_id, user_id=user_id, **filetag_kwargs)
     session.add(filetag_model)
@@ -129,7 +129,7 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
 
     # check filetag_id and get filetag model
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
-    if filetag_model.ttype == "system":
+    if filetag_model.type == "system":
         return RespFileTag(status=-1, msg="cannot delete system filetag")
 
     # check if filetag not empty with files

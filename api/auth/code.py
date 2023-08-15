@@ -11,7 +11,7 @@ from ..user.utils import create_user_object
 router = APIRouter()
 
 
-# enum of ttype
+# enum of type
 class TypeName(str, Enum):
     signup = "signup"
     reset = "reset"
@@ -20,7 +20,7 @@ class TypeName(str, Enum):
 # request model
 class ReqSend(BaseModel):
     username: EmailStr | PhoneStr = Field(..., description="email or phone")
-    ttype: TypeName = Field(..., alias="type", description="type of send")
+    type: TypeName = Field(..., description="type of send")
 
 
 @router.post("/send-code", response_model=RespSend)
@@ -33,7 +33,8 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     - **status=-1**: send code too frequently
     - **status=-2**: user existed, user not exist
     """
-    username, ttype = req_send.username, req_send.ttype
+    # get username and type(ttype) from req_send
+    username, ttype = req_send.username, req_send.type
 
     # check if send code too frequently
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
@@ -81,7 +82,7 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
 
-    # check token: ttype
+    # check token: ttype (not type!!!)
     if (not payload) or (not payload.get("ttype")):
         return Resp(status=-1, msg="token invalid or expired")
     if payload["ttype"] not in TypeName.__members__:
