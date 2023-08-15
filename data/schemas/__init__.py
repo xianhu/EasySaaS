@@ -12,10 +12,12 @@ from .project import ProjectCreate, ProjectSchema, ProjectUpdate
 from .user import UserCreate, UserCreateEmail, UserCreatePhone, UserSchema, UserUpdate
 
 
+# base response
 class Resp(BaseModel):
     status: int = 0
     msg: str = "success"
 
 
+# response for send
 class RespSend(Resp):
     token: str = "no token"

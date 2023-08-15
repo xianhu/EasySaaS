@@ -15,13 +15,19 @@ router = APIRouter()
 @router.get("/", response_model=RespFileList)
 def _get_file_schema_list(skip: int = Query(0, description="skip count"),
                           limit: int = Query(100, description="limit count"),
+                          is_trash: bool = Query(False, description="is trash"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
     """
     get file schema list and filetag_id list list
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == is_trash)
+
+    # delete file model if (now - trash_time) > 30 days
+    filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
+    session.query(File).filter(filter0, filter1).delete()
+    session.commit()
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
@@ -125,12 +131,11 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     delete file model list by file_id list
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == True)
 
     # get file models and check
     filter1 = File.id.in_(file_id_list)
-    filter2 = File.is_trash == True
-    for file_model in session.query(File).filter(filter0, filter1, filter2).all():
+    for file_model in session.query(File).filter(filter0, filter1).all():
         # delete filetagfile models related to file model
         filter_1 = FileTagFile.file_id == file_model.id
         session.query(FileTagFile).filter(filter_1).delete()
