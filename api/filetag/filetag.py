@@ -55,20 +55,20 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
                           session: Session = Depends(get_session)):
     """
     create filetag model based on create schema, return filetag schema
-    - **status=-1**: filetag name invalid or existed
+    - **status=-2**: filetag name invalid or existed
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
     filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}")
 
     # create filetag model based on create schema, type="custom"
@@ -88,22 +88,27 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           session: Session = Depends(get_session)):
     """
     update filetag model based on update schema, return filetag schema
-    - **status=-1**: filetag name invalid or existed
+    - **status=-1**: cannot update system filetag
+    - **status=-2**: filetag name invalid or existed
     - **status_code=404**: filetag not found
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
 
+    # check filetag_id and get filetag model
+    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+    if filetag_model.type == "system":
+        return RespFileTag(status=-1, msg="cannot update system filetag")
+
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
     filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
-    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
 
     # update filetag model based on update schema
     for field in filetag_schema.model_dump(exclude_unset=True):
@@ -131,9 +136,9 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
     if filetag_model.type == "system":
         return RespFileTag(status=-1, msg="cannot delete system filetag")
+    filter1 = FileTagFile.filetag_id == filetag_id
 
     # check if filetag not empty with files
-    filter1 = FileTagFile.filetag_id == filetag_id
     if session.query(FileTagFile).filter(filter1).count() > 0:
         return RespFileTag(status=-2, msg="filetag not empty with files")
 
