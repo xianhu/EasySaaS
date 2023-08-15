@@ -54,12 +54,12 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     # check if password correct or raise exception
     if not check_password_hash(pwd_plain, pwd_hash):
         return RespAccessToken(status=-2, msg="password incorrect")
-    user_id = user_model.id
-
-    # get client_id from form_data
     client_id = form_data.client_id or "web"
+
+    # check if client_id valid
     if client_id not in ClientID.__members__:
         return RespAccessToken(status=-3, msg="client_id invalid")
+    user_id = user_model.id
 
     # create access_token based on user_id and client_id
     access_token = create_jwt_token(user_id, client_id=client_id)

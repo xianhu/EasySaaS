@@ -18,6 +18,6 @@ class Resp(BaseModel):
     msg: str = "success"
 
 
-# response for send
+# response model
 class RespSend(Resp):
     token: str = "no token"

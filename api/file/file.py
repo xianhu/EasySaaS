@@ -19,7 +19,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
     """
-    get file schema list and filetag_id list list
+    get file schema list and filetag_id list list, support pagination
     """
     user_id = current_user.id
     filter0 = and_(File.user_id == user_id, File.is_trash == is_trash)
