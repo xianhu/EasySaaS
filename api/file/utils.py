@@ -50,8 +50,8 @@ def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
     delete file models and filetagfile models by file_id list, return True or False
     """
     try:
-        session.query(File).filter(File.id.in_(file_id_list)).delete()
         session.query(FileTagFile).filter(FileTagFile.file_id.in_(file_id_list)).delete()
+        session.query(File).filter(File.id.in_(file_id_list)).delete()
         session.commit()
         return True
     except Exception as excep:
