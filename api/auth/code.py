@@ -20,7 +20,7 @@ class TypeName(str, Enum):
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
                        username: EmailStr | PhoneStr = Body(..., description="email or phone"),
-                       ttype: TypeName = Body(..., description="type of send", alias="type"),
+                       ttype: TypeName = Body(..., alias="type", description="type of send: use 'type'"),
                        session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
     """
