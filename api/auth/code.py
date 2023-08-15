@@ -17,15 +17,10 @@ class TypeName(str, Enum):
     reset = "reset"
 
 
-# request model
-class ReqSend(BaseModel):
-    username: EmailStr | PhoneStr = Field(..., description="email or phone")
-    type: TypeName = Field(..., description="type of send")
-
-
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
-                       req_send: ReqSend = Body(..., description="request of send code"),
+                       username: EmailStr | PhoneStr = Body(..., description="email or phone"),
+                       type: TypeName = Body(..., description="type of send"),
                        session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
     """
@@ -33,9 +28,6 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     - **status=-1**: send code too frequently
     - **status=-2**: user existed, user not exist
     """
-    # get username and type(ttype) from req_send
-    username, ttype = req_send.username, req_send.type
-
     # check if send code too frequently
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
         return RespSend(status=-1, msg="send code too frequently")
@@ -46,15 +38,15 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     else:
         user_model = session.query(User).filter(User.phone == username).first()
 
-    # check if user exist or not by ttype
-    if ttype == TypeName.signup and user_model:
+    # check if user exist or not by type
+    if type == TypeName.signup and user_model:
         return RespSend(status=-2, msg="user existed")
-    if ttype == TypeName.reset and (not user_model):
+    if type == TypeName.reset and (not user_model):
         return RespSend(status=-2, msg="user not exist")
     code = random.randint(100000, 999999)
 
     # define token based on username
-    data = dict(code=code, ttype=ttype)
+    data = dict(code=code, type=type)
     token = create_jwt_token(username, audience="send", **data)
 
     # send code in background
@@ -82,12 +74,12 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     # get payload from token, audience="send"
     payload = get_jwt_payload(token, audience="send")
 
-    # check token: ttype (not type!!!)
-    if (not payload) or (not payload.get("ttype")):
+    # check token: type
+    if (not payload) or (not payload.get("type")):
         return Resp(status=-1, msg="token invalid or expired")
-    if payload["ttype"] not in TypeName.__members__:
+    if payload["type"] not in TypeName.__members__:
         return Resp(status=-1, msg="token invalid or expired")
-    ttype = payload["ttype"]
+    type = TypeName(payload["type"])
 
     # check token: sub(email or phone) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
@@ -105,8 +97,8 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     else:
         user_model = session.query(User).filter(User.phone == username).first()
 
-    # check token ttype: signup
-    if ttype == TypeName.signup and (not user_model):
+    # check token type: signup
+    if type == TypeName.signup and (not user_model):
         # create user schema based on username and pwd_hash
         if username.find("@") > 0:
             user_schema = UserCreateEmail(email=username, email_verified=True, password=pwd_hash)
@@ -118,17 +110,17 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
             return Resp(status=-3, msg="create user model failed")
 
         # return result
-        return Resp(msg=f"{ttype} success")
+        return Resp(msg=f"{type} success")
 
-    # check token ttype: reset
-    if ttype == TypeName.reset and user_model:
+    # check token type: reset
+    if type == TypeName.reset and user_model:
         # reset password of user model based on pwd_hash
         user_model.password = pwd_hash
         session.merge(user_model)
         session.commit()
 
         # return result
-        return Resp(msg=f"{ttype} success")
+        return Resp(msg=f"{type} success")
 
     # return -1 (token invalid or expired)
     return Resp(status=-1, msg="token invalid or expired")

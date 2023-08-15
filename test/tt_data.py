@@ -32,10 +32,12 @@ with SessionMaker() as session:
     # create user object based on create schema
     if not create_user_object(user_schema, session):
         logging.error("create user object error")
+
+    # get user model and logging
     user_model = session.query(User).filter(User.email == email).first()
     logging.warning(pformat(user_model.dict(), indent=2))
 
-    # logging filetag models
+    # get filetag models and logging
     filter0 = FileTag.user_id == user_model.id
     for filetag_model in session.query(FileTag).filter(filter0).all():
         logging.warning("----%s", filetag_model.dict())
@@ -47,10 +49,12 @@ with SessionMaker() as session:
     # create user object based on create schema
     if not create_user_object(user_schema, session):
         logging.error("create user object error")
-    user_model = session.query(User).filter(User.phone == phone).first()
+
+    # get user model and logging
+    user_model = session.query(User).filter(User.email == email).first()
     logging.warning(pformat(user_model.dict(), indent=2))
 
-    # logging filetag models
+    # get filetag models and logging
     filter0 = FileTag.user_id == user_model.id
     for filetag_model in session.query(FileTag).filter(filter0).all():
         logging.warning("----%s", filetag_model.dict())
