@@ -62,7 +62,8 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     user_id = user_model.id
 
     # create access_token based on user_id and client_id
-    access_token = create_jwt_token(user_id, client_id=client_id)
+    expire_duration = settings.ACCESS_TOKEN_EXPIRE_DURATION
+    access_token = create_jwt_token(user_id, expire_duration=expire_duration, client_id=client_id)
 
     # save access_token to redis and set expire time
     rd_id = f"{settings.APP_NAME}-access-{client_id}-{user_id}"

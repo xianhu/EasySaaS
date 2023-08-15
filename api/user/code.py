@@ -37,8 +37,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
 
     # define token based on username
     data = dict(code=code, ttype="bind")
-    duration = settings.NORMAL_TOKEN_EXPIRE_DURATION
-    token = create_jwt_token(username, audience="send", expire_duration=duration, **data)
+    token = create_jwt_token(username, audience="send", **data)
 
     # send code in background
     if username.find("@") > 0:
