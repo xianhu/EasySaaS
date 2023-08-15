@@ -42,7 +42,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             duration: Optional[int] = Form(None, description="duration of file"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-            ttimezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
+            ttimezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2", alias="timezone"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -90,7 +90,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  duration: Optional[int] = Form(None, description="duration of file"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-                 ttimezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
+                 ttimezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2", alias="timezone"),
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
     """
