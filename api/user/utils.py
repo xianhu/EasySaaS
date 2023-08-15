@@ -26,21 +26,23 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
         # create user_id based on create schema
         if isinstance(user_schema, UserCreateEmail):
             user_id = get_id_string(user_schema.email)
+            nickname = user_schema.email.split("@")[0]
         elif isinstance(user_schema, UserCreatePhone):
             user_id = get_id_string(user_schema.phone)
+            nickname = user_schema.phone[-4:]
         else:
             raise Exception("user schema error")
 
         # create user model based on create schema
-        user_model = User(id=user_id, **user_schema.model_dump(exclude_unset=True))
-        user_model.nickname = user_model.email.split("@")[0] if user_model.email else "Guest"
+        user_kwargs = user_schema.model_dump(exclude_unset=True)
+        user_model = User(id=user_id, nickname=nickname, **user_kwargs)
         session.add(user_model)
         session.flush()  # not commit
 
         # create filetag models
         for filetag_name in FILETAG_SYSTEM_SET:
             # create filetag_id and create schema
-            filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
+            filetag_id = get_id_string(f"{user_id}-{filetag_name}")
             filetag_schema = FileTagCreate(name=filetag_name, icon="default", color="default")
 
             # create filetag model based on create schema, ttype="system"

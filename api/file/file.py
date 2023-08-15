@@ -19,15 +19,18 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
     """
-    get file schema list and filetag_id list list
+    get file schema list and filetag_id list list, support pagination
     """
     user_id = current_user.id
     filter0 = and_(File.user_id == user_id, File.is_trash == is_trash)
 
-    # delete file model if (now - trash_time) > 30 days
-    filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
-    session.query(File).filter(filter0, filter1).delete()
-    session.commit()
+    # delete file model if is_trash is True
+    if is_trash:
+        # delete file model if (now - trash_time) > 30 days
+        filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
+        file_model_list = session.query(File).filter(filter0, filter1).all()
+        file_id_list = [file_model.id for file_model in file_model_list]
+        delete_file_filetagfile(file_id_list, session)  # not check result
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
@@ -80,7 +83,8 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
-    return RespFile(data_file=file_schema, data_filetag_id_list=[])
+    filetag_id_list = get_filetag_id_list(file_id, session)
+    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
 @router.post("/trash/", response_model=Resp)
@@ -91,7 +95,7 @@ def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list
     trash file model list by file_id list
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == False)
 
     # trash file model list by file_id list
     filter1 = File.id.in_(file_id_list)
@@ -111,7 +115,7 @@ def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="li
     untrash file model list by file_id list
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == True)
 
     # untrash file model list by file_id list
     filter1 = File.id.in_(file_id_list)
@@ -135,13 +139,9 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
 
     # get file models and check
     filter1 = File.id.in_(file_id_list)
-    for file_model in session.query(File).filter(filter0, filter1).all():
-        # delete filetagfile models related to file model
-        filter_1 = FileTagFile.file_id == file_model.id
-        session.query(FileTagFile).filter(filter_1).delete()
-        # delete file model
-        session.delete(file_model)
-    session.commit()
+    file_model_list = session.query(File).filter(filter0, filter1).all()
+    file_id_list = [file_model.id for file_model in file_model_list]
+    delete_file_filetagfile(file_id_list, session)  # not check result
 
     # return result
     return Resp(msg="delete success")

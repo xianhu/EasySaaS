@@ -18,7 +18,7 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
                              current_user: User = Depends(get_current_user),
                              session: Session = Depends(get_session)):
     """
-    get filetag schema list
+    get filetag schema list, support pagination
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
@@ -69,7 +69,7 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
         return RespFileTag(status=-1, msg="filetag name invalid or existed")
-    filetag_id = get_id_string(f"{user_id}-{filetag_name}-{time.time()}")
+    filetag_id = get_id_string(f"{user_id}-{filetag_name}")
 
     # create filetag model based on create schema, ttype="custom"
     filetag_kwargs = filetag_schema.model_dump(exclude_unset=True)
