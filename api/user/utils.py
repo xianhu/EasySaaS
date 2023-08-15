@@ -14,6 +14,7 @@ class RespUser(Resp):
 
 # response model
 class RespUserList(Resp):
+    data_user_total: int = Field(0)
     data_user_list: List[UserSchema] = Field([])
 
 
@@ -22,8 +23,15 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
     create user object based on create schema, return user model or None
     """
     try:
+        # create user_id based on create schema
+        if isinstance(user_schema, UserCreateEmail):
+            user_id = get_id_string(user_schema.email)
+        elif isinstance(user_schema, UserCreatePhone):
+            user_id = get_id_string(user_schema.phone)
+        else:
+            raise Exception("user schema error")
+
         # create user model based on create schema
-        user_id = get_id_string(f"{user_schema.password}-{time.time()}")
         user_model = User(id=user_id, **user_schema.model_dump(exclude_unset=True))
         user_model.nickname = user_model.email.split("@")[0] if user_model.email else "Guest"
         session.add(user_model)

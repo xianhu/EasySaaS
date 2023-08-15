@@ -27,8 +27,9 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     filetag_model_list = session.query(FileTag).filter(filter0).offset(skip).limit(limit).all()
     filetag_schema_list = [FileTagSchema(**ftm.dict()) for ftm in filetag_model_list]
 
-    # return filetag schema list
-    return RespFileTagList(data_filetag_list=filetag_schema_list)
+    # return total count and filetag schema list
+    filetag_total = session.query(FileTag).filter(filter0).count()
+    return RespFileTagList(data_filetag_total=filetag_total, data_filetag_list=filetag_schema_list)
 
 
 @router.get("/{filetag_id}", response_model=RespFileTag)

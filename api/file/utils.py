@@ -15,6 +15,7 @@ class RespFile(Resp):
 
 # response model
 class RespFileList(Resp):
+    data_file_total: int = Field(0)
     data_file_list: List[FileSchema] = Field([])
     data_filetag_id_list_list: List[List[str]] = Field([])
 

@@ -93,10 +93,10 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
         )
-    filename = file.filename
+    prefix = file.filename.split(".")[-1]
 
     # define fullname and save file
-    fullname = f"{current_user.id}-{filename}"
+    fullname = f"{current_user.id}.{prefix}"
     with open(f"{FILE_FOLDER}/{fullname}", "wb") as file_in:
         file_in.write(file.file.read())
     avatar_url = f"{settings.APP_DOMAIN}/{FILE_FOLDER}/{fullname}"

@@ -11,6 +11,12 @@ from ..utils import get_current_user
 router = APIRouter()
 
 
+# response model
+class RespAccessToken(Resp):
+    access_token: str = "no token"
+    token_type: str = "bearer"
+
+
 # enum of client_id
 class ClientID(str, Enum):
     web = "web"
@@ -18,7 +24,7 @@ class ClientID(str, Enum):
     android = "android"
 
 
-@router.post("/access-token", response_model=AccessToken)
+@router.post("/access-token", response_model=RespAccessToken)
 def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                       session: Session = Depends(get_session),
                       rd_conn: Redis = Depends(get_redis)):
@@ -27,7 +33,7 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
     - **username**: value of email or phone, etc.
     - **password**: value of password, plain text
     - **client_id**: value of client_id, web | ios | android
-    - **status_code=401**: user not found, password incorrect, client_id invalid
+    - **status=-1**: user not found, password incorrect, client_id invalid
     """
     # get username、password from form_data
     username, pwd_plain = form_data.username, form_data.password
@@ -40,34 +46,28 @@ def _get_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
 
     # check if user exist or raise exception
     if (not user_model) or (user_model.status != 1):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="user not found",
-        )
+        return RespAccessToken(status=-1, msg="user not found")
     pwd_hash = user_model.password
 
     # check if password correct or raise exception
     if not check_password_hash(pwd_plain, pwd_hash):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="password incorrect"
-        )
+        return RespAccessToken(status=-1, msg="password incorrect")
     user_id = user_model.id
 
     # get client_id from form_data
     client_id = form_data.client_id or "web"
     if client_id not in ClientID.__members__:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="client_id invalid"
-        )
+        return RespAccessToken(status=-1, msg="client_id invalid")
 
-    # create access_token and save to redis
+    # create access_token based on user_id and client_id
     access_token = create_jwt_token(user_id, client_id=client_id)
-    rd_conn.set(f"{settings.APP_NAME}-access-{client_id}-{user_id}", access_token)
+
+    # save access_token to redis and set expire time
+    rd_id = f"{settings.APP_NAME}-access-{client_id}-{user_id}"
+    rd_conn.set(rd_id, access_token, ex=settings.REFRESH_TOKEN_EXPIRE_DURATION)
 
     # return access_token
-    return AccessToken(access_token=access_token)
+    return RespAccessToken(access_token=access_token)
 
 
 @router.post("/access-token-logout", response_model=Resp)
