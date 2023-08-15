@@ -14,7 +14,7 @@ class RespUser(Resp):
 
 # response model
 class RespUserList(Resp):
-    data_user_total: int = Field(...)
+    data_user_total: int = Field(0)
     data_user_list: List[UserSchema] = Field([])
 
 

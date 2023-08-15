@@ -14,7 +14,7 @@ class RespFileTag(Resp):
 
 # response model
 class RespFileTagList(Resp):
-    data_filetag_total: int = Field(...)
+    data_filetag_total: int = Field(0)
     data_filetag_list: List[FileTagSchema] = Field([])
 
 

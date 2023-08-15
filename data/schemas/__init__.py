@@ -17,10 +17,5 @@ class Resp(BaseModel):
     msg: str = "success"
 
 
-class RespAccessToken(Resp):
-    access_token: str = "no token"
-    token_type: str = "bearer"
-
-
 class RespSend(Resp):
     token: str = "no token"
