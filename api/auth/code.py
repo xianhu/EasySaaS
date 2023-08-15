@@ -17,10 +17,15 @@ class TypeName(str, Enum):
     reset = "reset"
 
 
+# request model
+class ReqSend(BaseModel):
+    username: EmailStr | PhoneStr = Field(..., description="email or phone")
+    ttype: TypeName = Field(..., alias="type", description="type of send")
+
+
 @router.post("/send-code", response_model=RespSend)
 def _send_code_to_xxxx(background_tasks: BackgroundTasks,
-                       username: EmailStr | PhoneStr = Body(..., description="email or phone"),
-                       ttype: TypeName = Body(..., alias="type", description="type of send: use 'type'"),
+                       req_send: ReqSend = Body(..., description="request of send code"),
                        session: Session = Depends(get_session),
                        rd_conn: Redis = Depends(get_redis)):
     """
@@ -28,6 +33,8 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     - **status=-1**: send code too frequently
     - **status=-2**: user existed, user not exist
     """
+    username, ttype = req_send.username, req_send.ttype
+
     # check if send code too frequently
     if rd_conn.get(f"{settings.APP_NAME}-send-{username}"):
         return RespSend(status=-1, msg="send code too frequently")
