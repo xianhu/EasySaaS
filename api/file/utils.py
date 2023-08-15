@@ -23,12 +23,13 @@ class RespFileList(Resp):
 def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
     """
     check if file_id is valid and user_id has permission to access file
+    - **status_code=404**: file not found
     """
     file_model = session.query(File).get(file_id)
     if (not file_model) or (file_model.user_id != user_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="404 not found",
+            detail="file not found",
         )
     return file_model
 
@@ -47,7 +48,8 @@ def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
 
 def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
     """
-    delete file models and filetagfile models by file_id list, return True or raise HTTPException
+    delete file models and filetagfile models by file_id list, return True
+    - **status_code=500**: delete file filetagfile error
     """
     try:
         session.query(FileTagFile).filter(FileTagFile.file_id.in_(file_id_list)).delete()
@@ -55,7 +57,6 @@ def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
         session.commit()
         return True
     except Exception as excep:
-        logging.error("delete file filetagfile error: %s", excep)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

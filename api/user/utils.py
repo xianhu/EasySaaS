@@ -20,7 +20,8 @@ class RespUserList(Resp):
 
 def create_user_object(user_schema: UserCreate, session: Session) -> bool:
     """
-    create user object based on create schema, return True or raise HTTPException
+    create user object based on create schema, return True
+    - **status_code=500**: create user object error
     """
     try:
         # create user_id based on create schema
@@ -33,7 +34,7 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
         else:
             raise Exception("user schema error")
 
-        # create user model based on create schema
+        # create user model based on create schema and nickname
         user_kwargs = user_schema.model_dump(exclude_unset=True)
         user_model = User(id=user_id, nickname=nickname, **user_kwargs)
         session.add(user_model)
@@ -54,7 +55,6 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
         session.commit()
         return True
     except Exception as excep:
-        logging.error("create user object error: %s", excep)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -64,7 +64,8 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
 
 def delete_user_object(user_id: str, session: Session) -> bool:
     """
-    delete user object by user_id, return True or raise HTTPException
+    delete user object and others by user_id, return True
+    - **status_code=500**: delete user object error
     """
     try:
         # delete userproject models and project models(not need) related to user
@@ -90,7 +91,6 @@ def delete_user_object(user_id: str, session: Session) -> bool:
         session.commit()
         return True
     except Exception as excep:
-        logging.error("delete user object error: %s", excep)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
