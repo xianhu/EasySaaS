@@ -25,10 +25,9 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     filter0 = and_(File.user_id == user_id, File.is_trash == is_trash)
 
     # delete file model if (now - trash_time) > 30 days
-    if is_trash:
-        filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
-        session.query(File).filter(filter0, filter1).delete()
-        session.commit()
+    filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
+    session.query(File).filter(filter0, filter1).delete()
+    session.commit()
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
