@@ -25,10 +25,10 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
     try:
         # create user_id based on create schema
         if isinstance(user_schema, UserCreateEmail):
-            user_id = get_id_string(user_schema.email)
+            user_id = get_id_string(f"{user_schema.email}-{user_schema.password}")
             nickname = user_schema.email.split("@")[0]
         elif isinstance(user_schema, UserCreatePhone):
-            user_id = get_id_string(user_schema.phone)
+            user_id = get_id_string(f"{user_schema.phone}-{user_schema.password}")
             nickname = user_schema.phone[-4:]
         else:
             raise Exception("user schema error")
