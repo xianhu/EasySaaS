@@ -29,9 +29,8 @@ with SessionMaker() as session:
     user_schema = UserCreateEmail(email=email, email_verified=True, password=pwd_hash,
                                   is_admin=True, role_json={"role": "admin"})
 
-    # create user object based on create schema
-    if not create_user_object(user_schema, session):
-        logging.error("create user object error")
+    # create user object or raise exception
+    create_user_object(user_schema, session)
 
     # get user model and logging
     user_model = session.query(User).filter(User.email == email).first()
@@ -46,9 +45,8 @@ with SessionMaker() as session:
     phone = "+86-18000000000"
     user_schema = UserCreatePhone(phone=phone, phone_verified=True, password=pwd_hash)
 
-    # create user object based on create schema
-    if not create_user_object(user_schema, session):
-        logging.error("create user object error")
+    # create user object or raise exception
+    create_user_object(user_schema, session)
 
     # get user model and logging
     user_model = session.query(User).filter(User.email == email).first()

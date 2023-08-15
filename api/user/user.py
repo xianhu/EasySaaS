@@ -117,7 +117,7 @@ def _delete_user_model(current_user: User = Depends(get_current_user),
     delete current_user model (dangerous operation)
     - **status_code=500**: delete user object error
     """
-    # delete user model and other models
+    # delete user object or raise exception
     delete_user_object(current_user.id, session)
 
     # return result

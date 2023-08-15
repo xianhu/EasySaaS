@@ -33,7 +33,7 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
         else:
             raise Exception("user schema error")
 
-        # create user model based on create schema
+        # create user model based on create schema and nickname
         user_kwargs = user_schema.model_dump(exclude_unset=True)
         user_model = User(id=user_id, nickname=nickname, **user_kwargs)
         session.add(user_model)
