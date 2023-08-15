@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-base model
+base import
 """
 
 import json
