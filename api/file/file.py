@@ -30,7 +30,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
         file_model_list = session.query(File).filter(filter0, filter1).all()
         file_id_list = [file_model.id for file_model in file_model_list]
-        delete_file_filetagfile(file_id_list, session)
+        delete_file_filetagfile(file_id_list, session)  # not check result
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
@@ -95,7 +95,7 @@ def _trash_file_model_list(file_id_list: List[str] = Body(..., description="list
     trash file model list by file_id list
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == False)
 
     # trash file model list by file_id list
     filter1 = File.id.in_(file_id_list)
@@ -115,7 +115,7 @@ def _untrash_file_model_list(file_id_list: List[str] = Body(..., description="li
     untrash file model list by file_id list
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    filter0 = and_(File.user_id == user_id, File.is_trash == True)
 
     # untrash file model list by file_id list
     filter1 = File.id.in_(file_id_list)
@@ -141,7 +141,7 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     filter1 = File.id.in_(file_id_list)
     file_model_list = session.query(File).filter(filter0, filter1).all()
     file_id_list = [file_model.id for file_model in file_model_list]
-    delete_file_filetagfile(file_id_list, session)
+    delete_file_filetagfile(file_id_list, session)  # not check result
 
     # return result
     return Resp(msg="delete success")

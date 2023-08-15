@@ -35,7 +35,7 @@ def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
 
 def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
     """
-    get filetag_id list based on file_id from filetagfiles table
+    get filetag_id list by file_id from filetagfiles table
     """
     # get filetagfile model list
     filter1 = FileTagFile.file_id == file_id
@@ -47,7 +47,7 @@ def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
 
 def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
     """
-    delete file models and filetagfile models based on file_id_list
+    delete file models and filetagfile models by file_id list, return True or False
     """
     try:
         session.query(File).filter(File.id.in_(file_id_list)).delete()
