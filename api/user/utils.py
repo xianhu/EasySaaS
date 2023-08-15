@@ -18,9 +18,9 @@ class RespUserList(Resp):
     data_user_list: List[UserSchema] = Field([])
 
 
-def create_user_object(user_schema: UserCreate, session: Session) -> Optional[User]:
+def create_user_object(user_schema: UserCreate, session: Session) -> bool:
     """
-    create user object based on create schema, return user model or None
+    create user object based on create schema, return True or False
     """
     try:
         # create user_id based on create schema
@@ -52,11 +52,11 @@ def create_user_object(user_schema: UserCreate, session: Session) -> Optional[Us
 
         # commit session
         session.commit()
-        return user_model
+        return True
     except Exception as excep:
         logging.error("create user object error: %s", excep)
         session.rollback()
-        return None
+        return False
 
 
 def delete_user_object(user_id: str, session: Session) -> bool:

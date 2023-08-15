@@ -107,8 +107,7 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
             user_schema = UserCreatePhone(phone=username, phone_verified=True, password=pwd_hash)
 
         # create user model based on create schema
-        user_model = create_user_object(user_schema, session)
-        if not user_model:
+        if not create_user_object(user_schema, session):
             return Resp(status=-3, msg="create user model failed")
 
         # return result

@@ -20,6 +20,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
                           session: Session = Depends(get_session)):
     """
     get file schema list and filetag_id list list, support pagination
+    - **status_code=500**: delete file filetagfile error
     """
     user_id = current_user.id
     filter0 = and_(File.user_id == user_id, File.is_trash == is_trash)
@@ -30,7 +31,11 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         filter1 = File.trash_time < datetime.utcnow() - timedelta(days=30)
         file_model_list = session.query(File).filter(filter0, filter1).all()
         file_id_list = [file_model.id for file_model in file_model_list]
-        delete_file_filetagfile(file_id_list, session)  # not check result
+        if not delete_file_filetagfile(file_id_list, session):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="delete file filetagfile error",
+            )
 
     # get file model list and schema list
     file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
@@ -133,6 +138,7 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
                             session: Session = Depends(get_session)):
     """
     delete file model list by file_id list
+    - **status_code=500**: delete file filetagfile error
     """
     user_id = current_user.id
     filter0 = and_(File.user_id == user_id, File.is_trash == True)
@@ -141,7 +147,11 @@ def _delete_file_model_list(file_id_list: List[str] = Body(..., description="lis
     filter1 = File.id.in_(file_id_list)
     file_model_list = session.query(File).filter(filter0, filter1).all()
     file_id_list = [file_model.id for file_model in file_model_list]
-    delete_file_filetagfile(file_id_list, session)  # not check result
+    if not delete_file_filetagfile(file_id_list, session):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="delete file filetagfile error",
+        )
 
     # return result
     return Resp(msg="delete success")
