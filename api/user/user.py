@@ -95,11 +95,12 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
         )
     prefix = file.filename.split(".")[-1]
 
-    # define fullname and save file
+    # define fullname and location
     fullname = f"{current_user.id}.{prefix}"
-    with open(f"{FILE_FOLDER}/{fullname}", "wb") as file_in:
+    location = f"{FILE_FOLDER}/{fullname}"
+    with open(location, "wb") as file_in:
         file_in.write(file.file.read())
-    avatar_url = f"{settings.APP_DOMAIN}/{FILE_FOLDER}/{fullname}"
+    avatar_url = f"{settings.APP_DOMAIN}/{location}"
 
     # update avatar of user model based on avatar_url
     current_user.avatar = avatar_url
