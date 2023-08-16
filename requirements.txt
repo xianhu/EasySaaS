@@ -1,5 +1,5 @@
 # Dash
-dash~=2.11.1
+dash~=2.12.0
 feffery-antd-components~=0.2.9
 feffery-utils-components~=0.1.29
 Flask-Compress~=1.13.0
@@ -13,7 +13,7 @@ pydantic[email]~=2.1.1
 pydantic-settings~=2.0.3
 
 # Database
-redis~=4.6.0
+redis~=5.0.0
 pymysql~=1.1.0
 SQLAlchemy~=2.0.20
 

@@ -33,8 +33,9 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         delete_file_filetagfile([file_model.id for file_model in file_model_list], session)
 
     # get file model list and schema list
-    file_model_list = session.query(File).filter(filter0).offset(skip).limit(limit).all()
-    file_schema_list = [FileSchema(**file_model.dict()) for file_model in file_model_list]
+    file_model_list = session.query(File).filter(filter0). \
+        order_by(File.created_at.desc()).offset(skip).limit(limit).all()
+    file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]
 
     # return total count, file schema list and filetag_id list list
     file_total = session.query(File).filter(filter0).count()
