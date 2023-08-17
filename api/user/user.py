@@ -13,8 +13,6 @@ router = APIRouter()
 
 # file settings of avatar
 FILE_FOLDER = "static/avatar"
-FILE_MAX_SIZE = 1024 * 1024 * 1
-FILE_TYPE_LIST = ["image/jpeg", "image/png"]
 
 
 @router.get("/me", response_model=RespUser)
@@ -81,14 +79,14 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     - **status_code=500**: file type not support, file size too large
     """
     # check file type or raise exception
-    if file.content_type not in FILE_TYPE_LIST:
+    if file.content_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file type not support"
         )
 
     # check file size or raise exception
-    if file.size > FILE_MAX_SIZE:
+    if file.size > 1024 * 1024 * 1:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
@@ -98,6 +96,8 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     # define fullname and location
     fullname = f"{current_user.id}.{prefix}"
     location = f"{FILE_FOLDER}/{fullname}"
+
+    # save file to disk or cloud
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     avatar_url = f"{settings.APP_DOMAIN}/{location}"

@@ -13,33 +13,12 @@ router = APIRouter()
 
 # file settings
 FILE_FOLDER = "/tmp"
-FILE_MAX_SIZE = 1024 * 1024 * 25
-FILE_TYPE_LIST = ["audio/mpeg", "audio/wav", "audio/x-wav",
-                  "audio/mp4", "audio/webm", "audio/x-m4a"]
-
-
-def check_file_type_size(filetype: str, filesize: int) -> None:
-    """
-    check file type and size, raise exception or return None
-    """
-    if filetype not in FILE_TYPE_LIST:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file type not supported"
-        )
-    if filesize > FILE_MAX_SIZE:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large"
-        )
-    return None
 
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
-            keywords: Optional[str] = Form(None, description="keywords"),
-            duration: Optional[int] = Form(None, description="duration of file"),
+            keywords: List[str] = Form([], description="keywords"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
@@ -60,15 +39,15 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     filename = filename or file.filename or "noname"
     fullname = f"{user_id}-{int(time.time())}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
+
+    # save file to disk or cloud
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     file_id = get_id_string(fullname)
 
     # create file schema based on filename, keywords, duration, ...
-    keywords = [i.strip() for i in (keywords.split(",") if keywords else [])]
     file_schema = FileCreate(filename=filename, keywords=keywords,
-                             duration=duration, start_time=start_time, end_time=end_time,
-                             timezone=timezone, zonemins=zonemins)
+                             start_time=start_time, end_time=end_time, timezone=timezone, zonemins=zonemins)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
@@ -88,8 +67,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  filename: Optional[str] = Form(None, description="file name"),
-                 keywords: Optional[str] = Form(None, description="keywords"),
-                 duration: Optional[int] = Form(None, description="duration of file"),
+                 keywords: List[str] = Form([], description="keywords"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
@@ -110,6 +88,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     filename = filename or file.filename or "noname"
     fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
+
+    # save file to disk or cloud
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
     with open(location, file_mode) as file_in:
         file_in.write(file.file.read())
@@ -120,10 +100,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
         return RespFile(msg="uploading")
 
     # create file schema based on filename, keywords, duration, ...
-    keywords = [i.strip() for i in (keywords.split(",") if keywords else [])]
     file_schema = FileCreate(filename=filename, keywords=keywords,
-                             duration=duration, start_time=start_time, end_time=end_time,
-                             timezone=timezone, zonemins=zonemins)
+                             start_time=start_time, end_time=end_time, timezone=timezone, zonemins=zonemins)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
@@ -145,7 +123,7 @@ def _download(file_id: str = Path(..., description="file id"),
     - **status_code=404**: file not found
     """
     # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
+    file_model = check_file(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
 
     # return file response with filename in headers
@@ -161,7 +139,7 @@ def _download_stream(file_id: str = Path(..., description="file id"),
     - **status_code=404**: file not found
     """
     # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
+    file_model = check_file(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
 
     # return streaming response with filename in headers

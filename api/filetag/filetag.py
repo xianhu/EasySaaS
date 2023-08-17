@@ -45,7 +45,7 @@ def _get_filetag_schema(filetag_id: str = Path(..., description="filetag id"),
     user_id = current_user.id
 
     # check filetag_id and get filetag model
-    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+    filetag_model = check_filetag(filetag_id, user_id, session)
 
     # return filetag schema
     return RespFileTag(data_filetag=FileTagSchema(**filetag_model.dict()))
@@ -98,7 +98,7 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     filter0 = FileTag.user_id == user_id
 
     # check filetag_id and get filetag model
-    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+    filetag_model = check_filetag(filetag_id, user_id, session)
     if filetag_model.type == "system":
         return RespFileTag(status=-1, msg="cannot update system filetag")
 
@@ -135,7 +135,7 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     user_id = current_user.id
 
     # check filetag_id and get filetag model
-    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+    filetag_model = check_filetag(filetag_id, user_id, session)
     if filetag_model.type == "system":
         return RespFileTag(status=-1, msg="cannot delete system filetag")
 

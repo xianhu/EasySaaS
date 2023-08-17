@@ -36,7 +36,7 @@ def _send_code_to_xxxx(background_tasks: BackgroundTasks,
     code = random.randint(100000, 999999)
 
     # define token based on username
-    data = dict(code=code, type="bind")
+    data = dict(code=code, type=current_user.id)
     token = create_jwt_token(username, audience="send", **data)
 
     # send code in background
@@ -66,7 +66,7 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
     # check token: type
     if (not payload) or (not payload.get("type")):
         return Resp(status=-1, msg="token invalid or expired")
-    if payload["type"] != "bind":
+    if payload["type"] != current_user.id:
         return Resp(status=-1, msg="token invalid or expired")
     # type = payload["type"]
 
