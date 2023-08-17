@@ -38,9 +38,9 @@ def check_file_type_size(filetype: str, filesize: int) -> bool:
     return True
 
 
-def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
+def check_file(file_id: str, user_id: str, session: Session) -> File:
     """
-    check if file_id is valid to user_id, return file model or raise exception
+    check if file_id is valid to user_id, return file model
     - **status_code=404**: file not found
     """
     file_model = session.query(File).get(file_id)
@@ -60,7 +60,7 @@ def get_filetag_id_list(file_id: str, session: Session) -> List[str]:
     filter1 = FileTagFile.file_id == file_id
     ftf_model_list = session.query(FileTagFile).filter(filter1).all()
 
-    # return filetag_id list
+    # return filetag_id list related to file_id
     return [ftf_model.filetag_id for ftf_model in ftf_model_list]
 
 

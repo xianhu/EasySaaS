@@ -18,9 +18,9 @@ class RespFileTagList(Resp):
     data_filetag_list: List[FileTagSchema] = Field([])
 
 
-def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
+def check_filetag(filetag_id: str, user_id: str, session: Session) -> FileTag:
     """
-    check if filetag_id is valid to user_id, return filetag model or raise exception
+    check if filetag_id is valid to user_id, return filetag model
     - **status_code=404**: filetag not found
     """
     filetag_model = session.query(FileTag).get(filetag_id)

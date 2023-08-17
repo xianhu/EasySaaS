@@ -123,7 +123,7 @@ def _download(file_id: str = Path(..., description="file id"),
     - **status_code=404**: file not found
     """
     # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
+    file_model = check_file(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
 
     # return file response with filename in headers
@@ -139,7 +139,7 @@ def _download_stream(file_id: str = Path(..., description="file id"),
     - **status_code=404**: file not found
     """
     # check file_id and get file model
-    file_model = check_file_permission(file_id, current_user.id, session)
+    file_model = check_file(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
 
     # return streaming response with filename in headers

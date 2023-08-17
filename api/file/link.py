@@ -6,7 +6,7 @@ file api
 
 from .utils import *
 from ..base import *
-from ..filetag.utils import check_filetag_permission
+from ..filetag.utils import check_filetag
 from ..utils import get_current_user
 
 # define router
@@ -23,8 +23,8 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
     - **status_code=404**: file not found or filetag not found
     """
     # check file_id/filetag_id and get file/filetag model
-    file_model = check_file_permission(file_id, current_user.id, session)
-    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+    file_model = check_file(file_id, current_user.id, session)
+    filetag_model = check_filetag(filetag_id, current_user.id, session)
 
     # check if filetagfile existed in database
     filter1 = FileTagFile.file_id == file_id
@@ -51,8 +51,8 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
     - **status_code=404**: file not found or filetag not found
     """
     # check file_id/filetag_id and get file/filetag model
-    file_model = check_file_permission(file_id, current_user.id, session)
-    filetag_model = check_filetag_permission(filetag_id, current_user.id, session)
+    file_model = check_file(file_id, current_user.id, session)
+    filetag_model = check_filetag(filetag_id, current_user.id, session)
 
     # delete filetagfile model by file_id and filetag_id
     filter1 = FileTagFile.file_id == file_id
