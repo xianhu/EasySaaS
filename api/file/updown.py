@@ -47,7 +47,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
 
     # create file schema based on filename, keywords, duration, ...
     file_schema = FileCreate(filename=filename, keywords=keywords,
-                             start_time=start_time, end_time=end_time, timezone=timezone, zonemins=zonemins)
+                             start_time=start_time, end_time=end_time,
+                             timezone=timezone, zonemins=zonemins)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
@@ -101,7 +102,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
     # create file schema based on filename, keywords, duration, ...
     file_schema = FileCreate(filename=filename, keywords=keywords,
-                             start_time=start_time, end_time=end_time, timezone=timezone, zonemins=zonemins)
+                             start_time=start_time, end_time=end_time,
+                             timezone=timezone, zonemins=zonemins)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),

@@ -48,7 +48,7 @@ def get_current_user(access_token: str = Depends(oauth2_bearer),
 
 def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User:
     """
-    check if user model is admin, return user model
+    check if user model from 'get_current_user' is admin, return user model
     - **status_code=401**: token invalid or expired
     - **status_code=403**: permission denied
     """
