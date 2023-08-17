@@ -24,7 +24,9 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     filter0 = FileTag.user_id == user_id
 
     # get filetag model list and schema list
-    filetag_model_list = session.query(FileTag).filter(filter0).offset(skip).limit(limit).all()
+    filetag_model_list = (session.query(FileTag).filter(filter0)
+                          .order_by(FileTag.created_at.desc())
+                          .offset(skip).limit(limit).all())
     filetag_schema_list = [FileTagSchema(**ftm.dict()) for ftm in filetag_model_list]
 
     # return total count and filetag schema list
@@ -136,9 +138,9 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     filetag_model = check_filetag_permission(filetag_id, user_id, session)
     if filetag_model.type == "system":
         return RespFileTag(status=-1, msg="cannot delete system filetag")
-    filter1 = FileTagFile.filetag_id == filetag_id
 
     # check if filetag not empty with files
+    filter1 = FileTagFile.filetag_id == filetag_id
     if session.query(FileTagFile).filter(filter1).count() > 0:
         return RespFileTag(status=-2, msg="filetag not empty with files")
 
