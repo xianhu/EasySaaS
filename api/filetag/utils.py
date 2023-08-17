@@ -20,7 +20,7 @@ class RespFileTagList(Resp):
 
 def check_filetag_permission(filetag_id: str, user_id: str, session: Session) -> FileTag:
     """
-    check if filetag_id is valid and user_id has permission to access filetag
+    check if filetag_id is valid to user_id, return filetag model or raise exception
     - **status_code=404**: filetag not found
     """
     filetag_model = session.query(FileTag).get(filetag_id)

@@ -20,9 +20,27 @@ class RespFileList(Resp):
     data_filetag_id_list_list: List[List[str]] = Field([])
 
 
+def check_file_type_size(filetype: str, filesize: int) -> bool:
+    """
+    check file type and size, return True or raise exception
+    """
+    if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
+                        "audio/mp4", "audio/webm", "audio/x-m4a"]:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file type not supported"
+        )
+    if filesize > 1024 * 1024 * 25:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file size too large"
+        )
+    return True
+
+
 def check_file_permission(file_id: str, user_id: str, session: Session) -> File:
     """
-    check if file_id is valid and user_id has permission to access file
+    check if file_id is valid to user_id, return file model or raise exception
     - **status_code=404**: file not found
     """
     file_model = session.query(File).get(file_id)
