@@ -24,7 +24,9 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     filter0 = FileTag.user_id == user_id
 
     # get filetag model list and schema list
-    filetag_model_list = session.query(FileTag).filter(filter0).offset(skip).limit(limit).all()
+    filetag_model_list = (session.query(FileTag).filter(filter0)
+                          .order_by(FileTag.created_at.desc())
+                          .offset(skip).limit(limit).all())
     filetag_schema_list = [FileTagSchema(**ftm.dict()) for ftm in filetag_model_list]
 
     # return total count and filetag schema list
@@ -55,20 +57,20 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
                           session: Session = Depends(get_session)):
     """
     create filetag model based on create schema, return filetag schema
-    - **status=-1**: filetag name invalid or existed
+    - **status=-2**: filetag name invalid or existed
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
     filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
     filetag_id = get_id_string(f"{user_id}-{filetag_name}")
 
     # create filetag model based on create schema, type="custom"
@@ -88,22 +90,27 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
                           session: Session = Depends(get_session)):
     """
     update filetag model based on update schema, return filetag schema
-    - **status=-1**: filetag name invalid or existed
+    - **status=-1**: cannot update system filetag
+    - **status=-2**: filetag name invalid or existed
     - **status_code=404**: filetag not found
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
 
+    # check filetag_id and get filetag model
+    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+    if filetag_model.type == "system":
+        return RespFileTag(status=-1, msg="cannot update system filetag")
+
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
     filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
     if session.query(FileTag).filter(filter0, filter1).first():
-        return RespFileTag(status=-1, msg="filetag name invalid or existed")
-    filetag_model = check_filetag_permission(filetag_id, user_id, session)
+        return RespFileTag(status=-2, msg="filetag name invalid or existed")
 
     # update filetag model based on update schema
     for field in filetag_schema.model_dump(exclude_unset=True):
