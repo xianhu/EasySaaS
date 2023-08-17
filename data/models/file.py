@@ -14,7 +14,6 @@ class File(AbstractModel):
 
     # information -- about datetime
     start_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Start DateTime")
-    end_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="End DateTime")
     timezone = sqlalchemy.Column(sqlalchemy.Integer, doc="Timezone")
     zonemins = sqlalchemy.Column(sqlalchemy.Integer, doc="Zonemins")
 

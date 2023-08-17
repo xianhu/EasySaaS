@@ -15,7 +15,6 @@ class FileSchema(BaseModel):
     keywords: Optional[List[str]] = None
 
     start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
     timezone: Optional[int] = None
     zonemins: Optional[int] = None
 
@@ -34,7 +33,6 @@ class FileCreate(BaseModel):
     keywords: Optional[List[str]] = Field(None, description="Keywords")
 
     start_time: Optional[datetime] = Field(None, description="Start DateTime")
-    end_time: Optional[datetime] = Field(None, description="End DateTime")
     timezone: Optional[int] = Field(None, description="Timezone")
     zonemins: Optional[int] = Field(None, description="Zonemins")
 
@@ -43,3 +41,7 @@ class FileCreate(BaseModel):
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
     keywords: Optional[List[str]] = Field(None, description="Keywords")
+
+    start_time: Optional[datetime] = Field(None, description="Start DateTime")
+    timezone: Optional[int] = Field(None, description="Timezone")
+    zonemins: Optional[int] = Field(None, description="Zonemins")

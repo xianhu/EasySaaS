@@ -20,7 +20,6 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
             keywords: List[str] = Form([], description="keywords"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-            end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
             zonemins: Optional[int] = Form(None, description="zonemins"),
             current_user: User = Depends(get_current_user),
@@ -45,10 +44,9 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
         file_in.write(file.file.read())
     file_id = get_id_string(fullname)
 
-    # create file schema based on filename, keywords, duration, ...
+    # create file schema based on filename, keywords, ...
     file_schema = FileCreate(filename=filename, keywords=keywords,
-                             start_time=start_time, end_time=end_time,
-                             timezone=timezone, zonemins=zonemins)
+                             start_time=start_time, timezone=timezone, zonemins=zonemins)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
@@ -70,7 +68,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  filename: Optional[str] = Form(None, description="file name"),
                  keywords: List[str] = Form([], description="keywords"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-                 end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
                  zonemins: Optional[int] = Form(None, description="zonemins"),
                  current_user: User = Depends(get_current_user),
@@ -100,10 +97,9 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
 
-    # create file schema based on filename, keywords, duration, ...
+    # create file schema based on filename, keywords, ...
     file_schema = FileCreate(filename=filename, keywords=keywords,
-                             start_time=start_time, end_time=end_time,
-                             timezone=timezone, zonemins=zonemins)
+                             start_time=start_time, timezone=timezone, zonemins=zonemins)
 
     # create file model based on file_kwargs
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
