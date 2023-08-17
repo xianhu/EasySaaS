@@ -38,7 +38,7 @@ def check_file_type_size(filetype: str, filesize: int) -> None:
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
-            keywords: Optional[str] = Form(None, description="keywords"),
+            keywords: List[str] = Form([], description="keywords"),
             duration: Optional[int] = Form(None, description="duration of file"),
             start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
             end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
@@ -65,7 +65,6 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     file_id = get_id_string(fullname)
 
     # create file schema based on filename, keywords, duration, ...
-    keywords = [i.strip() for i in (keywords.split(",") if keywords else [])]
     file_schema = FileCreate(filename=filename, keywords=keywords,
                              duration=duration, start_time=start_time, end_time=end_time,
                              timezone=timezone, zonemins=zonemins)
@@ -88,7 +87,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_total_size: int = Form(..., alias="flowTotalSize"),
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  filename: Optional[str] = Form(None, description="file name"),
-                 keywords: Optional[str] = Form(None, description="keywords"),
+                 keywords: List[str] = Form([], description="keywords"),
                  duration: Optional[int] = Form(None, description="duration of file"),
                  start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
                  end_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
@@ -120,7 +119,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
         return RespFile(msg="uploading")
 
     # create file schema based on filename, keywords, duration, ...
-    keywords = [i.strip() for i in (keywords.split(",") if keywords else [])]
     file_schema = FileCreate(filename=filename, keywords=keywords,
                              duration=duration, start_time=start_time, end_time=end_time,
                              timezone=timezone, zonemins=zonemins)
