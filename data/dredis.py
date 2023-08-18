@@ -4,8 +4,7 @@
 database of redis
 """
 
-import redis
-from redis import ConnectionPool
+from redis import ConnectionPool, Redis
 
 from core import settings
 
@@ -14,8 +13,8 @@ url = f"{settings.REDIS_URI}/{0 if not settings.DEBUG else 1}"
 RedisPool = ConnectionPool.from_url(url, decode_responses=True)
 
 
-def get_redis() -> redis.Redis:
+def get_redis() -> Redis:
     """
     get redis connection
     """
-    return redis.Redis(connection_pool=RedisPool)
+    return Redis(connection_pool=RedisPool)
