@@ -33,10 +33,10 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
 
     # define default values
     filename = filename or file.filename or "noname"
-    flow_identifier = int(datetime.utcnow().timestamp())
+    session_id = str(int(datetime.utcnow().timestamp()))
 
     # define fullname/location, save file to disk or cloud
-    fullname = f"{user_id}-{flow_identifier}-{filename}"
+    fullname = f"{user_id}-{session_id}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
@@ -76,9 +76,10 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
     # define default values
     filename = filename or file.filename or "noname"
+    session_id = flow_identifier  # for flow.js
 
     # define fullname/location, save file to disk or cloud
-    fullname = f"{user_id}-{flow_identifier}-{filename}"
+    fullname = f"{user_id}-{session_id}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
     with open(location, file_mode) as file_in:

@@ -121,7 +121,7 @@ def _delete_user_model(username: EmailStr | PhoneStr = Body(..., description="em
     - **status=-1**: username or password incorrect
     - **status_code=500**: delete user object error
     """
-    # check username and password
+    # check if username and password match current_user
     if (username not in (current_user.email, current_user.phone)) or \
             (not check_password_hash(password, current_user.password)):
         return Resp(status=-1, msg="username or password incorrect")
