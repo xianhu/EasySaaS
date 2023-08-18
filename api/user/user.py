@@ -23,7 +23,7 @@ def _get_user_schema(request: Request,  # parameter of request
     get current_user schema (logging request information)
     """
     # logging request information
-    logging_request(request, current_user.id, "/user/me", session)
+    logging_request(request, current_user.id, session)
     # reset reset_time / points / minutes / space if necessary
 
     # return user schema

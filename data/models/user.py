@@ -61,5 +61,5 @@ class UserLog(AbstractModel):
     ua = sqlalchemy.Column(sqlalchemy.String(255), doc="User Agent")
     headers = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="Headers")
 
-    # information -- others
+    # information -- path and scope
     path = sqlalchemy.Column(sqlalchemy.String(255), doc="Request Path")
