@@ -22,7 +22,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, UUID4
 from redis import Redis
-from sqlalchemy import and_, distinct, func, not_, or_
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from core import check_password_hash, get_password_hash
@@ -45,8 +45,7 @@ __all__ = [
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
     "UploadFileClass", "FileResponse", "StreamingResponse", "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
-    "BaseModel", "EmailStr", "Field", "HttpUrl", "UUID4",
-    "sqlalchemy", "Redis", "and_", "distinct", "func", "not_", "or_", "Session",
+    "BaseModel", "EmailStr", "Field", "HttpUrl", "UUID4", "sqlalchemy", "func", "Redis", "Session",
 
     # from core module
     "check_password_hash", "get_password_hash", "create_jwt_token", "get_jwt_payload",
