@@ -112,12 +112,20 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
 
 
 @router.delete("/me", response_model=Resp)
-def _delete_user_model(current_user: User = Depends(get_current_user),
+def _delete_user_model(username: EmailStr | PhoneStr = Body(..., description="email or phone"),
+                       password: str = Body(..., min_length=6, max_length=20),
+                       current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
-    delete current_user model (dangerous operation)
+    delete current_user model based on username and password
+    - **status=-1**: username or password incorrect
     - **status_code=500**: delete user object error
     """
+    # check username and password
+    if (username not in (current_user.email, current_user.phone)) or \
+            (not check_password_hash(password, current_user.password)):
+        return Resp(status=-1, msg="username or password incorrect")
+
     # delete user object or raise exception
     delete_user_object(current_user.id, session)
 
