@@ -37,6 +37,7 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
     """
     update current_user model based on update schema, return user schema
     """
+    print(user_schema.birthday)
     # update user model based on update schema
     for field in user_schema.model_dump(exclude_unset=True):
         setattr(current_user, field, getattr(user_schema, field))

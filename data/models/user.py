@@ -13,7 +13,7 @@ class User(AbstractModel):
     nickname = sqlalchemy.Column(sqlalchemy.String(255), doc="Nickname")
 
     # information -- personal information
-    birthday = sqlalchemy.Column(sqlalchemy.Date, doc="Date of Birthday")
+    birthday = sqlalchemy.Column(sqlalchemy.DateTime, doc="Date of Birthday")
     gender = sqlalchemy.Column(sqlalchemy.Integer, doc="1-Male, 2-Female")
 
     # information -- country and address

@@ -12,11 +12,6 @@ class File(AbstractModel):
     filename = sqlalchemy.Column(sqlalchemy.String(255), nullable=False)
     keywords = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Keywords")
 
-    # information -- about datetime
-    start_time = sqlalchemy.Column(sqlalchemy.DateTime, doc="Start DateTime")
-    timezone = sqlalchemy.Column(sqlalchemy.Integer, doc="Timezone")
-    zonemins = sqlalchemy.Column(sqlalchemy.Integer, doc="Zonemins")
-
     # information -- size, type, fullname and location
     filesize = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, doc="File Size")
     filetype = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="File Type")

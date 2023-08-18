@@ -19,9 +19,6 @@ FILE_FOLDER = "/tmp"
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             filename: Optional[str] = Form(None, description="file name"),
             keywords: List[str] = Form([], description="keywords"),
-            start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-            timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
-            zonemins: Optional[int] = Form(None, description="zonemins"),
             current_user: User = Depends(get_current_user),
             session: Session = Depends(get_session)):
     """
@@ -36,8 +33,6 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
 
     # define default values
     filename = filename or file.filename or "noname"
-    start_time = start_time or datetime.utcnow()
-    timezone, zonemins = timezone or 0, zonemins or 0
     flow_identifier = int(datetime.utcnow().timestamp())
 
     # define fullname/location, save file to disk or cloud
@@ -47,11 +42,8 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
         file_in.write(file.file.read())
     file_id = get_id_string(fullname)
 
-    # create file schema based on filename, keywords, ...
-    file_schema = FileCreate(filename=filename, keywords=keywords,
-                             start_time=start_time, timezone=timezone, zonemins=zonemins)
-
-    # create file model based on file_kwargs
+    # create file model based on filename, keywords, ...
+    file_schema = FileCreate(filename=filename, keywords=keywords)
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
                       filesize=filesize, filetype=filetype, fullname=fullname, location=location)
     session.add(file_model)
@@ -70,9 +62,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  flow_identifier: str = Form(..., alias="flowIdentifier"),
                  filename: Optional[str] = Form(None, description="file name"),
                  keywords: List[str] = Form([], description="keywords"),
-                 start_time: Optional[datetime] = Form(None, description="2020-01-01T00:00:00"),
-                 timezone: Optional[int] = Form(None, description="-2, -1, 0, 1, 2"),
-                 zonemins: Optional[int] = Form(None, description="zonemins"),
                  current_user: User = Depends(get_current_user),
                  session: Session = Depends(get_session)):
     """
@@ -87,8 +76,6 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
 
     # define default values
     filename = filename or file.filename or "noname"
-    start_time = start_time or datetime.utcnow()
-    timezone, zonemins = timezone or 0, zonemins or 0
 
     # define fullname/location, save file to disk or cloud
     fullname = f"{user_id}-{flow_identifier}-{filename}"
@@ -102,11 +89,8 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     if flow_chunk_number != flow_chunk_total:
         return RespFile(msg="uploading")
 
-    # create file schema based on filename, keywords, ...
-    file_schema = FileCreate(filename=filename, keywords=keywords,
-                             start_time=start_time, timezone=timezone, zonemins=zonemins)
-
-    # create file model based on file_kwargs
+    # create file model based on filename, keywords, ...
+    file_schema = FileCreate(filename=filename, keywords=keywords)
     file_model = File(id=file_id, user_id=user_id, **file_schema.model_dump(exclude_unset=True),
                       filesize=filesize, filetype=filetype, fullname=fullname, location=location)
     session.add(file_model)
