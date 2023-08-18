@@ -14,6 +14,7 @@ from datetime import date, datetime, timedelta, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+import sqlalchemy
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from fastapi import Body, Cookie, Depends, Form, Header, Path, Query, Request, Response, UploadFile
 from fastapi import File as UploadFileClass  # rename File
@@ -45,7 +46,7 @@ __all__ = [
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
     "UploadFileClass", "FileResponse", "StreamingResponse", "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
     "BaseModel", "EmailStr", "Field", "HttpUrl", "UUID4",
-    "Redis", "and_", "distinct", "func", "not_", "or_", "Session",
+    "sqlalchemy", "Redis", "and_", "distinct", "func", "not_", "or_", "Session",
 
     # from core module
     "check_password_hash", "get_password_hash", "create_jwt_token", "get_jwt_payload",
