@@ -18,8 +18,10 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
     """
     get file schema list, support pagination
     """
+    filter0 = File.is_trash == False
+
     # get file model list and schema list
-    file_model_list = (session.query(File)
+    file_model_list = (session.query(File).filter(filter0)
                        .order_by(File.created_at.desc())
                        .offset(skip).limit(limit).all())
     file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]

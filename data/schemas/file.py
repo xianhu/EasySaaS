@@ -19,9 +19,6 @@ class FileSchema(BaseModel):
     # fullname: Optional[str] = None
     # location: Optional[str] = None
 
-    is_trash: Optional[bool] = None
-    trash_time: Optional[datetime] = None
-
 
 # used for request body
 class FileCreate(BaseModel):
