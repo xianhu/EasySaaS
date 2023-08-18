@@ -62,7 +62,7 @@ class UserCreatePhone(UserCreate):
 class UserUpdate(BaseModel):
     # avatar: Optional[HttpUrl] = Field(None, description="Avatar Url")
     nickname: Optional[str] = Field(None, min_length=2, max_length=20)
-    birthday: Optional[datetime] = Field(None, description="Date of Birthday")
+    birthday: Optional[datetime] = Field(None, description="Birthday Datetime")
     gender: Optional[int] = Field(None, description="1-Male, 2-Female")
     country: Optional[str] = Field(None, description="Country")
     address: Optional[str] = Field(None, description="Address")

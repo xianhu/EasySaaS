@@ -10,6 +10,7 @@ from .base import *
 # used for response_model
 class FileSchema(BaseModel):
     id: Optional[str] = None
+
     filename: Optional[str] = None
     keywords: Optional[List[str]] = None
 

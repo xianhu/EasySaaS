@@ -15,7 +15,7 @@ class File(AbstractModel):
     # information -- size, type, fullname and location
     filesize = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, doc="File Size")
     filetype = sqlalchemy.Column(sqlalchemy.String(255), nullable=False, doc="File Type")
-    fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-ts-filename")
+    fullname = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="uid-sid-filename")
     location = sqlalchemy.Column(sqlalchemy.String(512), nullable=False, doc="save_path/fullname")
 
     # information -- trash and trash datetime
