@@ -40,11 +40,9 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     timezone, zonemins = timezone or 0, zonemins or 0
     flow_identifier = int(datetime.utcnow().timestamp())
 
-    # define filename, fullname, location
+    # define fullname/location, save file to disk or cloud
     fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
-
-    # save file to disk or cloud
     with open(location, "wb") as file_in:
         file_in.write(file.file.read())
     file_id = get_id_string(fullname)
@@ -92,11 +90,9 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     start_time = start_time or datetime.utcnow()
     timezone, zonemins = timezone or 0, zonemins or 0
 
-    # define filename, fullname, location
+    # define fullname/location, save file to disk or cloud
     fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
-
-    # save file to disk or cloud
     file_mode = "ab" if flow_chunk_number > 1 else "wb"
     with open(location, file_mode) as file_in:
         file_in.write(file.file.read())
