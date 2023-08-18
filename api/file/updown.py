@@ -34,9 +34,14 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     filetype, filesize = file.content_type, file.size
     check_file_type_size(filetype, filesize)
 
-    # define filename, fullname, location
+    # define default values
     filename = filename or file.filename or "noname"
-    fullname = f"{user_id}-{int(time.time())}-{filename}"
+    start_time = start_time or datetime.utcnow()
+    timezone, zonemins = timezone or 0, zonemins or 0
+    flow_identifier = int(datetime.utcnow().timestamp())
+
+    # define filename, fullname, location
+    fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
 
     # save file to disk or cloud
@@ -82,8 +87,12 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     filetype, filesize = file.content_type, flow_total_size
     check_file_type_size(filetype, filesize)
 
-    # define filename, fullname, location
+    # define default values
     filename = filename or file.filename or "noname"
+    start_time = start_time or datetime.utcnow()
+    timezone, zonemins = timezone or 0, zonemins or 0
+
+    # define filename, fullname, location
     fullname = f"{user_id}-{flow_identifier}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
 
