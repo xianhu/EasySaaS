@@ -69,9 +69,17 @@ def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
     delete file models and filetagfile models by file_id list, return True
     - **status_code=500**: delete file filetagfile error
     """
+    # delete files from disk or cloud  # TODO
     try:
-        session.query(FileTagFile).filter(FileTagFile.file_id.in_(file_id_list)).delete()
-        session.query(File).filter(File.id.in_(file_id_list)).delete()
+        # delete filetagfile models
+        filter1 = FileTagFile.file_id.in_(file_id_list)
+        session.query(FileTagFile).filter(filter1).delete()
+
+        # delete file models
+        filter1 = File.id.in_(file_id_list)
+        session.query(File).filter(filter1).delete()
+
+        # commit and return
         session.commit()
         return True
     except Exception as excep:

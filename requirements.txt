@@ -9,7 +9,7 @@ uWSGI==2.0.22
 fastapi~=0.101.1
 uvicorn~=0.23.2
 gunicorn~=21.2.0
-pydantic[email]~=2.1.1
+pydantic[email]~=2.2.0
 pydantic-settings~=2.0.3
 
 # Database

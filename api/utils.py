@@ -48,7 +48,7 @@ def get_current_user(access_token: str = Depends(oauth2_bearer),
 
 def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User:
     """
-    check if user model is admin, return user model
+    check if user model from 'get_current_user' is admin, return user model
     - **status_code=401**: token invalid or expired
     - **status_code=403**: permission denied
     """
@@ -60,18 +60,19 @@ def get_current_user_admin(user_model: User = Depends(get_current_user)) -> User
     return user_model
 
 
-def logging_request(request: Request, user_id: str, path: str, session: Session) -> None:
+def logging_request(request: Request, user_id: str, session: Session) -> bool:
     """
-    logging request information to UserLog table
+    logging request information to UserLog table, return True
     """
     # get request information
     host = request.client.host
     ua = request.headers.get("user-agent")
-    headers = {key: request.headers.get(key) for key in request.headers.keys()}
+    headers = {key: request.headers[key] for key in request.headers}
+    path = request.scope.get("path")
 
     # create userlog model based on request information
     userlog_kwargs = dict(host=host, ua=ua, headers=headers, path=path)
     userlog_model = UserLog(user_id=user_id, **userlog_kwargs)
     session.add(userlog_model)
     session.commit()
-    return None
+    return True
