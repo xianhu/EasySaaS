@@ -16,8 +16,8 @@ from typing import Any, Dict, List, Optional
 
 import sqlalchemy
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
-from fastapi import Body, Cookie, Depends, Form, Header, Path, Query, Request, Response, UploadFile
-from fastapi import File as UploadFileClass  # rename File
+from fastapi import Body, Cookie, Depends, Form, Header, Path, Query, Request, Response
+from fastapi import File as UploadFileClass, UploadFile  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, UUID4
@@ -43,8 +43,9 @@ __all__ = [
 
     # from pip install
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
-    "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response", "UploadFile",
-    "UploadFileClass", "FileResponse", "StreamingResponse", "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
+    "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response",
+    "UploadFileClass", "UploadFile", "FileResponse", "StreamingResponse",
+    "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
     "BaseModel", "EmailStr", "Field", "HttpUrl", "UUID4", "sqlalchemy", "func", "Redis", "Session",
 
     # from core module
