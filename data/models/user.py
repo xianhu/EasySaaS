@@ -52,14 +52,12 @@ class User(AbstractModel):
 
 
 class UserLog(AbstractModel):
-    # information -- id and user_id
+    # information -- id, user_id and path
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.String(128), ForeignKey("users.id"), index=True)
+    path = sqlalchemy.Column(sqlalchemy.String(255), doc="Request Path")
 
     # information -- basic
     host = sqlalchemy.Column(sqlalchemy.String(255), doc="Host")
     ua = sqlalchemy.Column(sqlalchemy.String(255), doc="User Agent")
     headers = sqlalchemy.Column(sqlalchemy.JSON, default={}, doc="Headers")
-
-    # information -- others
-    path = sqlalchemy.Column(sqlalchemy.String(255), doc="Request Path")

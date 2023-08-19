@@ -35,7 +35,7 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     filename = filename or file.filename or "noname"
     session_id = str(int(datetime.utcnow().timestamp()))
 
-    # define fullname、location
+    # define fullname and location
     fullname = f"{user_id}-{session_id}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
 
@@ -80,7 +80,7 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     filename = filename or file.filename or "noname"
     session_id = flow_identifier  # for flow.js
 
-    # define fullname、location
+    # define fullname and location
     fullname = f"{user_id}-{session_id}-{filename}"
     location = f"{FILE_FOLDER}/{fullname}"
 

@@ -10,14 +10,8 @@ from .base import *
 # used for response_model
 class FileSchema(BaseModel):
     id: Optional[str] = None
-
     filename: Optional[str] = None
     keywords: Optional[List[str]] = None
-
-    filesize: Optional[int] = None
-    filetype: Optional[str] = None
-    # fullname: Optional[str] = None
-    # location: Optional[str] = None
 
 
 # used for request body

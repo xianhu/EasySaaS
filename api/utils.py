@@ -64,15 +64,16 @@ def logging_request(request: Request, user_id: str, session: Session) -> bool:
     """
     logging request information to UserLog table, return True
     """
+    path = request.scope.get("path")
+
     # get request information
     host = request.client.host
     ua = request.headers.get("user-agent")
     headers = {key: request.headers[key] for key in request.headers}
-    path = request.scope.get("path")
 
     # create userlog model based on request information
-    userlog_kwargs = dict(host=host, ua=ua, headers=headers, path=path)
-    userlog_model = UserLog(user_id=user_id, **userlog_kwargs)
+    userlog_kwargs = dict(host=host, ua=ua, headers=headers)
+    userlog_model = UserLog(user_id=user_id, path=path, **userlog_kwargs)
     session.add(userlog_model)
     session.commit()
     return True
