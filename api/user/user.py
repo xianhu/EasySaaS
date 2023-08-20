@@ -76,7 +76,8 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
                         session: Session = Depends(get_session)):
     """
     update avatar of current_user model, return user schema
-    - **status_code=500**: file type not support, file size too large
+    - **status_code=500**: file type not support
+    - **status_code=500**: file size too large
     """
     # check file type or raise exception
     if file.content_type not in ["image/jpeg", "image/png"]:

@@ -23,6 +23,8 @@ class RespFileList(Resp):
 def check_file_type_size(filetype: str, filesize: int) -> bool:
     """
     check file type and size, return True or raise exception
+    - **status_code=500**: file type not supported
+    - **status_code=500**: file size too large
     """
     if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
                         "audio/mp4", "audio/webm", "audio/x-m4a"]:
