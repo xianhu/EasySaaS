@@ -20,7 +20,7 @@ from fastapi import Body, Cookie, Depends, Form, Header, Path, Query, Request, R
 from fastapi import File as UploadFileClass, UploadFile  # rename File
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, UUID4
+from pydantic import EmailStr, Field, HttpUrl, UUID4
 from redis import Redis
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -46,7 +46,7 @@ __all__ = [
     "Body", "Cookie", "Depends", "Form", "Header", "Path", "Query", "Request", "Response",
     "UploadFileClass", "UploadFile", "FileResponse", "StreamingResponse",
     "OAuth2PasswordBearer", "OAuth2PasswordRequestForm",
-    "BaseModel", "EmailStr", "Field", "HttpUrl", "UUID4", "sqlalchemy", "func", "Redis", "Session",
+    "EmailStr", "Field", "HttpUrl", "UUID4", "sqlalchemy", "func", "Redis", "Session",
 
     # from core module
     "check_password_hash", "get_password_hash", "create_jwt_token", "get_jwt_payload",

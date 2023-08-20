@@ -13,6 +13,7 @@ router = APIRouter()
 
 # file settings
 FILE_FOLDER = "/tmp"
+FILE_LIMIT_COUNT = 10000
 
 
 @router.post("/upload", response_model=RespFile)
@@ -23,9 +24,19 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             session: Session = Depends(get_session)):
     """
     upload file object and create file model, return file schema
-    - **status_code=500**: file type not supported, file size too large
+    - **status_code=500**: file count exceed limit
+    - **status_code=500**: file type not supported
+    - **status_code=500**: file size too large
     """
     user_id = current_user.id
+    filter0 = File.user_id == user_id
+
+    # check if file count exceed limit
+    if session.query(File).filter(filter0).count() >= FILE_LIMIT_COUNT:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file count exceed limit"
+        )
 
     # check file type and size
     filetype, filesize = file.content_type, file.size
@@ -68,9 +79,19 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
                  session: Session = Depends(get_session)):
     """
     upload file object by flow.js and create file model, return file schema
-    - **status_code=500**: file type not supported, file size too large
+    - **status_code=500**: file count exceed limit
+    - **status_code=500**: file type not supported
+    - **status_code=500**: file size too large
     """
     user_id = current_user.id
+    filter0 = File.user_id == user_id
+
+    # check if file count exceed limit
+    if session.query(File).filter(filter0).count() >= FILE_LIMIT_COUNT:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="file count exceed limit"
+        )
 
     # check file type and size
     filetype, filesize = file.content_type, flow_total_size
