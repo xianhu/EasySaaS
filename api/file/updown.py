@@ -43,11 +43,12 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     check_file_type_size(filetype, filesize)
 
     # define default values
-    filename = filename or file.filename or "noname"
-    session_id = str(int(datetime.utcnow().timestamp()))
+    filename = filename or file.filename or "noname.unknown"
+    session_id = str(int(datetime.utcnow().timestamp() * 1000))
+    prefix = filename.split(".")[-1] if "." in filename else filetype.split("/")[-1]
 
     # define fullname and location
-    fullname = f"{user_id}-{session_id}-{filename}"
+    fullname = f"{user_id}-{session_id}.{prefix}"
     location = f"{FILE_FOLDER}/{fullname}"
 
     # save file to disk or cloud
@@ -98,11 +99,12 @@ def _upload_flow(file: UploadFile = UploadFileClass(..., description="part of fi
     check_file_type_size(filetype, filesize)
 
     # define default values
-    filename = filename or file.filename or "noname"
+    filename = filename or file.filename or "noname.unknown"
     session_id = flow_identifier  # for flow.js
+    prefix = filename.split(".")[-1] if "." in filename else filetype.split("/")[-1]
 
     # define fullname and location
-    fullname = f"{user_id}-{session_id}-{filename}"
+    fullname = f"{user_id}-{session_id}.{prefix}"
     location = f"{FILE_FOLDER}/{fullname}"
 
     # save file to disk or cloud
