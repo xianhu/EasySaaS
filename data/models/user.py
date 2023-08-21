@@ -36,10 +36,10 @@ class User(AbstractModel):
     points_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Points")
     points_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Points History")
 
-    # information -- minutes and history
-    minutes_left = sqlalchemy.Column(sqlalchemy.Integer, doc="Left Minutes")
-    minutes_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Minutes")
-    minutes_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Minutes History")
+    # information -- seconds and history
+    seconds_left = sqlalchemy.Column(sqlalchemy.Integer, doc="Left Seconds")
+    seconds_total = sqlalchemy.Column(sqlalchemy.Integer, doc="Total Seconds")
+    seconds_history = sqlalchemy.Column(sqlalchemy.JSON, default=[], doc="Seconds History")
 
     # information -- space and history (bytes with biginteger)
     space_used = sqlalchemy.Column(sqlalchemy.BigInteger, doc="Used Space")

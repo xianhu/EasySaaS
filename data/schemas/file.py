@@ -12,6 +12,7 @@ class FileSchema(BaseModel):
     id: Optional[str] = None
     filename: Optional[str] = None
     keywords: Optional[List[str]] = None
+    edit_time: Optional[datetime] = None
 
 
 # used for request body

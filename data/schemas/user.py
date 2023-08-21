@@ -31,9 +31,9 @@ class UserSchema(BaseModel):
     points_total: Optional[int] = None
     points_history: Optional[list] = None
 
-    minutes_left: Optional[int] = None
-    minutes_total: Optional[int] = None
-    minutes_history: Optional[list] = None
+    seconds_left: Optional[int] = None
+    seconds_total: Optional[int] = None
+    seconds_history: Optional[list] = None
 
     space_used: Optional[int] = None
     space_total: Optional[int] = None
