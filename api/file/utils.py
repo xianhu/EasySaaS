@@ -28,11 +28,13 @@ def check_file_type_size(filetype: str, filesize: int) -> bool:
     """
     if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
                         "audio/mp4", "audio/webm", "audio/x-m4a"]:
+        logging.error("file type not supported: %s", filetype)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file type not supported"
         )
     if filesize > 1024 * 1024 * 25:
+        logging.error("file size too large: %s", filesize)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
@@ -80,6 +82,7 @@ def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
         return True
     except Exception as excep:
         session.rollback()
+        logging.error("delete file filetagfile error: %s", excep)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="delete file filetagfile error",

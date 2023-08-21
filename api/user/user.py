@@ -24,7 +24,7 @@ def _get_user_schema(request: Request,  # parameter of request
     """
     # logging request information
     logging_request(request, current_user.id, session)
-    # reset reset_time / points / minutes / space if necessary
+    # reset reset_time / points / seconds / space if necessary
 
     # return user schema
     return RespUser(data_user=UserSchema(**current_user.dict()))
@@ -81,6 +81,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     """
     # check file type or raise exception
     if file.content_type not in ["image/jpeg", "image/png"]:
+        logging.error("file type not support: %s", file.content_type)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file type not support"
@@ -88,6 +89,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
 
     # check file size or raise exception
     if file.size > 1024 * 1024 * 1:
+        logging.error("file size too large: %s", file.size)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"

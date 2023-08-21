@@ -56,6 +56,7 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
         return True
     except Exception as excep:
         session.rollback()
+        logging.error("create user object error: %s", excep)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="create user object error",
@@ -92,6 +93,7 @@ def delete_user_object(user_id: str, session: Session) -> bool:
         return True
     except Exception as excep:
         session.rollback()
+        logging.error("delete user object error: %s", excep)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="delete user object error",
