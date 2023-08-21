@@ -6,6 +6,7 @@ tasks module
 
 import logging
 import random
+from datetime import datetime
 from typing import Optional
 
 from celery import Celery
@@ -37,15 +38,21 @@ def test_add_func(self, x: int, y: int, z: Optional[int] = None):
     """
     test add function
     """
-    # task information
     request = self.request
+    start_time = datetime.utcnow()
+
+    # task information
     logging.warning("%s: %s, %s", request.id, request.args, request.kwargs)
     logging.warning("%s: %s, %s", request.id, request.retries, request.delivery_info)
     # task operation: self.update_state(), self.retry(), etc
 
-    # simulate task failure
+    # task failure (simulate)
     if not random.randint(0, 10):
         raise Exception("simulate task failure")
 
     # task process
-    return x + y + (z or 0)
+    data = x + y + (z or 0)
+    end_time = datetime.utcnow()
+
+    # task result
+    return dict(start_time=start_time, end_time=end_time, data=data)
