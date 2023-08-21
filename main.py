@@ -99,7 +99,8 @@ async def _http_headers(request: Request, call_next):
     """
     start_time = time.time()
     response = await call_next(request)
-    response.headers["X-Duration"] = str(time.time() - start_time)
-    response.headers["X-Version"] = str(settings.APP_VERSION)
-    response.headers["X-Debug"] = str(settings.DEBUG)
+    if settings.DEBUG:
+        response.headers["X-Duration"] = str(time.time() - start_time)
+        response.headers["X-Version"] = str(settings.APP_VERSION)
+        response.headers["X-Debug"] = str(settings.DEBUG)
     return response
