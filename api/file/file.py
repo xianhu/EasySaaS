@@ -80,6 +80,7 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
     # update file model based on update schema
     for field in file_schema.model_dump(exclude_unset=True):
         setattr(file_model, field, getattr(file_schema, field))
+        setattr(file_model, "edit_time", datetime.utcnow())
     session.merge(file_model)
     session.commit()
 
