@@ -38,10 +38,10 @@ def test_add_func(self, x: int, y: int, z: Optional[int] = None):
     """
     test add function
     """
-    request = self.request
     start_time = datetime.utcnow()
 
     # task information
+    request = self.request
     logging.warning("%s: %s, %s", request.id, request.args, request.kwargs)
     logging.warning("%s: %s, %s", request.id, request.retries, request.delivery_info)
     # task operation: self.update_state(), self.retry(), etc
@@ -52,7 +52,7 @@ def test_add_func(self, x: int, y: int, z: Optional[int] = None):
 
     # task process
     data = x + y + (z or 0)
-    end_time = datetime.utcnow()
 
     # task result
+    end_time = datetime.utcnow()
     return dict(start_time=start_time, end_time=end_time, data=data)
