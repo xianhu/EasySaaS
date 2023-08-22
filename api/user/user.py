@@ -74,24 +74,18 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
                         session: Session = Depends(get_session)):
     """
     update avatar of current_user model, return user schema
-    - **status_code=500**: file type not support
-    - **status_code=500**: file size too large
+    - **status=-1**: file type not support
+    - **status=-2**: file size exceed limit
     """
-    # check file type or raise exception
-    if file.content_type not in ["image/jpeg", "image/png"]:
-        logging.error("file type not support: %s", file.content_type)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file type not support"
-        )
+    # check if file type not support
+    filetype = file.content_type
+    if filetype not in ["image/jpeg", "image/png", "image/svg+xml"]:
+        return RespUser(status=-1, msg="file type (%s) not support" % filetype)
 
-    # check file size or raise exception
-    if file.size > 1024 * 1024 * 1:
-        logging.error("file size too large: %s", file.size)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large"
-        )
+    # check if file size exceed limit
+    filesize = file.size
+    if filesize > 1024 * 1024 * 1:
+        return RespUser(status=-2, msg="file size (%s) exceed limit" % filesize)
     prefix = file.filename.split(".")[-1]
 
     # define fullname and location
