@@ -11,9 +11,6 @@ from ..utils import get_current_user, logging_request
 # define router
 router = APIRouter()
 
-# file settings of avatar
-FILE_FOLDER = "static/avatar"
-
 
 @router.get("/me", response_model=RespUser)
 def _get_user_schema(request: Request,  # parameter of request
@@ -98,7 +95,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
 
     # define fullname and location
     fullname = f"{current_user.id}.{prefix}"
-    location = f"{FILE_FOLDER}/{fullname}"
+    location = f"{FOLDER_AVATAR}/{fullname}"
 
     # save file to disk or cloud
     with open(location, "wb") as file_in:

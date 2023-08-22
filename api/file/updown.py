@@ -12,10 +12,6 @@ from ..utils import get_current_user
 # define router
 router = APIRouter()
 
-# file settings
-FILE_FOLDER = "/tmp"
-FILE_LIMIT_COUNT = 10000
-
 
 @router.post("/upload", response_model=RespFile)
 def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
@@ -107,26 +103,10 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
     return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
 
-@router.get("/download/{file_id}", response_class=FileResponse)
+@router.get("/download/{file_id}", response_class=StreamingResponse)
 def _download(file_id: str = Path(..., description="file id"),
               current_user: User = Depends(get_current_user),
               session: Session = Depends(get_session)):
-    """
-    download file object by file_id, return FileResponse
-    - **status_code=404**: file not found
-    """
-    # check file_id and get file model
-    file_model = check_file(file_id, current_user.id, session)
-    filename, location = file_model.filename, file_model.location
-
-    # return file response with filename in headers
-    return FileResponse(location, filename=filename, headers={"filename": filename})
-
-
-@router.get("/download-stream/{file_id}", response_class=StreamingResponse)
-def _download_stream(file_id: str = Path(..., description="file id"),
-                     current_user: User = Depends(get_current_user),
-                     session: Session = Depends(get_session)):
     """
     download file object by file_id, return StreamingResponse
     - **status_code=404**: file not found
@@ -134,7 +114,8 @@ def _download_stream(file_id: str = Path(..., description="file id"),
     # check file_id and get file model
     file_model = check_file(file_id, current_user.id, session)
     filename, location = file_model.filename, file_model.location
+    filename_encoded = urllib_parse.quote(filename)
 
     # return streaming response with filename in headers
-    headers = {"Content-Disposition": f"attachment; filename=\"{filename}\"", "filename": filename}
+    headers = {"Content-Disposition": f"attachment; filename*=UTF-8''{filename_encoded}"}
     return StreamingResponse(iter_file(location), media_type="application/octet-stream", headers=headers)

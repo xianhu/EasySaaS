@@ -6,6 +6,10 @@ file api
 
 from ..base import *
 
+# settings
+FILE_FOLDER = "/tmp"
+FILE_LIMIT_COUNT = 10000
+
 
 # response model
 class RespFile(Resp):

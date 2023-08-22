@@ -6,6 +6,9 @@ user api
 
 from ..base import *
 
+# settings
+FOLDER_AVATAR = "static/avatar"
+
 
 # response model
 class RespUser(Resp):

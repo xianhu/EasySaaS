@@ -9,6 +9,7 @@ import logging
 import os
 import random
 import time
+import urllib.parse as urllib_parse
 import uuid
 from datetime import date, datetime, timedelta, timezone
 from enum import Enum
@@ -37,7 +38,7 @@ from data.schemas import UserCreate, UserCreateEmail, UserCreatePhone, UserSchem
 
 __all__ = [
     # from python
-    "json", "logging", "os", "random", "uuid",
+    "json", "logging", "os", "random", "urllib_parse", "uuid",
     "time", "date", "datetime", "timedelta", "timezone",
     "Enum", "Any", "Dict", "List", "Optional",
 
