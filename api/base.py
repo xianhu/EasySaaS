@@ -4,6 +4,8 @@
 base import
 """
 
+import base64
+import hashlib
 import json
 import logging
 import os
@@ -38,9 +40,8 @@ from data.schemas import UserCreate, UserCreateEmail, UserCreatePhone, UserSchem
 
 __all__ = [
     # from python
-    "json", "logging", "os", "random", "urllib_parse", "uuid",
-    "time", "date", "datetime", "timedelta", "timezone",
-    "Enum", "Any", "Dict", "List", "Optional",
+    "base64", "hashlib", "json", "logging", "os", "random", "urllib_parse", "uuid",
+    "time", "date", "datetime", "timedelta", "timezone", "Enum", "Any", "Dict", "List", "Optional",
 
     # from pip install
     "APIRouter", "BackgroundTasks", "HTTPException", "status",
