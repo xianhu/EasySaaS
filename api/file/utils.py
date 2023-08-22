@@ -20,28 +20,6 @@ class RespFileList(Resp):
     data_filetag_id_list_list: List[List[str]] = Field([])
 
 
-def check_file_type_size(filetype: str, filesize: int) -> bool:
-    """
-    check file type and size, return True or raise exception
-    - **status_code=500**: file type not supported
-    - **status_code=500**: file size too large
-    """
-    if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
-                        "audio/mp4", "audio/webm", "audio/x-m4a"]:
-        logging.error("file type not supported: %s", filetype)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file type not supported"
-        )
-    if filesize > 1024 * 1024 * 25:
-        logging.error("file size too large: %s", filesize)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large"
-        )
-    return True
-
-
 def check_file(file_id: str, user_id: str, session: Session) -> File:
     """
     check if file_id is valid to user_id, return file model

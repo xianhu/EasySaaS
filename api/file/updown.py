@@ -26,29 +26,46 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             session: Session = Depends(get_session)):
     """
     upload file object and create file model, return file schema
-    - **status_code=500**: file count exceed limit
-    - **status_code=500**: file type not supported
-    - **status_code=500**: file size too large
+    - **status=1**: file existed in database
+    - **status=-1**: file count exceed limit
+    - **status=-2**: filename invalid: xxx.xxx
+    - **status=-3**: file type not supported
+    - **status=-4**: file size exceed limit
     - **status_code=500**: create file or link to filetag error
     """
     user_id = current_user.id
-    filter0 = File.user_id == user_id
+    session_id = str(int(datetime.utcnow().timestamp() * 1000))
+
+    # check if file model existed based on session_id
+    file_id = get_id_string(f"{user_id}-{session_id}")
+    file_model = session.query(File).get(file_id)
+    if file_model and file_model.status == 1:
+        file_schema = FileSchema(**file_model.dict())
+        filetag_id_list = get_filetag_id_list(file_id, session)
+        return RespFile(status=1, msg="file existed in database",
+                        data_file=file_schema, data_filetag_id_list=filetag_id_list)
 
     # check if file count exceed limit
+    filter0 = File.user_id == user_id
     if session.query(File).filter(filter0).count() >= FILE_LIMIT_COUNT:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file count exceed limit"
-        )
+        return RespFile(status=-1, msg="file count exceed limit")
 
-    # check file type and size
-    filetype, filesize = file.content_type, file.size
-    check_file_type_size(filetype, filesize)
+    # check if filename valid
+    filename = filename or file.filename
+    if (not filename) or (filename.find(".") < 0):
+        return RespFile(status=-2, msg="filename invalid: xxx.xxx")
 
-    # define default values
-    filename = filename or file.filename or "noname.unknown"
-    session_id = str(int(datetime.utcnow().timestamp() * 1000))
-    prefix = filename.split(".")[-1] if "." in filename else filetype.split("/")[-1]
+    # check if file type not supported
+    filetype = file.content_type
+    if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
+                        "audio/mp4", "audio/webm", "audio/x-m4a"]:
+        return RespFile(status=-3, msg="file type (%s) not supported" % filetype)
+
+    # check if file size exceed limit
+    filesize = file.size
+    if filesize > 1024 * 1024 * 25:
+        return RespFile(status=-4, msg="file size (%s) exceed limit" % filesize)
+    prefix = filename.split(".")[-1]
 
     # define fullname and location
     fullname = f"{user_id}-{session_id}.{prefix}"
