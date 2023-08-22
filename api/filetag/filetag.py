@@ -119,6 +119,7 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
 
     # update filetag model based on update schema
     for field in filetag_schema.model_dump(exclude_unset=True):
+        # if field == "name": xxxxxxxx
         setattr(filetag_model, field, getattr(filetag_schema, field))
     session.merge(filetag_model)
     session.commit()
