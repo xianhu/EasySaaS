@@ -18,10 +18,12 @@ class FileSchema(BaseModel):
 # used for request body
 class FileCreate(BaseModel):
     filename: str = Field(..., min_length=4, max_length=100)
-    keywords: Optional[List[str]] = Field(None, description="Keywords")
+    keywords: List[str] = Field([], description="Keywords")
+    filetag_id_list: List[str] = Field([], description="FileTag ID List")
 
 
 # used for request body
 class FileUpdate(BaseModel):
     filename: Optional[str] = Field(None, min_length=4, max_length=100)
-    keywords: Optional[List[str]] = Field(None, description="Keywords")
+    keywords: List[str] = Field([], description="Keywords")
+    filetag_id_list: List[str] = Field([], description="FileTag ID List")

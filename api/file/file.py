@@ -6,6 +6,7 @@ file api
 
 from .utils import *
 from ..base import *
+from ..filetag.utils import check_filetag
 from ..utils import get_current_user
 
 # define router
@@ -77,12 +78,32 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
     # check file_id and get file model
     file_model = check_file(file_id, user_id, session)
 
-    # update file model based on update schema
-    for field in file_schema.model_dump(exclude_unset=True):
-        setattr(file_model, field, getattr(file_schema, field))
-        setattr(file_model, "edit_time", datetime.utcnow())
-    session.merge(file_model)
-    session.commit()
+    try:
+        # link to filetag based on filetags
+        for filetag_id in file_schema.filetag_id_list:
+            check_filetag(filetag_id, user_id, session)
+
+            # create filetagfile model by file_id and filetag_id
+            filetagfile_model = FileTagFile(file_id=file_id, filetag_id=filetag_id)
+            session.add(filetagfile_model)
+
+        # update file model based on update schema
+        for field in file_schema.model_dump(exclude_unset=True):
+            setattr(file_model, field, getattr(file_schema, field))
+
+        # update edit_time based on utcnow
+        file_model.edit_time = datetime.utcnow()
+        session.merge(file_model)
+
+        # commit session
+        session.commit()
+    except Exception as excep:
+        session.rollback()
+        logging.error("update file error: %s", excep)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="update file or link to filetag error",
+        )
 
     # return file schema and filetag_id list
     file_schema = FileSchema(**file_model.dict())
