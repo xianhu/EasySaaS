@@ -82,16 +82,29 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
     # check filetag_id_list
     for filetag_id in file_schema.filetag_id_list:
         check_filetag(filetag_id, user_id, session)
+    filetag_id_list = file_schema.filetag_id_list
 
     try:
+        # unlink based on filetag_id_list
+        filter1 = FileTagFile.file_id == file_id
+        filter2 = FileTagFile.filetag_id.notin_(filetag_id_list)
+        session.query(FileTagFile).filter(filter1, filter2).delete()
+
         # link to filetag based on filetags
         for filetag_id in file_schema.filetag_id_list:
+            filter1 = FileTagFile.file_id == file_id
+            filter2 = FileTagFile.filetag_id == filetag_id
+            if session.query(FileTagFile).filter(filter1, filter2).first():
+                continue
+
             # create filetagfile model by file_id and filetag_id
             filetagfile_model = FileTagFile(file_id=file_id, filetag_id=filetag_id)
             session.add(filetagfile_model)
 
         # update file model based on update schema
         for field in file_schema.model_dump(exclude_unset=True):
+            if field == "filetag_id_list":
+                continue
             setattr(file_model, field, getattr(file_schema, field))
 
         # update edit_time based on utcnow
