@@ -26,7 +26,6 @@ description = """
 - return status=-1, -2, ...(200) when something wrong in server
 - return HttpException(401) when access_token is invalid or expired
 - return HttpException(403) when permission to access source is denied
-- return HttpException(500) when something wrong in file uploading
 - return HttpException(500) Internal Server Error when something wrong in server
 """
 

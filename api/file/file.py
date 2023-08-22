@@ -71,18 +71,21 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
                        session: Session = Depends(get_session)):
     """
     update file model based on update schema, return file schema
-    - **status_code=404**: file not found
+    - **status_code=404**: file not found or filetag not found
+    - **status_code=500**: update file or link to filetag error
     """
     user_id = current_user.id
 
     # check file_id and get file model
     file_model = check_file(file_id, user_id, session)
 
+    # check filetag_id_list
+    for filetag_id in file_schema.filetag_id_list:
+        check_filetag(filetag_id, user_id, session)
+
     try:
         # link to filetag based on filetags
         for filetag_id in file_schema.filetag_id_list:
-            check_filetag(filetag_id, user_id, session)
-
             # create filetagfile model by file_id and filetag_id
             filetagfile_model = FileTagFile(file_id=file_id, filetag_id=filetag_id)
             session.add(filetagfile_model)
