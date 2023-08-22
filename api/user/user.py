@@ -11,9 +11,6 @@ from ..utils import get_current_user, logging_request
 # define router
 router = APIRouter()
 
-# file settings of avatar
-FILE_FOLDER = "static/avatar"
-
 
 @router.get("/me", response_model=RespUser)
 def _get_user_schema(request: Request,  # parameter of request
@@ -24,7 +21,7 @@ def _get_user_schema(request: Request,  # parameter of request
     """
     # logging request information
     logging_request(request, current_user.id, session)
-    # reset reset_time / points / minutes / space if necessary
+    # reset reset_time / points / seconds / space if necessary
 
     # return user schema
     return RespUser(data_user=UserSchema(**current_user.dict()))
@@ -76,10 +73,12 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
                         session: Session = Depends(get_session)):
     """
     update avatar of current_user model, return user schema
-    - **status_code=500**: file type not support, file size too large
+    - **status_code=500**: file type not support
+    - **status_code=500**: file size too large
     """
     # check file type or raise exception
     if file.content_type not in ["image/jpeg", "image/png"]:
+        logging.error("file type not support: %s", file.content_type)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file type not support"
@@ -87,6 +86,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
 
     # check file size or raise exception
     if file.size > 1024 * 1024 * 1:
+        logging.error("file size too large: %s", file.size)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="file size too large"
@@ -95,7 +95,7 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
 
     # define fullname and location
     fullname = f"{current_user.id}.{prefix}"
-    location = f"{FILE_FOLDER}/{fullname}"
+    location = f"{FOLDER_AVATAR}/{fullname}"
 
     # save file to disk or cloud
     with open(location, "wb") as file_in:

@@ -23,10 +23,10 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 # define description
 description = """
 - return status=0(200) when process work successfully
-- return status=-1, -2, ...(200) when something wrong in server
+- return status=1, 2, ...(200) when something wrong in process, return data
+- return status=-1, -2, ...(200) when something wrong in process, return msg
 - return HttpException(401) when access_token is invalid or expired
 - return HttpException(403) when permission to access source is denied
-- return HttpException(500) when something wrong in file uploading
 - return HttpException(500) Internal Server Error when something wrong in server
 """
 
@@ -99,7 +99,8 @@ async def _http_headers(request: Request, call_next):
     """
     start_time = time.time()
     response = await call_next(request)
-    response.headers["X-Duration"] = str(time.time() - start_time)
-    response.headers["X-Version"] = str(settings.APP_VERSION)
-    response.headers["X-Debug"] = str(settings.DEBUG)
+    if settings.DEBUG:
+        response.headers["X-Duration"] = str(time.time() - start_time)
+        response.headers["X-Version"] = str(settings.APP_VERSION)
+        response.headers["X-Debug"] = str(settings.DEBUG)
     return response

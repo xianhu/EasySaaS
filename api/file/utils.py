@@ -6,6 +6,10 @@ file api
 
 from ..base import *
 
+# settings
+FILE_FOLDER = "/tmp"
+FILE_LIMIT_COUNT = 10000
+
 
 # response model
 class RespFile(Resp):
@@ -18,24 +22,6 @@ class RespFileList(Resp):
     data_file_total: int = Field(0)
     data_file_list: List[FileSchema] = Field([])
     data_filetag_id_list_list: List[List[str]] = Field([])
-
-
-def check_file_type_size(filetype: str, filesize: int) -> bool:
-    """
-    check file type and size, return True or raise exception
-    """
-    if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
-                        "audio/mp4", "audio/webm", "audio/x-m4a"]:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file type not supported"
-        )
-    if filesize > 1024 * 1024 * 25:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="file size too large"
-        )
-    return True
 
 
 def check_file(file_id: str, user_id: str, session: Session) -> File:
@@ -78,6 +64,7 @@ def delete_file_filetagfile(file_id_list: List[str], session: Session) -> bool:
         return True
     except Exception as excep:
         session.rollback()
+        logging.error("delete file filetagfile error: %s", excep)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="delete file filetagfile error",

@@ -57,10 +57,15 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
                           session: Session = Depends(get_session)):
     """
     create filetag model based on create schema, return filetag schema
+    - **status=-1**: filetag count exceed limit
     - **status=-2**: filetag name invalid or existed
     """
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
+
+    # check if filetag count exceed limit
+    if session.query(FileTag).filter(filter0).count() >= 1000:
+        return RespFileTag(status=-1, msg="filetag count exceed limit")
 
     # check if filetag name is valid
     if filetag_schema.name in FILETAG_SYSTEM_SET:
@@ -133,6 +138,7 @@ def _delete_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     - **status_code=404**: filetag not found
     """
     user_id = current_user.id
+    filter0 = FileTag.user_id == user_id
 
     # check filetag_id and get filetag model
     filetag_model = check_filetag(filetag_id, user_id, session)
