@@ -36,6 +36,7 @@ def _update_user_model(user_schema: UserUpdate = Body(..., description="update s
     """
     # update user model based on update schema
     for field in user_schema.model_dump(exclude_unset=True):
+        # if field == "password": xxxxxxxx
         setattr(current_user, field, getattr(user_schema, field))
     session.merge(current_user)
     session.commit()

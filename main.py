@@ -24,7 +24,7 @@ logging.basicConfig(format=log_format, level=logging.WARNING, datefmt=None)
 description = """
 - return status=0(200) when process work successfully
 - return status=1, 2, ...(200) when something wrong in process, return data
-- return status=-1, -2, ...(200) when something wrong in process, return msg
+- return status=-1, -2, ...(200) when something wrong in process, no data
 - return HttpException(401) when access_token is invalid or expired
 - return HttpException(403) when permission to access source is denied
 - return HttpException(500) Internal Server Error when something wrong in server
