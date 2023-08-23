@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-settings of app
+settings of application
 """
 
 import os
