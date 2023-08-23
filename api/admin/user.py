@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-user api of admin
+admin api of user
 """
 
 from ..base import *
