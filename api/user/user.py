@@ -78,13 +78,11 @@ def _update_user_avatar(file: UploadFile = UploadFileClass(..., description="fil
     - **status=-2**: file size exceed limit
     """
     # check if file type not support
-    filetype = file.content_type
-    if filetype not in ["image/jpeg", "image/png", "image/svg+xml"]:
+    if (filetype := file.content_type) not in ["image/jpeg", "image/png"]:
         return RespUser(status=-1, msg="file type (%s) not support" % filetype)
 
     # check if file size exceed limit
-    filesize = file.size
-    if filesize > 1024 * 1024 * 1:
+    if (filesize := file.size) > 1024 * 1024 * 1:
         return RespUser(status=-2, msg="file size (%s) exceed limit" % filesize)
     prefix = file.filename.split(".")[-1]
 

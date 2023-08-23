@@ -59,14 +59,12 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
         return RespFile(status=-2, msg="filename invalid: xxx.xxx")
 
     # check if file type not supported
-    filetype = file.content_type
-    if filetype not in ["audio/mpeg", "audio/wav", "audio/x-wav",
-                        "audio/mp4", "audio/webm", "audio/x-m4a"]:
+    if (filetype := file.content_type) not in ["audio/mpeg", "audio/wav", "audio/x-wav",
+                                               "audio/mp4", "audio/webm", "audio/x-m4a"]:
         return RespFile(status=-3, msg="file type (%s) not supported" % filetype)
 
     # check if file size exceed limit
-    filesize = file.size
-    if filesize > 1024 * 1024 * 25:
+    if (filesize := file.size) > 1024 * 1024 * 25:
         return RespFile(status=-4, msg="file size (%s) exceed limit" % filesize)
     prefix = filename.split(".")[-1]
 
