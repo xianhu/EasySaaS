@@ -103,11 +103,9 @@ def _upload(file: UploadFile = UploadFileClass(..., description="file object"),
             detail="create file or link to filetag error",
         )
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)
 
 

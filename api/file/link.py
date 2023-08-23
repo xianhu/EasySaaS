@@ -35,11 +35,9 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
         session.add(filetagfile_model)
         session.commit()
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)
 
 
@@ -62,9 +60,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
     session.query(FileTagFile).filter(filter1, filter2).delete()
     session.commit()
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)

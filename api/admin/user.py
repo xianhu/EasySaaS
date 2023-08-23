@@ -18,11 +18,13 @@ def _get_user_schema_list(skip: int = Query(0, description="skip count"),
     """
     get user schema list, support pagination
     """
-    # get user model list and schema list
-    user_model_list = (session.query(User)
-                       .order_by(User.created_at.desc())
-                       .offset(skip).limit(limit).all())
-    user_schema_list = [UserSchema(**um.dict()) for um in user_model_list]
+    # get user schema list
+    user_schema_list = []
+    for user_schema in (session.query(User)
+            .order_by(User.created_at.desc())
+            .offset(skip).limit(limit).all()):
+        user_schema = UserSchema(**user_schema.dict())
+        user_schema_list.append(user_schema)
 
     # return total count and user schema list
     user_total = session.query(User).count()
