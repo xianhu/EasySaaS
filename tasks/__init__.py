@@ -44,7 +44,7 @@ def test_add_func(self, x: int, y: int, z: Optional[int] = None):
     request = self.request
     logging.warning("%s: %s, %s", request.id, request.args, request.kwargs)
     logging.warning("%s: %s, %s", request.id, request.retries, request.delivery_info)
-    # task operation: self.update_state(), self.retry(), etc
+    # task operations: self.update_state(), self.retry(), etc
 
     # task failure (simulate)
     if not random.randint(0, 10):
