@@ -20,7 +20,7 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
                           current_user: User = Depends(get_current_user),
                           session: Session = Depends(get_session)):
     """
-    get file schema list and filetag_id list list, support pagination
+    get file schema list, support pagination
     - **status_code=500**: delete file filetagfile error
     """
     user_id = current_user.id
@@ -33,16 +33,18 @@ def _get_file_schema_list(skip: int = Query(0, description="skip count"),
         file_model_list = session.query(File).filter(filter0, filter1).all()
         delete_file_filetagfile([file_model.id for file_model in file_model_list], session)
 
-    # get file model list and schema list
-    file_model_list = (session.query(File).filter(filter0)
-                       .order_by(File.created_at.desc())
-                       .offset(skip).limit(limit).all())
-    file_schema_list = [FileSchema(**fm.dict()) for fm in file_model_list]
+    # get file schema list
+    file_schema_list = []
+    for file_model in (session.query(File).filter(filter0)
+            .order_by(File.created_at.desc())
+            .offset(skip).limit(limit).all()):
+        file_schema = FileSchema(**file_model.dict())
+        file_schema.filetag_id_list = get_filetag_id_list(file_model.id, session)
+        file_schema_list.append(file_schema)
 
-    # return total count, file schema list and filetag_id list list
+    # return total count and file schema list
     file_total = session.query(File).filter(filter0).count()
-    filetag_id_list_list = [get_filetag_id_list(fm.id, session) for fm in file_model_list]
-    return RespFileList(data_file_total=file_total, data_file_list=file_schema_list, data_filetag_id_list_list=filetag_id_list_list)
+    return RespFileList(data_file_total=file_total, data_file_list=file_schema_list)
 
 
 @router.get("/{file_id}", response_model=RespFile)
@@ -50,7 +52,7 @@ def _get_file_schema(file_id: str = Path(..., description="file id"),
                      current_user: User = Depends(get_current_user),
                      session: Session = Depends(get_session)):
     """
-    get file schema and filetag_id list by file_id
+    get file schema by file_id
     - **status_code=404**: file not found
     """
     user_id = current_user.id
@@ -58,10 +60,12 @@ def _get_file_schema(file_id: str = Path(..., description="file id"),
     # check file_id and get file model
     file_model = check_file(file_id, user_id, session)
 
-    # return file schema and filetag_id list
+    # create file schema
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = get_filetag_id_list(file_id, session)
-    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
+    file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
+
+    # return file schema
+    return RespFile(data_file=file_schema)
 
 
 @router.patch("/{file_id}", response_model=RespFile)
@@ -75,14 +79,14 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
     - **status_code=500**: update file or link to filetag error
     """
     user_id = current_user.id
+    filetag_id_list = file_schema.filetag_id_list
 
     # check file_id and get file model
     file_model = check_file(file_id, user_id, session)
 
     # check filetag_id_list
-    for filetag_id in file_schema.filetag_id_list:
+    for filetag_id in filetag_id_list:
         check_filetag(filetag_id, user_id, session)
-    filetag_id_list = file_schema.filetag_id_list
 
     try:
         # unlink based on filetag_id_list
@@ -121,10 +125,12 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
             detail="update file or link to filetag error",
         )
 
-    # return file schema and filetag_id list
+    # create file schema
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = get_filetag_id_list(file_id, session)
-    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
+    file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
+
+    # return file schema
+    return RespFile(data_file=file_schema)
 
 
 @router.post("/trash/", response_model=Resp)

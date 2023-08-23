@@ -14,14 +14,12 @@ FILE_LIMIT_COUNT = 10000
 # response model
 class RespFile(Resp):
     data_file: Optional[FileSchema] = Field(None)
-    data_filetag_id_list: Optional[List[str]] = Field(None)
 
 
 # response model
 class RespFileList(Resp):
     data_file_total: int = Field(0)
     data_file_list: List[FileSchema] = Field([])
-    data_filetag_id_list_list: List[List[str]] = Field([])
 
 
 def check_file(file_id: str, user_id: str, session: Session) -> File:

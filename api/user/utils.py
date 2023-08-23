@@ -35,7 +35,7 @@ def create_user_object(user_schema: UserCreate, session: Session) -> bool:
             user_id = get_id_string(f"{user_schema.phone}-{user_schema.password}")
             nickname = user_schema.phone[-4:]
         else:
-            raise Exception("user schema error")
+            raise Exception("create user schema error")
 
         # create user model based on create schema and nickname
         user_kwargs = user_schema.model_dump(exclude_unset=True)

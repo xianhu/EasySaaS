@@ -19,7 +19,7 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
                        current_user: User = Depends(get_current_user),
                        session: Session = Depends(get_session)):
     """
-    link file model to a filetag model, return file schema and filetag_id list
+    link file model to a filetag model, return file schema
     - **status_code=404**: file not found or filetag not found
     """
     # check file_id/filetag_id and get file/filetag model
@@ -35,10 +35,12 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
         session.add(filetagfile_model)
         session.commit()
 
-    # return file schema and filetag_id list
+    # create file schema
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = get_filetag_id_list(file_id, session)
-    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
+    file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
+
+    # return file schema
+    return RespFile(data_file=file_schema)
 
 
 @router.post("/unlink/", response_model=RespFile)
@@ -47,7 +49,7 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
                          current_user: User = Depends(get_current_user),
                          session: Session = Depends(get_session)):
     """
-    unlink file model to a filetag model, return file schema and filetag_id list
+    unlink file model to a filetag model, return file schema
     - **status_code=404**: file not found or filetag not found
     """
     # check file_id/filetag_id and get file/filetag model
@@ -60,7 +62,9 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
     session.query(FileTagFile).filter(filter1, filter2).delete()
     session.commit()
 
-    # return file schema and filetag_id list
+    # create file schema
     file_schema = FileSchema(**file_model.dict())
-    filetag_id_list = get_filetag_id_list(file_id, session)
-    return RespFile(data_file=file_schema, data_filetag_id_list=filetag_id_list)
+    file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
+
+    # return file schema
+    return RespFile(data_file=file_schema)
