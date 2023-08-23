@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-settings file
+settings of app
 """
 
 import os
@@ -47,9 +47,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-if __name__ == "__main__":
-    import pprint
-
-    # print settings
-    pprint.pprint(settings.model_dump())

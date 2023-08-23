@@ -5,10 +5,16 @@ test file
 """
 
 import logging
+import pprint
 import time
 
 from core import create_jwt_token, get_jwt_payload
 from core import send_email_of_code, send_phone_of_code
+from core import settings, settings_name
+
+# print settings
+pprint.pprint(settings.model_dump())
+pprint.pprint(settings_name)
 
 # test jwt and payload -- expire_duration
 token = create_jwt_token("111", expire_duration=10)
