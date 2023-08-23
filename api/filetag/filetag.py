@@ -23,11 +23,13 @@ def _get_filetag_schema_list(skip: int = Query(0, description="skip count"),
     user_id = current_user.id
     filter0 = FileTag.user_id == user_id
 
-    # get filetag model list and schema list
-    filetag_model_list = (session.query(FileTag).filter(filter0)
-                          .order_by(FileTag.created_at.desc())
-                          .offset(skip).limit(limit).all())
-    filetag_schema_list = [FileTagSchema(**ftm.dict()) for ftm in filetag_model_list]
+    # get filetag schema list
+    filetag_schema_list = []
+    for file_model in (session.query(FileTag).filter(filter0)
+            .order_by(FileTag.created_at.desc())
+            .offset(skip).limit(limit).all()):
+        filetag_schema = FileTagSchema(**file_model.dict())
+        filetag_schema_list.append(filetag_schema)
 
     # return total count and filetag schema list
     filetag_total = session.query(FileTag).filter(filter0).count()
@@ -66,11 +68,11 @@ def _create_filetag_model(filetag_schema: FileTagCreate = Body(..., description=
     # check if filetag count exceed limit
     if session.query(FileTag).filter(filter0).count() >= 1000:
         return RespFileTag(status=-1, msg="filetag count exceed limit")
+    filetag_name = filetag_schema.name.strip()
 
     # check if filetag name is valid
-    if filetag_schema.name in FILETAG_SYSTEM_SET:
+    if (not filetag_name) or (filetag_name in FILETAG_SYSTEM_SET):
         return RespFileTag(status=-2, msg="filetag name invalid or existed")
-    filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed
@@ -106,11 +108,11 @@ def _update_filetag_model(filetag_id: str = Path(..., description="filetag id"),
     filetag_model = check_filetag(filetag_id, user_id, session)
     if filetag_model.type == "system":
         return RespFileTag(status=-1, msg="cannot update system filetag")
+    filetag_name = filetag_schema.name.strip()
 
     # check if filetag name is valid
-    if filetag_schema.name in FILETAG_SYSTEM_SET:
+    if (not filetag_name) or (filetag_name in FILETAG_SYSTEM_SET):
         return RespFileTag(status=-2, msg="filetag name invalid or existed")
-    filetag_name = filetag_schema.name
     filter1 = FileTag.name == filetag_name
 
     # check if filetag name existed

@@ -30,7 +30,7 @@ from sqlalchemy.orm import Session
 
 from core import check_password_hash, get_password_hash
 from core import create_jwt_token, get_jwt_payload
-from core import get_id_string, iter_file, settings
+from core import get_id_string, iter_file, settings, settings_name
 from core import send_email_of_code, send_phone_of_code
 from data import FILETAG_SYSTEM_SET, PhoneStr, get_redis, get_session
 from data.models import File, FileTag, FileTagFile, Project, User, UserLog, UserProject
@@ -52,7 +52,8 @@ __all__ = [
 
     # from core module
     "check_password_hash", "get_password_hash", "create_jwt_token", "get_jwt_payload",
-    "get_id_string", "iter_file", "settings", "send_email_of_code", "send_phone_of_code",
+    "get_id_string", "iter_file", "settings", "settings_name",
+    "send_email_of_code", "send_phone_of_code",
 
     # from data module -- utils
     "FILETAG_SYSTEM_SET", "PhoneStr", "get_redis", "get_session",

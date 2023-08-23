@@ -68,7 +68,9 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"))
+# app.mount("/avatar", StaticFiles(directory="static/avatar"))
+# app.mount("/others", StaticFiles(directory="static/others"))
 
 # set router
 app.include_router(api_router)

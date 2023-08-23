@@ -68,16 +68,17 @@ def _verify_code_token(code: int = Body(..., description="code from email or pho
         return Resp(status=-1, msg="token invalid or expired")
     if payload["type"] != current_user.id:
         return Resp(status=-1, msg="token invalid or expired")
-    # type = payload["type"]
+    # type = TypeName(payload["type"])
 
     # check token: sub(email/phone) and code(int)
     if (not payload.get("sub")) or (not payload.get("code")):
         return Resp(status=-1, msg="token invalid or expired")
-    username, code_in_token = payload["sub"], payload["code"]
+    # pwd_hash = get_password_hash(password)
 
     # check token: code
-    if code != code_in_token:
+    if code != payload["code"]:
         return Resp(status=-2, msg="code invalid or not match")
+    username = payload["sub"]
 
     # update user model based on email or phone
     if username.find("@") > 0:

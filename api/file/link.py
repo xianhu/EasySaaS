@@ -27,19 +27,17 @@ def _link_file_filetag(file_id: str = Body(..., description="file id"),
     filetag_model = check_filetag(filetag_id, current_user.id, session)
 
     # check if filetagfile existed in database
-    filter1 = FileTagFile.file_id == file_id
-    filter2 = FileTagFile.filetag_id == filetag_id
+    filter1 = FileTagFile.filetag_id == filetag_id
+    filter2 = FileTagFile.file_id == file_id
     if not session.query(FileTagFile).filter(filter1, filter2).first():
-        # create filetagfile model by file_id and filetag_id
-        filetagfile_model = FileTagFile(file_id=file_id, filetag_id=filetag_id)
+        # create filetagfile model by filetag_id and file_id
+        filetagfile_model = FileTagFile(filetag_id=filetag_id, file_id=file_id)
         session.add(filetagfile_model)
         session.commit()
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)
 
 
@@ -56,15 +54,13 @@ def _unlink_file_filetag(file_id: str = Body(..., description="file id"),
     file_model = check_file(file_id, current_user.id, session)
     filetag_model = check_filetag(filetag_id, current_user.id, session)
 
-    # delete filetagfile model by file_id and filetag_id
-    filter1 = FileTagFile.file_id == file_id
-    filter2 = FileTagFile.filetag_id == filetag_id
+    # delete filetagfile model by filetag_id and file_id
+    filter1 = FileTagFile.filetag_id == filetag_id
+    filter2 = FileTagFile.file_id == file_id
     session.query(FileTagFile).filter(filter1, filter2).delete()
     session.commit()
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)

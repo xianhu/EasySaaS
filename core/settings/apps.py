@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 
 """
-settings file
+settings of application
 """
 
 import os
@@ -46,10 +46,5 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 
+# instance
 settings = Settings()
-
-if __name__ == "__main__":
-    import pprint
-
-    # print settings
-    pprint.pprint(settings.model_dump())

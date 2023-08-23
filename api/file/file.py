@@ -60,11 +60,9 @@ def _get_file_schema(file_id: str = Path(..., description="file id"),
     # check file_id and get file model
     file_model = check_file(file_id, user_id, session)
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)
 
 
@@ -125,11 +123,9 @@ def _update_file_model(file_id: str = Path(..., description="file id"),
             detail="update file or link to filetag error",
         )
 
-    # create file schema
+    # create file schema and return
     file_schema = FileSchema(**file_model.dict())
     file_schema.filetag_id_list = get_filetag_id_list(file_id, session)
-
-    # return file schema
     return RespFile(data_file=file_schema)
 
 
